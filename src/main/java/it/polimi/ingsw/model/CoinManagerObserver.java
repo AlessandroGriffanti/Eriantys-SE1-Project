@@ -10,9 +10,9 @@ public class CoinManagerObserver {
         this.player.earnCoin();
     }
 
-    public void withdrawCoins(int coinsTaken){
+   /* public void withdrawCoins(int coinsTaken){
         player.spendCoins(coinsTaken);
-    }
+    } */
 
 
 }

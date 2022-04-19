@@ -18,11 +18,6 @@ public class DiningRoom {
 
     /** adds a student to the diningroom */
     public void addStudent(Creature s){
-        /* int a = occupiedSeats.get(s);
-        occupiedSeats.replace(s, a + 1);
-        if ((occupiedSeats.get(s)) % 3 == 0) {
-            coinObserver.depositCoin();
-        } */
         occupiedSeats.replace(s, occupiedSeats.get(s).intValue()+1);
         if ((occupiedSeats.get(s)) % 3 == 0) {
             coinObserver.depositCoin();
@@ -31,8 +26,6 @@ public class DiningRoom {
 
     /** removes a student from the diningRoom */
     public void removeStudent(Creature s){
-        /*int a = occupiedSeats.get(s);
-        occupiedSeats.replace(s, a-1); */
         occupiedSeats.replace(s, occupiedSeats.get(s).intValue()-1);
     }
 
@@ -46,4 +39,7 @@ public class DiningRoom {
     }
 
 
+    public HashMap<Creature, Integer> getOccupiedSeats() {
+        return occupiedSeats;
+    }
 }

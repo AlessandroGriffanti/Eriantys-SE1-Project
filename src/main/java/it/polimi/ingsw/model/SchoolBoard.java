@@ -8,26 +8,30 @@ public class SchoolBoard {
     private Entrance entrance;
     private ProfessorTable professorTable;
 
-    public SchoolBoard(){  //qui devo solo istanziare le cose?
-        towerArea = new TowerArea();
+    public SchoolBoard(int numplayers, Realm r, Tower t){
+        towerArea = new TowerArea(numplayers, r, t);
         diningRoom = new DiningRoom();
-        entrance = new Entrance();
+        entrance = new Entrance(r);
         professorTable = new ProfessorTable();
     }
 
     /** returns an arraylist of the controlled professors */
     public ArrayList<Creature> getControlledProfessors() {
-        ArrayList<Creature> a = new ArrayList<>();          //devo ritornare così l'arraylist o come?
+        ArrayList<Creature> controlledprofessorslist = new ArrayList<>();
         for (Creature c : Creature.values()) {
             if(professorTable.isOccupied(c)) {
-                a.add(c);
+                controlledprofessorslist.add(c);
             }
         }
-        return a;
+        return controlledprofessorslist;
     }
 
     public void setCoinManager(CoinManagerObserver c){
         this.diningRoom.setCoinObserver(c);
+    }
+
+    public void removetower(){
+        towerArea.removeTower();
     }
 
 }
