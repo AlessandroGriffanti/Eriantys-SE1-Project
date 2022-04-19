@@ -41,6 +41,9 @@ public class DiningRoom {
         this.coinObserver = c;
     }
 
+    public void setEntrance(Entrance d){
+        this.entrance = d;
+    }
 
 
 }

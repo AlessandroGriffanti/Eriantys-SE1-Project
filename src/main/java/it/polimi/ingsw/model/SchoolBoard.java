@@ -26,4 +26,8 @@ public class SchoolBoard {
         return a;
     }
 
+    public void setCoinManager(CoinManagerObserver c){
+        this.diningRoom.setCoinObserver(c);
+    }
+
 }

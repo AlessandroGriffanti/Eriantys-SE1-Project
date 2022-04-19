@@ -8,6 +8,7 @@ public class TowerArea {
     public void addTower(){
         currentnumberoftowers ++; //non mi ricordo se faccia questo o cosa
     }
+
     /** removes a tower from the area */
     public void removeTower(){
         currentnumberoftowers --;

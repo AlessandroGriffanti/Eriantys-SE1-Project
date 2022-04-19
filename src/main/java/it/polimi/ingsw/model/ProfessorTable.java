@@ -7,7 +7,7 @@ public class ProfessorTable {
 
 
     public ProfessorTable(){
-        occupiedSeats = new HashMap<>(); //mi inizializza da solo o devo fare io?
+        occupiedSeats = new HashMap<>();
         occupiedSeats.put(Creature.DRAGON, false);
         occupiedSeats.put(Creature.UNICORN, false);
         occupiedSeats.put(Creature.FROG, false);
@@ -17,7 +17,7 @@ public class ProfessorTable {
 
     /** adds professor of p type */
     public void addProfessor(Creature p) {
-        for (Creature c : Creature.values()) //mi sa che basta solo la riga nell'if (occupiedseats.replace
+        for (Creature c : Creature.values())
             if (c.equals(p)) {
                 occupiedSeats.replace(p, true);
             }

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Entrance {
     private ArrayList<Creature> studentsInTheEntrance;
     private DiningRoom doorTotheDiningRoom;
-
-    public Entrance(){                  //nel costruttore devo istanziare l'arraylist e crare doortothediningroom... o?
+    //private Realm realm;
+    public Entrance(){
         studentsInTheEntrance = new ArrayList<>();
         doorTotheDiningRoom = new DiningRoom();
     }
@@ -16,13 +16,18 @@ public class Entrance {
         studentsInTheEntrance.add(s);
     }
 
-    /** moves the student */
-    public void moveStudent(int index){ //esattamente che fa?
-        //studentsInTheEntrance.get(index);
-        doorTotheDiningRoom.addStudent(studentsInTheEntrance.get(index)); //questo?
+    /** removes a student from the entrance */
+    public void removeStudent(Creature s){
+        studentsInTheEntrance.remove(s);
     }
 
-    public void setDiningRoom(DiningRoom d){ // non ben chiaro
+    /** moves the student */
+    public void moveStudent(int index){
+        doorTotheDiningRoom.addStudent(studentsInTheEntrance.get(index)); //questo?
+        // realm.
+    }
+
+    public void setDiningRoom(DiningRoom d){
         this.doorTotheDiningRoom = d;
     }
 
