@@ -1,18 +1,27 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 public class CharactersManager {
-    private HashMap<Character, Boolean> characters;
-    private ArrayList characterList;
-
+    private ArrayList<Character> charactersList;
+    private ArrayList<Boolean> charactersUsed;
+    private Player p;
 
     public CharactersManager() {
-        this.characters= new HashMap<Character, Boolean>();
+        this.charactersList= new ArrayList<>(3);
+
+        this.charactersUsed = new ArrayList<>(3);
+        charactersUsed.add(false);
+        charactersUsed.add(false);
+        charactersUsed.add(false);
+
         Random randomGeneratorCharacter;
+
         int randomIndexCharacter, i;
         int old1, old2;
+
         Character x = null;
         Character character0 = null;
         Character character1 = null;
@@ -21,6 +30,7 @@ public class CharactersManager {
         randomGeneratorCharacter = new Random();
         old1 = 14;
         old2 = 14;
+
         for(i = 0; i < 3; i++) {
             do{
                 randomIndexCharacter = randomGeneratorCharacter.nextInt(13);
@@ -75,19 +85,30 @@ public class CharactersManager {
             }
         }
 
-        characters.put(character0, false);
-        characters.put(character1, false);
-        characters.put(character2, false);
+        charactersList.add(character0);
+        charactersList.add(character1);
+        charactersList.add(character2);
     }
 
+
     public void useCharacter(int index){
-        if(index == 0){
-            this.characters.replace();
-        }else if(index == 1){
+        int priceCharacterSelected;
 
-        }else if(index == 2){
+        this.charactersUsed.set(index, true);
 
-        }
+         //coin usage
+         priceCharacterSelected = this.charactersList.get(index).getPrice();
+         try {
+             if(p.getCoinsOwned() >= priceCharacterSelected){
+                p.setCoinsOwned() = p.getCcoinOwned() - priceCharacterSelected;
+             }
+         }
+         catch(Exception e){
+             //System.out.println("Not enought money!");
+         }
+
+         charactersList.get(index).effect();
+
     }
 
 }
