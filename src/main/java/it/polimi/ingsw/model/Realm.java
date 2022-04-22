@@ -57,4 +57,13 @@ public class Realm{
         return temp;
     }
 
+    public void addStudentToIsland(Creature c){
+        archipelagos.get(positionOfMotherNature).addStudent(c);
+    }
+
+    public void addTowerToIsland(Tower towerColor){
+    //dobbiamo sapere anche quante torri spostare dalla plancia, quindi potremmo chiamare la
+    //remove di towerArea dall'isola a cui aggiungiamo le torri
+    }
+
 }
