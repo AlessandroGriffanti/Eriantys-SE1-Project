@@ -93,6 +93,7 @@ public class CharactersManager {
 
     public void useCharacter(int index){
         int priceCharacterSelected;
+        int coinsOwned;
 
         this.charactersUsed.set(index, true);
 
@@ -100,7 +101,8 @@ public class CharactersManager {
          priceCharacterSelected = this.charactersList.get(index).getPrice();
          try {
              if(p.getCoinsOwned() >= priceCharacterSelected){
-                p.setCoinsOwned() = p.getCcoinOwned() - priceCharacterSelected;
+                 coinsOwned = p.getCoinsOwned() - priceCharacterSelected;
+                 p.setCoinsOwned(coinsOwned);
              }
          }
          catch(Exception e){
