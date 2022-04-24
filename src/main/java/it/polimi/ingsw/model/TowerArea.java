@@ -18,7 +18,7 @@ public class TowerArea {
     /** adds a tower to the area */
     public void addTower(Tower t, int islandID){
         currentnumberoftowers ++;
-        realmintowerarea.addTowerToIsland(t, islandID);
+     //   realmintowerarea.addTowerToIsland(t, islandID);
     }
 
     /** removes a tower from the area */

@@ -35,4 +35,9 @@ public class ProfessorTable {
         return occupiedSeats.get(p);
     }
 
+
+    /** hashmap getter, useful for Tests */
+    public HashMap<Creature, Boolean> getOccupiedSeats() {
+        return occupiedSeats;
+    }
 }

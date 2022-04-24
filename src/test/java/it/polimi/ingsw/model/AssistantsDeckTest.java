@@ -17,7 +17,7 @@ class AssistantsDeckTest {
     @Test
     void getRemainingCardsNumber() {
         try {
-            AssistantsDeck x = new AssistantsDeck(Wizard.CLOUDS_WIZARD);
+            AssistantsDeck x = new AssistantsDeck(Wizard.CLOUDWITCH);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -28,7 +28,7 @@ class AssistantsDeckTest {
     @Test
     void getLastUsedCard() {
         try {
-            AssistantsDeck x = new AssistantsDeck(Wizard.CLOUDS_WIZARD);
+            AssistantsDeck x = new AssistantsDeck(Wizard.CLOUDWITCH);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

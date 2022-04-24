@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class Player {
 
     /** moves a tower to an island */
     public void moveToIsland() {
-        realm.addTowerToIsland(playerTowerColor);
+        playerRealm.addTowerToIsland(playerTowerColor);
     }
 
     /** adds a coin to the player */
@@ -56,7 +57,7 @@ public class Player {
     }
 
     /** creates the deck */
-    public AssistantsDeck choosedeck (Wizard wizard){
+    public AssistantsDeck choosedeck (Wizard wizard) throws FileNotFoundException {
         this.playerAssistantsDeck = new AssistantsDeck(wizard);
         return this.playerAssistantsDeck;
     }

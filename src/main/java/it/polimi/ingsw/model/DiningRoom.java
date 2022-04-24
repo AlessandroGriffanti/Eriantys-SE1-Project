@@ -25,8 +25,22 @@ public class DiningRoom {
     }
 
     /** removes a student from the diningRoom */
-    public void removeStudent(Creature s){
-        occupiedSeats.replace(s, occupiedSeats.get(s).intValue()-1);
+    /* public void removeStudent(Creature s){
+        try {
+            if ((occupiedSeats.get(s) >= 1)) {
+                occupiedSeats.replace(s, occupiedSeats.get(s).intValue() - 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+    /** removes a student from the diningRoom */
+    public void removeStudent(Creature s) throws Exception {
+        if ((occupiedSeats.get(s) >= 1)) {
+            occupiedSeats.replace(s, occupiedSeats.get(s).intValue() - 1);
+        } else {
+            throw new Exception();
+        }
     }
 
     /** set the reference to the coinmanagerobserver */
@@ -38,7 +52,7 @@ public class DiningRoom {
         this.entrance = d;
     }
 
-
+    /** returns the hashmap in the diningroom attribute: useful for tests */
     public HashMap<Creature, Integer> getOccupiedSeats() {
         return occupiedSeats;
     }

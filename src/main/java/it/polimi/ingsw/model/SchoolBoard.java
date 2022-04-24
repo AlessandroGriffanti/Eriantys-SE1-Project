@@ -11,7 +11,7 @@ public class SchoolBoard {
     public SchoolBoard(int numplayers, Realm r, Tower t){
         towerArea = new TowerArea(numplayers, r, t);
         diningRoom = new DiningRoom();
-        entrance = new Entrance(r);
+        entrance = new Entrance(diningRoom, r);
         professorTable = new ProfessorTable();
     }
 
