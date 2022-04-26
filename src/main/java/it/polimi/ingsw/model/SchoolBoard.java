@@ -8,8 +8,8 @@ public class SchoolBoard {
     private Entrance entrance;
     private ProfessorTable professorTable;
 
-    public SchoolBoard(int numplayers, Realm r, Tower t){
-        towerArea = new TowerArea(numplayers, r, t);
+    public SchoolBoard(int numplayers, Realm r){
+        towerArea = new TowerArea(numplayers);
         diningRoom = new DiningRoom();
         entrance = new Entrance(diningRoom, r);
         professorTable = new ProfessorTable();
@@ -30,8 +30,19 @@ public class SchoolBoard {
         this.diningRoom.setCoinObserver(c);
     }
 
-    public void removetower(){
-        towerArea.removeTower();
+
+
+    public ProfessorTable getProfessorTable() {
+        return professorTable;
     }
+
+    public void takeTowers(int numberoftowers){
+        towerArea.removeTower(numberoftowers);
+    }
+
+    public void putTowers(int numberoftowers){
+        towerArea.addTower(numberoftowers);
+        }
+
 
 }
