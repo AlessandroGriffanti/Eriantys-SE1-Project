@@ -49,15 +49,11 @@ public class Bag {
     }
 
     public ArrayList<Creature> getStudentsIslandSetUp() {
-        ArrayList<Creature> returnArraySetUp = new ArrayList<Creature>();
-        returnArraySetUp.addAll(studentsIslandSetUp);
-        return returnArraySetUp;
+        return studentsIslandSetUp;
     }
 
     public ArrayList<Creature> getRemainingStudents() {
-        ArrayList<Creature> returnArrayRemainingStudents = new ArrayList<Creature>();
-        returnArrayRemainingStudents.addAll(remainingStudents);
-        return returnArrayRemainingStudents;
+        return remainingStudents;
     }
 
     public int getNumberOfRemainingStudents() {
