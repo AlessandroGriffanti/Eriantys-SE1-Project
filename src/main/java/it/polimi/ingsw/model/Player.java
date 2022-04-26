@@ -62,5 +62,32 @@ public class Player {
         return this.playerAssistantsDeck;
     }
 
+    public SchoolBoard getPlayerSchoolBoard() {
+        return playerSchoolBoard;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    public AssistantsDeck getPlayerAssistantsDeck() {
+        return playerAssistantsDeck;
+    }
+
+    public Tower getPlayerTowerColor() {
+        return playerTowerColor;
+    }
+
+    public Realm getPlayerRealm() {
+        return playerRealm;
+    }
+
+    //ridefinire equals per controllare se due player hanno stesso nickname, gli passo come parametro un giocatore, mi torna
+    //un booleano
+
 
 }

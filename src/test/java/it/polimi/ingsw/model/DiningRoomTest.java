@@ -26,6 +26,7 @@ class DiningRoomTest {
         diningroom.setCoinObserver(c);
         diningroom.getOccupiedSeats().replace(Creature.DRAGON,2);
         diningroom.addStudent(Creature.DRAGON);
+        assertEquals(1, p.getCoinsOwned());
     }
 
 
