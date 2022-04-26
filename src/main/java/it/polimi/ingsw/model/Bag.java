@@ -49,11 +49,15 @@ public class Bag {
     }
 
     public ArrayList<Creature> getStudentsIslandSetUp() {
-        return studentsIslandSetUp;
+        ArrayList<Creature> returnArraySetUp = new ArrayList<Creature>();
+        returnArraySetUp.addAll(studentsIslandSetUp);
+        return returnArraySetUp;
     }
 
     public ArrayList<Creature> getRemainingStudents() {
-        return remainingStudents;
+        ArrayList<Creature> returnArrayRemainingStudents = new ArrayList<Creature>();
+        returnArrayRemainingStudents.addAll(remainingStudents);
+        return returnArrayRemainingStudents;
     }
 
     public int getNumberOfRemainingStudents() {
@@ -84,6 +88,22 @@ public class Bag {
         return caughtStudents;
     }
 
+    public ArrayList<Creature> drawSetUpStudents() {
+        ArrayList<Creature> caughtStudentsForSetup;
+        Random randomGenerator;
+        int randomIndex;
+        int i;
 
+        caughtStudentsForSetup = new ArrayList<Creature>();
+        randomGenerator = new Random();
+
+        for (i = 0; i < 10; i++) {
+            randomIndex = randomGenerator.nextInt(this.studentsIslandSetUp.size());
+            caughtStudentsForSetup.add(this.studentsIslandSetUp.get(randomIndex));
+            this.studentsIslandSetUp.remove(randomIndex);
+        }
+
+        return caughtStudentsForSetup;
+    }
 
 }
