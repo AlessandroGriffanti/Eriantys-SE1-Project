@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model;
 
-public class Character{
+public abstract class Character{
     public int price;
+    private Match match;
 
     public int getPrice() {
         return price;
@@ -11,8 +12,10 @@ public class Character{
         this.price = price;
     }
 
-    public void effect(){
+    public abstract void effect();
 
+    public Match getMatch() {
+        return match;
     }
 
 }

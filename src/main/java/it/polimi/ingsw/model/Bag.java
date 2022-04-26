@@ -48,6 +48,10 @@ public class Bag {
 
     }
 
+    public void AddStudentToBag (Creature studentToPutInTheBag){
+        this.remainingStudents.add(studentToPutInTheBag);
+    }
+
     public ArrayList<Creature> getStudentsIslandSetUp() {
         return studentsIslandSetUp;
     }
@@ -66,16 +70,16 @@ public class Bag {
         return bagCreated;
     }
 
-    public ArrayList<Creature> drawStudents(int numberToDraw){
+    public ArrayList<Creature> drawStudents(int numberOfStudentsToDraw){
         ArrayList<Creature> caughtStudents;
         Random randomGenerator;
         int randomIndex;
         int i;
 
-        caughtStudents = new ArrayList<Creature>(numberToDraw);
+        caughtStudents = new ArrayList<Creature>(numberOfStudentsToDraw);
         randomGenerator = new Random();
 
-        for(i = 0; i < numberToDraw; i++) {
+        for(i = 0; i < numberOfStudentsToDraw; i++) {
             randomIndex = randomGenerator.nextInt(this.remainingStudents.size());
             caughtStudents.add(this.remainingStudents.get(randomIndex));
             this.remainingStudents.remove(randomIndex);

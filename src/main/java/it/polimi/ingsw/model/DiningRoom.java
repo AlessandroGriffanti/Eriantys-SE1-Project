@@ -18,7 +18,7 @@ public class DiningRoom {
 
     /** adds a student to the diningroom */
     public void addStudent(Creature s){
-        occupiedSeats.replace(s, occupiedSeats.get(s).intValue()+1);
+        occupiedSeats.replace(s, occupiedSeats.get(s).intValue() + 1);
         if ((occupiedSeats.get(s)) % 3 == 0) {
             coinObserver.depositCoin();
         }
@@ -34,6 +34,7 @@ public class DiningRoom {
             e.printStackTrace();
         }
     }*/
+
     /** removes a student from the diningRoom */
     public void removeStudent(Creature s) throws Exception {
         if ((occupiedSeats.get(s) >= 1)) {
