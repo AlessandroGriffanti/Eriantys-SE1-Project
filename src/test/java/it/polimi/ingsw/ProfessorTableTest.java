@@ -1,8 +1,9 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw;
 
-import org.junit.Assert;
+import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.ProfessorTable;
 import org.junit.jupiter.api.Test;
-import it.polimi.ingsw.model.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
