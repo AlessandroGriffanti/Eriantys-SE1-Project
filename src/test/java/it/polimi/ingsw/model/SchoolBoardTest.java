@@ -8,7 +8,7 @@ class SchoolBoardTest {
 
     @Test
     void getControlledProfessors() {
-        SchoolBoard schoolBoard = new SchoolBoard(3, new Realm(3, new Bag()), Tower.BLACK);
+        SchoolBoard schoolBoard = new SchoolBoard(3, new Realm(3, new Bag()));
         schoolBoard.getProfessorTable().addProfessor(Creature.DRAGON);
         assertTrue(schoolBoard.getControlledProfessors().contains(Creature.DRAGON));
     }
@@ -17,7 +17,5 @@ class SchoolBoardTest {
     void setCoinManager() {
     }
 
-    @Test
-    void removetower() {
-    }
+
 }
