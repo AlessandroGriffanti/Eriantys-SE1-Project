@@ -1,10 +1,12 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw;
 
+import it.polimi.ingsw.model.Assistant;
+import it.polimi.ingsw.model.AssistantsDeck;
+import it.polimi.ingsw.model.Wizard;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AssistantsDeckTest {

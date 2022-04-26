@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.characterCards.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class CharactersManager {

@@ -1,9 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw;
 
-import org.junit.jupiter.api.Assertions;
+import it.polimi.ingsw.model.Bag;
+import it.polimi.ingsw.model.Realm;
+import it.polimi.ingsw.model.Tower;
+import it.polimi.ingsw.model.TowerArea;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.Assert.assertEquals;
 
 class TowerAreaTest {
