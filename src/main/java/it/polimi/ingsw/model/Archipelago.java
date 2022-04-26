@@ -142,11 +142,11 @@ public class Archipelago {
     public void setMasterOfArchipelago(Player p){
         if(masterOfArchipelago == null){
             masterOfArchipelago = p;
-            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
+            masterOfArchipelago.getPlayerSchoolBoard().takeTowers(this.numberOfIslands);
         }else if (!masterOfArchipelago.equals(p)){
-            masterOfArchipelago.getSchoolBoard().putTowers(this.numberOfIslands);
+            masterOfArchipelago.getPlayerSchoolBoard().putTowers(this.numberOfIslands);
             masterOfArchipelago = p;
-            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
+            masterOfArchipelago.getPlayerSchoolBoard().takeTowers(this.numberOfIslands);
         }
 
         setTowerColor();
