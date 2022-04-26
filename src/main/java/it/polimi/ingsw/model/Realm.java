@@ -20,8 +20,6 @@ public class Realm{
      */
     private final ArrayList<CloudTile> cloudRegion;
 
-    private int constructorCnt;
-
     /**
      * Constructor of Realm: it creates islands and clouds, positions motherNature and puts one
      * student on each island
@@ -53,8 +51,6 @@ public class Realm{
             archipelagos.get(k).addStudent(c);
             k++;
         }
-
-        constructorCnt++; //maybe we could avoid it
     }
 
     /**
@@ -107,19 +103,11 @@ public class Realm{
         archipelagos.get(positionOfMotherNature).addStudent(c);
     }
 
-    /*
-    public void addTowerToIsland(Tower towerColor){
-    //@TODO
-    //must be deleted if we keep the solution with the Archipelago's master (next method)
-    }
-    */
-
     /**
      * Tells the current archipelago to set the master
      * @param p reference to the Player with the highest influence over the archipelago
      */
     public void setMasterOfCurrentArchipelago(Player p){
-        //@TODO: add to UML
         archipelagos.get(positionOfMotherNature).setMasterOfArchipelago(p);
     }
 

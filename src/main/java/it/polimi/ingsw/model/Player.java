@@ -18,15 +18,7 @@ public class Player {
         this.playerRealm = r;
 
     }
-    /** removes the tower from the tower area */
-    public void movetower(){
-        playerSchoolBoard.removetower();
-    }
 
-    /** moves a tower to an island */
-    public void moveToIsland() {
-        playerRealm.addTowerToIsland(playerTowerColor);
-    }
 
     /** adds a coin to the player */
     public void earnCoin(){
@@ -61,6 +53,7 @@ public class Player {
         return this.playerAssistantsDeck;
     }
 
+    /** through this method we move the tower from and to island */
     public SchoolBoard getPlayerSchoolBoard() {
         return playerSchoolBoard;
     }
