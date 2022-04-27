@@ -8,8 +8,8 @@ public class SchoolBoard {
     private Entrance entrance;
     private ProfessorTable professorTable;
 
-    public SchoolBoard(int numplayers, Realm r){
-        towerArea = new TowerArea(numplayers);
+    public SchoolBoard(int numPlayers, Realm r){
+        towerArea = new TowerArea(numPlayers);
         diningRoom = new DiningRoom();
         entrance = new Entrance(diningRoom, r);
         professorTable = new ProfessorTable();
@@ -17,13 +17,13 @@ public class SchoolBoard {
 
     /** returns an arraylist of the controlled professors */
     public ArrayList<Creature> getControlledProfessors() {
-        ArrayList<Creature> controlledprofessorslist = new ArrayList<>();
+        ArrayList<Creature> controlledProfessorsList = new ArrayList<>();
         for (Creature c : Creature.values()) {
             if(professorTable.isOccupied(c)) {
-                controlledprofessorslist.add(c);
+                controlledProfessorsList.add(c);
             }
         }
-        return controlledprofessorslist;
+        return controlledProfessorsList;
     }
 
     public void setCoinManager(CoinManagerObserver c){
@@ -31,6 +31,7 @@ public class SchoolBoard {
     }
 
 
+    public TowerArea getTowerArea(){return towerArea;}
 
     public ProfessorTable getProfessorTable() {
         return professorTable;
