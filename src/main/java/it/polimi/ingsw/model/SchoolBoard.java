@@ -37,17 +37,13 @@ public class SchoolBoard {
         return professorTable;
     }
 
-    public void takeTowers(int numberoftowers){
-        towerArea.removeTower(numberoftowers);
+    public void takeTowers(int numberOfTowers){
+        towerArea.removeTower(numberOfTowers);
     }
 
-    public void putTowers(int numberoftowers){
-        towerArea.addTower(numberoftowers);
+    public void putTowers(int numberOfTowers){
+        towerArea.addTower(numberOfTowers);
         }
-
-    public TowerArea getTowerArea() {
-        return towerArea;
-    }
 
     public DiningRoom getDiningRoom() {
         return diningRoom;
