@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SchoolBoard {
@@ -7,15 +8,33 @@ public class SchoolBoard {
     private DiningRoom diningRoom;
     private Entrance entrance;
     private ProfessorTable professorTable;
+    private Bag bagForInitialSetUp;
 
     public SchoolBoard(int numPlayers, Realm r){
+//TODO: we need to initialize also the bagForInitialSetUp, SchoolBoard must receive the reference to the bag
         towerArea = new TowerArea(numPlayers);
         diningRoom = new DiningRoom();
         entrance = new Entrance(diningRoom, r);
         professorTable = new ProfessorTable();
     }
 
-    /** returns an arraylist of the controlled professors */
+    /**
+     * Sets up the 7 initial students in the entrance
+     */
+    public void initialSetUpStudentsInTheEntrance(){
+        ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
+        studentsSetUpEntrance = bagForInitialSetUp.drawStudents(7);
+
+        ArrayList<Creature> s = entrance.getStudentsInTheEntrance();
+        for(Creature c: studentsSetUpEntrance){
+            s.add(c);
+        }
+    }
+
+    /**
+     * Finds which are the professors controlled by the Player
+     * @return the professors under the control of the player to whom the board(SchoolBoard) belongs
+     */
     public ArrayList<Creature> getControlledProfessors() {
         ArrayList<Creature> controlledProfessorsList = new ArrayList<>();
         for (Creature c : Creature.values()) {
@@ -29,7 +48,6 @@ public class SchoolBoard {
     public void setCoinManager(CoinManagerObserver c){
         this.diningRoom.setCoinObserver(c);
     }
-
 
     public TowerArea getTowerArea(){return towerArea;}
 
