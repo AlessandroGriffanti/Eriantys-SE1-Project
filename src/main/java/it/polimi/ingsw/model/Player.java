@@ -48,7 +48,7 @@ public class Player {
     }
 
     /** creates the deck */
-    public AssistantsDeck choosedeck (Wizard wizard) throws FileNotFoundException {
+    public AssistantsDeck chooseDeck (Wizard wizard) throws FileNotFoundException {
         this.playerAssistantsDeck = new AssistantsDeck(wizard);
         return this.playerAssistantsDeck;
     }
@@ -78,8 +78,10 @@ public class Player {
         return playerRealm;
     }
 
-    //ridefinire equals per controllare se due player hanno stesso nickname, gli passo come parametro un giocatore, mi torna
-    //un booleano
+    public boolean equals(Player p){
+        //TODO: add to UML
+        return this.nickName.equals(p.nickName);
+    }
 
 
 }
