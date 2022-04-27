@@ -45,5 +45,15 @@ public class SchoolBoard {
         towerArea.addTower(numberoftowers);
         }
 
+    public TowerArea getTowerArea() {
+        return towerArea;
+    }
 
+    public DiningRoom getDiningRoom() {
+        return diningRoom;
+    }
+
+    public Entrance getEntrance() {
+        return entrance;
+    }
 }
