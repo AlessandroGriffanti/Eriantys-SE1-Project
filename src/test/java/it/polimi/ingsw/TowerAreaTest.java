@@ -16,20 +16,20 @@ class TowerAreaTest {
 
     @Test
     void removeTowerWith2Players() {
-        TowerArea towerArea = new TowerArea(2, new Realm(2, new Bag()), Tower.BLACK);
-        towerArea.removeTower();
-        assertEquals(7, towerArea.getCurrentnumberoftowers());
+        TowerArea towerArea = new TowerArea(2);
+        towerArea.removeTower(1);
+        assertEquals(7, towerArea.getCurrentNumberOfTowers());
     }
     @Test
     void removeTowerWith3Players() {
-        TowerArea towerArea = new TowerArea(3, new Realm(3, new Bag()), Tower.BLACK);
-        towerArea.removeTower();
-        assertEquals(5, towerArea.getCurrentnumberoftowers());
+        TowerArea towerArea = new TowerArea(3);
+        towerArea.removeTower(1);
+        assertEquals(5, towerArea.getCurrentNumberOfTowers());
     }
     @Test
     void removeTowerWith4Players() {
-        TowerArea towerArea = new TowerArea(4, new Realm(4, new Bag()), Tower.BLACK);
-        towerArea.removeTower();
-        assertEquals(7, towerArea.getCurrentnumberoftowers());
+        TowerArea towerArea = new TowerArea(4);
+        towerArea.removeTower(1);
+        assertEquals(7, towerArea.getCurrentNumberOfTowers());
     }
 }
