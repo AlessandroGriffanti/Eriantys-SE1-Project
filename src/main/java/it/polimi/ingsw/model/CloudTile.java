@@ -18,6 +18,7 @@ public class CloudTile {
      * This attribute is the list of students currently on the cloud
      */
     private ArrayList<Creature> students;
+
     /**
      * This attribute is the reference to the bag used in the match, it can be called to draw the
      * needed students
@@ -42,9 +43,25 @@ public class CloudTile {
         this.students = bag.drawStudents(capacity);
     }
 
+    public int getID() {
+        return ID;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public ArrayList<Creature> getStudents() {
+        ArrayList<Creature> returnArray= new ArrayList<Creature>();
+        for(Creature c: students){
+            returnArray.add(c);
+        }
+        return returnArray;
+    }
+
     /**
-     * Copies the "students" attribute into a new ArrayList and replace old students with new ones, drawn
-     * from the "bag"
+     * Copies the "students" attribute into a new ArrayList that will be returned and put new students,
+     * as many as the previous ones and drawn from the "bag", inside the array "students".
      * @return ArrayList of all students found on the cloud
      */
     public ArrayList<Creature> takeStudents(){

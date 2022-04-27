@@ -18,6 +18,7 @@ public class Archipelago {
      * This attribute is the number of no-entry-tiles currently on the archipelago
      */
     private int noEntryTiles;
+
     /**
      * This attribute is the color of the Towers currently on the archipelago, or 'null' if there is no
      * tower built on it
@@ -27,7 +28,7 @@ public class Archipelago {
      * This attribute is the player that currently has the higher influence
      * over the archipelago
      */
-    private Player masterOfArchipelago; //TODO: add to UML
+    private Player masterOfArchipelago;
     /**
      * This attribute is the population of students of each kind currently on the island
      */
@@ -61,6 +62,14 @@ public class Archipelago {
 
     public int getNoEntryTiles() {
         return noEntryTiles;
+    }
+
+    public Player getMasterOfArchipelago() {
+        return masterOfArchipelago;
+    }
+
+    public HashMap<Creature, Integer> getStudentsPopulation() {
+        return studentsPopulation;
     }
 
     /**
@@ -123,7 +132,7 @@ public class Archipelago {
      * Adds more than one no-entry-tile to the archipelago and increases noEntryTile accordingly
      * @param quantityToAdd number of no-entry-tile to add
      */
-    public void addNoEntryTile(int quantityToAdd){
+    public void addNoEntryTiles(int quantityToAdd){
         noEntryTiles += quantityToAdd;
     }
 

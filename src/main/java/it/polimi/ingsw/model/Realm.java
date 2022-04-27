@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -46,12 +47,34 @@ public class Realm{
 
         // put one student on each island(Archipelago)
         ArrayList<Creature> setUpStudents = bag.drawSetUpStudents();
-        int k = positionOfMotherNature+1;
+        int k = (positionOfMotherNature+1) % 12;
         for(Creature c: setUpStudents){
-            archipelagos.get(k).addStudent(c);
-            k++;
+            if(k != (positionOfMotherNature+6)%12){
+                archipelagos.get(k).addStudent(c);
+            }
+            k = (k+1)%12;
         }
     }
+
+    public ArrayList<Archipelago> getArchipelagos(){
+        ArrayList<Archipelago> returnArray = new ArrayList<Archipelago>();
+        for(Archipelago a: archipelagos){
+            returnArray.add(a);
+        }
+
+        return returnArray;
+    }
+
+    public ArrayList<CloudTile> getCloudRegion(){
+        ArrayList<CloudTile> returnArray = new ArrayList<CloudTile>();
+        for(CloudTile c: cloudRegion){
+            returnArray.add(c);
+        }
+
+        return returnArray;
+    }
+
+    public int getPositionOfMotherNature(){return positionOfMotherNature;}
 
     /**
      * Unifies two groups of islands together, updating the attributes of the first (a1) one passed as
@@ -71,7 +94,7 @@ public class Realm{
         a1.addIslands(a2.getNumberOfIslands());
 
         //update noEntryTiles in a1
-        a1.addNoEntryTile(a2.getNoEntryTiles());
+        a1.addNoEntryTiles(a2.getNoEntryTiles());
 
         //update studentsPopulation in a1
         for(Creature c: Creature.values()){
@@ -112,11 +135,20 @@ public class Realm{
     }
 
     /**
-     * Moves mother nature by given steps
+     * Moves mother nature by given steps, paying attention to the fact that there could be some positions
+     * inside the ArrayList archipelagos that are null pointer; the next position of mother nature will
+     * certainly correspond to a non-null element of the array archipelagos.
      * @param steps number of steps motherNature will take
      */
     public void moveMotherNature(int steps){
-        positionOfMotherNature = (positionOfMotherNature + steps)%12;
+        int i = 1;
+        while(steps > 0){
+            if(archipelagos.get((positionOfMotherNature+i)%12) != null){
+                steps--;
+            }
+            i++;
+        }
+        positionOfMotherNature = (positionOfMotherNature + (i-1)) % 12;
     }
 
 }
