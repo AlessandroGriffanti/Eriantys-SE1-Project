@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Entrance {
     private ArrayList<Creature> studentsInTheEntrance;
-    private DiningRoom doorTotheDiningRoom;
+    private DiningRoom doorToTheDiningRoom;
     private Realm realminentrance;
 
     public Entrance(DiningRoom d, Realm r){
         studentsInTheEntrance = new ArrayList<>();
-        this.doorTotheDiningRoom = d;
+        this.doorToTheDiningRoom = d;
         this.realminentrance = r;
     }
 
@@ -26,24 +26,30 @@ public class Entrance {
 
     /** moves a student to the diningroom and removes it from the entrance  */
     public void moveStudent(int index){
-        doorTotheDiningRoom.addStudent(studentsInTheEntrance.get(index));
-        Creature creatureremoved = studentsInTheEntrance.get(index);
-        studentsInTheEntrance.remove(creatureremoved);
+        doorToTheDiningRoom.addStudent(studentsInTheEntrance.get(index));
+        Creature creatureRemoved = studentsInTheEntrance.get(index);
+        studentsInTheEntrance.remove(creatureRemoved);
 
     }
 
-    /** moves a student to an island */
+    /** moves a student to an island and removes it from the entrance */
     public void moveStudentsToIsland(int index, int islandID){
-        realminentrance.addStudentToIsland(studentsInTheEntrance.get(index));
+        realminentrance.addStudentToIsland(studentsInTheEntrance.get(index), islandID);
+        Creature creatureRemoved = studentsInTheEntrance.get(index);
+        studentsInTheEntrance.remove(creatureRemoved);
     }
 
     /** useful for tests */
     public ArrayList<Creature> getStudentsInTheEntrance() {
         return studentsInTheEntrance;
     }
+
     /** useful for tests */
-    public DiningRoom getDoorTotheDiningRoom() {
-        return doorTotheDiningRoom;
+    public DiningRoom getDoorToTheDiningRoom() {
+        return doorToTheDiningRoom;
     }
 
+    public Realm getRealminentrance() {
+        return realminentrance;
+    }
 }

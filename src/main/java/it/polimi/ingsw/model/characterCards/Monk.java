@@ -4,4 +4,8 @@ import it.polimi.ingsw.model.Character;
 
 public class Monk  extends Character {
 
+    public void effect() {
+
+    }
+
 }

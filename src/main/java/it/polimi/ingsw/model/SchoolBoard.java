@@ -11,11 +11,11 @@ public class SchoolBoard {
     private Bag bagForInitialSetUp;
 
     public SchoolBoard(int numPlayers, Realm r){
-//TODO: we need to initialize also the bagForInitialSetUp, SchoolBoard must receive the reference to the bag
-        towerArea = new TowerArea(numPlayers);
-        diningRoom = new DiningRoom();
-        entrance = new Entrance(diningRoom, r);
-        professorTable = new ProfessorTable();
+        this.towerArea = new TowerArea(numPlayers);
+        this.diningRoom = new DiningRoom();
+        this.entrance = new Entrance(diningRoom, r);
+        this.professorTable = new ProfessorTable();
+        this.bagForInitialSetUp = r.getBag();
     }
 
     /**
@@ -45,15 +45,9 @@ public class SchoolBoard {
         return controlledProfessorsList;
     }
 
-    public void setCoinManager(CoinManagerObserver c){
-        this.diningRoom.setCoinObserver(c);
-    }
-
-    public TowerArea getTowerArea(){return towerArea;}
-
-    public ProfessorTable getProfessorTable() {
-        return professorTable;
-    }
+    /** We use the 2 following methods to add and remove towers from and to the islands, in particular they are used
+        in the Archipelago class in the setMasterOfArchipelago method, where the player with the highest influence
+        over the archipelago (or island) changes and we need to substitute multiple towers */
 
     public void takeTowers(int numberOfTowers){
         towerArea.removeTower(numberOfTowers);
@@ -61,7 +55,21 @@ public class SchoolBoard {
 
     public void putTowers(int numberOfTowers){
         towerArea.addTower(numberOfTowers);
-        }
+    }
+
+
+    public void setCoinManager(CoinManagerObserver c){
+        this.diningRoom.setCoinObserver(c);
+    }
+
+    public TowerArea getTowerArea(){
+        return towerArea;
+    }
+
+    public ProfessorTable getProfessorTable() {
+        return professorTable;
+    }
+
 
     public DiningRoom getDiningRoom() {
         return diningRoom;
@@ -70,4 +78,5 @@ public class SchoolBoard {
     public Entrance getEntrance() {
         return entrance;
     }
+
 }

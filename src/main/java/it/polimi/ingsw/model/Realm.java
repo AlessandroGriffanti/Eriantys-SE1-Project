@@ -21,15 +21,20 @@ public class Realm{
      */
     private final ArrayList<CloudTile> cloudRegion;
 
+    private Bag bag;
+
     /**
      * Constructor of Realm: it creates islands and clouds, positions motherNature and puts one
      * student on each island
      * @param numberOfPlayers number of Players
      * @param bag reference to the Bag used in the match
      */
+
     public Realm(int numberOfPlayers, Bag bag){
         archipelagos = new ArrayList<Archipelago>();
         cloudRegion = new ArrayList<CloudTile>();
+        this.bag = bag;
+
 
         //clouds creation
         for(int i =0; i<numberOfPlayers; i++){
@@ -122,8 +127,8 @@ public class Realm{
      * Tells to the current Archipelago (where motherNature stands) to add a student to its population
      * @param c the kind of student that will be added to the current Archipelago
      */
-    public void addStudentToIsland(Creature c){
-        archipelagos.get(positionOfMotherNature).addStudent(c);
+    public void addStudentToIsland(Creature c, int IslandID){
+        archipelagos.get(IslandID).addStudent(c);
     }
 
     /**
@@ -149,6 +154,10 @@ public class Realm{
             i++;
         }
         positionOfMotherNature = (positionOfMotherNature + (i-1)) % 12;
+    }
+
+    public Bag getBag() {
+        return bag;
     }
 
 }

@@ -17,6 +17,8 @@ public class Player {
         this.playerID = id;
         this.playerRealm = r;
 
+        this.playerSchoolBoard = new SchoolBoard(numplayers, r);
+
     }
 
 

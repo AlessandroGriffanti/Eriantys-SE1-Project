@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProfessorTableTest {
 
+    /** adding one professor of each type and checking if it is truly updated to 'true' the corresponding value in the hashmap */
     @Test
     void addProfessor() {
         ProfessorTable professorTable = new ProfessorTable();
@@ -18,6 +19,7 @@ class ProfessorTableTest {
         }
     }
 
+    /** removing one professor of each type and checking if it is truly updated to 'true' the corresponding value in the hashmap */
     @Test
     void removeProfessor() {
         ProfessorTable professorTable = new ProfessorTable();
@@ -30,6 +32,7 @@ class ProfessorTableTest {
         }
     }
 
+    /** checking if isOccupied correctly returns true or false according to the presence of the professor */
     @Test
     void isOccupied() {
         ProfessorTable professorTable = new ProfessorTable();

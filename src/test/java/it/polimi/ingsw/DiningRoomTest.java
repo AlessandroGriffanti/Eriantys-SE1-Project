@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DiningRoomTest {
 
+    /** checking if the add method correctly adds one type of each student */
     @Test
     void addingOneTypeofEachStudent() {
         DiningRoom diningroom = new DiningRoom();
@@ -18,6 +19,8 @@ class DiningRoomTest {
             assertEquals(1, diningroom.getOccupiedSeats().get(c).intValue());
         }
     }
+
+    /** checking if adding a third Dragon student correctly grants a coin the player through the CoinManagerObserver */
     @Test
     void adding3DragonTogetACoin() {
         DiningRoom diningroom = new DiningRoom();
@@ -30,6 +33,7 @@ class DiningRoomTest {
     }
 
 
+    /** checking if the removeStudent method correctly removes the students */
     @Test
     void removeOneTypeOfEachStudent() {
         DiningRoom diningRoom = new DiningRoom();
@@ -44,6 +48,8 @@ class DiningRoomTest {
 
         }
     }
+
+    /** checks if it is correctly removed a dragon type student */
     @Test
     void removeOneDragon (){
         DiningRoom diningRoom = new DiningRoom();
@@ -55,6 +61,8 @@ class DiningRoomTest {
             e.printStackTrace();
         }
     }
+
+    /** checking if the removeStudent method correctly throws an exception when the number of the student we'd like to remove is 0 */
     @Test
     void removeANonExistentStudent() {
         DiningRoom diningRoom = new DiningRoom();
@@ -62,12 +70,6 @@ class DiningRoomTest {
                 ()-> {
                     diningRoom.removeStudent(Creature.DRAGON);
                 });
-    }
-
-
-
-    @Test
-    void setCoinObserver() {
     }
 
     @Test
