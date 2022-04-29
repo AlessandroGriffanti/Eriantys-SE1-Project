@@ -140,7 +140,9 @@ public class Archipelago {
      * Removes one single no-entry-tile from the archipelago and decreases noEntryTile by 1
      */
     public void removeNoEntryTile(){
-        noEntryTiles --;
+        if(noEntryTiles > 0){
+            noEntryTiles --;
+        }
     }
 
     /**

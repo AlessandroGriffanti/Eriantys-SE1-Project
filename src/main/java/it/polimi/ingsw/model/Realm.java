@@ -20,7 +20,9 @@ public class Realm{
      * This attribute is the list of references to all the clouds in the realm
      */
     private final ArrayList<CloudTile> cloudRegion;
-
+    /**
+     *This attribute
+     */
     private Bag bag;
 
     /**
@@ -29,12 +31,10 @@ public class Realm{
      * @param numberOfPlayers number of Players
      * @param bag reference to the Bag used in the match
      */
-
     public Realm(int numberOfPlayers, Bag bag){
         archipelagos = new ArrayList<Archipelago>();
         cloudRegion = new ArrayList<CloudTile>();
         this.bag = bag;
-
 
         //clouds creation
         for(int i =0; i<numberOfPlayers; i++){
@@ -59,6 +59,10 @@ public class Realm{
             }
             k = (k+1)%12;
         }
+    }
+
+    public Bag getBag(){
+        return bag;
     }
 
     public ArrayList<Archipelago> getArchipelagos(){
@@ -127,8 +131,8 @@ public class Realm{
      * Tells to the current Archipelago (where motherNature stands) to add a student to its population
      * @param c the kind of student that will be added to the current Archipelago
      */
-    public void addStudentToIsland(Creature c, int IslandID){
-        archipelagos.get(IslandID).addStudent(c);
+    public void addStudentToIsland(Creature c, int islandID){
+        archipelagos.get(islandID).addStudent(c);
     }
 
     /**
@@ -154,10 +158,8 @@ public class Realm{
             i++;
         }
         positionOfMotherNature = (positionOfMotherNature + (i-1)) % 12;
-    }
-
-    public Bag getBag() {
-        return bag;
+        //If there is one or more noEntry-tiles on this current archipelago, then one of theme will be removed
+        archipelagos.get(positionOfMotherNature).removeNoEntryTile();
     }
 
 }
