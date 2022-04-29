@@ -13,7 +13,7 @@ public class Cook  extends Character {
     public void effect() {
 
     }
-
+    //TODO: confronto dei professori ANCORA da fare
     public void effect(int indexOfPlayer){
         //confronto dei professori ANCORA da fare
     }

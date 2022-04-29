@@ -96,6 +96,23 @@ public class Bag {
         return caughtStudents;
     }
 
+
+    public Creature drawOneStudents(){
+        Creature caughtStudent;
+        Random randomGenerator;
+        int randomIndex;
+        int i;
+
+        randomGenerator = new Random();
+
+        randomIndex = randomGenerator.nextInt(this.remainingStudents.size());
+        caughtStudent = this.remainingStudents.get(randomIndex);
+        this.remainingStudents.remove(randomIndex);
+
+        return caughtStudent;
+    }
+
+
     public ArrayList<Creature> drawSetUpStudents() {
         ArrayList<Creature> caughtStudentsForSetup;
         Random randomGenerator;
