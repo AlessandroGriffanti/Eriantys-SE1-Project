@@ -22,8 +22,7 @@ public class Monk  extends Character {
      */
 
     public void setUpEffect() {
-        ArrayList<Creature> studentsOnMonk;
-        studentsOnMonk = getMatch().getBagOfTheMatch().drawStudents(4);
+        this.studentsOnMonk = getMatch().getBagOfTheMatch().drawStudents(4);
     }
 
 
