@@ -1,58 +1,98 @@
 package it.polimi.ingsw.model;
 
+import java.net.URL;
+import java.nio.Buffer;
 import java.util.HashMap;
 import java.io.*;
 import java.util.Scanner;
 
 public class AssistantsDeck {
-    private HashMap<Integer, Assistant> deck;
-    private Assistant lastUsedCard;                 //last one from waste stack
+    /**
+     * This attribute is the deck of the player, composed by ten different cards
+     * (Assistant); each card correspond to a unique key which is its order-value,
+     * visible on the top left of the card.
+     */
+    private final HashMap<Integer, Assistant> deck;
+    /**
+     * This attribute is the last card that the player used; this is the same
+     * card at the top of the already-used-card deck on the table game
+     */
+    private Assistant lastUsedCard = null;
+    /**
+     * This attribute is the factor that unites all the cards in the same deck, that is
+     * the back figure of each card.
+     */
     private Wizard wizard;
-    private int remainingCardsNumber;
+    /**
+     * This attribute is the number of cards that can still be played by the player
+     */
+    private int numberOfRemainingCards;
 
-    /*
-    public showCard(int orderValue) {
+
+    public AssistantsDeck (Wizard wizard){
+        this.wizard = wizard;
+        this.deck = new HashMap<Integer, Assistant>();
+        this.numberOfRemainingCards = 10;
+        int i, x;
+        File fileText = null;
+        Scanner scanner = null;
+
+        try{
+            fileText = new File("assistantList.txt");
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+        try {
+            assert fileText != null;
+            scanner = new Scanner(fileText);
+        }catch (FileNotFoundException e){
+            System.out.println("ERROR: File assistantList NOT found");
+            e.printStackTrace();
+        }
+
+        for(i = 0; i < 10; i++) {
+
+            assert scanner != null;
+            x = scanner.nextInt();
+            this.deck.put( x, new Assistant(x, scanner.nextInt() ) );
+
+        }
+        scanner.close();
     }
-    */
 
-
-    public Assistant useCard(int orderValue) {
-        Assistant x;
-
-        x = this.deck.get(orderValue);
-        this.deck.remove(orderValue);
-        this.lastUsedCard = x;
-        this.remainingCardsNumber = getRemainingCardsNumber() - 1;
-
-        return x;
+    public HashMap<Integer, Assistant> getDeck(){
+        return deck;
     }
 
-
-    public int getRemainingCardsNumber() {
-        return remainingCardsNumber;
+    public int getNumberOfRemainingCards() {
+        return numberOfRemainingCards;
     }
-
 
     public Assistant getLastUsedCard() {
         return lastUsedCard;
     }
 
+    /**
+     * This method take the used card, remove it from the deck, decreasing the number
+     * of cards still available, and lastly set it as the lastUsedCard
+     * @param orderValue the key used to access the deck
+     * @return the card that has been used
+     */
+    public Assistant useCard(int orderValue) {
+        Assistant card;
 
-    public AssistantsDeck (Wizard wizard) throws FileNotFoundException {
-        this.wizard = wizard;
-        this.deck = new HashMap<Integer, Assistant>();
-        this.remainingCardsNumber = 10;
-        int i, x;
+        card = this.deck.get(orderValue);
 
-        File fileText = new File("assistantlist.txt");
-        Scanner s = new Scanner(fileText);
-
-        for(i = 0; i < 10; i++) {
-            x = s.nextInt();
-            this.deck.put( x, new Assistant(x, s.nextInt() ) );
+        //If the card has already been used we return null
+        if(card == null){
+            return null;
         }
 
-        s.close();
-    }
+        this.deck.remove(orderValue);
+        this.lastUsedCard = card;
+        this.numberOfRemainingCards = getNumberOfRemainingCards() - 1;
 
+        return card;
+    }
 }
