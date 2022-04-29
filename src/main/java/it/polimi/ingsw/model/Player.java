@@ -18,8 +18,6 @@ public class Player {
         this.realm = r;
 
         this.playerSchoolBoard = new SchoolBoard(numPlayers, r);
-
-        playerSchoolBoard = new SchoolBoard(numPlayers, r);
     }
 
 

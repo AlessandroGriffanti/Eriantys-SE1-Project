@@ -52,7 +52,7 @@ class SchoolBoardTest {
 
         realm.getArchipelagos().get(1).setMasterOfArchipelago(p1);
 
-        p1.getPlayerRealm().unifyArchipelago(0,1);
+        p1.getRealm().unifyArchipelago(0,1);
         assertEquals(6, p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
 
         realm.getArchipelagos().get(0).setMasterOfArchipelago(p2);

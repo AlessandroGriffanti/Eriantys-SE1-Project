@@ -9,6 +9,7 @@ public class SchoolBoard {
     private Entrance entrance;
     private ProfessorTable professorTable;
     private Bag bagForInitialSetUp;
+    private int numOfPlayers;
 
     public SchoolBoard(int numPlayers, Realm r){
         this.towerArea = new TowerArea(numPlayers);
@@ -16,6 +17,7 @@ public class SchoolBoard {
         this.entrance = new Entrance(diningRoom, r);
         this.professorTable = new ProfessorTable();
         this.bagForInitialSetUp = r.getBag();
+        this.numOfPlayers = numPlayers;
     }
 
     /**
@@ -23,7 +25,12 @@ public class SchoolBoard {
      */
     public void initialSetUpStudentsInTheEntrance(){
         ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
-        studentsSetUpEntrance = bagForInitialSetUp.drawStudents(7);
+
+        if(numOfPlayers == 3){
+            studentsSetUpEntrance = bagForInitialSetUp.drawStudents(9);
+        }else if(numOfPlayers == 2 || numOfPlayers == 4){
+            studentsSetUpEntrance = bagForInitialSetUp.drawStudents(7);
+        }
 
         ArrayList<Creature> s = entrance.getStudentsInTheEntrance();
         for(Creature c: studentsSetUpEntrance){
@@ -47,7 +54,7 @@ public class SchoolBoard {
 
     /** We use the 2 following methods to add and remove towers from and to the islands, in particular they are used
         in the Archipelago class in the setMasterOfArchipelago method, where the player with the highest influence
-        over the archipelago (or island) changes and we need to substitute multiple towers */
+        over the archipelago (or island) changes, and we need to substitute multiple towers */
 
     public void takeTowers(int numberOfTowers){
         towerArea.removeTower(numberOfTowers);
