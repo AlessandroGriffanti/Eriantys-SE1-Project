@@ -24,7 +24,7 @@ public class Entrance {
         studentsInTheEntrance.remove(s);
     }
 
-    /** moves a student to the diningroom and removes it from the entrance  */
+    /** moves a student to the diningRoom and removes it from the entrance  */
     public void moveStudent(int index){
         doorToTheDiningRoom.addStudent(studentsInTheEntrance.get(index));
         Creature creatureRemoved = studentsInTheEntrance.get(index);
@@ -49,7 +49,7 @@ public class Entrance {
         return doorToTheDiningRoom;
     }
 
-    public Realm getRealminentrance() {
+    public Realm getRealmInEntrance() {
         return realminentrance;
     }
 }

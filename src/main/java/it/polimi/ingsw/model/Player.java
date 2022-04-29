@@ -10,15 +10,16 @@ public class Player {
     private AssistantsDeck playerAssistantsDeck;
     private int coinsOwned;
     private Tower playerTowerColor;
-    private Realm playerRealm;
+    private Realm realm;
 
-    public Player(int id, String nickName, int numplayers, Realm r){
+    public Player(int id, String nickName, int numPlayers, Realm r){
         this.nickName = nickName;
         this.playerID = id;
-        this.playerRealm = r;
+        this.realm = r;
 
-        this.playerSchoolBoard = new SchoolBoard(numplayers, r);
+        this.playerSchoolBoard = new SchoolBoard(numPlayers, r);
 
+        playerSchoolBoard = new SchoolBoard(numPlayers, r);
     }
 
 
@@ -33,7 +34,7 @@ public class Player {
     }
 
     /** player's controlled professors */
-    public ArrayList<Creature> getMyProfessor(){
+    public ArrayList<Creature> getMyProfessors(){
         return playerSchoolBoard.getControlledProfessors();
     }
 
@@ -76,14 +77,11 @@ public class Player {
         return playerTowerColor;
     }
 
-    public Realm getPlayerRealm() {
-        return playerRealm;
+    public Realm getRealm() {
+        return realm;
     }
 
     public boolean equals(Player p){
-        //TODO: add to UML
         return this.nickName.equals(p.nickName);
     }
-
-
 }
