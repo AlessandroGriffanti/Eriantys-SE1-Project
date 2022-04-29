@@ -7,7 +7,8 @@ public class Centaur extends Character {
         this.price = 3;
     }
 
-    //CALCOLO DELL'INFLUENZA ANCORA MANCANTE
+    //TODO: il personaggio è ancora da fare poichè dobbiamo capire come fare con il calcolo dell'influenza, se usare controller o tenerla salvata
+    // CALCOLO DELL'INFLUENZA ANCORA MANCANTE
 
     @Override
     public void effect() {

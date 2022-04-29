@@ -12,14 +12,22 @@ public class DrugDealer extends Character {
     public void effect() {
     }
 
-    public void effect(int indexOfPlayer, Creature chosenCreature) throws Exception {
-        int numberOfStudentsOfTheChosenCreature;
+    /**
+     * effect method gets three students of a choosen type from the Dining room of every players, and add them back to the bag.
+     * If there aren't enought students of the choosen type, will be returned as many students as there are.
+     * @param chosenCreature type of student chosen
+     */
+    public void effect(Creature chosenCreature) throws Exception {
+        int numberOfStudentsOfTheChosenCreature; //number of students of the chosen creature type of the "current" (the one selected by the index) player
         int i;
+        int indexOfPlayer;
 
-        numberOfStudentsOfTheChosenCreature = getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().getOccupiedSeats().get(chosenCreature).intValue();
-        for(i = 0; i < numberOfStudentsOfTheChosenCreature; i++) {
-            getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(chosenCreature);
-            getMatch().getBagOfTheMatch().AddStudentToBag(chosenCreature);
+        for(indexOfPlayer = 0; indexOfPlayer < getMatch().getNumberOfPlayers(); indexOfPlayer++) {
+            numberOfStudentsOfTheChosenCreature = getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().getOccupiedSeats().get(chosenCreature).intValue();
+            for (i = 0; i < numberOfStudentsOfTheChosenCreature && i < 3; i++) {
+                getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(chosenCreature);
+                getMatch().getBagOfTheMatch().AddStudentToBag(chosenCreature);
+            }
         }
     }
 }
