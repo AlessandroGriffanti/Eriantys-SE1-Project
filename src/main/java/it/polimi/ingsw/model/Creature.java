@@ -5,5 +5,10 @@ public enum Creature {
     FAIRY,
     UNICORN,
     GNOME,
-    FROG;
+    FROG,
+    TRANSPARENT;
+
+    public void setCreature(Creature c){
+        c = TRANSPARENT;
+    }
 }

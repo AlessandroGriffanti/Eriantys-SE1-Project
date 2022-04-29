@@ -12,6 +12,8 @@ public abstract class Character{
         this.price = price;
     }
 
+    //public abstract void setUpEffect();
+
     public abstract void effect();
 
     public Match getMatch() {
