@@ -96,8 +96,7 @@ public class Realm{
 
         Archipelago a1 = archipelagos.get(ID_1);
         Archipelago a2 = archipelagos.get(ID_2);
-
-        //the idea is to set a2 to null and transfer all its attributes' values into a1
+        //The idea is to set a2 to null and transfer all its attributes' values into a1
 
         //update numberOfIslands in a1
         a1.addIslands(a2.getNumberOfIslands());
@@ -125,6 +124,16 @@ public class Realm{
         temp = currentCloud.takeStudents();
 
         return temp;
+    }
+
+    /**
+     * This method call each cloud belonging to the "cloudRegion" so that they can refill
+     * their population.
+     */
+    public void moveStudentsToClouds(){
+        for(CloudTile c : cloudRegion){
+            c.putStudents();
+        }
     }
 
     /**
@@ -161,11 +170,4 @@ public class Realm{
         //If there is one or more noEntry-tiles on this current archipelago, then one of theme will be removed
         archipelagos.get(positionOfMotherNature).removeNoEntryTile();
     }
-
-    public void moveStudentsToClouds(){
-        for(CloudTile c : cloudRegion){
-            c.putStudents();
-        }
-    }
-
 }
