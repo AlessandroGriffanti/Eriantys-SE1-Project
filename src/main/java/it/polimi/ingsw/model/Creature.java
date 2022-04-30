@@ -6,9 +6,9 @@ public enum Creature {
     UNICORN,
     GNOME,
     FROG,
-    TRANSPARENT;
+    //TRANSPARENT;
 
-    public void setCreature(Creature c){
+   /* public void setCreature(Creature c){
         c = TRANSPARENT;
-    }
+    } */
 }

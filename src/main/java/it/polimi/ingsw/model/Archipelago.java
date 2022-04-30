@@ -40,12 +40,12 @@ public class Archipelago {
         this.noEntryTiles = 0;
         this.masterOfArchipelago = null;
 
-        studentsPopulation = new HashMap<Creature, Integer>();
-        studentsPopulation.put(Creature.DRAGON, 0);
-        studentsPopulation.put(Creature.FAIRY, 0);
-        studentsPopulation.put(Creature.FROG, 0);
-        studentsPopulation.put(Creature.UNICORN, 0);
-        studentsPopulation.put(Creature.GNOME, 0);
+        this.studentsPopulation = new HashMap<Creature, Integer>();
+        this.studentsPopulation.put(Creature.DRAGON, 0);
+        this.studentsPopulation.put(Creature.FAIRY, 0);
+        this.studentsPopulation.put(Creature.FROG, 0);
+        this.studentsPopulation.put(Creature.UNICORN, 0);
+        this.studentsPopulation.put(Creature.GNOME, 0);
     }
 
     public Tower getTowerColor() {

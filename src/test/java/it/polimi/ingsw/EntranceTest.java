@@ -13,7 +13,8 @@ class EntranceTest {
     /** check if it correctly added a dragon type student to the entrance */
     @Test
     void addOneDragonToTheEntrance(){
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         entrance.addStudent(Creature.DRAGON);
         assertEquals(Creature.DRAGON, entrance.getStudentsInTheEntrance().get(0));
 
@@ -22,7 +23,8 @@ class EntranceTest {
     /** check if each type of student is correctly added to the entrance */
     @Test
     void AddOneTypeOfEachStudent(){
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         for (Creature c : Creature.values()){
             entrance.addStudent(c);
         }
@@ -37,7 +39,8 @@ class EntranceTest {
     /** check if it is correctly removed a dragon type student */
     @Test
     void removeADRAGONStudent() {
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         entrance.getStudentsInTheEntrance().add(Creature.DRAGON);
         entrance.removeStudent(Creature.DRAGON);
         assertTrue(entrance.getStudentsInTheEntrance().size() == 0);
@@ -46,7 +49,8 @@ class EntranceTest {
     /** check if a few students are correctly removed */
     @Test
     void removeAFewStudent(){
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         for(Creature c : Creature.values()){
             entrance.getStudentsInTheEntrance().add(c);
         }
@@ -59,7 +63,8 @@ class EntranceTest {
     /** Checks if it correctly moves a Dragon type student to the dining room from the entrance */
     @Test
     void moveADragonStudent() {
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         entrance.addStudent(Creature.DRAGON);
         entrance.moveStudent(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON));
         assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(Creature.DRAGON).intValue());
@@ -73,7 +78,8 @@ class EntranceTest {
      */
     @Test
     void moveStudentsToIsland() {
-        Entrance entrance = new Entrance(new DiningRoom(), new Realm(3, new Bag()));
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
         entrance.addStudent(Creature.DRAGON);
         entrance.addStudent(Creature.FAIRY);
 

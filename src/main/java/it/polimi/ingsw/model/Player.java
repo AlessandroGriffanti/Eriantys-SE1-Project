@@ -47,6 +47,7 @@ public class Player {
         return coinsOwned;
     }
 
+    /** used in CharactersManager in the useCharacter method */
     public void setCoinsOwned(int coinsOwned) {
         this.coinsOwned = coinsOwned;
     }

@@ -14,30 +14,35 @@ class DiningRoomTest {
     /** checking if the add method correctly adds one type of each student */
     @Test
     void addingOneTypeofEachStudent() {
-        DiningRoom diningroom = new DiningRoom();
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        DiningRoom diningroom = new DiningRoom(p);
         for (Creature c : Creature.values()){
             diningroom.addStudent(c);
             assertEquals(1, diningroom.getOccupiedSeats().get(c).intValue());
         }
     }
 
-    /** checking if adding a third Dragon student correctly grants a coin the player through the CoinManagerObserver */
+    /** checking if adding a third Dragon student correctly grants a coin the player through the CoinManagerObserver
+     * The AssertEquals checks if Player's coins are equal to 2 because the number of coin, in player's constructor, is initialized
+     * to 1
+     */
     @Test
     void adding3DragonTogetACoin() {
-        DiningRoom diningroom = new DiningRoom();
         Player p = new Player(1, "player", 3, new Realm(3, new Bag()));
-        CoinManagerObserver c = new CoinManagerObserver(p);
-        diningroom.setCoinObserver(c);
+        DiningRoom diningroom = new DiningRoom(p);
+        //CoinManagerObserver c = new CoinManagerObserver(p);
+        //diningroom.setCoinObserver(c);
         diningroom.getOccupiedSeats().replace(Creature.DRAGON,2);
         diningroom.addStudent(Creature.DRAGON);
-        assertEquals(1, p.getCoinsOwned());
+        assertEquals(2, p.getCoinsOwned());
     }
 
 
     /** checking if the removeStudent method correctly removes the students */
     @Test
     void removeOneTypeOfEachStudent() {
-        DiningRoom diningRoom = new DiningRoom();
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        DiningRoom diningRoom = new DiningRoom(p);
         for(Creature c : Creature.values()) {
             diningRoom.getOccupiedSeats().replace(c, 1);
             try{
@@ -53,7 +58,8 @@ class DiningRoomTest {
     /** checks if it is correctly removed a dragon type student */
     @Test
     void removeOneDragon (){
-        DiningRoom diningRoom = new DiningRoom();
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        DiningRoom diningRoom = new DiningRoom(p);
         diningRoom.getOccupiedSeats().replace(Creature.DRAGON, 1);
         try {
             diningRoom.removeStudent(Creature.DRAGON);
@@ -66,7 +72,8 @@ class DiningRoomTest {
     /** checking if the removeStudent method correctly throws an exception when the number of the student we'd like to remove is 0 */
     @Test
     void removeANonExistentStudent() {
-        DiningRoom diningRoom = new DiningRoom();
+        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
+        DiningRoom diningRoom = new DiningRoom(p);
         assertThrows(Exception.class,
                 ()-> {
                     diningRoom.removeStudent(Creature.DRAGON);
