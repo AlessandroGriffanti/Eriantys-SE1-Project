@@ -1,4 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.controller;
+
+import it.polimi.ingsw.model.Match;
 
 public abstract class Character{
     public int price;

@@ -69,17 +69,13 @@ public class CloudTile {
         ArrayList<Creature> takenStudents = new ArrayList<Creature>(this.students);
         this.students.clear();
 
-        //put new students on the cloud
-        putStudents(bag.drawStudents(capacity));
-
         return takenStudents;
     }
 
     /**
-     * Puts new students on the cloud; it's private because it's only called by the methode "takeStudents"
-     * @param newStudents ArrayList of new students to put on the cloud
+     * Puts new students on the cloud. Draw a new set of  students from the bag
      */
-    private void putStudents(ArrayList<Creature> newStudents) {
-        this.students = newStudents;
+    public void putStudents() {
+        this.students = bag.drawStudents(capacity);
     }
 }

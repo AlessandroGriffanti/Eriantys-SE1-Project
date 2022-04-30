@@ -19,7 +19,8 @@ public class Player {
         this.playerID = id;
         this.realm = r;
 
-        this.playerSchoolBoard = new SchoolBoard(numPlayers, r);
+        this.coinsOwned = 1;
+        this.playerSchoolBoard = new SchoolBoard(numPlayers, r, this);
     }
 
 
@@ -40,7 +41,7 @@ public class Player {
 
     /*public void setCoinManager(CoinManagerObserver c){
         playerSchoolBoard.setCoinManager(c);
-    }*
+    }*/
 
     public int getCoinsOwned() {
         return coinsOwned;

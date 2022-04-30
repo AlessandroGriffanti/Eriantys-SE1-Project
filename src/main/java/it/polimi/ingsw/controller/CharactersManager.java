@@ -1,6 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.characterCards.*;
+import it.polimi.ingsw.controller.characterCards.*;
+import it.polimi.ingsw.model.Player;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -100,14 +101,18 @@ public class CharactersManager {
 
          //coin usage
          priceCharacterSelected = this.charactersList.get(index).getPrice();
+
+         if(charactersUsed.get(index)) {
+             priceCharacterSelected = priceCharacterSelected + 1;
+         }
+
          try {
-             if(p.getCoinsOwned() >= priceCharacterSelected){
+             if (p.getCoinsOwned() >= priceCharacterSelected) {
                  coinsOwned = p.getCoinsOwned() - priceCharacterSelected;
                  p.setCoinsOwned(coinsOwned);
              }
-         }
-         catch(Exception e){
-             //System.out.println("Not enought money!");
+         } catch (Exception e) {
+             //System.out.println("Not enough money!");
          }
 
          charactersList.get(index).effect();

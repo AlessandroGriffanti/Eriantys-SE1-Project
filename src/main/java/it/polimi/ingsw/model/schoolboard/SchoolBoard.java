@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.schoolboard;
 
-import it.polimi.ingsw.model.Bag;
-import it.polimi.ingsw.model.CoinManagerObserver;
-import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.model.Realm;
+import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 
@@ -15,9 +12,9 @@ public class SchoolBoard {
     private Bag bagForInitialSetUp;
     private int numOfPlayers;
 
-    public SchoolBoard(int numPlayers, Realm r){
+    public SchoolBoard(int numPlayers, Realm r, Player p){
         this.towerArea = new TowerArea(numPlayers);
-        this.diningRoom = new DiningRoom();
+        this.diningRoom = new DiningRoom(p);
         this.entrance = new Entrance(diningRoom, r);
         this.professorTable = new ProfessorTable();
         this.bagForInitialSetUp = r.getBag();
@@ -69,9 +66,11 @@ public class SchoolBoard {
     }
 
 
+    /*
     public void setCoinManager(CoinManagerObserver c){
         this.diningRoom.setCoinObserver(c);
     }
+    */
 
     public TowerArea getTowerArea(){
         return towerArea;

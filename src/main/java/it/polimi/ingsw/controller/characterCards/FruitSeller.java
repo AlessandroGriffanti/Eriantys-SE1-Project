@@ -1,6 +1,6 @@
-package it.polimi.ingsw.model.characterCards;
+package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.model.Character;
+import it.polimi.ingsw.controller.Character;
 
 public class FruitSeller extends Character {
     private int remainingNoEntryTiles;

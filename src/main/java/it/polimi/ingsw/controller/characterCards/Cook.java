@@ -1,7 +1,6 @@
-package it.polimi.ingsw.model.characterCards;
+package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.model.Character;
-import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.controller.Character;
 
 public class Cook  extends Character {
 

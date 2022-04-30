@@ -1,6 +1,6 @@
-package it.polimi.ingsw.model.characterCards;
+package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.model.Character;
+import it.polimi.ingsw.controller.Character;
 import it.polimi.ingsw.model.Creature;
 
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ public class Monk  extends Character {
      * With this method, 4 students are drawn from the bag, and place on the monk card
      * (the 4 students are place in the arraylist of the students who are on the monk card)
      */
-
     public void setUpEffect() {
         this.studentsOnMonk = getMatch().getBagOfTheMatch().drawStudents(4);
     }

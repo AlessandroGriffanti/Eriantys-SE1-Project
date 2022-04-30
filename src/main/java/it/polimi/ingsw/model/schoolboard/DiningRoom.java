@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.schoolboard;
 
 import it.polimi.ingsw.model.CoinManagerObserver;
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Player;
 
 import java.util.HashMap;
 
@@ -10,13 +11,15 @@ public class DiningRoom {
     private Entrance entrance;
     private CoinManagerObserver coinObserver;
 
-    public DiningRoom(){
+    public DiningRoom(Player p){
         occupiedSeats = new HashMap<>();
         occupiedSeats.put(Creature.DRAGON,0);
         occupiedSeats.put(Creature.UNICORN,0);
         occupiedSeats.put(Creature.FROG,0);
         occupiedSeats.put(Creature.FAIRY,0);
         occupiedSeats.put(Creature.GNOME,0);
+
+        coinObserver = new CoinManagerObserver(p);
     }
 
     /** adds a student to the diningroom */
@@ -47,10 +50,12 @@ public class DiningRoom {
         }
     }
 
-    /** set the reference to the coinmanagerobserver */
+    /*
+    //set the reference to the coinmanagerobserver
     public void setCoinObserver(CoinManagerObserver c){
         this.coinObserver = c;
     }
+    */
 
     public void setEntrance(Entrance d){
         this.entrance = d;

@@ -162,4 +162,10 @@ public class Realm{
         archipelagos.get(positionOfMotherNature).removeNoEntryTile();
     }
 
+    public void moveStudentsToClouds(){
+        for(CloudTile c : cloudRegion){
+            c.putStudents();
+        }
+    }
+
 }
