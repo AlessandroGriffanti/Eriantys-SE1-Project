@@ -39,10 +39,6 @@ public class Player {
         return playerSchoolBoard.getControlledProfessors();
     }
 
-    /*public void setCoinManager(CoinManagerObserver c){
-        playerSchoolBoard.setCoinManager(c);
-    }*/
-
     public int getCoinsOwned() {
         return coinsOwned;
     }
