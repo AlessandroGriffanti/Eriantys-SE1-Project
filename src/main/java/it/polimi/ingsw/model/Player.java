@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.schoolboard.SchoolBoard;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 

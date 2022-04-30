@@ -1,4 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.schoolboard;
+
+import it.polimi.ingsw.model.Creature;
 
 import java.util.HashMap;
 

@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import org.junit.jupiter.api.Test;
 
 

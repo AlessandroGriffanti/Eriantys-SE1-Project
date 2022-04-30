@@ -1,6 +1,10 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.schoolboard;
 
-import java.lang.reflect.Array;
+import it.polimi.ingsw.model.Bag;
+import it.polimi.ingsw.model.CoinManagerObserver;
+import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Realm;
+
 import java.util.ArrayList;
 
 public class SchoolBoard {

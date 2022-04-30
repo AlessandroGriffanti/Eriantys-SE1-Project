@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.model.ProfessorTable;
+import it.polimi.ingsw.model.schoolboard.ProfessorTable;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;

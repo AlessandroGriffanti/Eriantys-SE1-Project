@@ -1,4 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.schoolboard;
+
+import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Realm;
 
 import java.util.ArrayList;
 
