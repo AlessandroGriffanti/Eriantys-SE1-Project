@@ -29,36 +29,22 @@ public class AssistantsDeck {
     private int numberOfRemainingCards;
 
 
-    public AssistantsDeck (Wizard wizard){
+    public AssistantsDeck (Wizard wizard) throws IOException{
         this.wizard = wizard;
         this.deck = new HashMap<Integer, Assistant>();
         this.numberOfRemainingCards = 10;
         int i, x;
-        File fileText = null;
-        Scanner scanner = null;
 
-        try{
-            fileText = new File("assistantList.txt");
-        }catch (NullPointerException e){
-            e.printStackTrace();
+        try(FileReader fileText = new FileReader("resources/assistantList.txt");
+            Scanner scanner = new Scanner(fileText)
+        ){
+            for(i = 0; i < 10; i++) {
+
+                x = scanner.nextInt();
+                this.deck.put( x, new Assistant(x, scanner.nextInt() ) );
+
+            }
         }
-
-        try {
-            assert fileText != null;
-            scanner = new Scanner(fileText);
-        }catch (FileNotFoundException e){
-            System.out.println("ERROR: File assistantList NOT found");
-            e.printStackTrace();
-        }
-
-        for(i = 0; i < 10; i++) {
-
-            assert scanner != null;
-            x = scanner.nextInt();
-            this.deck.put( x, new Assistant(x, scanner.nextInt() ) );
-
-        }
-        scanner.close();
     }
 
     public HashMap<Integer, Assistant> getDeck(){
