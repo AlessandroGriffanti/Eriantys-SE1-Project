@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.schoolboard.SchoolBoard;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Player {
@@ -49,7 +50,7 @@ public class Player {
     }
 
     /** creates the deck */
-    public AssistantsDeck chooseDeck (Wizard wizard) throws FileNotFoundException {
+    public AssistantsDeck chooseDeck (Wizard wizard) throws IOException {
         this.playerAssistantsDeck = new AssistantsDeck(wizard);
         return this.playerAssistantsDeck;
     }
