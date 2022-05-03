@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.controller.CharactersManager;
-
 import java.util.ArrayList;
 
 public class Match {
@@ -9,7 +7,6 @@ public class Match {
     private int numberOfPlayers;
     private Realm realmOfTheMatch;
     private Bag bagOfTheMatch;
-    private CharactersManager charactersManager; //TODO: dobbiamo capire che fare con i caracters
     private ArrayList<Player> players;
     private Player currentPlayer;
     private int coinReserve;
