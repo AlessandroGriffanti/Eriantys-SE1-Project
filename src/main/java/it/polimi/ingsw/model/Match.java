@@ -47,6 +47,40 @@ public class Match {
         return numberOfPlayers;
     }
 
+    /** this method sets the current player to the desired one */
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+
+    /** This method searches the player by his nickName in the list of players
+     *
+     * @param nickName the nickName of the player
+     * @return Player - it's the searched player. If null, there is no player with that nickName
+     */
+    public Player getPlayerBynickName(String nickName){
+        for(Player player : players){
+            if(player.getNickName().equalsIgnoreCase(nickName)){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * this methos searches the player by his ID in the list of players
+     * @param ID the ID of the player
+     * @return Player. If null, there is no player with that nickName
+     */
+    public Player getPlayerByID(int ID){
+        for(Player player : players){
+            if(player.getPlayerID() == ID){
+                return player;
+            }
+        }
+        return null;
+    }
+
     public Bag getBagOfTheMatch() {
         return bagOfTheMatch;
     }
