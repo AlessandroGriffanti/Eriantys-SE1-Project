@@ -2,6 +2,7 @@ package it.polimi.ingsw.server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
  * it should deserialize the json received and pass the information to the controller
@@ -44,7 +45,10 @@ public class ClientHandler implements Runnable{
 
 
     }
+
+    /** when a login is successful we register the player's nickname in the arraylist in the server */
     public void loginSuccess(){
 
+      //  server.getPlayersNicknames().add();
     }
 }

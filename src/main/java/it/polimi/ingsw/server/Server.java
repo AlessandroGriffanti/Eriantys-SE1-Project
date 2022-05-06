@@ -22,6 +22,8 @@ public class Server {
 
     private ServerSocket serverSocket;  //initialized in the start method
 
+
+
     /**
      * this is the list of the players nicknames registered, connected, to the server
      */
@@ -96,6 +98,11 @@ public class Server {
             executorService.submit(new ClientHandler(clientSocket));
         }
     }
+
+    public ArrayList<String> getPlayersNicknames() {
+        return playersNicknames;
+    }
+
 
     public static void main(String[] args) {
         /*System.out.println("Insert number of server port: ");

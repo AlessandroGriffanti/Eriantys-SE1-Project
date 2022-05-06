@@ -11,41 +11,48 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
+    private Socket clientSocket = null;
+    private Gson gsonObj = new Gson();
+    private BufferedReader inputBufferClient = null;
+    private PrintWriter outputPrintClient = null;
+
+    public void startClient() throws IOException{
+        clientSocket = new Socket("localhost", 4444);
+
+        inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
 
 
+        login();
+
+
+
+        String msgFromServer = inputBufferClient.readLine();
+        System.out.println("Still connected");
+        System.out.println(msgFromServer);
+
+
+        inputBufferClient.close();
+        outputPrintClient.close();
+        clientSocket.close();
+
+    }
     public static void main(String[] args) throws IOException {
-        Socket clientSocket = null;
-        BufferedReader inputBufferClient = null;
-        PrintWriter outputPrintClient = null;
-        Gson gsonObj = new Gson();
-
         try{
-            clientSocket = new Socket("localhost", 4444);
-            inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
-
-
-            System.out.println("Write your nickname: " );
-            String nickWritten;
-            Scanner input = new Scanner(System.in);
-            nickWritten = input.next();
-            outputPrintClient.println(nickWritten);
-            outputPrintClient.flush();
-
-
-
-            String msgFromServer = inputBufferClient.readLine();
-            System.out.println("Still connected");
-            System.out.println(msgFromServer);
-
-
-            inputBufferClient.close();
-            outputPrintClient.close();
-            clientSocket.close();
+            Client client = new Client();
+            client.startClient();
 
         }catch(IOException e){
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
+    }
+
+    public void login() {
+        Scanner loginScanner = new Scanner(System.in);
+        System.out.println("Insert nickname: ");
+        String nickNamePlayer = loginScanner.nextLine();
+        outputPrintClient.println(gsonObj.toJson(nickNamePlayer));
+        outputPrintClient.flush();
     }
 }
