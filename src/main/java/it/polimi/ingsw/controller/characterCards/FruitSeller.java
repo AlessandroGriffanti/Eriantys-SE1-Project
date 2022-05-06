@@ -1,7 +1,5 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.controller.Character;
-
 public class FruitSeller extends Character {
     private int remainingNoEntryTiles;
     private int islandID;
