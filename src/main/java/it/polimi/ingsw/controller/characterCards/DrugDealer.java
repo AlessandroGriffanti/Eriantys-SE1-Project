@@ -26,7 +26,7 @@ public class DrugDealer extends Character {
             numberOfStudentsOfTheChosenCreature = getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().getOccupiedSeats().get(chosenCreature).intValue();
             for (i = 0; i < numberOfStudentsOfTheChosenCreature && i < 3; i++) {
                 getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(chosenCreature);
-                getMatch().getBagOfTheMatch().AddStudentToBag(chosenCreature);
+                getMatch().getBagOfTheMatch().addOneStudentToBag(chosenCreature);
             }
         }
     }

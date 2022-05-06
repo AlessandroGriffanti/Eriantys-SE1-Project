@@ -39,7 +39,7 @@ public class Monk  extends Character {
         chosenStudent = studentsOnMonk.get(chosenStudentIndex);
         getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, islandToPutID);
 
-        caughtStudentFromBag = getMatch().getBagOfTheMatch().drawOneStudents();
+        caughtStudentFromBag = getMatch().getBagOfTheMatch().drawOneStudent();
         studentsOnMonk.add(caughtStudentFromBag);
     }
 
