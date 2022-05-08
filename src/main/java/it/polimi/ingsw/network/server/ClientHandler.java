@@ -21,7 +21,7 @@ public class ClientHandler implements Runnable{
     private BufferedReader inputHandler;
 
     /** Gson object "gsonObj" to deserialize the json message received */
-    private Gson gsonObj = new Gson();
+    private final Gson gsonObj = new Gson();
 
     public ClientHandler(Socket socket){
         this.clientSocket = socket;
@@ -29,6 +29,8 @@ public class ClientHandler implements Runnable{
     @Override
     public void run(){
         try {
+            System.out.println("running");
+
             outputHandler = new PrintWriter(clientSocket.getOutputStream());
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -42,7 +44,7 @@ public class ClientHandler implements Runnable{
             */
 
             analysisOfReceivedMessageServer(inputHandler.readLine());
-
+            System.out.println("end");
 
             outputHandler.close();
             inputHandler.close();
@@ -59,15 +61,23 @@ public class ClientHandler implements Runnable{
      * @param receivedMessageInJson is the message received in json format through the socket reader.
      */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson){
-        Message receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
-        String messageObject = receivedMessageFromJson.object;
+        System.out.println("Message analysis in progress...");
+        System.out.println(receivedMessageInJson);
+        Message receivedMessageFromJson = new Message();
+        receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
+        System.out.println("Message translated");
+        String messageObject = receivedMessageFromJson.getObjectOfMessage();
+        System.out.println("Object Find.");
+
 
         //switch per l'analisi dell'oggetto del messaggio
         switch (messageObject) {
             case "login":
-                System.out.println("login message");
+                System.out.println("I received a login message");
                 LoginMessage msgLogin = new LoginMessage();
                 msgLogin = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
+                //qui di seguito l'errore
+                System.out.println(msgLogin.getNicknameOfPlayer());
                 loginInServer(msgLogin.getNicknameOfPlayer());
                 break;
 

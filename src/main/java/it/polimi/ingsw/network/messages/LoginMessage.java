@@ -11,7 +11,7 @@ public class LoginMessage extends Message {
         return nicknameOfPlayer;
     }
 
-    public LoginMessage() {
+    public LoginMessage(String nicknameOfPlayer) {
         this.object = "login";
         this.nicknameOfPlayer = new String();   //non necessario
     }

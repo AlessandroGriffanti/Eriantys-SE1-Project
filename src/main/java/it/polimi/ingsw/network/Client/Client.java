@@ -61,17 +61,17 @@ public class Client {
     /**
      * This method is used by client (player) to access the game:
      * player's nickname is asked and then sent to the server in json format
-      */
+     */
     public void loginFromClient() {
         Scanner loginScanner = new Scanner(System.in);
         System.out.println("Insert nickname: ");
         //String nickNamePlayer = loginScanner.nextLine();
-        LoginMessage msgLogin = new LoginMessage();
-        msgLogin.setNicknameOfPlayer(loginScanner.nextLine());
+        LoginMessage msgLogin = new LoginMessage(loginScanner.nextLine());
+
         System.out.println("ok");
         outputPrintClient.println(gsonObj.toJson(msgLogin));
         outputPrintClient.flush();
         System.out.println("sent");
-
     }
 }
+
