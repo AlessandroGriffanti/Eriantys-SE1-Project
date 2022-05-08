@@ -1,6 +1,6 @@
-package network.server;
+package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.controller.Controller;
+//import it.polimi.ingsw.controller.Controller;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -22,7 +22,6 @@ public class Server {
     private ServerSocket serverSocket;  //initialized in the start method
 
 
-
     /**
      * this is the list of the players nicknames registered, connected, to the server
      */
@@ -33,7 +32,7 @@ public class Server {
     private HashMap<String, String> playerInTheLobby;       //questa non serve
 
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
-    private HashMap <String, Controller> lobbies;
+    //private HashMap <String, Controller> lobbies;
 
     /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
@@ -44,7 +43,7 @@ public class Server {
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
         this.playerInTheLobby = new HashMap<>();
-        this.lobbies = new HashMap<>();
+        //this.lobbies = new HashMap<>();
     }
 
 
@@ -58,6 +57,7 @@ public class Server {
         lobbies.put(lobbyID, new GameHandler(this, lobbyID));
         lobbyMaxNumPlayers.put(lobbyID, numPlayers);
     } */
+
     /**
      * Method getLobbyIDByPlayer returns the lobby id of the game the player participates.
      * @param nickname player's name.
@@ -83,7 +83,7 @@ public class Server {
     }
 
     /** this method launches the server.
-     *It initializes the serverSocket.
+     * It initializes the serverSocket.
      * executorService creates a new pool of threads, the ones really dealing with clients.
      * In the loop we accept a connection from a client and we 'deliver' it to a new thread through the submit method.
      */
@@ -99,7 +99,11 @@ public class Server {
     }
 
     public ArrayList<String> getPlayersNicknames() {
-        return playersNicknames;
+        return this.playersNicknames;
+    }
+
+    public void setPlayersNicknames(ArrayList<String> playersNicknames) {
+        this.playersNicknames = playersNicknames;
     }
 
 

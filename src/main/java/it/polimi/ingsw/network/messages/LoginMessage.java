@@ -1,6 +1,6 @@
-package network.messages;
+package it.polimi.ingsw.network.messages;
 
-public class loginMessage extends message {
+public class LoginMessage extends Message {
     String nicknameOfPlayer;
 
     public void setNicknameOfPlayer(String nicknameOfPlayer) {
@@ -11,7 +11,7 @@ public class loginMessage extends message {
         return nicknameOfPlayer;
     }
 
-    public loginMessage() {
+    public LoginMessage() {
         this.object = "login";
         this.nicknameOfPlayer = new String();   //non necessario
     }

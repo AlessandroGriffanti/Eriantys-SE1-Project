@@ -1,4 +1,4 @@
-package network.Client;
+package it.polimi.ingsw.network.Client;
 
 
 import com.google.gson.Gson;
