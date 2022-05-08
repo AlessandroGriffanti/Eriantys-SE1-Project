@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-public abstract class Message {
+public class Message {
     public String object;
     public String request;
 
@@ -11,7 +11,7 @@ public abstract class Message {
     }
     */
 
-    public String getObject() {
+    public String getObjectOfMessage() {
         return object;
     }
 
