@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server;
+package network.server;
 
 import it.polimi.ingsw.controller.Controller;
 
@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

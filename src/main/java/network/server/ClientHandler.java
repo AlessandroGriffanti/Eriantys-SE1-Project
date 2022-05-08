@@ -1,8 +1,10 @@
-package it.polimi.ingsw.server;
+package network.server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
  * it should deserialize the json received and pass the information to the controller
@@ -28,7 +30,7 @@ public class ClientHandler implements Runnable{
 
             System.out.println("nickreceived: " + outputFromServer); //ricevuto dal client
 
-            outputHandler.println(outputFromServer + "ok\n");
+            outputHandler.println(outputFromServer + " ok\n");
 
             outputHandler.flush();
 

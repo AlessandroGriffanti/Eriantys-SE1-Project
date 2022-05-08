@@ -1,7 +1,8 @@
-package it.polimi.ingsw.Client;
+package network.Client;
 
 
 import com.google.gson.Gson;
+import network.messages.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Client {
         inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
 
-
+        //per prima cosa il client avviato fa un login
         login();
 
 
@@ -51,8 +52,10 @@ public class Client {
     public void login() {
         Scanner loginScanner = new Scanner(System.in);
         System.out.println("Insert nickname: ");
-        String nickNamePlayer = loginScanner.nextLine();
-        outputPrintClient.println(gsonObj.toJson(nickNamePlayer));
+        //String nickNamePlayer = loginScanner.nextLine();
+        loginMessage msgLogin = new loginMessage();
+        msgLogin.setNicknameOfPlayer(loginScanner.nextLine());
+        outputPrintClient.println(gsonObj.toJson(msgLogin));
         outputPrintClient.flush();
     }
 }
