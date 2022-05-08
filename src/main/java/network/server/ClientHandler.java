@@ -1,5 +1,9 @@
 package network.server;
 
+//import network.messages.message;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +21,9 @@ public class ClientHandler implements Runnable{
     private PrintWriter outputHandler;
     private BufferedReader inputHandler;
 
+    /** Gson object "gsonObj" to deserialize the json message received */
+    private Gson gsonObj = new Gson();
+
     public ClientHandler(Socket socket){
         this.clientSocket = socket;
     }
@@ -26,20 +33,22 @@ public class ClientHandler implements Runnable{
             outputHandler = new PrintWriter(clientSocket.getOutputStream());
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            /*
             String outputFromServer = inputHandler.readLine();
-
             System.out.println("nickreceived: " + outputFromServer); //ricevuto dal client
 
             outputHandler.println(outputFromServer + " ok\n");
-
             outputHandler.flush();
-
             System.out.println("sent ok");
+            */
+
+            analysisOfTheReceivedMessage(inputHandler.readLine());
+
 
             outputHandler.close();
             inputHandler.close();
             clientSocket.close();
-            System.out.println("disconnected");
+            System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
 
         }catch(IOException e){
             System.out.println(e.getMessage());
@@ -48,9 +57,7 @@ public class ClientHandler implements Runnable{
 
     }
 
-    /** when a login is successful we register the player's nickname in the arraylist in the server */
-    public void loginSuccess(){
-
-      //  server.getPlayersNicknames().add();
+    public void analysisOfTheReceivedMessage(String receivedMessage){
+        switch () //per l'analisi del messaggio
     }
 }
