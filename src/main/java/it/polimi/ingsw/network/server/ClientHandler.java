@@ -67,7 +67,7 @@ public class ClientHandler implements Runnable{
         receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
         System.out.println("Message translated");
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
-        System.out.println("Object Find.");
+        System.out.println("Object Found.");
 
 
         //switch per l'analisi dell'oggetto del messaggio
@@ -76,7 +76,6 @@ public class ClientHandler implements Runnable{
                 System.out.println("I received a login message");
                 LoginMessage msgLogin = new LoginMessage();
                 msgLogin = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
-                //qui di seguito l'errore
                 System.out.println(msgLogin.getNicknameOfPlayer());
                 loginInServer(msgLogin.getNicknameOfPlayer());
                 break;
