@@ -5,7 +5,6 @@ public class LoginMessage extends Message {
 
 
     /** Added this constructor otherwise the client handler can't create a new Login message without a parameter (line 77) */
-
     public LoginMessage(){
         this.object = "login";
     }

@@ -23,8 +23,9 @@ public class ClientHandler implements Runnable{
     /** Gson object "gsonObj" to deserialize the json message received */
     private final Gson gsonObj = new Gson();
 
-    public ClientHandler(Socket socket){
+    public ClientHandler(Socket socket, Server server){
         this.clientSocket = socket;
+        this.server = server;
     }
     @Override
     public void run(){

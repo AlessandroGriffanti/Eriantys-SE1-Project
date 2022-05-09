@@ -43,6 +43,7 @@ public class Server {
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
         this.playerInTheLobby = new HashMap<>();
+        this.playersNicknames = new ArrayList<>();
         //this.lobbies = new HashMap<>();
     }
 
@@ -94,7 +95,7 @@ public class Server {
         while(true){
             Socket clientSocket = serverSocket.accept();
             System.out.println("Client connected " + clientSocket.getRemoteSocketAddress());
-            executorService.submit(new ClientHandler(clientSocket));
+            executorService.submit(new ClientHandler(clientSocket, this));
         }
     }
 
