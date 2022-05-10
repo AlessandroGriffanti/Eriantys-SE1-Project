@@ -42,15 +42,21 @@ public class Match {
      * This attribute memorizes the professors that are not already controlled by any of the players
      */
     private ArrayList<Creature> notControlledProfessors;
+    /**
+     * This attribute tells us if the match is expert mode or not
+     */
+    private boolean expertMode;
 
 
-    public Match(int ID, int numberOfPlayers, VirtualView vv) {
+    public Match(int ID, int numberOfPlayers, VirtualView vv, boolean expertMode) {
         this.ID = ID;
         this.numberOfPlayers = numberOfPlayers;
         this.bagOfTheMatch = new Bag();
         this.realmOfTheMatch = new Realm(numberOfPlayers, bagOfTheMatch);
         this.players = new ArrayList<Player>();
         this.coinReserve = 20; //expert mode
+        this.notControlledProfessors = new ArrayList<Creature>();
+        this.expertMode = expertMode;
     }
 
     /**

@@ -19,6 +19,8 @@ public class SchoolBoard {
         this.professorTable = new ProfessorTable();
         this.bagForInitialSetUp = r.getBag();
         this.numOfPlayers = numPlayers;
+
+        initialSetUpStudentsInTheEntrance();
     }
 
     /**

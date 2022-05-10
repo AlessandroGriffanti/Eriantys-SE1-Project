@@ -1,7 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.network.messages.MatchStart;
+import it.polimi.ingsw.network.messages.MatchStartMessage;
+import it.polimi.ingsw.network.messages.MatchWaitingMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.ClientHandler;
 
@@ -33,15 +34,23 @@ public class Controller {
     /**
      * This attribute is the last message received from the client
      */
-    private Message msg_in = null;
+    private String msg_in = null;
     /**
      * This attribute is an array of references to all the ClientHandler of the players playing this match
      */
-    private ArrayList<ClientHandler> clientHandlers;
+    private ArrayList<ClientHandler> clientHandlers = null;
+    /**
+     * This attribute is the list of names chosen by the player
+     */
+    private ArrayList<String> playerNickname = null;
     /**
      * This attribute is the counter of players added to match
      */
     private int playersAddedCounter;
+    /**
+     * This attribute tells if the match must ber played in expert mode or not
+     */
+    private boolean expertMode;
 
     /**
      * Controller constructor
@@ -51,26 +60,34 @@ public class Controller {
         this.ID = ID;
         this.playing = false;
         this.clientHandlers = new ArrayList<ClientHandler>();
+        this.playerNickname = new ArrayList<String>();
         this.state = new MatchCreating();
         this.playersAddedCounter = 0;
     }
 
     /**
-     * This method adds a player to the match and controls if there are enough players to start the playing
+     * This method adds a player to the match and controls if there are enough players to start playing.
+     * Furthermore, it sends the notify message "MatchWaiting" to the player that is just been added
      * @param playerHandler reference to the ClientHandler of the added player
      * @param nickname nickname chosen by the player (client) and approved by the ClientHandler
      */
     public void addPlayerHandler(ClientHandler playerHandler, String nickname){
         this.clientHandlers.add(playerHandler);
-        this.match.addPlayer(nickname);
+        this.playerNickname.add(nickname);
 
         playersAddedCounter++;
+
+        /*while for the first player, that is the one who chose the match settings, the notify message "MatchWaiting" is
+        sent from the MatchCreation state execution, we must notify the other players too; here we send the message to the
+        added player*/
+        if(playersAddedCounter > 1){
+            sendMessageToPlayer(playersAddedCounter, new MatchWaitingMessage());
+        }
 
         if(playersAddedCounter == numberOfPlayers){
             playing = true;
             startMatch();
         }
-
     }
     /**
      * This method lets the match start, creates the view and chooses the first player of the match randomly; finally it
@@ -79,12 +96,18 @@ public class Controller {
     public void startMatch(){
         //Creates the virtualView so that it can notify the client (client side)
         VirtualView vv = new VirtualView(this.match);
-        this.match = new Match(this.ID, this.numberOfPlayers, vv);
+        this.match = new Match(this.ID, this.numberOfPlayers, vv, expertMode);
+        //adds all the players
+        for(String s: playerNickname){
+            this.match.addPlayer(s);
+        }
 
+        //chooses the first player of the match
         Random random = new Random();
         int firstPlayer_ID = random.nextInt(numberOfPlayers);
 
-        MatchStart msg = new MatchStart(firstPlayer_ID);
+        //prepares MatchStart message for all the clients
+        MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID);
         sendMessageAsBroadcast(msg);
 
         nextState();
@@ -102,7 +125,7 @@ public class Controller {
 
     /**
      * This method sends a message to all players of the match
-     * @param msg
+     * @param msg the message that must be sent to the players
      */
     public void sendMessageAsBroadcast(Message msg){
         for(ClientHandler p: clientHandlers){
@@ -114,7 +137,7 @@ public class Controller {
      * This method hands the message received by the client over to the state
      * @param msg message sent by the client
      */
-    public void manageMsg(Message msg){
+    public void manageMsg(String msg){
         msg_in = msg;
         //TODO: we could run a control on the message and if it is an ack or just a reading type message then we do not
         //  hand it over to the state executor
@@ -153,11 +176,15 @@ public class Controller {
         return this.ID;
     }
 
-    public Message getMsg(){
+    public String getMsg(){
         return msg_in;
     }
 
     public boolean getPlayingStatus(){
         return playing;
+    }
+
+    public void setExpertMode(boolean mode){
+        this.expertMode = mode;
     }
 }
