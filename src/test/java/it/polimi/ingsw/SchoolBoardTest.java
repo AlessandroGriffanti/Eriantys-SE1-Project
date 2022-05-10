@@ -23,8 +23,6 @@ class SchoolBoardTest {
         Realm r = new Realm(2, bag);
         SchoolBoard schoolBoard = new SchoolBoard(2, r, new Player(0, "james",2, new Realm(2, new Bag())));
 
-        schoolBoard.initialSetUpStudentsInTheEntrance();
-
         assertTrue(schoolBoard.getEntrance().getStudentsInTheEntrance().size() == 7);
     }
     @Test

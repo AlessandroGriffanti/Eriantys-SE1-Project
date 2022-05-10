@@ -3,43 +3,110 @@ package it.polimi.ingsw.model.schoolboard;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Realm;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Entrance {
+    /**
+     * This attribute is the list of students on the entrance
+     */
     private ArrayList<Creature> studentsInTheEntrance;
+    /**
+     * This attribute is the reference to the dining room, where the students could be moved
+     */
     private DiningRoom doorToTheDiningRoom;
+    /**
+     * This attribute is the reference to the Realm of the match (where there are the clouds and the islands)
+     */
     private Realm realminentrance;
 
-    public Entrance(DiningRoom d, Realm r){
-        studentsInTheEntrance = new ArrayList<>();
+    public Entrance(DiningRoom d, Realm r, int numOfPlayers){
         this.doorToTheDiningRoom = d;
         this.realminentrance = r;
+        studentsInTheEntrance = new ArrayList<Creature>();
+
+        ArrayList<Creature> initialStudents = initialSetUpStudentsInTheEntrance(numOfPlayers);
+
+        for(Creature c: initialStudents){
+            studentsInTheEntrance.add(c);
+        }
+    }
+
+    /**
+     * This method sets up the 7 or 9 initial students in the entrance
+     * @return array of the students drawn from the bag
+     */
+    public ArrayList<Creature> initialSetUpStudentsInTheEntrance(int numOfPlayers){
+
+        ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
+
+        if(numOfPlayers == 3){
+            studentsSetUpEntrance = realminentrance.getBag().drawStudents(9);
+        }else if(numOfPlayers == 2 || numOfPlayers == 4){
+            studentsSetUpEntrance = realminentrance.getBag().drawStudents(7);
+        }
+
+        return studentsSetUpEntrance;
     }
 
 
-    /** adds a creature to the entrance */
+    /**
+     * This method adds a creature (student) to the entrance in the spot where there is a null pointer
+     * @param s the kind of student
+     */
     public void addStudent(Creature s){
-        studentsInTheEntrance.add(s);
+        for(int j = 0; j < studentsInTheEntrance.size(); j++){
+            if(studentsInTheEntrance.get(j) == null){
+                studentsInTheEntrance.set(j, s);
+
+            }
+        }
     }
 
-    /** removes a student from the entrance */
-    public void removeStudent(Creature s){
-        studentsInTheEntrance.remove(s);
+    /**
+     * This method adds multiple students to the entrance in the spots where there is a null pointer
+     * @param students array of students that will be added
+     */
+    public void addMultipleStudents(ArrayList<Creature> students){
+        int indexOfParameter = 0;
+        for(int j = 0; j < studentsInTheEntrance.size(); j++){
+            if(studentsInTheEntrance.get(j) == null){
+                studentsInTheEntrance.set(j, students.get(indexOfParameter));
+
+                indexOfParameter++;
+
+                if(indexOfParameter > students.size()){
+                    break;
+                }
+            }
+        }
     }
 
-    /** moves a student to the diningRoom and removes it from the entrance  */
+    /**
+     * This method removes a student from the entrance and set its position in the array to null
+     * @param index the index of the student to remove
+     */
+    public void removeStudent(int index){
+        studentsInTheEntrance.set(index, null);
+    }
+
+    /**
+     * This method moves a student to the diningRoom and removes it from the entrance (set the position to null)
+     * @param index index of the student
+     */
     public void moveStudent(int index){
         doorToTheDiningRoom.addStudent(studentsInTheEntrance.get(index));
-        Creature creatureRemoved = studentsInTheEntrance.get(index);
-        studentsInTheEntrance.remove(creatureRemoved);
-
+        studentsInTheEntrance.set(index, null);
     }
 
-    /** moves a student to an island and removes it from the entrance */
+    /**
+     * This method moves a student to an island and removes it from the entrance (set the positions to null)
+     * @param index index of the student
+     * @param islandID index of the island
+     */
     public void moveStudentsToIsland(int index, int islandID){
         realminentrance.addStudentToIsland(studentsInTheEntrance.get(index), islandID);
-        Creature creatureRemoved = studentsInTheEntrance.get(index);
-        studentsInTheEntrance.remove(creatureRemoved);
+        studentsInTheEntrance.set(index, null);
     }
 
     /** useful for tests */

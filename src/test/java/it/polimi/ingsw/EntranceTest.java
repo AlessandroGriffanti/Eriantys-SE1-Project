@@ -4,71 +4,77 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.model.schoolboard.Entrance;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EntranceTest {
 
-    /** check if it correctly added a dragon type student to the entrance */
+    /**
+     * This method checks the removal of one student is done correctly
+     */
     @Test
-    void addOneDragonToTheEntrance(){
+    void removeOneStudent_positionBecomesNull(){
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
-        entrance.addStudent(Creature.DRAGON);
-        assertEquals(Creature.DRAGON, entrance.getStudentsInTheEntrance().get(0));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        entrance.removeStudent(2);
+        assertEquals(null, entrance.getStudentsInTheEntrance().get(2));
 
     }
 
-    /** check if each type of student is correctly added to the entrance */
+    /**
+     *
+     */
     @Test
-    void AddOneTypeOfEachStudent(){
+    void addStudentAfterRemoval_studentAddedInTheSpotWithNul(){
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
-        for (Creature c : Creature.values()){
-            entrance.addStudent(c);
-        }
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
 
-        assertEquals(Creature.DRAGON, entrance.getStudentsInTheEntrance().get(0));
-        assertEquals(Creature.FAIRY, entrance.getStudentsInTheEntrance().get(1));
-        assertEquals(Creature.UNICORN, entrance.getStudentsInTheEntrance().get(2));
-        assertEquals(Creature.GNOME, entrance.getStudentsInTheEntrance().get(3));
-        assertEquals(Creature.FROG, entrance.getStudentsInTheEntrance().get(4));
+        entrance.removeStudent(2);
+
+        entrance.addStudent(Creature.FAIRY);
+        assertEquals(Creature.FAIRY, entrance.getStudentsInTheEntrance().get(2));
     }
 
-    /** check if it is correctly removed a dragon type student */
-    @Test
-    void removeADRAGONStudent() {
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
-        entrance.getStudentsInTheEntrance().add(Creature.DRAGON);
-        entrance.removeStudent(Creature.DRAGON);
-        assertTrue(entrance.getStudentsInTheEntrance().size() == 0);
-    }
 
     /** check if a few students are correctly removed */
     @Test
-    void removeAFewStudent(){
+    void addMultipleStudentsAfterRemoval_studentAddedInTheSpotWithNul(){
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
-        for(Creature c : Creature.values()){
-            entrance.getStudentsInTheEntrance().add(c);
-        }
-        entrance.removeStudent(Creature.FAIRY);
-        entrance.removeStudent(Creature.DRAGON);
-        assertTrue(entrance.getStudentsInTheEntrance().size() == 3);
-        assertFalse(entrance.getStudentsInTheEntrance().contains(Creature.DRAGON));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+
+        ArrayList<Creature> studentsToAdd = new ArrayList<Creature>();
+        studentsToAdd.add(Creature.FROG);
+        studentsToAdd.add(Creature.GNOME);
+        studentsToAdd.add(Creature.UNICORN);
+
+        entrance.removeStudent(0);
+        entrance.removeStudent(4);
+        entrance.removeStudent(5);
+
+        //The size of the array must not change because we set the removed students position to null
+        assertTrue(entrance.getStudentsInTheEntrance().size() == 7);
+
+        entrance.addMultipleStudents(studentsToAdd);
+
+        assertEquals(Creature.FROG, entrance.getStudentsInTheEntrance().get(0));
+        assertEquals(Creature.GNOME, entrance.getStudentsInTheEntrance().get(4));
+        assertEquals(Creature.UNICORN, entrance.getStudentsInTheEntrance().get(5));
+
     }
 
     /** Checks if it correctly moves a Dragon type student to the dining room from the entrance */
     @Test
-    void moveADragonStudent() {
+    void moveStudent_onlyOneStudentInTheDiningRoomTable() {
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
-        entrance.addStudent(Creature.DRAGON);
-        entrance.moveStudent(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON));
-        assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(Creature.DRAGON).intValue());
-        assertEquals(0, entrance.getStudentsInTheEntrance().size());
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+
+        Creature creatureMoved = entrance.getStudentsInTheEntrance().get(2);
+        entrance.moveStudent(2);
+        assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(creatureMoved).intValue());
     }
 
     /** checks if it correctly moves 2 students from the entrance to an island: a dragon type one on the island where mother nature currently stands, a fairy one
@@ -79,7 +85,7 @@ class EntranceTest {
     @Test
     void moveStudentsToIsland() {
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()));
+        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
         entrance.addStudent(Creature.DRAGON);
         entrance.addStudent(Creature.FAIRY);
 
@@ -87,16 +93,14 @@ class EntranceTest {
         entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON), motherNaturePosition);
         assertEquals(1, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition).getTotalNumberOfStudents());
         assertEquals(0, entrance.getRealmInEntrance().getArchipelagos().get((motherNaturePosition+6)%12).getTotalNumberOfStudents());
-        assertTrue(entrance.getStudentsInTheEntrance().size() == 1);
+
         if(motherNaturePosition == 11) {
             entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), 1);
             assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(1).getTotalNumberOfStudents());
-            assertTrue(entrance.getStudentsInTheEntrance().size() ==0);
 
         }else {
             entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), motherNaturePosition + 1);
             assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition + 1).getTotalNumberOfStudents());
-            assertTrue(entrance.getStudentsInTheEntrance().size() ==0);
         }
 
 

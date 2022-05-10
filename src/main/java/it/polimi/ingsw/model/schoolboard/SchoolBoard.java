@@ -15,31 +15,14 @@ public class SchoolBoard {
     public SchoolBoard(int numPlayers, Realm r, Player p){
         this.towerArea = new TowerArea(numPlayers);
         this.diningRoom = new DiningRoom(p);
-        this.entrance = new Entrance(diningRoom, r);
-        this.professorTable = new ProfessorTable();
-        this.bagForInitialSetUp = r.getBag();
         this.numOfPlayers = numPlayers;
+        this.bagForInitialSetUp = r.getBag();
 
-        initialSetUpStudentsInTheEntrance();
+        this.entrance = new Entrance(diningRoom, r, numPlayers);
+
+        this.professorTable = new ProfessorTable();
     }
 
-    /**
-     * Sets up the 7 initial students in the entrance
-     */
-    public void initialSetUpStudentsInTheEntrance(){
-        ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
-
-        if(numOfPlayers == 3){
-            studentsSetUpEntrance = bagForInitialSetUp.drawStudents(9);
-        }else if(numOfPlayers == 2 || numOfPlayers == 4){
-            studentsSetUpEntrance = bagForInitialSetUp.drawStudents(7);
-        }
-
-        ArrayList<Creature> s = entrance.getStudentsInTheEntrance();
-        for(Creature c: studentsSetUpEntrance){
-            s.add(c);
-        }
-    }
 
     /**
      * Finds which are the professors controlled by the Player

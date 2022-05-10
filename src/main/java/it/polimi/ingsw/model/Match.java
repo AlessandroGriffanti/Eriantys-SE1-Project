@@ -55,17 +55,16 @@ public class Match {
         this.realmOfTheMatch = new Realm(numberOfPlayers, bagOfTheMatch);
         this.players = new ArrayList<Player>();
         this.coinReserve = 20; //expert mode
+        this.virtualView = vv;
+
         this.notControlledProfessors = new ArrayList<Creature>();
+        for(Creature c: Creature.values()){
+            notControlledProfessors.add(c);
+        }
+
         this.expertMode = expertMode;
     }
 
-    /**
-     * This method adds the virtual view of the match, used as an observer
-     * @param vv reference to the virtual view
-     */
-    public void addViewAsModelObserver(VirtualView vv){
-        this.virtualView = vv;
-    }
 
     /**
      *This method add one player to the match
@@ -88,7 +87,7 @@ public class Match {
      * @param ID_currentPlayer ID of the 'new' current player
      */
     public void setCurrentPlayer(int ID_currentPlayer) {
-        this.currentPlayer = currentPlayer;
+        this.currentPlayer = ID_currentPlayer;
     }
 
 
@@ -125,6 +124,14 @@ public class Match {
      */
     public void moveStudentsFromBagToCloudsEveryRound(){
         getRealmOfTheMatch().moveStudentsToClouds();
+    }
+
+    public void moveStudentsFromCloudToEntrance(int cloud_ID){
+        //calls the Realm to take the students on the cloud
+        ArrayList<Creature> takenStudents = this.realmOfTheMatch.takeStudentsFromCloud(cloud_ID);
+
+        //adds the students to the current player's entrance
+        players.get(currentPlayer).getPlayerSchoolBoard().getEntrance().addMultipleStudents(takenStudents);
     }
 
     public Bag getBagOfTheMatch() {
