@@ -38,6 +38,10 @@ public class Match {
      * It will be called after changes inside the Model
      */
     private VirtualView virtualView;
+    /**
+     * This attribute memorizes the professors that are not already controlled by any of the players
+     */
+    private ArrayList<Creature> notControlledProfessors;
 
 
     public Match(int ID, int numberOfPlayers, VirtualView vv) {

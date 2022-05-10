@@ -14,11 +14,6 @@ public class LoginMessage extends Message {
         this.nicknameOfPlayer = nicknameOfPlayer;
     }
 
-    @Override
-    public void sentMessage() {
-
-    }
-
     public void setNicknameOfPlayer(String nicknameOfPlayer) {
         this.nicknameOfPlayer = nicknameOfPlayer;
     }
@@ -27,19 +22,3 @@ public class LoginMessage extends Message {
         return nicknameOfPlayer;
     }
 }
-
-/*
-public class Person {
-    public String name;
-    public int age;
-
-    public String getName() {
-        return name;
-    }
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-}
- */

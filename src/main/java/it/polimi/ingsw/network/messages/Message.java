@@ -1,15 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
 public class Message {
-    public String object;
-    public String request;
-
-    /*
-    public Message(String object, String request) {
-        this.object = object;
-        this.request = request;
-    }
-    */
+    protected String object;
+    protected String request;
 
     public String getObjectOfMessage() {
         return object;
@@ -19,7 +12,4 @@ public class Message {
         return request;
     }
 
-    public void sentMessage() {
-
-    }
 }

@@ -1,61 +1,124 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Match;
+import it.polimi.ingsw.network.messages.MatchStart;
+import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.server.ClientHandler;
 
-import java.util.logging.Handler;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Controller {
-    ControllerState state = null;
-    Match match = null;
-    final int numberOfPlayers;
-    final int ID;
-    private MappingClassForJson msg_in = null;
-    private ArrayList<PlayerHandler> playerhandlers;
-
     /**
-     * Thi method creates a new Match (Model) and set the initial state of this controller to "WaitingForPlayers"
-     * N.B. This method is called only when a new Client (Player) access the Server, and there is no Match waiting for Players.
-     * @param ID identifier of the controller and the Match created
-     * @param numPlayers number of players that are necessary to start the Match
+     * This attribute tells if the match has already started (no more player allowed in) -> [1]
+     * or if it's waiting for other players to join -> [0]
      */
-    public Controller(int ID, int numPlayers){
-        this.numberOfPlayers = numPlayers;
+    private boolean playing;
+    /**
+     * This attribute is the current state of the match
+     */
+    private ControllerState state = null;
+    /**
+     * This attribute is the reference to the Model of the match
+     */
+    private Match match = null;
+    /**
+     * This attribute is the number of players needed to start the match
+     */
+    private int numberOfPlayers;
+    /**
+     * This attribute is the identifier of the match
+     */
+    private final int ID;
+    /**
+     * This attribute is the last message received from the client
+     */
+    private Message msg_in = null;
+    /**
+     * This attribute is an array of references to all the ClientHandler of the players playing this match
+     */
+    private ArrayList<ClientHandler> clientHandlers;
+    /**
+     * This attribute is the counter of players added to match
+     */
+    private int playersAddedCounter;
+
+    /**
+     * Controller constructor
+     * @param ID the ID of the match
+     */
+    public Controller(int ID){
         this.ID = ID;
-        this.match = new Match(this.ID, this.numberOfPlayers, vv);
-        this.state = new WaitingForPlayers();
+        this.playing = false;
+        this.clientHandlers = new ArrayList<ClientHandler>();
+        this.state = new MatchCreating();
+        this.playersAddedCounter = 0;
     }
 
-    public Match getMatch(){
-        return this.match;
-    }
+    /**
+     * This method adds a player to the match and controls if there are enough players to start the playing
+     * @param playerHandler reference to the ClientHandler of the added player
+     * @param nickname nickname chosen by the player (client) and approved by the ClientHandler
+     */
+    public void addPlayerHandler(ClientHandler playerHandler, String nickname){
+        this.clientHandlers.add(playerHandler);
+        this.match.addPlayer(nickname);
 
-    public int getNumberOfPlayers(){
-        return numberOfPlayers;
-    }
+        playersAddedCounter++;
 
-    public int getMatchID(){
-        return this.ID;
-    }
+        if(playersAddedCounter == numberOfPlayers){
+            playing = true;
+            startMatch();
+        }
 
-    public MappingClassForJson getMsg(){
-        return msg_in;
-    }
-
-    public void addPlayerHandler(PlayerHandler playerHandler){
-        this.playerhandlers.add(playerHandler);
     }
     /**
-     * This method creates the Match model and initializes the state of this controller with the first state
-     * of the FSM (Finite State Machine)
+     * This method lets the match start, creates the view and chooses the first player of the match randomly; finally it
+     * sends the message to the ClientHandlers
      */
     public void startMatch(){
         //Creates the virtualView so that it can notify the client (client side)
         VirtualView vv = new VirtualView(this.match);
-        //Notify all the handlers
-        for(PlayerHandler p: playerhandlers){
-            p.matchStart();
-        }
+        this.match = new Match(this.ID, this.numberOfPlayers, vv);
+
+        Random random = new Random();
+        int firstPlayer_ID = random.nextInt(numberOfPlayers);
+
+        MatchStart msg = new MatchStart(firstPlayer_ID);
+        sendMessageAsBroadcast(msg);
+
         nextState();
+    }
+
+    /**
+     * This methode sends a message to one particular player
+     * @param player_ID ID of the addressee
+     * @param msg msg that must be sent to the player
+     */
+    public void sendMessageToPlayer(int player_ID, Message msg){
+        ClientHandler addressee = clientHandlers.get(player_ID);
+        addressee.messageToSerialize(msg);
+    }
+
+    /**
+     * This method sends a message to all players of the match
+     * @param msg
+     */
+    public void sendMessageAsBroadcast(Message msg){
+        for(ClientHandler p: clientHandlers){
+            p.messageToSerialize(msg);
+        }
+    }
+
+    /**
+     * This method hands the message received by the client over to the state
+     * @param msg message sent by the client
+     */
+    public void manageMsg(Message msg){
+        msg_in = msg;
+        //TODO: we could run a control on the message and if it is an ack or just a reading type message then we do not
+        //  hand it over to the state executor
+        state.stateExecution(this);
     }
 
     /**
@@ -74,9 +137,27 @@ public class Controller {
         this.state = cs;
     }
 
-    //We could return an object that will be serialized by the ClientHandler
-    public void manageMsg(MappingClassForJson msg){
-        msg_in = msg;
-        state.stateExecution(this);
+    public Match getMatch(){
+        return this.match;
+    }
+
+    public int getNumberOfPlayers(){
+        return numberOfPlayers;
+    }
+
+    public void setNumberOfPlayers(int numberOfPlayers){
+        this.numberOfPlayers = numberOfPlayers;
+    }
+
+    public int getMatchID(){
+        return this.ID;
+    }
+
+    public Message getMsg(){
+        return msg_in;
+    }
+
+    public boolean getPlayingStatus(){
+        return playing;
     }
 }
