@@ -47,17 +47,17 @@ class SchoolBoardTest {
         p2.setTowerColor(Tower.GREY);
 
         realm.getArchipelagos().get(0).setMasterOfArchipelago(p1);
-        assertEquals(7, p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
+        assertEquals(7, p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
 
         realm.getArchipelagos().get(1).setMasterOfArchipelago(p1);
 
 
         p1.getRealm().unifyArchipelago(0,1);
-        assertEquals(6, p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
+        assertEquals(6, p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
 
         realm.getArchipelagos().get(0).setMasterOfArchipelago(p2);
-        assertEquals(6, p2.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
-        assertEquals(8,p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
+        assertEquals(6, p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
+        assertEquals(8,p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
     }
 
 

@@ -1,8 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.*;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -42,8 +40,8 @@ public class ArchipelagoTest {
         Player p1 = new Player(1, "Jack", 2, r);
         Player p2 = new Player(2, "Sonia", 2, r);
 
-        assertTrue(p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
-        assertTrue(p2.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
+        assertTrue(p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
+        assertTrue(p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
 
         System.out.println("Initial position of mother nature is:" + r.getPositionOfMotherNature());
         r.moveMotherNature(2);
@@ -52,13 +50,13 @@ public class ArchipelagoTest {
         r.setMasterOfCurrentArchipelago(p1);
         assertTrue(p1.equals(r.getArchipelagos().get(currentArchipelago).getMasterOfArchipelago()));
         //one tower has been taken from Jack (p1)
-        assertTrue(p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 7);
+        assertTrue(p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 7);
 
         r.setMasterOfCurrentArchipelago(p2);
         //Jack (p1) takes back his tower
-        assertTrue(p1.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
+        assertTrue(p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
         //One tower is taken from Sonia (p2)
-        assertTrue(p2.getPlayerSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 7);
+        assertTrue(p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 7);
 
     }
 }

@@ -11,7 +11,7 @@ import it.polimi.ingsw.network.messages.MatchWaitingMessage;
 public class MatchCreating implements ControllerState{
     @Override
     public void nextState(Controller controller) {
-        controller.setState(new ChooseAssistantCard());
+        controller.setState(new ChooseDeck());
     }
 
     @Override
@@ -20,8 +20,6 @@ public class MatchCreating implements ControllerState{
         String jsonMessage = controller.getMsg();
         MatchSpecsMessage msgMapped = gson.fromJson(jsonMessage, MatchSpecsMessage.class);
 
-        //TODO: do we need to run a control on the message received or only one type of message can be received
-
         //initialize numberOfPlayers (in controller and model) and expertMode (only inside the model)
         controller.setNumberOfPlayers(msgMapped.getNumOfPlayers());
         controller.setExpertMode(msgMapped.isExpertMode());
@@ -29,5 +27,6 @@ public class MatchCreating implements ControllerState{
         //notify the player with a MatchWaiting message
         controller.sendMessageToPlayer(0, new MatchWaitingMessage());
 
+        //N.B. There is no nextState call because we call it inside the startMatch methode of Controller class
     }
 }

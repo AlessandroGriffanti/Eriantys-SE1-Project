@@ -75,7 +75,10 @@ public class CloudTile {
     /**
      * Puts new students on the cloud. Draw a new set of  students from the bag
      */
-    public void putStudents() {
-        this.students = bag.drawStudents(capacity);
+    public ArrayList<Creature> putStudents() {
+        ArrayList<Creature> drawnStudents = bag.drawStudents(capacity);
+        this.students = drawnStudents;
+
+        return drawnStudents;
     }
 }
