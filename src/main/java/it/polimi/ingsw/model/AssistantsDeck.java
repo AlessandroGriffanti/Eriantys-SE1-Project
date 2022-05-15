@@ -29,22 +29,27 @@ public class AssistantsDeck {
     private int numberOfRemainingCards;
 
 
-    public AssistantsDeck (Wizard wizard) throws IOException{
+    public AssistantsDeck (Wizard wizard) {
         this.wizard = wizard;
         this.deck = new HashMap<Integer, Assistant>();
         this.numberOfRemainingCards = 10;
         int i, x;
 
-        try(FileReader fileText = new FileReader("resources/assistantList.txt");
-            Scanner scanner = new Scanner(fileText)
-        ){
+
+        try{
+            FileReader fileText = new FileReader("resources/assistantList.txt");
+            Scanner scanner = new Scanner(fileText);
+
             for(i = 0; i < 10; i++) {
 
                 x = scanner.nextInt();
                 this.deck.put( x, new Assistant(x, scanner.nextInt() ) );
 
             }
+        }catch (IOException e){
+            e.printStackTrace();
         }
+
     }
 
     public HashMap<Integer, Assistant> getDeck(){
@@ -77,7 +82,7 @@ public class AssistantsDeck {
 
         this.deck.remove(orderValue);
         this.lastUsedCard = card;
-        this.numberOfRemainingCards = getNumberOfRemainingCards() - 1;
+        this.numberOfRemainingCards--;
 
         return card;
     }

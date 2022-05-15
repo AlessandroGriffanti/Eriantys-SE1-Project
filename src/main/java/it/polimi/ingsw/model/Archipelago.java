@@ -96,7 +96,7 @@ public class Archipelago {
 
     /**
      * Add one single student on the archipelago
-     * @param c
+     * @param c type of student
      */
     public void addStudent(Creature c){
         int previousValue = studentsPopulation.get(c);
@@ -153,11 +153,11 @@ public class Archipelago {
     public void setMasterOfArchipelago(Player p){
         if(masterOfArchipelago == null){
             masterOfArchipelago = p;
-            masterOfArchipelago.getPlayerSchoolBoard().takeTowers(this.numberOfIslands);
+            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         }else if (!masterOfArchipelago.equals(p)){
-            masterOfArchipelago.getPlayerSchoolBoard().putTowers(this.numberOfIslands);
+            masterOfArchipelago.getSchoolBoard().putTowers(this.numberOfIslands);
             masterOfArchipelago = p;
-            masterOfArchipelago.getPlayerSchoolBoard().takeTowers(this.numberOfIslands);
+            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         }
 
         setTowerColor();
@@ -167,7 +167,7 @@ public class Archipelago {
      * Sets the color of the towers given the player that is the master of the Archipelago
      */
     private void setTowerColor(){
-        towerColor = masterOfArchipelago.getPlayerTowerColor();
+        towerColor = masterOfArchipelago.getTowerColor();
     }
 
 }

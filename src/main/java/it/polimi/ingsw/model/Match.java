@@ -112,7 +112,7 @@ public class Match {
      */
     public Player getPlayerByID(int ID){
         for(Player player : players){
-            if(player.getPlayerID() == ID){
+            if(player.getID() == ID){
                 return player;
             }
         }
@@ -122,8 +122,8 @@ public class Match {
     /**
      *
      */
-    public void moveStudentsFromBagToCloudsEveryRound(){
-        getRealmOfTheMatch().moveStudentsToClouds();
+    public ArrayList<Creature> moveStudentsFromBagToCloudsEveryRound(){
+        return getRealmOfTheMatch().moveStudentsToClouds();
     }
 
     public void moveStudentsFromCloudToEntrance(int cloud_ID){
@@ -131,7 +131,31 @@ public class Match {
         ArrayList<Creature> takenStudents = this.realmOfTheMatch.takeStudentsFromCloud(cloud_ID);
 
         //adds the students to the current player's entrance
-        players.get(currentPlayer).getPlayerSchoolBoard().getEntrance().addMultipleStudents(takenStudents);
+        players.get(currentPlayer).getSchoolBoard().getEntrance().addMultipleStudents(takenStudents);
+    }
+
+    /**
+     * This method notifies the current Player to set its own assistant deck
+     * @param wizard assistants' deck chosen by the player
+     */
+    public void playerChooseDeck(Wizard wizard){
+        players.get(currentPlayer).chooseDeck(wizard);
+    }
+
+    /**
+     * This method calls the Player instance to use the assistant card chosen by the player
+     */
+    public void useCard(int orderValueOfTheCard){
+        this.players.get(currentPlayer).useAssistantCard(orderValueOfTheCard);
+    }
+
+    /**
+     * This method asks the player identified by the playerID how many assistant cards are left in its deck
+     * @param playerID ID of the player
+     * @return number of remaining cards
+     */
+    public int numberOfRemainingCardsOfPlayer(int playerID){
+        return players.get(playerID).numberOfRemainingAssistantCards();
     }
 
     public Bag getBagOfTheMatch() {

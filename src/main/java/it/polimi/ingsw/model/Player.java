@@ -2,26 +2,24 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.schoolboard.SchoolBoard;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Player {
     private String nickName;
-    private int playerID;
-    private SchoolBoard playerSchoolBoard;
-    private AssistantsDeck playerAssistantsDeck;
+    private int ID;
+    private SchoolBoard schoolBoard;
+    private AssistantsDeck assistantsDeck;
     private int coinsOwned;
-    private Tower playerTowerColor;
+    private Tower towerColor;
     private Realm realm;
 
     public Player(int id, String nickName, int numPlayers, Realm r){
         this.nickName = nickName;
-        this.playerID = id;
+        this.ID = id;
         this.realm = r;
 
         this.coinsOwned = 1;
-        this.playerSchoolBoard = new SchoolBoard(numPlayers, r, this);
+        this.schoolBoard = new SchoolBoard(numPlayers, r, this);
     }
 
 
@@ -32,48 +30,70 @@ public class Player {
 
 
     public void setTowerColor(Tower t){
-        this.playerTowerColor = t;
+        this.towerColor = t;
     }
 
     /** player's controlled professors */
     public ArrayList<Creature> getMyProfessors(){
-        return playerSchoolBoard.getControlledProfessors();
+        return schoolBoard.getControlledProfessors();
     }
 
     public int getCoinsOwned() {
         return coinsOwned;
     }
 
-    /** used in CharactersManager in the useCharacter method */
+    /**
+     * This method set the number of coins owned by the player
+     * N.B. used in CharactersManager in the useCharacter method
+     * @param coinsOwned number of coins owned
+     */
     public void setCoinsOwned(int coinsOwned) {
         this.coinsOwned = coinsOwned;
     }
 
-    /** creates the deck */
-    public AssistantsDeck chooseDeck (Wizard wizard) throws IOException {
-        this.playerAssistantsDeck = new AssistantsDeck(wizard);
-        return this.playerAssistantsDeck;
+    /**
+     * This method sets the assistants' deck of the player
+     * @param wizard deck chosen
+     */
+    public void chooseDeck (Wizard wizard) {
+        this.assistantsDeck = new AssistantsDeck(wizard);
     }
 
-    /** through this method we move the tower from and to island */
-    public SchoolBoard getPlayerSchoolBoard() {
-        return playerSchoolBoard;
+    /**
+     * This method calls the deck in order to use the chosen assistant card
+     * @param orderValue value that identifies the card chosen
+     */
+    public void useAssistantCard(int orderValue){
+        this.assistantsDeck.useCard(orderValue);
+    }
+
+    /**
+     * This method asks the assistants deck for n=the number of remaining cards
+     * @return number of remaining card (cards that has not been used yet)
+     */
+    public int numberOfRemainingAssistantCards(){
+        return this.assistantsDeck.getNumberOfRemainingCards();
+    }
+
+    // through this method we move the tower from and to island
+    public SchoolBoard getSchoolBoard() {
+        return schoolBoard;
     }
 
     public String getNickName() {
         return nickName;
     }
 
-    public int getPlayerID() {
-        return playerID;
+    public int getID() {
+        return ID;
     }
 
-    public AssistantsDeck getPlayerAssistantsDeck() {
-        return playerAssistantsDeck;
+    public AssistantsDeck getAssistantsDeck() {
+        return assistantsDeck;
     }
 
-    public Tower getPlayerTowerColor() {
-        return playerTowerColor;
+    public Tower getTowerColor() {
+        return towerColor;
     }
 
     public Realm getRealm() {

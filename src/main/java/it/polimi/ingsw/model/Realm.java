@@ -128,12 +128,16 @@ public class Realm{
 
     /**
      * This method call each cloud belonging to the "cloudRegion" so that they can refill
-     * their population.
+     * themselves with neew students taken from the bag
+     * @return the array of all the students taken (students on cloud0 - students on cloud1...)
      */
-    public void moveStudentsToClouds(){
+    public ArrayList<Creature> moveStudentsToClouds(){
+        ArrayList<Creature> drawnStudents = new ArrayList<Creature>();
         for(CloudTile c : cloudRegion){
-            c.putStudents();
+            drawnStudents.addAll(c.putStudents());
         }
+
+        return drawnStudents;
     }
 
     /**

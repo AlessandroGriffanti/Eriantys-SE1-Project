@@ -28,6 +28,10 @@ public class Controller {
      */
     private int numberOfPlayers;
     /**
+     * This attribute tells if the match must ber played in expert mode or not
+     */
+    private boolean expertMode;
+    /**
      * This attribute is the identifier of the match
      */
     private final int ID;
@@ -42,15 +46,26 @@ public class Controller {
     /**
      * This attribute is the list of names chosen by the player
      */
-    private ArrayList<String> playerNickname = null;
+    private ArrayList<String> playersNickname = null;
     /**
      * This attribute is the counter of players added to match
      */
     private int playersAddedCounter;
     /**
-     * This attribute tells if the match must ber played in expert mode or not
+     * This attribute represents the playing order of the action phase;
+     * it was determined inside the 'ChooseAssistantCard' state
      */
-    private boolean expertMode;
+    private ArrayList<Integer> actionPhaseOrder;
+
+
+    private int actualNumberOfPlayers;
+    /**
+     * This attribute tells if there is one or more players disconnected from the game
+     * We control its value in order to return the number of players that are actually playing the match
+     *      true -> actualNumberOfPlayers
+     *      false -> numberOfPlayers
+     */
+    private boolean isSomePlayerDisconnected;
 
     /**
      * Controller constructor
@@ -60,9 +75,11 @@ public class Controller {
         this.ID = ID;
         this.playing = false;
         this.clientHandlers = new ArrayList<ClientHandler>();
-        this.playerNickname = new ArrayList<String>();
+        this.playersNickname = new ArrayList<String>();
+        this.actionPhaseOrder = new ArrayList<Integer>();
         this.state = new MatchCreating();
         this.playersAddedCounter = 0;
+        isSomePlayerDisconnected = false;
     }
 
     /**
@@ -73,7 +90,7 @@ public class Controller {
      */
     public void addPlayerHandler(ClientHandler playerHandler, String nickname){
         this.clientHandlers.add(playerHandler);
-        this.playerNickname.add(nickname);
+        this.playersNickname.add(nickname);
 
         playersAddedCounter++;
 
@@ -98,13 +115,16 @@ public class Controller {
         VirtualView vv = new VirtualView(this.match);
         this.match = new Match(this.ID, this.numberOfPlayers, vv, expertMode);
         //adds all the players
-        for(String s: playerNickname){
+        for(String s: playersNickname){
             this.match.addPlayer(s);
         }
 
         //chooses the first player of the match
         Random random = new Random();
         int firstPlayer_ID = random.nextInt(numberOfPlayers);
+
+        //set the current player inside the model
+        match.setCurrentPlayer(firstPlayer_ID);
 
         //prepares MatchStart message for all the clients
         MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID);
@@ -139,8 +159,6 @@ public class Controller {
      */
     public void manageMsg(String msg){
         msg_in = msg;
-        //TODO: we could run a control on the message and if it is an ack or just a reading type message then we do not
-        //  hand it over to the state executor
         state.stateExecution(this);
     }
 
@@ -170,6 +188,32 @@ public class Controller {
 
     public void setNumberOfPlayers(int numberOfPlayers){
         this.numberOfPlayers = numberOfPlayers;
+        this.actualNumberOfPlayers = numberOfPlayers;
+    }
+
+    /**
+     * This method decrease of 1 the number of actual playing players , this is because it was disconnected
+     * @param playerID ID of the player who disconnected
+     */
+    public void onePlayerDisconnected(int playerID){
+        this.numberOfPlayers--;
+    }
+
+    /**
+     * This method increases of 1 the number of players because one player reconnected to match
+     * @param playerID ID of the player who reconnected
+     */
+    public void onePlayerReconnected(int playerID){
+        this.numberOfPlayers++;
+    }
+
+    /**
+     * This method computes the ID of the next player to make his move
+     * @param currentPlayer ID of the current player
+     * @return ID of the next player
+     */
+    public int nextPlayer(int currentPlayer){
+        return ((currentPlayer + 1) % numberOfPlayers);
     }
 
     public int getMatchID(){
@@ -186,5 +230,17 @@ public class Controller {
 
     public void setExpertMode(boolean mode){
         this.expertMode = mode;
+    }
+
+    public ArrayList<ClientHandler> getClientHandlers() {
+        return clientHandlers;
+    }
+
+    public void setActionPhaseOrder(ArrayList<Integer> actionPhaseOrder) {
+        this.actionPhaseOrder = actionPhaseOrder;
+    }
+
+    public ArrayList<Integer> getActionPhaseOrder() {
+        return actionPhaseOrder;
     }
 }
