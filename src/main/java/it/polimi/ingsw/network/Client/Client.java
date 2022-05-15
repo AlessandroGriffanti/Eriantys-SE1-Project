@@ -76,6 +76,10 @@ public class Client {
 
     //  per il case switch dei messaggi ricevuti questa sotto è una buona base
 
+    /**
+     * This method is used by client class to analyse the received message.
+     * @param receivedMessageInJson is the string received in json format, which will be deserialized.
+     */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson){
         System.out.println("Message analysis in progress...");
         System.out.println(receivedMessageInJson);
@@ -123,6 +127,10 @@ public class Client {
         }
     }
 
+    /**
+     * This method is used to send an ack message to the server.
+     * It create an AckMessage object which will be serialized in json in order to be sent.
+     */
     private void sendAckFromClient(){
         AckMessage ackMessage = new AckMessage();
         outputPrintClient.println(gsonObj.toJson(ackMessage));
@@ -130,8 +138,11 @@ public class Client {
         System.out.println("sent");
     }
 
-    /** if the client receives a loginSuccess message from the server, he has to declare the number of players of the lobby and
-     * if he wants to play in expert mode or not. */
+    /**
+     * This method is used by the client after receiving a loginSuccess message from the server;
+     * he has to declare the number of players of the lobby and
+     * if he wants to play in expert mode or not.
+     * */
     public void creatingNewSpecsFromClient(){
         Scanner inputForSpecs = new Scanner(System.in);
         MatchSpecsMessage newMatchSpecs;
