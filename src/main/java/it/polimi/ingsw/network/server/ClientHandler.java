@@ -88,21 +88,22 @@ public class ClientHandler implements Runnable {
         if (server.getLobbies().keySet().isEmpty()) {
             int newNumberOfTotalLobbies = 1;
             server.getLobbies().put((String.valueOf(newNumberOfTotalLobbies)), new Controller(newNumberOfTotalLobbies));
-            addPlayerHandler(this, nicknameOfNewPlayer);
+            server.getLobbies().get(newNumberOfTotalLobbies).addPlayerHandler(this, nicknameOfNewPlayer);
             return true;
         } else {
             for (String lobbyID : server.getLobbies().keySet()) {
                 if ((server.getLobbies().get(lobbyID).getPlayingStatus()) == false) {
-                    addPlayerHandler(this, nicknameOfNewPlayer);
+                    server.getLobbies().get(lobbyID).addPlayerHandler(this, nicknameOfNewPlayer);
                     return false;
                 } else {
                     int newNumberOfTotalLobbies = server.getLobbies().size() + 1;
                     server.getLobbies().put((String.valueOf(newNumberOfTotalLobbies)), new Controller(newNumberOfTotalLobbies));
-                    addPlayerHandler(this, nicknameOfNewPlayer);
+                    server.getLobbies().get(newNumberOfTotalLobbies).addPlayerHandler(this, nicknameOfNewPlayer);
                     return true;
                 }
             }
         }
+        return true;
     }
 
     /**
