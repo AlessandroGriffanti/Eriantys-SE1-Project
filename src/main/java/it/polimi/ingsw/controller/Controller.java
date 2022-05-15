@@ -56,16 +56,15 @@ public class Controller {
      * it was determined inside the 'ChooseAssistantCard' state
      */
     private ArrayList<Integer> actionPhaseOrder;
-
-
-    private int actualNumberOfPlayers;
     /**
-     * This attribute tells if there is one or more players disconnected from the game
-     * We control its value in order to return the number of players that are actually playing the match
-     *      true -> actualNumberOfPlayers
-     *      false -> numberOfPlayers
+     * This attribute says if we are playing the action phase (TRUE) or the planning phase (FALSE);
+     * it's used in the 'nextPlayer()' method
      */
-    private boolean isSomePlayerDisconnected;
+    private boolean actionPhase;
+    /**
+     * This attribute is the list of disconnected players where the indexes correspond to the IDs of the players
+     */
+    private ArrayList<Boolean> playersDisconnected;
 
     /**
      * Controller constructor
@@ -79,7 +78,12 @@ public class Controller {
         this.actionPhaseOrder = new ArrayList<Integer>();
         this.state = new MatchCreating();
         this.playersAddedCounter = 0;
-        isSomePlayerDisconnected = false;
+        this.actionPhase = false;
+
+        this.playersDisconnected = new ArrayList<Boolean>();
+        for(int i = 0; i < numberOfPlayers; i++){
+            playersDisconnected.add(false);
+        }
     }
 
     /**
@@ -188,7 +192,6 @@ public class Controller {
 
     public void setNumberOfPlayers(int numberOfPlayers){
         this.numberOfPlayers = numberOfPlayers;
-        this.actualNumberOfPlayers = numberOfPlayers;
     }
 
     /**
@@ -196,7 +199,7 @@ public class Controller {
      * @param playerID ID of the player who disconnected
      */
     public void onePlayerDisconnected(int playerID){
-        this.numberOfPlayers--;
+        playersDisconnected.set(playerID, true);
     }
 
     /**
@@ -204,7 +207,7 @@ public class Controller {
      * @param playerID ID of the player who reconnected
      */
     public void onePlayerReconnected(int playerID){
-        this.numberOfPlayers++;
+        playersDisconnected.set(playerID, false);
     }
 
     /**
@@ -213,7 +216,22 @@ public class Controller {
      * @return ID of the next player
      */
     public int nextPlayer(int currentPlayer){
-        return ((currentPlayer + 1) % numberOfPlayers);
+        int nextPlayerID;
+
+        if(actionPhase){
+            int indexOfCurrentPlayer = actionPhaseOrder.indexOf(currentPlayer);
+            int i = 1;
+
+            while(playersDisconnected.get(actionPhaseOrder.get((indexOfCurrentPlayer + i) % numberOfPlayers))){
+                i++;
+            }
+            nextPlayerID = actionPhaseOrder.get((indexOfCurrentPlayer + 1) % numberOfPlayers);
+
+        }else{
+            nextPlayerID = ((currentPlayer + 1) % numberOfPlayers);
+        }
+
+        return nextPlayerID;
     }
 
     public int getMatchID(){
@@ -242,5 +260,9 @@ public class Controller {
 
     public ArrayList<Integer> getActionPhaseOrder() {
         return actionPhaseOrder;
+    }
+
+    public void setActionPhase(boolean actionPhase) {
+        this.actionPhase = actionPhase;
     }
 }

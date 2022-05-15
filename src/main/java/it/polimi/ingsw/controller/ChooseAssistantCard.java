@@ -17,7 +17,7 @@ public class ChooseAssistantCard implements ControllerState{
      * key: order value that identifies the card
      * value: ID of the player that used it
      */
-    private HashMap<Integer, Integer> usedCards;
+    private HashMap<Integer, Integer> usedCards = new HashMap<>();
     /**
      * This attribute tells if the card chosen is legit or not
      */
@@ -25,7 +25,7 @@ public class ChooseAssistantCard implements ControllerState{
 
     @Override
     public void nextState(Controller controller) {
-
+        //TODO
     }
 
     @Override
@@ -79,12 +79,14 @@ public class ChooseAssistantCard implements ControllerState{
             //if all the players choose their assistant then we can go to the next state -> ACTION phase
             if(playersCounter == controller.getNumberOfPlayers()){
 
+                // the next player is the first of the action phase
                 response.setNextPlayer(defineActionPhaseOrder(controller));
                 controller.nextState();
             }else{
                 response.setNextPlayer(controller.nextPlayer(request.getSenderID()));
             }
 
+            controller.setActionPhase(true);
             controller.sendMessageAsBroadcast(response);
         }
     }

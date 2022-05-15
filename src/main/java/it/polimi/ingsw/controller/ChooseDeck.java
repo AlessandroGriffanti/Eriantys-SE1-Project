@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.messages.AckMessage;
 import it.polimi.ingsw.network.messages.ChosenDeckMessage;
-import it.polimi.ingsw.network.messages.NackMessage;
 
 import java.util.ArrayList;
 
@@ -44,7 +43,7 @@ public class ChooseDeck implements ControllerState{
 
         //notify the match with the deck chosen by the current player
         controller.getMatch().setCurrentPlayer(request.getSenderID());
-        controller.getMatch().playerChooseDeck(request.getDeck());
+        controller.getMatch().playerChoosesDeck(request.getDeck());
 
         /*sends an ack message to all the clients, who is waiting for an ack then knows that its choice is legit
         while is not waiting for an ack can just read the not available decks to perform the control on the deck chosen

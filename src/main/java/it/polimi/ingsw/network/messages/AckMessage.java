@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class AckMessage extends Message{
      */
     private ArrayList<Creature> studentsAddedToTheClouds;
     /**
+     * This attribute is the list of already chosen tower colors
+     */
+    private ArrayList<Tower> notAvailableTowerColors;
+    /**
      * This attribute is the list of already chosen decks
      */
     private ArrayList<Wizard> notAvailableDecks;
@@ -40,8 +45,9 @@ public class AckMessage extends Message{
         this.object = "ack";
         this.recipient = -1;
         this.nextPlayer = -1;
-        studentsAddedToTheClouds = new ArrayList<Creature>();
+
         notAvailableDecks = new ArrayList<Wizard>();
+        studentsAddedToTheClouds = new ArrayList<Creature>();
         assistantAlreadyUsedInThisRound = new ArrayList<Integer>();
     }
 
@@ -95,6 +101,16 @@ public class AckMessage extends Message{
     public ArrayList<Integer> getAssistantAlreadyUsedInThisRound() {
         return assistantAlreadyUsedInThisRound;
     }
+
+    //SETTER AND GETTER FOR notAvailableTowerColors
+
+    public void setNotAvailableTowerColors(ArrayList<Tower> notAvailableTowerColors) {
+        this.notAvailableTowerColors = notAvailableTowerColors;
+    }
+
+    public ArrayList<Tower> getNotAvailableTowerColors() {
+        return notAvailableTowerColors;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -103,10 +119,13 @@ public class AckMessage extends Message{
       added on each cloud
       [ex. 2 players => 2 clouds with 3 students each => in the attribute there will be 6 objects Creature, the first 3 belong to the cloud0 the last 3 to the cloud1]
 
-   2. deck:
+   2. tower_color:
+      it means that the color chosen is legit and 'notAvailableTowerColors' contains the already chosen colors
+
+   3. deck:
       it means that the deck chosen by the player is legit and 'notAvailableDecks' contains the decks that are no more available (useful for the next players)
 
-   3. assistant:
+   4. assistant:
       it means that the assistant chosen by the player is legit and 'assistantAlreadyUsedInThisRound' contains the assistants already chosen in this round's planning phase
 
-   4. */
+   5. */

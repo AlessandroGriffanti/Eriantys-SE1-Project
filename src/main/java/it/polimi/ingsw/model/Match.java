@@ -138,8 +138,16 @@ public class Match {
      * This method notifies the current Player to set its own assistant deck
      * @param wizard assistants' deck chosen by the player
      */
-    public void playerChooseDeck(Wizard wizard){
+    public void playerChoosesDeck(Wizard wizard){
         players.get(currentPlayer).chooseDeck(wizard);
+    }
+
+    /**
+     * This method sets the tower color of the current player
+     * @param color color chosen by the player
+     */
+    public void playerChoosesTowerColor(Tower color){
+        players.get(currentPlayer).setTowerColor(color);
     }
 
     /**

@@ -11,7 +11,7 @@ import it.polimi.ingsw.network.messages.MatchWaitingMessage;
 public class MatchCreating implements ControllerState{
     @Override
     public void nextState(Controller controller) {
-        controller.setState(new ChooseDeck());
+        controller.setState(new ChooseTowerColor());
     }
 
     @Override
