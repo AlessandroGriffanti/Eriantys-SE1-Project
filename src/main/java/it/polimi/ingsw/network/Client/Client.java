@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
+    private int playerID;
     private Socket clientSocket = null;
     private Gson gsonObj = new Gson();
     private BufferedReader inputBufferClient = null;
@@ -67,11 +68,96 @@ public class Client {
         System.out.println("Insert nickname: ");
         //String nickNamePlayer = loginScanner.nextLine();
         LoginMessage msgLogin = new LoginMessage(loginScanner.nextLine());
-
         System.out.println("ok");
         outputPrintClient.println(gsonObj.toJson(msgLogin));
         outputPrintClient.flush();
         System.out.println("sent");
     }
-}
 
+    //  per il case switch dei messaggi ricevuti questa sotto è una buona base
+
+    public void analysisOfReceivedMessageServer(String receivedMessageInJson){
+        System.out.println("Message analysis in progress...");
+        System.out.println(receivedMessageInJson);
+        Message receivedMessageFromJson = new Message();
+        receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
+        System.out.println("Message translated");
+        String messageObject = receivedMessageFromJson.getObjectOfMessage();
+        System.out.println("Object Found.");
+
+
+        //switch per l'analisi dell'oggetto del messaggio
+        switch (messageObject) {
+
+            /* DEFAULT TO USE:
+                LoginMessage msgLogin = new LoginMessage();
+                msgLogin = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
+                System.out.println(msgLogin.getNicknameOfPlayer());
+                loginInServer(msgLogin.getNicknameOfPlayer());
+                break;
+                */
+
+            case "LoginSuccess":
+                LoginSuccessMessage msgLoginSuccess = new LoginSuccessMessage();
+                msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
+                boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
+                playerID = msgLoginSuccess.getPlayerID();
+                if(newMatchNeeded == false) {
+                    creatingNewSpecsFromClient();
+                }else{
+                    sendAckFromClient();
+                }
+                break;
+
+            case "NicknameNotValid":
+                System.out.println("Insert new nickname: ");
+                loginFromClient();
+                break;
+
+            case "":
+
+                break;
+
+            default:
+                System.err.println("Error with the object of the message.");
+        }
+    }
+
+    private void sendAckFromClient(){
+        AckMessage ackMessage = new AckMessage();
+        outputPrintClient.println(gsonObj.toJson(ackMessage));
+        outputPrintClient.flush();
+        System.out.println("sent");
+    }
+
+    /** if the client receives a loginSuccess message from the server, he has to declare the number of players of the lobby and
+     * if he wants to play in expert mode or not. */
+    public void creatingNewSpecsFromClient(){
+        Scanner inputForSpecs = new Scanner(System.in);
+        MatchSpecsMessage newMatchSpecs;
+
+        System.out.println("Please insert the number of the player of the lobby: ");
+        int numberOfPlayerInTheLobby = inputForSpecs.nextInt();
+        while(numberOfPlayerInTheLobby < 0 && numberOfPlayerInTheLobby > 4){
+            System.out.println("Please, insert a valid number of players");
+            numberOfPlayerInTheLobby = inputForSpecs.nextInt();
+        }
+
+        System.out.println("Do you want to play in expert mode? Insert yes or no");
+        String expertMode = inputForSpecs.nextLine();
+        while(!(expertMode.equals("yes") || expertMode.equals("no"))){
+            System.out.println("Please, insert yes or no");
+            expertMode = inputForSpecs.nextLine();
+        }
+        if(expertMode.equals("yes")) {
+            newMatchSpecs = new MatchSpecsMessage(numberOfPlayerInTheLobby, true);
+        }else{
+            newMatchSpecs = new MatchSpecsMessage(numberOfPlayerInTheLobby, false);
+        }
+        outputPrintClient.println(gsonObj.toJson(newMatchSpecs));
+        outputPrintClient.flush();
+
+    }
+
+
+}

@@ -2,6 +2,8 @@ package it.polimi.ingsw.network.server;
 
 //import it.polimi.ingsw.controller.Controller;
 
+import it.polimi.ingsw.controller.Controller;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -31,8 +33,9 @@ public class Server {
     /** hashmap that links the player's name to the lobby ID the player is registered */
     private HashMap<String, String> playerInTheLobby;       //questa non serve
 
+
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
-    //private HashMap <String, Controller> lobbies;
+    private HashMap <String, Controller> lobbies;
 
     /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
@@ -43,8 +46,8 @@ public class Server {
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
         this.playerInTheLobby = new HashMap<>();
-        this.playersNicknames = new ArrayList<>();
-        //this.lobbies = new HashMap<>();
+        this.playersNicknames = new ArrayList<String>();
+        this.lobbies = new HashMap<>();
     }
 
 
@@ -91,16 +94,20 @@ public class Server {
     public void start() throws IOException{
         serverSocket = new ServerSocket(4444);
         ExecutorService executorService = Executors.newCachedThreadPool();
-        System.out.println("Waiting for connections...");
+        System.err.println("Waiting for connections...");
         while(true){
             Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected " + clientSocket.getRemoteSocketAddress());
+            System.err.println("Client connected " + clientSocket.getRemoteSocketAddress());
             executorService.submit(new ClientHandler(clientSocket, this));
         }
     }
 
     public ArrayList<String> getPlayersNicknames() {
         return this.playersNicknames;
+    }
+
+    public HashMap<String, Controller> getLobbies() {
+        return lobbies;
     }
 
     public void setPlayersNicknames(ArrayList<String> playersNicknames) {

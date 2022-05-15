@@ -11,6 +11,11 @@ public class MatchSpecsMessage extends Message{
         this.object = "creation";
     }
 
+    public MatchSpecsMessage(int numberOfPlayers, boolean expertMode){
+        this.numOfPlayers = numberOfPlayers;
+        this.expertMode = expertMode;
+    }
+
     public void setNumOfPlayers(int numOfPlayers) {
         this.numOfPlayers = numOfPlayers;
     }
