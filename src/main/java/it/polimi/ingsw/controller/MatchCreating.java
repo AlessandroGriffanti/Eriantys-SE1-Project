@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.network.messages.AckMessage;
 import it.polimi.ingsw.network.messages.MatchSpecsMessage;
-import it.polimi.ingsw.network.messages.MatchWaitingMessage;
 
 /**
  * This class represents the state of the controller in which it's waiting for other players to join the match
@@ -25,8 +25,13 @@ public class MatchCreating implements ControllerState{
         controller.setExpertMode(msgMapped.isExpertMode());
 
         //notify the player with a MatchWaiting message
-        controller.sendMessageToPlayer(0, new MatchWaitingMessage());
+        AckMessage ack = new AckMessage();
+        ack.setSubObject("waiting");
+        controller.sendMessageToPlayer(0, ack);
 
+        if(controller.getPlayersAddedCounter() == controller.getNumberOfPlayers()){
+            controller.startMatch();
+        }
         //N.B. There is no nextState call because we call it inside the startMatch methode of Controller class
     }
 }

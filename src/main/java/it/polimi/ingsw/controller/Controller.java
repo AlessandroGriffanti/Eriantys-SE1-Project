@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Match;
+import it.polimi.ingsw.network.messages.AckMessage;
 import it.polimi.ingsw.network.messages.MatchStartMessage;
-import it.polimi.ingsw.network.messages.MatchWaitingMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.ClientHandler;
 
@@ -26,7 +26,7 @@ public class Controller {
     /**
      * This attribute is the number of players needed to start the match
      */
-    private int numberOfPlayers;
+    private int numberOfPlayers = 0;
     /**
      * This attribute tells if the match must ber played in expert mode or not
      */
@@ -81,9 +81,6 @@ public class Controller {
         this.actionPhase = false;
 
         this.playersDisconnected = new ArrayList<Boolean>();
-        for(int i = 0; i < numberOfPlayers; i++){
-            playersDisconnected.add(false);
-        }
     }
 
     /**
@@ -102,11 +99,12 @@ public class Controller {
         sent from the MatchCreation state execution, we must notify the other players too; here we send the message to the
         added player*/
         if(playersAddedCounter > 1){
-            sendMessageToPlayer(playersAddedCounter, new MatchWaitingMessage());
+            AckMessage ack = new AckMessage();
+            ack.setSubObject("waiting");
+            sendMessageToPlayer(playersAddedCounter-1, ack);
         }
 
         if(playersAddedCounter == numberOfPlayers){
-            playing = true;
             startMatch();
         }
     }
@@ -134,6 +132,7 @@ public class Controller {
         MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID);
         sendMessageAsBroadcast(msg);
 
+        playing = true;
         nextState();
     }
 
@@ -192,6 +191,10 @@ public class Controller {
 
     public void setNumberOfPlayers(int numberOfPlayers){
         this.numberOfPlayers = numberOfPlayers;
+        // set to false the values of disconnections' array
+        for(int i = 0; i < numberOfPlayers; i++){
+            playersDisconnected.add(false);
+        }
     }
 
     /**
@@ -242,6 +245,10 @@ public class Controller {
         return msg_in;
     }
 
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+    }
+
     public boolean getPlayingStatus(){
         return playing;
     }
@@ -264,5 +271,9 @@ public class Controller {
 
     public void setActionPhase(boolean actionPhase) {
         this.actionPhase = actionPhase;
+    }
+
+    public int getPlayersAddedCounter() {
+        return playersAddedCounter;
     }
 }

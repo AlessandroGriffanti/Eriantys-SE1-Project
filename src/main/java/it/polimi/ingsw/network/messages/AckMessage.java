@@ -114,6 +114,9 @@ public class AckMessage extends Message{
 }
 
 /*POSSIBLE VALUES OF "subObject":
+   0. waiting:
+      it means that the match has been just created and is waiting to start; no more data required.
+
    1. fillClouds:
       it means that all the clouds have been refilled and 'studentsAddedToTheClouds' contains all te students
       added on each cloud

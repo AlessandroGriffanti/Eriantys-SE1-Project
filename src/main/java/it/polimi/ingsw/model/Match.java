@@ -71,9 +71,8 @@ public class Match {
      * @param nickname name of the player
      */
     public void addPlayer(String nickname){
-        Player p;
-
-        p = new Player(players.size(), nickname, numberOfPlayers, realmOfTheMatch);
+        Player p = new Player(players.size(), nickname, numberOfPlayers, realmOfTheMatch);
+        players.add(p);
         this.coinReserve = this.coinReserve - 1;
     }
 
@@ -176,6 +175,10 @@ public class Match {
 
     public Realm getRealmOfTheMatch() {
         return realmOfTheMatch;
+    }
+
+    public boolean isExpertMode(){
+        return expertMode;
     }
 
 }
