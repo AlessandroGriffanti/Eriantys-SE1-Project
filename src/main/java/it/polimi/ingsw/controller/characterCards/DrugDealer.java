@@ -22,9 +22,9 @@ public class DrugDealer extends Character {
         int indexOfPlayer;
 
         for(indexOfPlayer = 0; indexOfPlayer < getMatch().getNumberOfPlayers(); indexOfPlayer++) {
-            numberOfStudentsOfTheChosenCreature = getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().getOccupiedSeats().get(chosenCreature).intValue();
+            numberOfStudentsOfTheChosenCreature = getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().getOccupiedSeats().get(chosenCreature).intValue();
             for (i = 0; i < numberOfStudentsOfTheChosenCreature && i < 3; i++) {
-                getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(chosenCreature);
+                getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().removeStudent(chosenCreature);
                 getMatch().getBagOfTheMatch().addOneStudentToBag(chosenCreature);
             }
         }

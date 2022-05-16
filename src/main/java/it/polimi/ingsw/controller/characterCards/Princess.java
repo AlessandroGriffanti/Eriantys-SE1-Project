@@ -23,7 +23,7 @@ public class Princess extends Character {
     /** the idea of this method is nearly the same as the one in the joker */
     public void effect(int indexOfPlayer, int indexOfTheStudentOnPrincess, int indexOfTheStudentInTheDiningRoom){
         Creature creatureToRemoveFromPrincess = getStudentsOnPrincess().get(indexOfTheStudentOnPrincess);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().addStudent(creatureToRemoveFromPrincess);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().addStudent(creatureToRemoveFromPrincess);
 
         ArrayList<Creature> newStudentToAddToPrincess = getMatch().getBagOfTheMatch().drawStudents(1);
         studentsOnPrincess.addAll(newStudentToAddToPrincess);

@@ -24,11 +24,11 @@ public class Bard extends Character {
      * @param creatureChosenTwo second student chosen from the hashmap of the students in the dining room
      */
     public void effect(int indexOfPlayer, int positionEntranceOne, int positionEntranceTwo, Creature creatureChosenOne, Creature creatureChosenTwo) throws Exception {
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().moveStudent(positionEntranceOne);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().moveStudent(positionEntranceTwo);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(creatureChosenOne);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().addStudent(creatureChosenOne);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getDiningRoom().removeStudent(creatureChosenTwo);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().addStudent(creatureChosenTwo);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudent(positionEntranceOne);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudent(positionEntranceTwo);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().removeStudent(creatureChosenOne);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureChosenOne);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().removeStudent(creatureChosenTwo);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureChosenTwo);
     }
 }

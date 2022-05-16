@@ -36,10 +36,10 @@ public class Joker extends Character {
 
     public void effect (int indexOfPlayer, int indexOfTheStudentOnJoker, int indexOfTheStudentInTheEntrance ){
         Creature creatureToMoveFromJoker = getStudentsOnJoker().get(indexOfTheStudentOnJoker);
-        getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().addStudent(creatureToMoveFromJoker);
+        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureToMoveFromJoker);
 
 
-        Creature creatureToMoveFromEntrance = getMatch().getPlayers().get(indexOfPlayer).getPlayerSchoolBoard().getEntrance().getStudentsInTheEntrance().get(indexOfTheStudentInTheEntrance);
+        Creature creatureToMoveFromEntrance = getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(indexOfTheStudentInTheEntrance);
         getStudentsOnJoker().add(creatureToMoveFromEntrance);
     }
 
