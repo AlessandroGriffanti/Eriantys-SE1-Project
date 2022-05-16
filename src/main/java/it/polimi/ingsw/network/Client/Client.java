@@ -51,6 +51,7 @@ public class Client {
         String msgFromServer = inputBufferClient.readLine();
         System.out.println("Still connected");
         System.out.println(msgFromServer);
+        analysisOfReceivedMessageServer(msgFromServer);
 
 
         inputBufferClient.close();

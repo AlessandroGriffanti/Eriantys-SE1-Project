@@ -6,26 +6,23 @@ import it.polimi.ingsw.network.messages.LoginMessage;
 import it.polimi.ingsw.network.messages.LoginSuccessMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.NicknameNotValidMessage;
+import it.polimi.ingsw.network.server.Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
  * it should deserialize the json received and pass the information to the controller
  */
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
     private Socket clientSocket;
     private Server server;
     private String nicknamePlayer;
 
-    /**
-     * input and output stream
-     */
-    private PrintWriter outputHandler;
-    private BufferedReader inputHandler;
+    //input and output stream
+    InputStream inputStream = null;
+    PrintWriter outputHandler = null;
+    BufferedReader inputHandler = null;
 
     /**
      * Gson object "gsonObj" to deserialize the json message received
@@ -33,35 +30,31 @@ public class ClientHandler implements Runnable {
     private final Gson gsonObj = new Gson();
 
     public ClientHandler(Socket socket, Server server) {
+    //public ClientHandler(Socket socket) {
         this.clientSocket = socket;
         this.server = server;
     }
 
-    @Override
     public void run() {
+
+
         try {
-            System.err.println("running");
-
-            outputHandler = new PrintWriter(clientSocket.getOutputStream());
+            System.out.println("running");
+            inputStream = clientSocket.getInputStream();
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            /*
-            String outputFromServer = inputHandler.readLine();
-            System.out.println("nickreceived: " + outputFromServer); //ricevuto dal client
-
-            outputHandler.println(outputFromServer + " ok\n");
-            outputHandler.flush();
-            System.out.println("sent ok");
-            */
+            outputHandler = new PrintWriter(clientSocket.getOutputStream());
 
             loginInServer(inputHandler.readLine());
 
             //aggiungere qui il controllo sull'hashmap, quella con il controller, (e sull'attributo booleano del controller per vedere se creare un nuovo controller o meno.
 
+            /*
             while(clientSocket.isConnected()){
                 server.getLobbies().get(server.getLobbyIDByPlayerName(nicknamePlayer)).manageMsg(inputHandler.readLine());          //messaggio passato in json al controller
                 System.out.println("pippo while");
             }
+
+             */
 
             System.out.println("end");
 
@@ -84,6 +77,7 @@ public class ClientHandler implements Runnable {
      * controller to which we pass the lobby ID
      */
 
+    /*
     public synchronized boolean checkNewLobbyCreation(String nicknameOfNewPlayer) {
         if (server.getLobbies().keySet().isEmpty()) {
             int newNumberOfTotalLobbies = 1;
@@ -105,6 +99,8 @@ public class ClientHandler implements Runnable {
         }
         return true;
     }
+    */
+
 
     /**
      * This method in the server analyse all the received message from the client and calls the right method in consequence.
@@ -113,14 +109,14 @@ public class ClientHandler implements Runnable {
      */
     public void loginInServer(String receivedMessageInJson) {
         System.out.println(receivedMessageInJson);
-        LoginMessage receivedMessageFromJson = new LoginMessage();
+        LoginMessage receivedMessageFromJson; //= new LoginMessage();
         receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
         System.out.println("Message translated");
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
         System.out.println("Object Found.");
+
         if (messageObject.equals("login")) {
             System.out.println("I received a login message");
-            // System.out.println(receivedMessageFromJson.getNicknameOfPlayer());
             int j = this.server.getPlayersNicknames().size();
             if (j == 0) {
                 //PRIMO GIOCATORE COLLEGATO
@@ -129,8 +125,8 @@ public class ClientHandler implements Runnable {
                 System.out.println("primo nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
                 System.out.println("nickname ok");
 
-                boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
-                sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
+                //boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
+                //sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
 
                 System.out.println("sent ok");
 
@@ -149,9 +145,10 @@ public class ClientHandler implements Runnable {
                     nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();
                     System.out.println("altro nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
                     System.out.println("nickname ok");
+                    sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), true);   //provvisorio
 
-                    boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
-                    sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
+                    //boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
+                    //sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
 
                 } else {
                     System.out.println("nickname already used");
