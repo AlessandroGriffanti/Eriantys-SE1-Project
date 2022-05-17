@@ -4,24 +4,24 @@ import it.polimi.ingsw.model.Creature;
 
 import java.util.ArrayList;
 
-public class Princess extends Character {
+//public class Princess extends Character {
 
     /** this attribute handles the students on the card */
-    private ArrayList<Creature> studentsOnPrincess;
+/*    private ArrayList<Creature> studentsOnPrincess;
 
     public Princess(){
         this.price = 2;
         studentsOnPrincess = new ArrayList<>();
-    }
+    } */
 
     /** same idea as the one explained in the joker character card */
-    public void setUpEffect(){
+   /* public void setUpEffect(){
         studentsOnPrincess.addAll(getMatch().getBagOfTheMatch().drawStudents(4));
     }
     public void effect(){};
-
+*/
     /** the idea of this method is nearly the same as the one in the joker */
-    public void effect(int indexOfPlayer, int indexOfTheStudentOnPrincess, int indexOfTheStudentInTheDiningRoom){
+   /* public void effect(int indexOfPlayer, int indexOfTheStudentOnPrincess, int indexOfTheStudentInTheDiningRoom){
         Creature creatureToRemoveFromPrincess = getStudentsOnPrincess().get(indexOfTheStudentOnPrincess);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().addStudent(creatureToRemoveFromPrincess);
 
@@ -33,4 +33,6 @@ public class Princess extends Character {
         return studentsOnPrincess;
     }
 
-}
+
+
+} */

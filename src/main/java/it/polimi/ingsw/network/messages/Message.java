@@ -6,6 +6,8 @@ public class Message {
      */
     protected String object;
     protected String request;
+
+    protected String subObject;
     /**
      * This attribute is the ID of the player who sent the message
      */
@@ -14,6 +16,11 @@ public class Message {
     public String getObjectOfMessage() {
         return object;
     }
+
+    public String getSubObject() {
+        return subObject;
+    }
+
 
     public void setObject(String object) {
         this.object = object;

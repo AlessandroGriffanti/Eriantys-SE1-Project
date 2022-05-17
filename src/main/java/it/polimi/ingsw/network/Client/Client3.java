@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+public class Client3 {
     private int playerID;
     private Socket clientSocket = null;
     private Gson gsonObj = new Gson();
@@ -48,13 +48,10 @@ public class Client {
 
 
 
-
         String msgFromServer = inputBufferClient.readLine();
         System.out.println("Still connected");
         System.out.println(msgFromServer);
-        analysisOfReceivedMessageServer(msgFromServer);
 
-        //analysisOfReceivedMessageServer(inputBufferClient.readLine()); //aggiuntp questo per prova
 
         inputBufferClient.close();
         outputPrintClient.close();

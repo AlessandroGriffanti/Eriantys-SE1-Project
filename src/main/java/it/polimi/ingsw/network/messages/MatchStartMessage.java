@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.model.Player;
+
 public class MatchStartMessage extends Message{
     private int firstPlayer;
 
@@ -7,4 +9,11 @@ public class MatchStartMessage extends Message{
         this.firstPlayer = firstPlayer_ID;
         this.object = "start";
     }
+
+    public MatchStartMessage(){}
+
+    public int getFirstPlayer() {
+        return firstPlayer;
+    }
+
 }

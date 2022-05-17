@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.model.Creature;
-
+/*
 public class Bard extends Character {
     public Bard() {
         this.price = 1;
@@ -11,7 +11,7 @@ public class Bard extends Character {
     public void effect() {
         System.out.println("Error: no variables received");
     }
-
+*/
     /**
      * effect method swaps to students of the entrance with two students of the entrance.
      * first is used the moveStudent method to move the chosen student to the dining room.
@@ -23,6 +23,8 @@ public class Bard extends Character {
      * @param creatureChosenOne first student chosen from the hashmap of the students in the dining room
      * @param creatureChosenTwo second student chosen from the hashmap of the students in the dining room
      */
+/*
+
     public void effect(int indexOfPlayer, int positionEntranceOne, int positionEntranceTwo, Creature creatureChosenOne, Creature creatureChosenTwo) throws Exception {
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudent(positionEntranceOne);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudent(positionEntranceTwo);
@@ -32,3 +34,4 @@ public class Bard extends Character {
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureChosenTwo);
     }
 }
+*/

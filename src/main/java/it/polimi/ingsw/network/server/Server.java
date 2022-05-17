@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-//import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 
 import it.polimi.ingsw.controller.Controller;
 
@@ -43,11 +43,19 @@ public class Server {
     private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
 
 
+    /** this arraylist keeps a track of the connections */
+    private ArrayList <Socket> connections;
+
+    //posso aggiungere un hashmap di string(o int) che indica il numeero della partita, della lobby, e di boolean
+    //in cui true mi indica ad esempio se la partita è in attesa e false se è completa
+
+
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
         this.playerInTheLobby = new HashMap<>();
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
+        this.connections = new ArrayList<>();
     }
 
 
@@ -94,6 +102,11 @@ public class Server {
         return lobbies;
     }
 
+    public ArrayList<Socket> getConnections() {
+        return connections;
+    }
+
+
     public void setPlayersNicknames(ArrayList<String> playersNicknames) {
         this.playersNicknames = playersNicknames;
     }
@@ -125,7 +138,8 @@ public class Server {
         System.err.println("Waiting for connections...");
         while(true){
             Socket clientSocket = serverSocket.accept();
-            System.err.println("Client connected " + clientSocket.getRemoteSocketAddress());
+            connections.add(clientSocket);
+            System.err.println("Client connected " + clientSocket.getRemoteSocketAddress() + ", number of clients: " + connections.size());
             executorService.submit(new ClientHandler(clientSocket, this));
         }
     }

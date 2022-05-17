@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.Player;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/*
 public class CharactersManager {
     private ArrayList<Character> charactersList;
     private ArrayList<Boolean> charactersUsed;
@@ -121,3 +121,4 @@ public class CharactersManager {
     }
 
 }
+*/

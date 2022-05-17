@@ -1,5 +1,5 @@
 package it.polimi.ingsw.controller.characterCards;
-
+/*
 public class Cook  extends Character {
 
     public Cook() {
@@ -15,3 +15,4 @@ public class Cook  extends Character {
         //confronto dei professori ANCORA da fare
     }
 }
+*/
