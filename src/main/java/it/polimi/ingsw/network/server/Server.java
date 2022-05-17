@@ -31,7 +31,7 @@ public class Server {
 
 
     /** hashmap that links the player's name to the lobby ID the player is registered */
-    private HashMap<String, String> playerInTheLobby;       //questa non serve
+    //private HashMap<String, String> playerInTheLobby;       //questa non serve
 
 
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
@@ -40,7 +40,7 @@ public class Server {
     /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
      */
-    private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
+    //private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
 
 
     /** this arraylist keeps a track of the connections */
@@ -52,7 +52,7 @@ public class Server {
 
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
-        this.playerInTheLobby = new HashMap<>();
+        //this.playerInTheLobby = new HashMap<>();
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
         this.connections = new ArrayList<>();
@@ -75,15 +75,16 @@ public class Server {
      * @param nickname player's name.
      * @return the lobby id.
      */
-    public String getLobbyIDByPlayerName(String nickname) {
-        return playerInTheLobby.get(nickname);
-    }
+    //public String getLobbyIDByPlayerName(String nickname) {
+     //   return playerInTheLobby.get(nickname);
+    //}
 
     /**
      * This method returns the list of players that have joined the selected lobby.
      * @param lobbyID the lobby id.
      * @return a list of player's nickname.
      */
+    /*
     public ArrayList<String> getPlayersNameByLobby(String lobbyID) {
         ArrayList<String> players = new ArrayList<>();
         for (String nickname : playerInTheLobby.keySet()) {
@@ -93,6 +94,8 @@ public class Server {
         }
         return players;
     }
+
+     */
 
     public ArrayList<String> getPlayersNicknames() {
         return this.playersNicknames;

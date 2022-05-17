@@ -4,8 +4,8 @@ public class LoginSuccessMessage extends Message{
     private int playerID;
 
     private boolean newMatchNeeded;
-    //FALSE -> to create
-    //TRUE  -> already created
+    //TRUE  -> to create
+    //FALSE -> already created
 
     public LoginSuccessMessage(int playerID, boolean newMatchNeeded){
         this.newMatchNeeded = newMatchNeeded;

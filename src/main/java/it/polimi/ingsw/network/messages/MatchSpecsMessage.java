@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 /**
- * This class represents the message sent by the client to the server providing the information needed to creat the new match
+ * This class represents the message sent by the client to the server providing the information needed to create the new match
  */
 public class MatchSpecsMessage extends Message{
     int numOfPlayers;

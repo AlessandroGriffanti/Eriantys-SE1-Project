@@ -66,8 +66,8 @@ public class Client3 {
     public void loginFromClient() {
         Scanner loginScanner = new Scanner(System.in);
         System.out.println("Insert nickname: ");
-        //String nickNamePlayer = loginScanner.nextLine();
-        LoginMessage msgLogin = new LoginMessage(loginScanner.nextLine());
+        String nickNamePlayer = loginScanner.nextLine();
+        LoginMessage msgLogin = new LoginMessage(loginScanner.nextLine(), true);
         System.out.println("ok");
         outputPrintClient.println(gsonObj.toJson(msgLogin));
         outputPrintClient.flush();
