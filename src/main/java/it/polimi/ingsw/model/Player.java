@@ -23,7 +23,9 @@ public class Player {
     }
 
 
-    /** adds a coin to the player */
+    /**
+     * This method adds a coin to the player's treasure
+     */
     public void earnCoin(){
         this.coinsOwned ++;
     }
@@ -33,15 +35,6 @@ public class Player {
         this.towerColor = t;
     }
 
-    /** player's controlled professors */
-    public ArrayList<Creature> getMyProfessors(){
-        return schoolBoard.getControlledProfessors();
-    }
-
-    public int getCoinsOwned() {
-        return coinsOwned;
-    }
-
     /**
      * This method set the number of coins owned by the player
      * N.B. used in CharactersManager in the useCharacter method
@@ -49,6 +42,17 @@ public class Player {
      */
     public void setCoinsOwned(int coinsOwned) {
         this.coinsOwned = coinsOwned;
+    }
+    public int getCoinsOwned() {
+        return coinsOwned;
+    }
+
+    /**
+     * This method finds the professors controlled by the player
+     * @return list of professors controlled
+     */
+    public ArrayList<Creature> getMyProfessors(){
+        return schoolBoard.getControlledProfessors();
     }
 
     /**

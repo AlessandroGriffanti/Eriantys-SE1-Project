@@ -73,7 +73,7 @@ class EntranceTest {
         Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
 
         Creature creatureMoved = entrance.getStudentsInTheEntrance().get(2);
-        entrance.moveStudent(2);
+        entrance.moveStudentToDiningRoom(2);
         assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(creatureMoved).intValue());
     }
 

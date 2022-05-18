@@ -282,13 +282,4 @@ public class Controller {
             playersDisconnected.add(false);
         }
     }
-
-    /**
-     * This method compute the number of players who joined the game till now
-     * @return number of currently joining players
-     */
-    public int numberOfPlayerTillNow(){
-        return clientHandlers.size();
-    }
-
 }

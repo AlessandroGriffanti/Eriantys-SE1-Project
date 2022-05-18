@@ -94,7 +94,7 @@ public class Entrance {
      * This method moves a student to the diningRoom and removes it from the entrance (set the position to null)
      * @param index index of the student
      */
-    public void moveStudent(int index){
+    public void moveStudentToDiningRoom(int index){
         doorToTheDiningRoom.addStudent(studentsInTheEntrance.get(index));
         studentsInTheEntrance.set(index, null);
     }

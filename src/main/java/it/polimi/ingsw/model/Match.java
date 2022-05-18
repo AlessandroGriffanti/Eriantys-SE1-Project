@@ -81,6 +81,10 @@ public class Match {
         return numberOfPlayers;
     }
 
+    public int getPositionOfMotherNature(){
+        return realmOfTheMatch.getPositionOfMotherNature();
+    }
+
     /**
      * This method sets the current Player to the one identified by the ID passed as argument
      * @param ID_currentPlayer ID of the 'new' current player
