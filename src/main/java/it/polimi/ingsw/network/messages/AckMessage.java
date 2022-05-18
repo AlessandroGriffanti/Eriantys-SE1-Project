@@ -52,7 +52,7 @@ public class AckMessage extends Message{
     }
 
     public void setSubObject(String subObject){
-        this.subObject = subObject;
+       this.subObject = subObject;
     }
 
     public String getSubObject() {

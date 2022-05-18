@@ -163,8 +163,9 @@ public class Client2 {
                     sendAckFromClient();
                     break;
                 }
-            case "ack":                         //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
-                switch(receivedMessageFromJson.getSubObject()) {     //aggiunto in message il subObject con il relativo getter
+            case "ack":                                                             //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
+                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);
+                switch(ackMessageMapped.getSubObject()) {                           //aggiunto in message il subObject con il relativo getter
                     case "waiting":
                         sendAckFromClient();
                         break;
@@ -194,7 +195,7 @@ public class Client2 {
         AckMessage ackMessage = new AckMessage();
         outputPrintClient.println(gsonObj.toJson(ackMessage));
         outputPrintClient.flush();
-        System.out.println("sent");
+        System.out.println("sent ack from client");
     }
 
     /**

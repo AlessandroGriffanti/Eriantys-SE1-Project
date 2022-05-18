@@ -163,8 +163,9 @@ public class Client {
                     sendAckFromClient();
                     break;
                 }
-            case "ack":                         //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
-                switch(receivedMessageFromJson.getSubObject()) {     //aggiunto in message il subObject con il relativo getter
+            case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
+                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
+                switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
                         sendAckFromClient();
                         break;
@@ -194,13 +195,12 @@ public class Client {
         AckMessage ackMessage = new AckMessage();
         outputPrintClient.println(gsonObj.toJson(ackMessage));
         outputPrintClient.flush();
-        System.out.println("sent");
+        System.out.println("sent ack from client");
     }
 
     /**
      * This method is used by the client after receiving a loginSuccess message from the server;
-     * he has to declare the number of players of the lobby and
-     * if he wants to play in expert mode or not.
+     * he has to declare the number of players of the lobby and if he wants to play in expert mode or not.
      * */
     public void creatingNewSpecsFromClient(){
         Scanner inputForSpecs = new Scanner(System.in);

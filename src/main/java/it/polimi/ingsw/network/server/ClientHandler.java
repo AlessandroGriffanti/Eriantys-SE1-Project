@@ -110,27 +110,27 @@ public class ClientHandler extends Thread {
                 checkNewMatchRequest(receivedMessageFromJson.isCreateNewMatch(), nicknamePlayer);   //controlliamo se vuole creare un nuovo match. se sì mandiamo un loginSuccess
                                                                                                     //se no, mandiamo un nolobbyavailable (se non ce ne sono) o un askmatchtojoin
 
-                String messageReceivedInJson = inputHandler.readLine();     //qui riceve il nuovo mex dal client
+                String messageReceivedInJson = inputHandler.readLine();                             //qui riceve il nuovo mex dal client
                 Message messageReceivedFromJson = gsonObj.fromJson(messageReceivedInJson, Message.class);
 
-                if(messageReceivedFromJson.getObjectOfMessage().equals("creation")){        //se riceve il messaggio di MatchSpecs
+                if(messageReceivedFromJson.getObjectOfMessage().equals("creation")){                //se riceve il messaggio di MatchSpecs
                     System.out.println("I received a new match specs message");
-                    lobbyCreation(nicknamePlayer);                                          // --> allora crea la lobby
+                    lobbyCreation(nicknamePlayer);                                                  // --> allora crea la lobby
 
                     System.out.println("Lobby created");
                    // wait(5*1000);   //ATTENZIONE
 
-                    System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());
+                    System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());    //stampo il numero di giocatori della lobby per controllo
                     server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size() - 1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
 
 
-                }else if(messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {     //se il server riceve questo significa che il player ha scelto a che lobby unirsi
+                }else if(messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {          //se il server riceve questo significa che il player ha scelto a che lobby unirsi
                     System.out.println("I received a new chosen lobby message");
                     ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
 
                     server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
-                    System.out.println("nuovo numero di giocatori nella lobby: " +server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter());
-                    server.getLobbies().get(server.getLobbies().keySet().size()).manageMsg(messageReceivedInJson);      // QUESTO CHE SAREBBE?
+                    System.out.println("nuovo numero di giocatori nella lobby: " + server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter());
+                   // server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size())).manageMsg(messageReceivedInJson);      // questo serve?
 
                 }else {
                     System.out.println("Error: not right specs message");
