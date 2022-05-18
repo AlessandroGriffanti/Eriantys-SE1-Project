@@ -53,7 +53,6 @@ public class ClientHandler extends Thread {
                 server.getLobbies().get(server.getLobbyIDByPlayerName(nicknamePlayer)).manageMsg(inputHandler.readLine());          //messaggio passato in json al controller
                 System.out.println("pippo while");
             }
-
              */
 
             System.out.println("end");
@@ -109,7 +108,7 @@ public class ClientHandler extends Thread {
                 System.out.println("player ok");
 
                 checkNewMatchRequest(receivedMessageFromJson.isCreateNewMatch(), nicknamePlayer);   //controlliamo se vuole creare un nuovo match. se sì mandiamo un loginSuccess
-                                                                                                    //se no, mandiamo un lobbyavailable (se non ce ne sono) o un askmatchtojoin
+                                                                                                    //se no, mandiamo un nolobbyavailable (se non ce ne sono) o un askmatchtojoin
 
                 String messageReceivedInJson = inputHandler.readLine();     //qui riceve il nuovo mex dal client
                 Message messageReceivedFromJson = gsonObj.fromJson(messageReceivedInJson, Message.class);
@@ -122,9 +121,7 @@ public class ClientHandler extends Thread {
                    // wait(5*1000);   //ATTENZIONE
 
                     System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());
-                    System.out.println("qui siamo arrivati");
-
-                    server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
+                    server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size() - 1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
 
 
                 }else if(messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {     //se il server riceve questo significa che il player ha scelto a che lobby unirsi
@@ -132,6 +129,7 @@ public class ClientHandler extends Thread {
                     ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
 
                     server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
+                    System.out.println("nuovo numero di giocatori nella lobby: " +server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter());
                     server.getLobbies().get(server.getLobbies().keySet().size()).manageMsg(messageReceivedInJson);      // QUESTO CHE SAREBBE?
 
                 }else {

@@ -7,7 +7,7 @@ public class Message {
     protected String object;
     protected String request;
 
-    protected String subObject;
+    //protected String subObject;
     /**
      * This attribute is the ID of the player who sent the message
      */
@@ -17,9 +17,9 @@ public class Message {
         return object;
     }
 
-    public String getSubObject() {
+    /*public String getSubObject() {
         return subObject;
-    }
+    } */
 
 
     public void setObject(String object) {
