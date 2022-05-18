@@ -40,16 +40,16 @@ public class ChooseTowerColor implements ControllerState{
         usedColors.add(request.getColor());
 
         // set the current player
-        controller.getMatch().setCurrentPlayer(request.getSenderID());
+        controller.getMatch().setCurrentPlayer(request.getSender_ID());
         // notify the match with the color chosen by the current player
         controller.getMatch().playerChoosesTowerColor(request.getColor());
 
         // send an ack message
         AckMessage response = new AckMessage();
         response.setSubObject("tower_color");
-        response.setRecipient(request.getSenderID());
+        response.setRecipient(request.getSender_ID());
 
-        int nextPlayer = controller.nextPlayer(request.getSenderID());
+        int nextPlayer = controller.nextPlayer(request.getSender_ID());
         response.setNextPlayer(nextPlayer);
 
         response.setNotAvailableTowerColors(usedColors);

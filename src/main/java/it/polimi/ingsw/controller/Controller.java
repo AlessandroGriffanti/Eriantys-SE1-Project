@@ -158,7 +158,7 @@ public class Controller {
      */
     public void sendMessageAsBroadcast(Message msg){
         for(ClientHandler p: clientHandlers){
-            p.messageToSerialize(msg);
+            //p.messageToSerialize(msg);
         }
     }
 

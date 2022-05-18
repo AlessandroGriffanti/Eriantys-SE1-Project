@@ -126,6 +126,16 @@ public class Match {
     }
 
     /**
+     * This method finds the type of a particular student in the entrance of the specified player
+     * @param player_ID ID of the player
+     * @param student_ID ID of the student we are interested in
+     * @return type of student [Creature]
+     */
+    public Creature getStudentInEntranceOfPlayerByID(int player_ID, int student_ID){
+        return players.get(player_ID).getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(student_ID);
+    }
+
+    /**
      *
      */
     public ArrayList<Creature> moveStudentsFromBagToCloudsEveryRound(){

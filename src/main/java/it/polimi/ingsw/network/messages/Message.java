@@ -5,11 +5,10 @@ public class Message {
      * This attribute is the object of the message
      */
     protected String object;
-    protected String request;
     /**
      * This attribute is the ID of the player who sent the message
      */
-    protected int senderID;
+    protected int sender_ID;
 
     public String getObjectOfMessage() {
         return object;
@@ -19,15 +18,11 @@ public class Message {
         this.object = object;
     }
 
-    public String getRequest() {
-        return request;
+    public int getSender_ID() {
+        return sender_ID;
     }
 
-    public int getSenderID() {
-        return senderID;
-    }
-
-    public void setSenderID(int senderID) {
-        this.senderID = senderID;
+    public void setSender_ID(int sender_ID) {
+        this.sender_ID = sender_ID;
     }
 }

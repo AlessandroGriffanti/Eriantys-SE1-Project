@@ -25,7 +25,7 @@ public class ChooseAssistantCard implements ControllerState{
 
     @Override
     public void nextState(Controller controller) {
-        //TODO
+        controller.setState(new Action_1());
     }
 
     @Override
@@ -39,13 +39,13 @@ public class ChooseAssistantCard implements ControllerState{
         }
 
         //set current player
-        controller.getMatch().setCurrentPlayer(request.getSenderID());
+        controller.getMatch().setCurrentPlayer(request.getSender_ID());
 
         /*CONTROL:
         can the card be used? if it can be used we set cardLegit to 'true'*/
         if(usedCards.containsKey(request.getAssistantChosen())){
             //get the number of cards left
-            int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSenderID());
+            int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSender_ID());
 
             //if the player has more cards than the already chosen ones then he can choose another assistant
             if(numberOfRemainingCards > usedCards.size()){
@@ -53,7 +53,7 @@ public class ChooseAssistantCard implements ControllerState{
                 NackMessage nack = new NackMessage();
                 nack.setSubObject("assistant");
 
-                controller.sendMessageToPlayer(request.getSenderID(), nack);
+                controller.sendMessageToPlayer(request.getSender_ID(), nack);
             }
         }
 
@@ -63,7 +63,7 @@ public class ChooseAssistantCard implements ControllerState{
 
             //add to used cards only if this is the first player using the card
             if(!usedCards.containsKey(request.getAssistantChosen())){
-                usedCards.put(request.getAssistantChosen(), request.getSenderID());
+                usedCards.put(request.getAssistantChosen(), request.getSender_ID());
             }
 
             //count that another player has ended its turn
@@ -72,7 +72,7 @@ public class ChooseAssistantCard implements ControllerState{
             //create and send an ack message
             AckMessage response = new AckMessage();
             response.setSubObject("assistant");
-            response.setRecipient(request.getSenderID());
+            response.setRecipient(request.getSender_ID());
             response.setAssistantAlreadyUsedInThisRound(new ArrayList<>(usedCards.keySet()));
 
 
@@ -83,7 +83,7 @@ public class ChooseAssistantCard implements ControllerState{
                 response.setNextPlayer(defineActionPhaseOrder(controller));
                 controller.nextState();
             }else{
-                response.setNextPlayer(controller.nextPlayer(request.getSenderID()));
+                response.setNextPlayer(controller.nextPlayer(request.getSender_ID()));
             }
 
             controller.setActionPhase(true);

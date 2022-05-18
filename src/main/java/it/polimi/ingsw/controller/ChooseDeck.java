@@ -42,7 +42,7 @@ public class ChooseDeck implements ControllerState{
         notAvailableDecks.add(request.getDeck());
 
         //notify the match with the deck chosen by the current player
-        controller.getMatch().setCurrentPlayer(request.getSenderID());
+        controller.getMatch().setCurrentPlayer(request.getSender_ID());
         controller.getMatch().playerChoosesDeck(request.getDeck());
 
         /*sends an ack message to all the clients, who is waiting for an ack then knows that its choice is legit
@@ -50,9 +50,9 @@ public class ChooseDeck implements ControllerState{
         and modify the appearance of the GUI/CLI*/
         AckMessage response = new AckMessage();
         response.setSubObject("deck");
-        response.setRecipient(request.getSenderID());
+        response.setRecipient(request.getSender_ID());
 
-        int nextPlayer = controller.nextPlayer(request.getSenderID());
+        int nextPlayer = controller.nextPlayer(request.getSender_ID());
         response.setNextPlayer(nextPlayer);
 
         response.setNotAvailableDecks(notAvailableDecks);
