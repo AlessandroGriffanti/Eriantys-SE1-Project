@@ -91,7 +91,6 @@ public class Controller {
      * @param nickname nickname chosen by the player (client) and approved by the ClientHandler
      */
     public void addPlayerHandler(ClientHandler playerHandler, String nickname){
-        numberOfPlayers++;
         this.clientHandlers.add(playerHandler);
         this.playersNickname.add(nickname);
 
