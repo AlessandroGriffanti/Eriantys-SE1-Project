@@ -67,7 +67,9 @@ public class Client {
 
     /**
      * This method is used by client (player) to access the game:
-     * player's nickname is asked and then sent to the server in json format
+     * First, player's nickname is asked,the the player is asked if he wants to create a new match (y/n) and his ansswer
+     * his saved in the 'newMatchStr' variable. If he inserts 'y', it will later bepl created a new match,
+     * otherwise the player will be asked which lobby, so which match, he wants to join.
      */
     public void loginFromClient() {
         Scanner loginScanner = new Scanner(System.in);
@@ -97,6 +99,7 @@ public class Client {
     /**
      * This method is used by client class to analyse the received message.
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
+     * case "LoginSuccess": it means the player has logged in and h
      */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson){
         System.out.println("Message analysis in progress...");
@@ -125,10 +128,9 @@ public class Client {
                 LoginSuccessMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
-
                 if (newMatchNeeded == true) {
                     creatingNewSpecsFromClient();
-                } else {
+                }else{
                     sendAckFromClient();
                 }
                 break;
@@ -145,6 +147,7 @@ public class Client {
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
                 outputPrintClient.println(gsonObj.toJson(replyChosenLobbyToJoinMessage));
                 outputPrintClient.flush();
+                break;
 
             case "NicknameNotValid":
                 System.out.println("Insert new nickname: ");
@@ -161,7 +164,7 @@ public class Client {
                     break;
                 }
             case "ack":                         //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
-                switch (receivedMessageFromJson.getSubObject()) {     //aggiunto in message il subObject con il relativo getter
+                switch(receivedMessageFromJson.getSubObject()) {     //aggiunto in message il subObject con il relativo getter
                     case "waiting":
                         sendAckFromClient();
                         break;
@@ -202,7 +205,7 @@ public class Client {
     public void creatingNewSpecsFromClient(){
         Scanner inputForSpecs = new Scanner(System.in);
         MatchSpecsMessage newMatchSpecsMessage;
-        System.out.println("Please insert the number of the player you want of the lobby: ");
+        System.out.println("Please insert the number of the player you want in the lobby: ");
         int numberOfPlayerInTheLobby = inputForSpecs.nextInt();
         while(numberOfPlayerInTheLobby < 1 && numberOfPlayerInTheLobby > 4){
             System.out.println("Please, insert a valid number of players");

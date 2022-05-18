@@ -8,6 +8,7 @@ public class LoginSuccessMessage extends Message{
     //FALSE -> already created
 
     public LoginSuccessMessage(int playerID, boolean newMatchNeeded){
+        this.object = "LoginSuccess";
         this.newMatchNeeded = newMatchNeeded;
         this.playerID = playerID;
     }

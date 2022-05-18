@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
+
 public class ReplyChosenLobbyToJoinMessage extends Message{
     int lobbyIDchosen;
 
