@@ -121,7 +121,7 @@ public class ClientHandler extends Thread {
                     System.out.println("Lobby created");
                    // wait(5*1000);   //ATTENZIONE
 
-                    System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getNumberOfPlayers());
+                    System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());
                     System.out.println("qui siamo arrivati");
 
                     server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
