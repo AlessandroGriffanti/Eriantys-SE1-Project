@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
 import it.polimi.ingsw.network.messages.AckMessage;
 import it.polimi.ingsw.network.messages.MatchStartMessage;
@@ -90,6 +91,7 @@ public class Controller {
      * @param nickname nickname chosen by the player (client) and approved by the ClientHandler
      */
     public void addPlayerHandler(ClientHandler playerHandler, String nickname){
+        numberOfPlayers++;
         this.clientHandlers.add(playerHandler);
         this.playersNickname.add(nickname);
 
@@ -129,8 +131,13 @@ public class Controller {
         match.setCurrentPlayer(firstPlayer_ID);
 
         //prepares MatchStart message for all the clients
-        MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID);
-        sendMessageAsBroadcast(msg);
+        int motherNatureInitialPosition = match.getPositionOfMotherNature();
+
+        for(int i = 0; i < clientHandlers.size(); i++){
+            ArrayList<Creature> studentsInEntrance = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
+            MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, studentsInEntrance);
+            sendMessageToPlayer(i, msg);
+        }
 
         playing = true;
         nextState();
@@ -179,22 +186,6 @@ public class Controller {
      */
     public void setState(ControllerState cs){
         this.state = cs;
-    }
-
-    public Match getMatch(){
-        return this.match;
-    }
-
-    public int getNumberOfPlayers(){
-        return numberOfPlayers;
-    }
-
-    public void setNumberOfPlayers(int numberOfPlayers){
-        this.numberOfPlayers = numberOfPlayers;
-        // set to false the values of disconnections' array
-        for(int i = 0; i < numberOfPlayers; i++){
-            playersDisconnected.add(false);
-        }
     }
 
     /**
@@ -276,4 +267,29 @@ public class Controller {
     public int getPlayersAddedCounter() {
         return playersAddedCounter;
     }
+
+    public Match getMatch(){
+        return this.match;
+    }
+
+    public int getNumberOfPlayers(){
+        return numberOfPlayers;
+    }
+
+    public void setNumberOfPlayers(int numberOfPlayers){
+        this.numberOfPlayers = numberOfPlayers;
+        // set to false the values of disconnections' array
+        for(int i = 0; i < numberOfPlayers; i++){
+            playersDisconnected.add(false);
+        }
+    }
+
+    /**
+     * This method compute the number of players who joined the game till now
+     * @return number of currently joining players
+     */
+    public int numberOfPlayerTillNow(){
+        return clientHandlers.size();
+    }
+
 }
