@@ -130,7 +130,6 @@ public class ClientHandler extends Thread {
 
                     server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
                     System.out.println("nuovo numero di giocatori nella lobby: " + server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter());
-                   // server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size())).manageMsg(messageReceivedInJson);      // questo serve?
 
                 }else {
                     System.out.println("Error: not right specs message");
