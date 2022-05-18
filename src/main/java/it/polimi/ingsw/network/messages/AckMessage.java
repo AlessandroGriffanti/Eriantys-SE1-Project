@@ -39,6 +39,29 @@ public class AckMessage extends Message{
      * This attribute is the list already chosen assistant cards in this round
      */
     private ArrayList<Integer> assistantAlreadyUsedInThisRound;
+    /**
+     * This attribute is the ID of the moved student
+     */
+    private int studentMoved_ID;
+    /**
+     * This attribute is the type of the student that has just been moved
+     */
+    private Creature typeOfStudentMoved = null;
+    /**
+     * This attribute tells if the player took control on the professor after
+     * moving a student into the dining room
+     */
+    private boolean professorTaken = false;
+    /**
+     * This attribute is the ID of the previouse player who had the control over the professor
+     * taken by the current player (recipient of this message)
+     */
+    private int previousOwnerOfProfessor;
+    /**
+     * This attribute is the ID of the island where the student has been moved, in case the player chose to move
+     * the student on an island
+     */
+    private int destinationIsland_ID;
 
 
     public AckMessage(){
@@ -111,6 +134,51 @@ public class AckMessage extends Message{
     public ArrayList<Tower> getNotAvailableTowerColors() {
         return notAvailableTowerColors;
     }
+
+    // SETTER AND GETTER FOR studentMoved_ID
+    public void setStudentMoved_ID(int studentMoved_ID) {
+        this.studentMoved_ID = studentMoved_ID;
+    }
+
+    public int getStudentMoved_ID() {
+        return studentMoved_ID;
+    }
+
+    // SETTER AND GETTER FOR typeOfStudentMoved
+    public void setTypeOfStudentMoved(Creature typeOfStudentMoved) {
+        this.typeOfStudentMoved = typeOfStudentMoved;
+    }
+
+    public Creature getTypeOfStudentMoved() {
+        return typeOfStudentMoved;
+    }
+
+    // SETTER AND GETTER FOR professorTaken
+    public void setProfessorTaken(boolean professorTaken) {
+        this.professorTaken = professorTaken;
+    }
+
+    public boolean isProfessorTaken() {
+        return professorTaken;
+    }
+
+    // SETTER AND GETTER FOR previousOwnerOfProfessor
+    public void setPreviousOwnerOfProfessor(int previousOwnerOfProfessor) {
+        this.previousOwnerOfProfessor = previousOwnerOfProfessor;
+    }
+
+    public int getPreviousOwnerOfProfessor() {
+        return previousOwnerOfProfessor;
+    }
+
+    // SETTER AND GETTER FOR destinationIsland_ID
+    public void setDestinationIsland_ID(int destinationIsland_ID) {
+        this.destinationIsland_ID = destinationIsland_ID;
+    }
+
+    public int getDestinationIsland_ID() {
+        return destinationIsland_ID;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -131,4 +199,17 @@ public class AckMessage extends Message{
    4. assistant:
       it means that the assistant chosen by the player is legit and 'assistantAlreadyUsedInThisRound' contains the assistants already chosen in this round's planning phase
 
-   5. */
+   5. action_1_dining_room:
+      it means that the student has been moved into the dining room and
+        - 'nextPlayer' = -1
+        - 'studentMoved_ID' contains the ID of the student in the entrance of the recipient of this message
+        - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
+        - 'professorTaken' tell us if the player has now control over the professor
+        - 'previousOwnerOfProfessor' contains the ID of the previous owner of the professor
+
+   6. action_1_island:
+      it means that the student has been moved to the island and
+        - 'nextPlayer' = -1
+        - 'studentMoved_ID' contains the ID of the student in the entrance of the recipient of this message
+        - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
+        - 'destinationIsland_ID' contains the ID of the island where the student has been moved*/

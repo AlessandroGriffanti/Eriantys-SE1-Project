@@ -74,7 +74,7 @@ class EntranceTest {
 
         Creature creatureMoved = entrance.getStudentsInTheEntrance().get(2);
         entrance.moveStudentToDiningRoom(2);
-        assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(creatureMoved).intValue());
+        assertEquals(1, entrance.getDoorToTheDiningRoom().getAllOccupiedSeats().get(creatureMoved).intValue());
     }
 
     /** checks if it correctly moves 2 students from the entrance to an island: a dragon type one on the island where mother nature currently stands, a fairy one
@@ -90,16 +90,16 @@ class EntranceTest {
         entrance.addStudent(Creature.FAIRY);
 
         int motherNaturePosition = entrance.getRealmInEntrance().getPositionOfMotherNature();
-        entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON), motherNaturePosition);
+        entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON), motherNaturePosition);
         assertEquals(1, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition).getTotalNumberOfStudents());
         assertEquals(0, entrance.getRealmInEntrance().getArchipelagos().get((motherNaturePosition+6)%12).getTotalNumberOfStudents());
 
         if(motherNaturePosition == 11) {
-            entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), 1);
+            entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), 1);
             assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(1).getTotalNumberOfStudents());
 
         }else {
-            entrance.moveStudentsToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), motherNaturePosition + 1);
+            entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), motherNaturePosition + 1);
             assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition + 1).getTotalNumberOfStudents());
         }
 

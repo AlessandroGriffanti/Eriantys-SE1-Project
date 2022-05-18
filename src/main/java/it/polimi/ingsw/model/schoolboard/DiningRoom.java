@@ -62,7 +62,11 @@ public class DiningRoom {
     }
 
     /** returns the hashmap in the diningroom attribute: useful for tests */
-    public HashMap<Creature, Integer> getOccupiedSeats() {
+    public HashMap<Creature, Integer> getAllOccupiedSeats() {
         return occupiedSeats;
+    }
+
+    public int getOccupiedSeatsAtTable(Creature table){
+        return occupiedSeats.get(table);
     }
 }

@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.Creature;
 import java.util.HashMap;
 
 public class ProfessorTable {
+    /**
+     * This attribute contains, for each table of the dining room, the number of seats occupied
+     */
     private HashMap<Creature, Boolean> occupiedSeats;
 
 
@@ -17,28 +20,37 @@ public class ProfessorTable {
         occupiedSeats.put(Creature.GNOME, false);
     }
 
-    /** adds professor of p type */
+    /**
+     * This method adds one professor at the table
+     * @param p the kind of professor added
+     */
     public void addProfessor(Creature p) {
-        for (Creature c : Creature.values())
-            if (c.equals(p)) {
-                occupiedSeats.replace(p, true);
-            }
-    }
-    /** removes professor of p type */
-    public void removeProfessor(Creature p){
-        for(Creature c : Creature.values())
-            if(c.equals(p)){
-                occupiedSeats.replace(p, false);
-            }
+        occupiedSeats.put(p, true);
     }
 
-    /** checks if professor of p type has been taken */
+    /**
+     * This method removes a professor from the table
+     * @param p the kind of professor removed
+     */
+    public void removeProfessor(Creature p){
+        occupiedSeats.put(p, false);
+    }
+
+    /**
+     * This method checks if professor of p type has been taken
+     * @param p the seats we are checking
+     * @return true if the seat is occupied
+     *         false if the seat is not occupied
+     */
     public boolean isOccupied(Creature p){
         return occupiedSeats.get(p);
     }
 
 
-    /** hashmap getter, useful for Tests */
+    /**
+     * This method allows us to get the entire hashmap, and it is useful for Tests
+     * @return the reference to the hashmap with the number of occupied seats for each table
+     */
     public HashMap<Creature, Boolean> getOccupiedSeats() {
         return occupiedSeats;
     }

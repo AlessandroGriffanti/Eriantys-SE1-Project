@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.schoolboard;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Realm;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Entrance {
@@ -18,11 +17,11 @@ public class Entrance {
     /**
      * This attribute is the reference to the Realm of the match (where there are the clouds and the islands)
      */
-    private Realm realminentrance;
+    private Realm realmInEntrance;
 
     public Entrance(DiningRoom d, Realm r, int numOfPlayers){
         this.doorToTheDiningRoom = d;
-        this.realminentrance = r;
+        this.realmInEntrance = r;
         studentsInTheEntrance = new ArrayList<Creature>();
 
         ArrayList<Creature> initialStudents = initialSetUpStudentsInTheEntrance(numOfPlayers);
@@ -41,9 +40,9 @@ public class Entrance {
         ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
 
         if(numOfPlayers == 3){
-            studentsSetUpEntrance = realminentrance.getBag().drawStudents(9);
+            studentsSetUpEntrance = realmInEntrance.getBag().drawStudents(9);
         }else if(numOfPlayers == 2 || numOfPlayers == 4){
-            studentsSetUpEntrance = realminentrance.getBag().drawStudents(7);
+            studentsSetUpEntrance = realmInEntrance.getBag().drawStudents(7);
         }
 
         return studentsSetUpEntrance;
@@ -101,12 +100,12 @@ public class Entrance {
 
     /**
      * This method moves a student to an island and removes it from the entrance (set the positions to null)
-     * @param index index of the student
+     * @param student_ID index of the student
      * @param islandID index of the island
      */
-    public void moveStudentsToIsland(int index, int islandID){
-        realminentrance.addStudentToIsland(studentsInTheEntrance.get(index), islandID);
-        studentsInTheEntrance.set(index, null);
+    public void moveStudentToIsland(int student_ID, int islandID){
+        realmInEntrance.addStudentToIsland(studentsInTheEntrance.get(student_ID), islandID);
+        studentsInTheEntrance.set(student_ID, null);
     }
 
     /** useful for tests */
@@ -120,6 +119,6 @@ public class Entrance {
     }
 
     public Realm getRealmInEntrance() {
-        return realminentrance;
+        return realmInEntrance;
     }
 }

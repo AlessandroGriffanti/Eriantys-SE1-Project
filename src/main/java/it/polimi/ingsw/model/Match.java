@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.VirtualView;
+import it.polimi.ingsw.model.schoolboard.Entrance;
+import it.polimi.ingsw.model.schoolboard.ProfessorTable;
+
 import java.util.ArrayList;
 
 
@@ -138,6 +141,23 @@ public class Match {
     }
 
     /**
+     * This method moves one student from the entrance to the dining room of the current player
+     * @param student_ID the ID used to identify the student inside th entrance
+     */
+    public void moveStudentFromEntranceToDiningRoom(int student_ID){
+        Entrance entrance = players.get(currentPlayer).getSchoolBoard().getEntrance();
+        entrance.moveStudentToDiningRoom(student_ID);
+    }
+
+    /**
+     * This method moves one student from the entrance of the current player to an island
+     * @param student_ID the ID used to identify the student inside th entrance
+     * @param island_ID the ID of the island where to move the student
+     */
+    public  void moveStudentFromEntranceToIsland(int student_ID, int island_ID){
+        players.get(currentPlayer).getSchoolBoard().getEntrance().moveStudentToIsland(student_ID, island_ID);
+    }
+    /**
      * This method notifies the current Player to set its own assistant deck
      * @param wizard assistants' deck chosen by the player
      */
@@ -169,6 +189,29 @@ public class Match {
         return players.get(playerID).numberOfRemainingAssistantCards();
     }
 
+    /**
+     * This method takes the professor from the player specified, effectively taking away his control
+     * over the professor.
+     * @param player_ID the player who will lose the professor
+     * @param professor the kind of professor that will be taken away from the player
+     */
+    public void looseControlOnProfessor(int player_ID, Creature professor){
+        ProfessorTable table = players.get(player_ID).getSchoolBoard().getProfessorTable();
+        table.removeProfessor(professor);
+    }
+
+    /**
+     * This method gives the control on the specified professor to the current player and
+     * remove it from the notControlledProfessors list if it is still there
+     * @param professor the kind of professor the current player will take control on
+     */
+    public void acquireControlOnProfessor(Creature professor){
+        if(notControlledProfessors.contains(professor)){
+            notControlledProfessors.remove(professor);
+        }
+        players.get(currentPlayer).getSchoolBoard().getProfessorTable().addProfessor(professor);
+    }
+
     public Bag getBagOfTheMatch() {
         return bagOfTheMatch;
     }
@@ -185,4 +228,7 @@ public class Match {
         return expertMode;
     }
 
+    public ArrayList<Creature> getNotControlledProfessors() {
+        return notControlledProfessors;
+    }
 }
