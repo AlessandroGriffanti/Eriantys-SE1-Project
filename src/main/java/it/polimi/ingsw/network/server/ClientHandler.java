@@ -44,8 +44,9 @@ public class ClientHandler extends Thread {
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outputHandler = new PrintWriter(clientSocket.getOutputStream());
 
-            loginInServer(inputHandler.readLine());
-
+            //while (true) {
+                loginInServer(inputHandler.readLine());
+            //}
             //aggiungere qui il controllo sull'hashmap, quella con il controller, (e sull'attributo booleano del controller per vedere se creare un nuovo controller o meno.
 
             /*
@@ -55,12 +56,14 @@ public class ClientHandler extends Thread {
             }
              */
 
-            System.out.println("end");
+            //System.out.println("end");
 
+            /*
             outputHandler.close();
             inputHandler.close();
             clientSocket.close();
             System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
+             */
 
         } catch (IOException e) {
             System.out.println(e.getMessage());

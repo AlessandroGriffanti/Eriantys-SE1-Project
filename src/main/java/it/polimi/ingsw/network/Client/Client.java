@@ -81,12 +81,19 @@ public class Client {
         System.out.println("do you wat to create a new match? (y/n) ");
         String newMatchStr = loginScanner.nextLine();
         boolean newMatchBool;
+
+        while ( !( (newMatchStr.equals("y")) || (newMatchStr.equals("n")))){
+            System.out.println("please insert y if you want to create a new match: (y/n) ");
+            newMatchStr = loginScanner.nextLine();
+        }
+        System.out.println("ok");
+
         if(newMatchStr.equals("y")){
             newMatchBool = true;
         }else {
             newMatchBool = false;
         }
-        System.out.println("ok");
+
 
         LoginMessage msgLogin = new LoginMessage(nickNamePlayer, newMatchBool);
         outputPrintClient.println(gsonObj.toJson(msgLogin));
@@ -207,7 +214,8 @@ public class Client {
         MatchSpecsMessage newMatchSpecsMessage;
         System.out.println("Please insert the number of the player you want in the lobby: ");
         int numberOfPlayerInTheLobby = inputForSpecs.nextInt();
-        while(numberOfPlayerInTheLobby < 1 && numberOfPlayerInTheLobby > 4){
+        System.out.println(numberOfPlayerInTheLobby);
+        while( (numberOfPlayerInTheLobby <= 1) || (numberOfPlayerInTheLobby >= 4) ){
             System.out.println("Please, insert a valid number of players");
             numberOfPlayerInTheLobby = inputForSpecs.nextInt();
         }
