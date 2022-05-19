@@ -141,6 +141,7 @@ public class ClientHandler extends Thread {
 
                 //SIAMO ARRIVATI QUI
 
+
             }else{                                                //se il check del nome dà false, finiamo qui dove viene inviato un nicknamenotvalid e nel client verrà rifatto il login
                 System.out.println("nickname already used");
                 sendingNicknameNotValid();
