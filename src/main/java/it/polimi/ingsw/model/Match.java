@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.schoolboard.ProfessorTable;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class represent a single match of Eriantys
+ */
 public class Match {
     /**
      * This attribute is the ID that identifies the match between all matches
@@ -200,6 +202,60 @@ public class Match {
     }
 
     /**
+     * This method searches for towers on a particular island belonging to the player
+     * specified
+     * @param player_ID ID of the player whose towers we are looking for
+     * @param island_ID ID of the island on which we are looking for the towers
+     * @return number of towers found
+     */
+    public int numberOfTowersOnTheIsland(int player_ID, int island_ID){
+        int numberOfTowers = 0;
+        Archipelago island = realmOfTheMatch.getArchipelagos().get(island_ID);
+
+        if(players.get(player_ID).equals(island.getMasterOfArchipelago())){
+            assert players.get(player_ID).getTowerColor().equals(island.getTowerColor()) :
+                    "The player is the island's master but the color of the towers does not correspond.";
+            numberOfTowers = island.getNumberOfIslands();
+        }
+
+        return numberOfTowers;
+    }
+
+    /**
+     * This method finds out if the current island (where mother nature stands) can be unified with the previous one,
+     * the next one or both of them
+     * @return 0: nor the previous nor the next island can be unified with the current one
+     *         1: the current island must be unified with the previous one
+     *         2: the current island must be unified with next island
+     *         3: the current island must be unified with both previous and next islands
+     */
+    public int islandUnifyControl(){
+        int returnValue = 0;
+        int positionOfMotherNature = getPositionOfMotherNature();
+        Tower colorOnMotherNaturePosition = realmOfTheMatch.getArchipelagos().get(positionOfMotherNature).getTowerColor();
+
+        int nextIsland_ID = realmOfTheMatch.nextIsland(positionOfMotherNature);
+        Tower colorOnNextIsland = realmOfTheMatch.getArchipelagos().get(nextIsland_ID).getTowerColor();
+
+        int previousIsland_ID = realmOfTheMatch.previousIsland(positionOfMotherNature);
+        Tower colorOnPreviousIsland = realmOfTheMatch.getArchipelagos().get(previousIsland_ID).getTowerColor();
+
+        if(colorOnMotherNaturePosition.equals(colorOnPreviousIsland)){
+            returnValue = 1;
+        }
+
+        if(colorOnMotherNaturePosition.equals(colorOnNextIsland)){
+            if(returnValue == 1){
+                returnValue = 3;
+            }else{
+                returnValue = 2;
+            }
+        }
+
+        return returnValue;
+    }
+
+    /**
      * This method takes the professor from the player specified, effectively taking away his control
      * over the professor.
      * @param player_ID the player who will lose the professor
@@ -220,6 +276,19 @@ public class Match {
             notControlledProfessors.remove(professor);
         }
         players.get(currentPlayer).getSchoolBoard().getProfessorTable().addProfessor(professor);
+    }
+
+    /**
+     * This method set a new master on the current island where mother nature is
+     * @param playerMaster_ID ID of the new master
+     */
+    public void newMasterOnIsland(int playerMaster_ID){
+        // who is the new master ?
+        Player newMaster = players.get(playerMaster_ID);
+        // take the current island
+        Archipelago currentIsland = realmOfTheMatch.getArchipelagos().get(getPositionOfMotherNature());
+        // set new master
+        currentIsland.setMasterOfArchipelago(newMaster);
     }
 
     public Bag getBagOfTheMatch() {

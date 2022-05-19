@@ -59,9 +59,42 @@ public class AckMessage extends Message{
     private int previousOwnerOfProfessor;
     /**
      * This attribute is the ID of the island where the student has been moved, in case the player chose to move
-     * the student on an island
+     * the student on an island;
+     * or it can also be the ID of the island where mother nature was moved during action_2
      */
     private int destinationIsland_ID;
+    /**
+     * This attribute tells if some islands have been unified
+     * - none: current island unified with no other island
+     * - previous: current island unified woth the previous one
+     * - next: current island unified with the next one
+     * - both: current island unified with both the next and the previous
+     */
+    private String islandsUnified = "none";
+    /**
+     * This attribute tells if a noEntryTile was removed from an island
+     * (specified by the attribute)
+     */
+    private boolean removedNoEntryTile = false;
+    /**
+     * This attribute tells from which island the noEntryTile was taken
+     */
+    private int islandThatLostNoEntryTile;
+    /**
+     * This attribute tells if the master on the island reached by mother nature changed
+     */
+    private boolean masterChanged = false;
+    /**
+     * This attribute tells, if the master changed, who was the previous one;
+     * the current master could anyone of the players not necessarily the one who moved mother nature or
+     * could be no one if there wasn't any tower yet
+     */
+    private int previousMaster_ID = -1;
+    /**
+     * This attribute tells who is the new master of the island where mother nature arrived, only if
+     * the master changed
+     */
+    private int newMaster_ID = -1;
 
 
     public AckMessage(){
@@ -179,6 +212,61 @@ public class AckMessage extends Message{
     public int getDestinationIsland_ID() {
         return destinationIsland_ID;
     }
+
+    // SETTER AND GETTER FOR islandsUnified
+    public void setIslandsUnified(String islandsUnified) {
+        this.islandsUnified = islandsUnified;
+    }
+
+    public String getIslandsUnified() {
+        return islandsUnified;
+    }
+
+    // SETTER AND GETTER FOR removedNoEntryTile
+    public void setRemovedNoEntryTile(boolean removedNoEntryTile) {
+        this.removedNoEntryTile = removedNoEntryTile;
+    }
+
+    public boolean isRemovedNoEntryTile() {
+        return removedNoEntryTile;
+    }
+
+    // SETTER AND GETTER FOR islandThatLostNoEntryTile
+    public void setIslandThatLostNoEntryTile(int islandThatLostNoEntryTile) {
+        this.islandThatLostNoEntryTile = islandThatLostNoEntryTile;
+    }
+
+    public int getIslandThatLostNoEntryTile() {
+        return islandThatLostNoEntryTile;
+    }
+
+    // SETTER AND GETTER FOR masterChanged
+    public void setMasterChanged(boolean masterChanged) {
+        this.masterChanged = masterChanged;
+    }
+
+    public boolean isMasterChanged() {
+        return masterChanged;
+    }
+
+    // SETTER AND GETTER FOR previousMaster_ID
+    public void setPreviousMaster_ID(int previousMaster_ID) {
+        this.previousMaster_ID = previousMaster_ID;
+    }
+
+    public int getPreviousMaster_ID() {
+        return previousMaster_ID;
+    }
+
+    // SETTER AND GETTER FOR newMaster_ID
+
+    public void setNewMaster_ID(int newMaster_ID) {
+        this.newMaster_ID = newMaster_ID;
+    }
+
+    public int getNewMaster_ID() {
+        return newMaster_ID;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -212,4 +300,21 @@ public class AckMessage extends Message{
         - 'nextPlayer' = -1
         - 'studentMoved_ID' contains the ID of the student in the entrance of the recipient of this message
         - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
-        - 'destinationIsland_ID' contains the ID of the island where the student has been moved*/
+        - 'destinationIsland_ID' contains the ID of the island where the student has been moved
+
+   7. action_2:
+      it means that mother nature has been moved successfully and
+        - 'nextPlayer' = -1
+        - 'destinationIsland_ID' the island reached by mother nature
+        - 'removedNoEntryTile' tells if a no entry tile has been removed
+        - 'islandThatLostNoEntryTile' tells form which island the no entry tile (if one has been removed) was taken
+        - 'masterChanged' true if the master has changed, false otherwise
+        - 'previousMaster_ID' the ID of the previous player master of the island or
+                              -1 if the master did not change
+        - 'newMaster_ID' the ID of the new master on the island reached by mother nature or
+                         -1 if the master did not change
+        - 'islandsUnified' contains a String that says if two or more islands have been unified
+                          - none -> no unification
+                          - previous
+                          - next
+                          - both*/

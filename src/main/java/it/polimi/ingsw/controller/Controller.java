@@ -35,7 +35,7 @@ public class Controller {
     /**
      * This attribute is the identifier of the match
      */
-    private final int ID;
+    private final int match_ID;
     /**
      * This attribute is the last message received from the client
      */
@@ -43,11 +43,11 @@ public class Controller {
     /**
      * This attribute is an array of references to all the ClientHandler of the players playing this match
      */
-    private ArrayList<ClientHandler> clientHandlers = null;
+    private ArrayList<ClientHandler> clientHandlers;
     /**
      * This attribute is the list of names chosen by the player
      */
-    private ArrayList<String> playersNickname = null;
+    private ArrayList<String> playersNickname;
     /**
      * This attribute is the counter of players added to match
      */
@@ -63,6 +63,10 @@ public class Controller {
      */
     private boolean actionPhase;
     /**
+     * This attribute is the ID of the current player playing its action phase
+     */
+    private int actionPhaseCurrentPlayer = -1;
+    /**
      * This attribute is the list of disconnected players where the indexes correspond to the IDs of the players
      */
     private ArrayList<Boolean> playersDisconnected;
@@ -72,7 +76,7 @@ public class Controller {
      * @param ID the ID of the match
      */
     public Controller(int ID){
-        this.ID = ID;
+        this.match_ID = ID;
         this.playing = false;
         this.clientHandlers = new ArrayList<ClientHandler>();
         this.playersNickname = new ArrayList<String>();
@@ -116,7 +120,7 @@ public class Controller {
     public void startMatch(){
         //Creates the virtualView so that it can notify the client (client side)
         VirtualView vv = new VirtualView(this.match);
-        this.match = new Match(this.ID, this.numberOfPlayers, vv, expertMode);
+        this.match = new Match(this.match_ID, this.numberOfPlayers, vv, expertMode);
         //adds all the players
         for(String s: playersNickname){
             this.match.addPlayer(s);
@@ -228,7 +232,7 @@ public class Controller {
     }
 
     public int getMatchID(){
-        return this.ID;
+        return this.match_ID;
     }
 
     public String getMsg(){
@@ -281,5 +285,13 @@ public class Controller {
         for(int i = 0; i < numberOfPlayers; i++){
             playersDisconnected.add(false);
         }
+    }
+
+    public void setActionPhaseCurrentPlayer(int actionPhaseCurrentPlayer) {
+        this.actionPhaseCurrentPlayer = actionPhaseCurrentPlayer;
+    }
+
+    public int getActionPhaseCurrentPlayer() {
+        return actionPhaseCurrentPlayer;
     }
 }

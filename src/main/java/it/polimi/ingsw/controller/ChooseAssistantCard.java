@@ -87,6 +87,7 @@ public class ChooseAssistantCard implements ControllerState{
             }
 
             controller.setActionPhase(true);
+            controller.setActionPhaseCurrentPlayer(controller.getActionPhaseOrder().get(0));
             controller.sendMessageAsBroadcast(response);
         }
     }

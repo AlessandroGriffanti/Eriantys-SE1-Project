@@ -17,7 +17,7 @@ public class Action_1 implements ControllerState{
             /* todo: state of character's management
                    could be better having a parallel state into this one (the same for the nest states)*/
         }else{
-            // todo: action_2 state
+            controller.setState(new Action_2());
         }
     }
 

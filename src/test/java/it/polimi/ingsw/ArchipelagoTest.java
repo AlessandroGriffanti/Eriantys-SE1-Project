@@ -44,7 +44,7 @@ public class ArchipelagoTest {
         assertTrue(p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers() == 8);
 
         System.out.println("Initial position of mother nature is:" + r.getPositionOfMotherNature());
-        r.moveMotherNature(2);
+        r.moveMotherNatureWithSteps(2);
         int currentArchipelago = r.getPositionOfMotherNature();
 
         r.setMasterOfCurrentArchipelago(p1);

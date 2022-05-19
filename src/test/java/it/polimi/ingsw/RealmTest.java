@@ -2,8 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.*;
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -70,7 +69,7 @@ public class RealmTest {
         //case1
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
 
-        realm.moveMotherNature(3);
+        realm.moveMotherNatureWithSteps(3);
         assertTrue(realm.getPositionOfMotherNature() == (previousPositionOfMotherNature+3)%12);
         System.out.println("moveMotherNatureTest Case1 passed");
 
@@ -78,14 +77,14 @@ public class RealmTest {
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
 
         realm.unifyArchipelago((previousPositionOfMotherNature+2)%12, (previousPositionOfMotherNature+3)%12);
-        realm.moveMotherNature(3);
+        realm.moveMotherNatureWithSteps(3);
         assertTrue(realm.getPositionOfMotherNature() == (previousPositionOfMotherNature+4)%12);
         System.out.println("moveMotherNatureTest Case2 passed");
 
         //case3
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
 
-        realm.moveMotherNature(0);
+        realm.moveMotherNatureWithSteps(0);
         assertTrue(realm.getPositionOfMotherNature() == previousPositionOfMotherNature);
         System.out.println("moveMotherNatureTest Case3 passed");
 

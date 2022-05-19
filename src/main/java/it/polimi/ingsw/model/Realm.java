@@ -113,6 +113,43 @@ public class Realm{
     }
 
     /**
+     * todo -> test
+     * This method finds the next island or group of islands with respect to the island argument of the method
+     * @param island_ID ID of the island taken as reference
+     * @return ID of the next island/group of islands
+     */
+    public int nextIsland(int island_ID){
+        int i = 1;
+
+        while(archipelagos.get((island_ID + 1)%12) == null){
+            i++;
+        }
+
+        return positionOfMotherNature+i;
+    }
+
+    /**
+     * todo -> test
+     * This method finds the previous island or group of islands with respect to the island argument of the method
+     * @param island_ID ID of the island taken as reference
+     * @return ID of the previous island/group of islands
+     */
+    public int previousIsland(int island_ID){
+        int i = 0;
+        int previousIndex;
+        do {
+            i++;
+            if(island_ID - i < 0){
+                previousIndex = (12 + (island_ID - i));
+            }else{
+                previousIndex = island_ID - i;
+            }
+        }while(archipelagos.get(previousIndex) == null);
+
+        return previousIndex;
+    }
+
+    /**
      * Takes all the students on the specified cloud
      * @param cloudID identifier of the cloud
      * @return ArrayList with all the students found on the cloud
@@ -162,7 +199,7 @@ public class Realm{
      * certainly correspond to a non-null element of the array archipelagos.
      * @param steps number of steps motherNature will take
      */
-    public void moveMotherNature(int steps){
+    public void moveMotherNatureWithSteps(int steps){
         int i = 1;
         while(steps > 0){
             if(archipelagos.get((positionOfMotherNature+i)%12) != null){
@@ -171,7 +208,17 @@ public class Realm{
             i++;
         }
         positionOfMotherNature = (positionOfMotherNature + (i-1)) % 12;
-        //If there is one or more noEntry-tiles on this current archipelago, then one of theme will be removed
+        // if there is one or more noEntry-tiles on this current archipelago, then one of theme will be removed
+        archipelagos.get(positionOfMotherNature).removeNoEntryTile();
+    }
+
+    /**
+     * This method set the new position of mother nature after mthe movement
+     * @param destinationIsland_ID ID of the new island where mother nature is
+     */
+    public void setDestinationOfMotherNature(int destinationIsland_ID){
+        positionOfMotherNature = destinationIsland_ID;
+
         archipelagos.get(positionOfMotherNature).removeNoEntryTile();
     }
 }
