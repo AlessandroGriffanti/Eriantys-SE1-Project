@@ -150,6 +150,10 @@ public class Client {
                 }
                 Scanner scannerLobbyChosen = new Scanner(System.in);
                 int lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
+                while(askMatchToJoinMessage.getLobbiesTmp().get(lobbyIDchosenByPlayer) == true){
+                    System.out.println("You can't join this lobby, select another one");
+                    lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
+                }
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
                 outputPrintClient.println(gsonObj.toJson(replyChosenLobbyToJoinMessage));
                 outputPrintClient.flush();
