@@ -45,7 +45,7 @@ public class ClientHandler extends Thread {
             outputHandler = new PrintWriter(clientSocket.getOutputStream());
 
             //while (true) {
-                loginInServer(inputHandler.readLine());
+            loginInServer(inputHandler.readLine());
             //}
             //aggiungere qui il controllo sull'hashmap, quella con il controller, (e sull'attributo booleano del controller per vedere se creare un nuovo controller o meno.
 
@@ -101,6 +101,7 @@ public class ClientHandler extends Thread {
             System.out.println("I received a login message");
 
             System.out.println("Nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
+
 
             if (checkNickname(receivedMessageFromJson.getNicknameOfPlayer())){  //if checkNickname returns true, which means the nickname of the player isn't already used
                 server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());    //aggiungiamo il nickname del giocatore all'arraylist nel server
@@ -233,6 +234,7 @@ public class ClientHandler extends Thread {
                 numberOfLobbiesInWaiting ++;
             }
         }
+
         if(numberOfLobbiesInWaiting == 0){
             NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage();
             outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
