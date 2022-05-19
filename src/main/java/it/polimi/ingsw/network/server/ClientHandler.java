@@ -56,7 +56,8 @@ public class ClientHandler extends Thread {
             }
              */
 
-            //System.out.println("end");
+            System.out.println("end");
+
 
             /*
             outputHandler.close();
@@ -121,9 +122,10 @@ public class ClientHandler extends Thread {
                     lobbyCreation(nicknamePlayer);                                                  // --> allora crea la lobby
 
                     System.out.println("Lobby created");
-                   // wait(5*1000);   //ATTENZIONE
+                    //wait(5*1000);   //ATTENZIONE
 
                     System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());    //stampo il numero di giocatori della lobby per controllo
+                    //System.out.println("modalità esperto: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).);    //stampo la variante di gioco della lobby per controllo
                     server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size() - 1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
 
 
@@ -144,6 +146,8 @@ public class ClientHandler extends Thread {
                 System.out.println("nickname already used");
                 sendingNicknameNotValid();
                 System.out.println("sent nack ok");
+
+                loginInServer(inputHandler.readLine());
             }
         }else {
             System.out.println("Error: not a Login message");

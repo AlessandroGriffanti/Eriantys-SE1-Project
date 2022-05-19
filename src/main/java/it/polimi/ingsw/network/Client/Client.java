@@ -94,7 +94,6 @@ public class Client {
             newMatchBool = false;
         }
 
-
         LoginMessage msgLogin = new LoginMessage(nickNamePlayer, newMatchBool);
         outputPrintClient.println(gsonObj.toJson(msgLogin));
         outputPrintClient.flush();
