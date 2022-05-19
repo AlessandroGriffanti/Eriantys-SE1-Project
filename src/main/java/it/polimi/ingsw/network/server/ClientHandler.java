@@ -144,6 +144,7 @@ public class ClientHandler extends Thread {
                 System.out.println("nickname already used");
                 sendingNicknameNotValid();
                 System.out.println("sent nack ok");
+
             }
         }else {
             System.out.println("Error: not a Login message");
@@ -216,25 +217,32 @@ public class ClientHandler extends Thread {
     }
 
     /** this method checks the status of each lobby (which is the controller associated in the hashmap lobbies).
-     * If the status is true, it means the match is waiting for other players to join, so it is available and we add the boolean 'true'.
-     * If the status is false, it means the match has already started, so it's not available and we add the boolean 'false'.
-     * Then, we create and send a AskMatchToJoinMessage
+     * If the status is false, it means the match is waiting for other players to join, so it is available and we add the boolean 'false' and we increase the counter
+     * of lobbies that are waiting. If the status is true, it means the match has already started, so it's not available and we add the boolean 'true'.
+     * After that, if the counter is 0, it means all the lobbies are full, so a new one is required and we
+     * send a NoLobbyAvailable Message, otherwise we send a AskMatchToJoinMessage.
      */
     public void askMatchToJoin() {
         ArrayList<Boolean> listAvailableLobbies = new ArrayList<>();
+        int numberOfLobbiesInWaiting = 0;
         for(String lobby : server.getLobbies().keySet()) {
             if(server.getLobbies().get(lobby).getPlayingStatus() == true) {
                 listAvailableLobbies.add(true);
             }else {
                 listAvailableLobbies.add(false);
+                numberOfLobbiesInWaiting ++;
             }
         }
-        AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies);
-
-        outputHandler.println(gsonObj.toJson(askMatchToJoinMessage));
-        outputHandler.flush();
-
-        System.out.println("sent AskMatchToJoinMessage");
+        if(numberOfLobbiesInWaiting == 0){
+            NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage();
+            outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
+            outputHandler.flush();
+        }else {
+            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies);
+            outputHandler.println(gsonObj.toJson(askMatchToJoinMessage));
+            outputHandler.flush();
+            System.out.println("sent AskMatchToJoinMessage");
+        }
     }
 
     /** this method creates a new lobby if the player wants, so if he has declared in the previous messages (e.g. LoginMessage)
@@ -258,6 +266,7 @@ public class ClientHandler extends Thread {
         outputHandler.println(gsonObj.toJson(nicknameNotValidMessage));
         outputHandler.flush();
         System.out.println("sent nickNameNotValid ok");
+
     }
 
     /**
