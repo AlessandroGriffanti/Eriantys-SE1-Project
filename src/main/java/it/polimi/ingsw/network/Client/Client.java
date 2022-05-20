@@ -179,10 +179,15 @@ public class Client {
                     case "waiting":
                         sendAckFromClient();
                         break;
+                    case "ID for match joined" :
+                        playerID = ackMessageMapped.getPlayerID();
+                        System.out.println("ID set: " + playerID);
+                        break;
                 }
                 break;
             case "no lobby available" :
                 System.out.println("No lobby available, creating a new one...");
+                playerID = 0;
                 creatingNewSpecsFromClient();
                 break;
 

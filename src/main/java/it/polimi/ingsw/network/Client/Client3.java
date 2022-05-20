@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client3{
+public class Client3 {
     private int playerID;
     private Socket clientSocket = null;
     private Gson gsonObj = new Gson();
@@ -81,12 +81,18 @@ public class Client3{
         System.out.println("do you wat to create a new match? (y/n) ");
         String newMatchStr = loginScanner.nextLine();
         boolean newMatchBool;
+
+        while ( !( (newMatchStr.equals("y")) || (newMatchStr.equals("n")))){
+            System.out.println("please insert y if you want to create a new match: (y/n) ");
+            newMatchStr = loginScanner.nextLine();
+        }
+        System.out.println("ok");
+
         if(newMatchStr.equals("y")){
             newMatchBool = true;
         }else {
             newMatchBool = false;
         }
-        System.out.println("ok");
 
         LoginMessage msgLogin = new LoginMessage(nickNamePlayer, newMatchBool);
         outputPrintClient.println(gsonObj.toJson(msgLogin));
@@ -144,6 +150,10 @@ public class Client3{
                 }
                 Scanner scannerLobbyChosen = new Scanner(System.in);
                 int lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
+                while(askMatchToJoinMessage.getLobbiesTmp().get(lobbyIDchosenByPlayer) == true){
+                    System.out.println("You can't join this lobby, select another one");
+                    lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
+                }
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
                 outputPrintClient.println(gsonObj.toJson(replyChosenLobbyToJoinMessage));
                 outputPrintClient.flush();
@@ -163,16 +173,21 @@ public class Client3{
                     sendAckFromClient();
                     break;
                 }
-            case "ack":                                                             //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
-                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);
-                switch(ackMessageMapped.getSubObject()) {                           //aggiunto in message il subObject con il relativo getter
+            case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
+                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
+                switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
                         sendAckFromClient();
+                        break;
+                    case "ID for match joined" :
+                        playerID = ackMessageMapped.getPlayerID();
+                        System.out.println("ID set: " + playerID);
                         break;
                 }
                 break;
             case "no lobby available" :
                 System.out.println("No lobby available, creating a new one...");
+                playerID = 0;
                 creatingNewSpecsFromClient();
                 break;
 
@@ -200,15 +215,15 @@ public class Client3{
 
     /**
      * This method is used by the client after receiving a loginSuccess message from the server;
-     * he has to declare the number of players of the lobby and
-     * if he wants to play in expert mode or not.
+     * he has to declare the number of players of the lobby and if he wants to play in expert mode or not.
      * */
     public void creatingNewSpecsFromClient(){
         Scanner inputForSpecs = new Scanner(System.in);
         MatchSpecsMessage newMatchSpecsMessage;
         System.out.println("Please insert the number of the player you want in the lobby: ");
         int numberOfPlayerInTheLobby = inputForSpecs.nextInt();
-        while(numberOfPlayerInTheLobby < 1 && numberOfPlayerInTheLobby > 4){
+        System.out.println(numberOfPlayerInTheLobby);
+        while( (numberOfPlayerInTheLobby <= 1) || (numberOfPlayerInTheLobby >= 4) ){
             System.out.println("Please, insert a valid number of players");
             numberOfPlayerInTheLobby = inputForSpecs.nextInt();
         }

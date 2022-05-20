@@ -86,10 +86,12 @@ public class Controller {
     /**
      * This method adds a player to the match and controls if there are enough players to start playing.
      * Furthermore, it sends the notify message "MatchWaiting" to the player that is just been added
+     *
      * @param playerHandler reference to the ClientHandler of the added player
-     * @param nickname nickname chosen by the player (client) and approved by the ClientHandler
+     * @param nickname      nickname chosen by the player (client) and approved by the ClientHandler
+     * @return
      */
-    public void addPlayerHandler(ClientHandler playerHandler, String nickname){
+    public int addPlayerHandler(ClientHandler playerHandler, String nickname){
         this.clientHandlers.add(playerHandler);
         this.playersNickname.add(nickname);
 
@@ -107,6 +109,7 @@ public class Controller {
         if(playersAddedCounter == numberOfPlayers){
             startMatch();
         }
+        return clientHandlers.size() - 1;
     }
     /**
      * This method lets the match start, creates the view and chooses the first player of the match randomly; finally it

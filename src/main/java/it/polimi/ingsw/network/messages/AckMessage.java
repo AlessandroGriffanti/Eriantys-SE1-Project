@@ -39,7 +39,10 @@ public class AckMessage extends Message{
      * This attribute is the list already chosen assistant cards in this round
      */
     private ArrayList<Integer> assistantAlreadyUsedInThisRound;
-
+    /**
+     * This attribute is sent to client after joining a match.
+     */
+    private int playerID;
 
     public AckMessage(){
         this.object = "ack";
@@ -110,6 +113,14 @@ public class AckMessage extends Message{
 
     public ArrayList<Tower> getNotAvailableTowerColors() {
         return notAvailableTowerColors;
+    }
+
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
     }
 }
 
