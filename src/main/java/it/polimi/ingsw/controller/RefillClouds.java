@@ -24,19 +24,20 @@ public class RefillClouds implements ControllerState{
 
         if(!(request.getObjectOfMessage().equals("draw"))){
             System.out.println("REFILL_CLOUDS STATE: \nexpected object [draw]\nreceived message with object["+ request.getObjectOfMessage() + "]");
+        }else{
+            //refill every cloud on the table
+            ArrayList<Creature> studentsPutOnEachCloud = controller.getMatch().moveStudentsFromBagToCloudsEveryRound();
+
+            //send an ack message with the drawn students in order to update the Client' s data
+            AckMessage response = new AckMessage();
+            response.setSubObject("refillClouds");
+            response.setStudentsAddedToTheClouds(studentsPutOnEachCloud);
+
+
+            controller.sendMessageAsBroadcast(response);
+
+            //takes the controller to the next state
+            controller.nextState();
         }
-        //refill every cloud on the table
-        ArrayList<Creature> studentsPutOnEachCloud = controller.getMatch().moveStudentsFromBagToCloudsEveryRound();
-
-        //send an ack message with the drawn students in order to update the Client' s data
-        AckMessage response = new AckMessage();
-        response.setSubObject("refillClouds");
-        response.setStudentsAddedToTheClouds(studentsPutOnEachCloud);
-
-
-        controller.sendMessageAsBroadcast(response);
-
-        //takes the controller to the next state
-        controller.nextState();
     }
 }

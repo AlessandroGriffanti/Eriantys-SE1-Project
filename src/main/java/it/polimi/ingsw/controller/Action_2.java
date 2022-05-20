@@ -33,6 +33,8 @@ public class Action_2 implements ControllerState{
             executeAction_2(controller, json);
         }else if(request.getObjectOfMessage().equals("character")){
             // TODO
+        }else{
+            System.out.println("ACTION_2: \nexpected message with object [action_2] or [character]\nreceived message with object["+ request.getObjectOfMessage() + "]");
         }
     }
 
@@ -58,6 +60,8 @@ public class Action_2 implements ControllerState{
             NackMessage nack = new NackMessage();
             nack.setSubObject("invalid_mother_nature_movement");
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
+
+            System.out.println("Nack sent for invalid mother nature movement");
         }else{
             // move mother nature
             match.getRealmOfTheMatch().setDestinationOfMotherNature(destinationIsland);

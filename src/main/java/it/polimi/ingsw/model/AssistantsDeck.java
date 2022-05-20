@@ -86,4 +86,8 @@ public class AssistantsDeck {
 
         return card;
     }
+
+    public Wizard getWizard() {
+        return wizard;
+    }
 }

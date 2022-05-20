@@ -36,60 +36,66 @@ public class ChooseAssistantCard implements ControllerState{
 
         if(!(request.getObjectOfMessage().equals("assistant_chosen"))){
             System.out.println("CHOOSE_ASSISTANT_CARD STATE: \nexpected message with object [assistant_chosen]\nreceived message with object["+ request.getObjectOfMessage() + "]");
-        }
+        }else{
+            //set current player
+            controller.getMatch().setCurrentPlayer(request.getSender_ID());
 
-        //set current player
-        controller.getMatch().setCurrentPlayer(request.getSender_ID());
+            /*CONTROL:
+            can the card be used? if it can be used we set cardLegit to 'true'*/
+            if(usedCards.containsKey(request.getAssistantChosen())){
+                //get the number of cards left
+                int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSender_ID());
 
-        /*CONTROL:
-        can the card be used? if it can be used we set cardLegit to 'true'*/
-        if(usedCards.containsKey(request.getAssistantChosen())){
-            //get the number of cards left
-            int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSender_ID());
+                //if the player has more cards than the already chosen ones then he can choose another assistant
+                if(numberOfRemainingCards > usedCards.size()){
+                    cardLegit = false;
+                    NackMessage nack = new NackMessage();
+                    nack.setSubObject("assistant");
 
-            //if the player has more cards than the already chosen ones then he can choose another assistant
-            if(numberOfRemainingCards > usedCards.size()){
-                cardLegit = false;
-                NackMessage nack = new NackMessage();
-                nack.setSubObject("assistant");
+                    controller.sendMessageToPlayer(request.getSender_ID(), nack);
 
-                controller.sendMessageToPlayer(request.getSender_ID(), nack);
+                    System.out.println("NACK:" + controller.getPlayersNickname().get(request.getSender_ID()) +
+                            ", you chose a not valid assistant card");
+                }
+            }
+
+            if(cardLegit){
+                //modify the model
+                controller.getMatch().useCard(request.getAssistantChosen());
+
+                //add to used cards only if this is the first player using the card
+                if(!usedCards.containsKey(request.getAssistantChosen())){
+                    usedCards.put(request.getAssistantChosen(), request.getSender_ID());
+                }
+
+                //count that another player has ended its turn
+                playersCounter++;
+
+                //create and send an ack message
+                AckMessage response = new AckMessage();
+                response.setSubObject("assistant");
+                response.setRecipient(request.getSender_ID());
+                response.setAssistantAlreadyUsedInThisRound(new ArrayList<>(usedCards.keySet()));
+
+
+                //if all the players choose their assistant then we can go to the next state -> ACTION phase
+                if(playersCounter == controller.getNumberOfPlayers()){
+
+                    // the next player is the first of the action phase
+                    response.setNextPlayer(defineActionPhaseOrder(controller));
+
+                    controller.setActionPhase(true);
+                    controller.setActionPhaseCurrentPlayer(controller.getActionPhaseOrder().get(0));
+
+                    controller.nextState();
+                }else{
+                    response.setNextPlayer(controller.nextPlayer(request.getSender_ID()));
+                }
+
+                controller.sendMessageAsBroadcast(response);
             }
         }
 
-        if(cardLegit){
-            //modify the model
-            controller.getMatch().useCard(request.getAssistantChosen());
-
-            //add to used cards only if this is the first player using the card
-            if(!usedCards.containsKey(request.getAssistantChosen())){
-                usedCards.put(request.getAssistantChosen(), request.getSender_ID());
-            }
-
-            //count that another player has ended its turn
-            playersCounter++;
-
-            //create and send an ack message
-            AckMessage response = new AckMessage();
-            response.setSubObject("assistant");
-            response.setRecipient(request.getSender_ID());
-            response.setAssistantAlreadyUsedInThisRound(new ArrayList<>(usedCards.keySet()));
-
-
-            //if all the players choose their assistant then we can go to the next state -> ACTION phase
-            if(playersCounter == controller.getNumberOfPlayers()){
-
-                // the next player is the first of the action phase
-                response.setNextPlayer(defineActionPhaseOrder(controller));
-                controller.nextState();
-            }else{
-                response.setNextPlayer(controller.nextPlayer(request.getSender_ID()));
-            }
-
-            controller.setActionPhase(true);
-            controller.setActionPhaseCurrentPlayer(controller.getActionPhaseOrder().get(0));
-            controller.sendMessageAsBroadcast(response);
-        }
     }
 
     /**

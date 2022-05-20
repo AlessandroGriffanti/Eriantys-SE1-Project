@@ -212,7 +212,7 @@ public class Match {
         int numberOfTowers = 0;
         Archipelago island = realmOfTheMatch.getArchipelagos().get(island_ID);
 
-        if(players.get(player_ID).equals(island.getMasterOfArchipelago())){
+        if(island.getMasterOfArchipelago() != null && players.get(player_ID).equals(island.getMasterOfArchipelago())){
             assert players.get(player_ID).getTowerColor().equals(island.getTowerColor()) :
                     "The player is the island's master but the color of the towers does not correspond.";
             numberOfTowers = island.getNumberOfIslands();
@@ -234,21 +234,23 @@ public class Match {
         int positionOfMotherNature = getPositionOfMotherNature();
         Tower colorOnMotherNaturePosition = realmOfTheMatch.getArchipelagos().get(positionOfMotherNature).getTowerColor();
 
-        int nextIsland_ID = realmOfTheMatch.nextIsland(positionOfMotherNature);
-        Tower colorOnNextIsland = realmOfTheMatch.getArchipelagos().get(nextIsland_ID).getTowerColor();
+        if(colorOnMotherNaturePosition != null){
+            int nextIsland_ID = realmOfTheMatch.nextIsland(positionOfMotherNature);
+            Tower colorOnNextIsland = realmOfTheMatch.getArchipelagos().get(nextIsland_ID).getTowerColor();
 
-        int previousIsland_ID = realmOfTheMatch.previousIsland(positionOfMotherNature);
-        Tower colorOnPreviousIsland = realmOfTheMatch.getArchipelagos().get(previousIsland_ID).getTowerColor();
+            int previousIsland_ID = realmOfTheMatch.previousIsland(positionOfMotherNature);
+            Tower colorOnPreviousIsland = realmOfTheMatch.getArchipelagos().get(previousIsland_ID).getTowerColor();
 
-        if(colorOnMotherNaturePosition.equals(colorOnPreviousIsland)){
-            returnValue = 1;
-        }
+            if(colorOnMotherNaturePosition.equals(colorOnPreviousIsland)){
+                returnValue = 1;
+            }
 
-        if(colorOnMotherNaturePosition.equals(colorOnNextIsland)){
-            if(returnValue == 1){
-                returnValue = 3;
-            }else{
-                returnValue = 2;
+            if(colorOnMotherNaturePosition.equals(colorOnNextIsland)){
+                if(returnValue == 1){
+                    returnValue = 3;
+                }else{
+                    returnValue = 2;
+                }
             }
         }
 

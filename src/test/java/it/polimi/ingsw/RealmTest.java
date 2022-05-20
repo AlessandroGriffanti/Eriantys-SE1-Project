@@ -26,17 +26,14 @@ public class RealmTest {
 
         //Control1
         assertTrue(realm.getArchipelagos().size() == 12);
-        System.out.println("RealmConstruction Control1 passed");
 
         //Control2
         Archipelago initialIslandOfMotherNature = realm.getArchipelagos().get(motherNaturePosition);
         assertTrue(initialIslandOfMotherNature.getTotalNumberOfStudents() == 0);
-        System.out.println("RealmConstruction Control2 passed");
 
         //Control3
         Archipelago sixthIsland = realm.getArchipelagos().get((motherNaturePosition + 6)%12);
         assertTrue(sixthIsland.getTotalNumberOfStudents() == 0);
-        System.out.println("RealmConstruction Control3 passed");
 
     }
 
@@ -64,14 +61,12 @@ public class RealmTest {
         Bag bag = new Bag();
         Realm realm = new Realm(2, bag);
         int previousPositionOfMotherNature;
-        System.out.println("Mother nature start archipelago: " + realm.getPositionOfMotherNature());
 
         //case1
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
 
         realm.moveMotherNatureWithSteps(3);
         assertTrue(realm.getPositionOfMotherNature() == (previousPositionOfMotherNature+3)%12);
-        System.out.println("moveMotherNatureTest Case1 passed");
 
         //case2
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
@@ -79,14 +74,70 @@ public class RealmTest {
         realm.unifyArchipelago((previousPositionOfMotherNature+2)%12, (previousPositionOfMotherNature+3)%12);
         realm.moveMotherNatureWithSteps(3);
         assertTrue(realm.getPositionOfMotherNature() == (previousPositionOfMotherNature+4)%12);
-        System.out.println("moveMotherNatureTest Case2 passed");
 
         //case3
         previousPositionOfMotherNature = realm.getPositionOfMotherNature();
 
         realm.moveMotherNatureWithSteps(0);
         assertTrue(realm.getPositionOfMotherNature() == previousPositionOfMotherNature);
-        System.out.println("moveMotherNatureTest Case3 passed");
 
+    }
+
+    @Test
+    public void previousIslandTest(){
+        Realm realm = new Realm(2, new Bag());
+
+        // move mother nature on island 2
+        realm.setDestinationOfMotherNature(2);
+
+        // island_0 - 1 step = island_11
+        assertTrue(realm.previousIsland(0) == 11);
+
+        // island_3 - 1 step = island_2
+        assertTrue(realm.previousIsland(3) == 2);
+
+        /* unify islands 10 and 11
+        *  island_0 - 1 step = island_10*/
+        realm.unifyArchipelago(10, 11);
+
+        assertTrue(realm.previousIsland(0) == 10);
+
+        /*unify islands 2 and 3
+        * island_4 - 1 step = island_2*/
+        realm.unifyArchipelago(2, 3);
+        assertTrue(realm.previousIsland(4) == 2);
+
+        // more than one island at null in one single step backward
+        realm.unifyArchipelago(10, 9);
+        assertTrue(realm.previousIsland(0) == 10);
+        assertTrue(realm.previousIsland(10) == 8);
+    }
+
+    @Test
+    public void nextIslandTest(){
+        Realm realm = new Realm(2, new Bag());
+
+        // move mother nature on island 2
+        realm.setDestinationOfMotherNature(2);
+
+        // island_5 + 1 step = island_6
+        assertTrue(realm.nextIsland(5) == 6);
+
+        /*  unify islands 5 and 6
+         *  island_5 + 1 step = island_7*/
+        realm.unifyArchipelago(5, 6);
+        assertTrue(realm.nextIsland(5) == 7);
+
+        // island_11 + 1 step = island_0
+        assertTrue(realm.nextIsland(11) == 0);
+
+        /* unify islands 10, 11 and 9, 10 -> 10 and 11 to null
+        *  island_9 + 1 step = island_0 */
+        realm.unifyArchipelago(10, 11);
+        assert realm.getArchipelagos().get(11) == null;
+        realm.unifyArchipelago(9, 10);
+        assert realm.getArchipelagos().get(10) == null;
+
+        assertTrue(realm.nextIsland(9) == 0);
     }
 }

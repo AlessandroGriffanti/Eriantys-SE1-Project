@@ -113,7 +113,6 @@ public class Realm{
     }
 
     /**
-     * todo -> test
      * This method finds the next island or group of islands with respect to the island argument of the method
      * @param island_ID ID of the island taken as reference
      * @return ID of the next island/group of islands
@@ -121,15 +120,14 @@ public class Realm{
     public int nextIsland(int island_ID){
         int i = 1;
 
-        while(archipelagos.get((island_ID + 1)%12) == null){
+        while(archipelagos.get((island_ID + i)%12) == null){
             i++;
         }
 
-        return positionOfMotherNature+i;
+        return (island_ID+i) % 12;
     }
 
     /**
-     * todo -> test
      * This method finds the previous island or group of islands with respect to the island argument of the method
      * @param island_ID ID of the island taken as reference
      * @return ID of the previous island/group of islands
