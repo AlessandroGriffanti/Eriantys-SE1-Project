@@ -14,6 +14,8 @@ public class AckMessage extends Message{
      * This attribute is the second object of the message, and it tells which data are stored in this message
      */
     private String subObject = "";
+
+    private int playerIDtoAssign;
     /**
      * This attribute is the ID of the Client to whom this ack message is addressed;
      * if NULL there is no recipient
@@ -56,6 +58,14 @@ public class AckMessage extends Message{
 
     public void setSubObject(String subObject){
        this.subObject = subObject;
+    }
+
+    public int getPlayerIDtoAssign() {
+        return playerIDtoAssign;
+    }
+
+    public void setPlayerIDtoAssign(int playerIDtoAssign) {
+        this.playerIDtoAssign = playerIDtoAssign;
     }
 
     public String getSubObject() {

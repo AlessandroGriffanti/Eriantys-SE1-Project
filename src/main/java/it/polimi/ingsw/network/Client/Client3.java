@@ -134,6 +134,7 @@ public class Client3 {
                 LoginSuccessMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
+                System.out.println("player id " + playerID);
                 if (newMatchNeeded == true) {
                     creatingNewSpecsFromClient();
                 }else{
@@ -143,6 +144,8 @@ public class Client3 {
 
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
+                //playerID = askMatchToJoinMessage.getPlayerID();
+                System.out.println("player id" + playerID);
                 System.out.println("Chose a Lobby: ");
                 for (int i = 0; i < askMatchToJoinMessage.getLobbiesTmp().size(); i++) {
                     System.out.print(i + "  ");
@@ -179,15 +182,16 @@ public class Client3 {
                     case "waiting":
                         sendAckFromClient();
                         break;
-                    case "ID for match joined" :
-                        playerID = ackMessageMapped.getPlayerID();
-                        System.out.println("ID set: " + playerID);
-                        break;
+                    case "assigningID":
+                        playerID = ackMessageMapped.getPlayerIDtoAssign();
+                        System.out.println("aaa player id " + playerID);
                 }
                 break;
             case "no lobby available" :
+                NoLobbyAvailableMessage noLobbyAvailableMessage = gsonObj.fromJson(receivedMessageInJson, NoLobbyAvailableMessage.class);
+                //playerID = noLobbyAvailableMessage.getPlayerID();
+                System.out.println("Player id: " + playerID);
                 System.out.println("No lobby available, creating a new one...");
-                playerID = 0;
                 creatingNewSpecsFromClient();
                 break;
 
@@ -201,6 +205,7 @@ public class Client3 {
         BagClickMessage bagClickMessage = new BagClickMessage();
         outputPrintClient.println(gsonObj.toJson(bagClickMessage));
         outputPrintClient.flush();
+        System.out.println("sendBagClickedbyFirst sent");
     }
     /**
      * This method is used to send an ack message to the server.

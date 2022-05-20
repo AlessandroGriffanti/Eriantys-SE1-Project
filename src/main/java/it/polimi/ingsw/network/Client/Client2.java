@@ -134,6 +134,7 @@ public class Client2 {
                 LoginSuccessMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
+                System.out.println("player id " + playerID);
                 if (newMatchNeeded == true) {
                     creatingNewSpecsFromClient();
                 }else{
@@ -143,6 +144,8 @@ public class Client2 {
 
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
+                //playerID = askMatchToJoinMessage.getPlayerID();
+                //System.out.println("player id" + playerID);
                 System.out.println("Chose a Lobby: ");
                 for (int i = 0; i < askMatchToJoinMessage.getLobbiesTmp().size(); i++) {
                     System.out.print(i + "  ");
@@ -185,7 +188,11 @@ public class Client2 {
                         break;
                 }
                 break;
+
             case "no lobby available" :
+                NoLobbyAvailableMessage noLobbyAvailableMessage = gsonObj.fromJson(receivedMessageInJson, NoLobbyAvailableMessage.class);
+                //playerID = noLobbyAvailableMessage.getPlayerID();
+                System.out.println("Player id: " + playerID);
                 System.out.println("No lobby available, creating a new one...");
                 playerID = 0;
                 creatingNewSpecsFromClient();
@@ -201,6 +208,7 @@ public class Client2 {
         BagClickMessage bagClickMessage = new BagClickMessage();
         outputPrintClient.println(gsonObj.toJson(bagClickMessage));
         outputPrintClient.flush();
+        System.out.println("sendBagClickedbyFirst sent");
     }
     /**
      * This method is used to send an ack message to the server.
