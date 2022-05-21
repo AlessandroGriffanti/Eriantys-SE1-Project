@@ -144,8 +144,8 @@ public class Client {
 
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
-                //playerID = askMatchToJoinMessage.getPlayerID();
-                //System.out.println("player id" + playerID);
+                playerID = askMatchToJoinMessage.getPlayerID();
+                System.out.println("player id" + playerID);
                 System.out.println("Chose a Lobby: ");
                 for (int i = 0; i < askMatchToJoinMessage.getLobbiesTmp().size(); i++) {
                     System.out.print(i + "  ");
@@ -180,17 +180,17 @@ public class Client {
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
                 switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
-                        sendAckFromClient();
+                       // sendAckFromClient();
                         break;
-                    case "assigningID":
+                   /* case "assigningID":
                         System.out.println("received assigningID");
                         playerID = ackMessageMapped.getPlayerIDtoAssign();
-                        System.out.println("aaa player id " + playerID);
+                        System.out.println("aaa player id " + playerID); */
                 }
                 break;
             case "no lobby available" :
                 NoLobbyAvailableMessage noLobbyAvailableMessage = gsonObj.fromJson(receivedMessageInJson, NoLobbyAvailableMessage.class);
-                //playerID = noLobbyAvailableMessage.getPlayerID();
+                playerID = noLobbyAvailableMessage.getPlayerID();
                 System.out.println("Player id: " + playerID);
                 System.out.println("No lobby available, creating a new one...");
                 creatingNewSpecsFromClient();

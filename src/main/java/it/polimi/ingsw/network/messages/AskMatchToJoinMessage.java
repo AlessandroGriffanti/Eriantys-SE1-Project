@@ -12,24 +12,24 @@ import java.util.HashMap;
 
 public class AskMatchToJoinMessage extends Message{
     ArrayList<Boolean> listAvailableLobbiesTmp = new ArrayList<>();
-    //private int playerID;
+    private int playerID;
 
     public AskMatchToJoinMessage(){
         this.object = "join match";
     }
 
-    public AskMatchToJoinMessage (ArrayList<Boolean> listAvailableLobbies){
+    public AskMatchToJoinMessage (ArrayList<Boolean> listAvailableLobbies, int playerID){
         this.object = "join match";
         this.listAvailableLobbiesTmp = listAvailableLobbies;
-       // this.playerID = playerID;
+       this.playerID = playerID;
     }
 
     public ArrayList<Boolean> getLobbiesTmp() {
         return listAvailableLobbiesTmp;
     }
 
-    /*public int getPlayerID() {
+    public int getPlayerID() {
         return playerID;
-    }*/
+    }
 
 }

@@ -19,7 +19,7 @@ public class ClientHandler extends Thread {
     private Socket clientSocket;
     private Server server;
     private String nicknamePlayer;
-
+    private int playerID;
     /**
      * Gson object "gsonObj" to deserialize the json message received
      */
@@ -40,7 +40,6 @@ public class ClientHandler extends Thread {
 
         try {
             System.out.println("running");
-            inputStream = clientSocket.getInputStream(); //A CHE SERVE??
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outputHandler = new PrintWriter(clientSocket.getOutputStream());
 
@@ -49,12 +48,18 @@ public class ClientHandler extends Thread {
             //}
             //aggiungere qui il controllo sull'hashmap, quella con il controller, (e sull'attributo booleano del controller per vedere se creare un nuovo controller o meno.
 
-            /*
-            while(clientSocket.isConnected()){
+
+            /*while(clientSocket.isConnected()){
                 server.getLobbies().get(server.getLobbyIDByPlayerName(nicknamePlayer)).manageMsg(inputHandler.readLine());          //messaggio passato in json al controller
                 System.out.println("pippo while");
+            }*/
+            System.out.println("pippo while");
+            while(clientSocket.isConnected()){
+                server.getLobbies().get(String.valueOf(0)).manageMsg(inputHandler.readLine());
+                        //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
+
             }
-             */
+
 
             //System.out.println("end");
 
@@ -106,6 +111,8 @@ public class ClientHandler extends Thread {
             if (checkNickname(receivedMessageFromJson.getNicknameOfPlayer())){  //if checkNickname returns true, which means the nickname of the player isn't already used
                 server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());    //aggiungiamo il nickname del giocatore all'arraylist nel server
                 nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();                     //settiamo la variabile nicknamePlayer del clientHandler con il valore del nickname proveniente dal client
+                playerID = server.getPlayersNicknames().size()-1;
+                System.out.println("Player id " + playerID);
 
                 System.out.println("checked the nickname, it is ok");
                 System.out.println("Player " + server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()) + ": " + receivedMessageFromJson.getNicknameOfPlayer());
@@ -196,10 +203,10 @@ public class ClientHandler extends Thread {
      */
     public void checkNewMatchRequest(boolean requestValue, String nicknameOfPlayer){
         if(requestValue == true){
-            sendingLoginSuccess(0, true);  //server.getPlayersNicknames().indexOf(nicknameOfPlayer
+            sendingLoginSuccess(playerID, true);  //server.getPlayersNicknames().indexOf(nicknameOfPlayer
         }else{
             if(server.getLobbies().keySet().size() == 0){
-                NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(0); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+                NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
 
                 outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
                 outputHandler.flush();
@@ -242,11 +249,11 @@ public class ClientHandler extends Thread {
             }
         }
         if(numberOfLobbiesInWaiting == 0){
-            NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(0); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
             outputHandler.flush();
         }else {
-            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies, playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             outputHandler.println(gsonObj.toJson(askMatchToJoinMessage));
             outputHandler.flush();
             System.out.println("sent AskMatchToJoinMessage");
@@ -284,7 +291,7 @@ public class ClientHandler extends Thread {
     public void messageToSerialize(Message msgToSerialize){
         outputHandler.println(gsonObj.toJson(msgToSerialize));
         outputHandler.flush();
-        System.out.println("sent ok");
+        //System.out.println("sent ok");
     }
 
 }
