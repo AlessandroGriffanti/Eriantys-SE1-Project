@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.messages.ChosenCloudMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.NackMessage;
 
+import javax.annotation.processing.SupportedOptions;
 import java.util.ArrayList;
 
 public class Action_3 implements ControllerState{
@@ -71,17 +72,30 @@ public class Action_3 implements ControllerState{
                 nextPlayer = SupportFunctions.findFirstPlayerOfNewRound(controller);
                 assert nextPlayer != -1 : "There are no more players connected";
                 ack.setNextPlayer(nextPlayer);
+                ack.setNextPlanningPhase(true);
 
-                match.setCurrentPlayer(nextPlayer);
+                controller.setActionPhase(false);
             }else{
                 nextPlayer = controller.nextPlayer(controller.getActionPhaseCurrentPlayer());
 
                 ack.setNextPlayer(nextPlayer);
-
-                match.setCurrentPlayer(nextPlayer);
+                ack.setNextPlanningPhase(false);
             }
 
-            controller.sendMessageAsBroadcast(ack);
+            // control if a player used all of his assistants or if the bag is empty
+            if(SupportFunctions.playerWithNoMoreAssistants_control(controller)){
+
+                ack.setEndOfMatch(true);
+                controller.sendMessageAsBroadcast(ack);
+                SupportFunctions.endMatch(controller, "assistants_finished");
+
+            }else if(SupportFunctions.emptyBag_control(controller)){
+
+                ack.setEndOfMatch(true);
+                controller.sendMessageAsBroadcast(ack);
+                SupportFunctions.endMatch(controller, "empty_bag");
+            }
+
             controller.nextState();
         }
     }

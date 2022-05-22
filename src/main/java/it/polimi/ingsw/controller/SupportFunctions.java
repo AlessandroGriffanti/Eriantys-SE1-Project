@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Match;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.network.server.ClientHandler;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SupportFunctions {
@@ -65,13 +66,41 @@ public class SupportFunctions {
     }
 
     /**
-     * This method controls if some end-of-match requirements has been met during the round
+     * This method controls if there are no more students inside the bag (the last one was drawn during the last round)
      * @param controller reference to the controller of the match
      * @return true if the match must end, false otherwise
      */
-    static boolean controlEndOfMatch(Controller controller){
-        return false;
-        //TODO
+    static boolean emptyBag_control(Controller controller){
+        boolean matchMustEnd = false;
+
+        // control if a player has no more assistant cards
+        ArrayList<Player> players = controller.getMatch().getPlayers();
+
+        for(Player p: players){
+            if(p.getAssistantsDeck().getNumberOfRemainingCards() == 0){
+                matchMustEnd = true;
+            }
+        }
+
+        return matchMustEnd;
+    }
+
+    /**
+     * This method controls if one between all the players has no more assistant cards to use
+     * @param controller reference to the controller of the match
+     * @return true if the match must end, false otherwise
+     */
+    static boolean playerWithNoMoreAssistants_control(Controller controller){
+        boolean matchMustEnd = false;
+
+
+        Bag bag = controller.getMatch().getBagOfTheMatch();
+
+        if(bag.getNumberOfRemainingStudents() == 0){
+            matchMustEnd = true;
+        }
+
+        return matchMustEnd;
     }
 
     /**
@@ -82,10 +111,10 @@ public class SupportFunctions {
      * @param winner ID of the player who's the winner of this match
      */
     static void endMatch(Controller controller, String reason, int winner){
+        String winnerNickname = controller.getPlayersNickname().get(winner);
 
-        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, reason);
+        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
         controller.sendMessageAsBroadcast(finalMessage);
-
 
         for(ClientHandler c: controller.getClientHandlers()){
             // TODO: notify each clientHandler that the connection can be turned off
@@ -101,8 +130,9 @@ public class SupportFunctions {
      */
     static void endMatch(Controller controller, String reason){
         int winner = computeWinner(controller.getMatch());
+        String winnerNickname = controller.getPlayersNickname().get(winner);
 
-        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, reason);
+        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
         controller.sendMessageAsBroadcast(finalMessage);
 
         for(ClientHandler c: controller.getClientHandlers()){

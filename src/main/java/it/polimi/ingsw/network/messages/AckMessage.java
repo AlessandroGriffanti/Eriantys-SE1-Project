@@ -108,6 +108,11 @@ public class AckMessage extends Message{
      * This attribute is true if the match has come to its end or false otherwise
      */
     private boolean endOfMatch = false;
+    /**
+     * This attribute is true if after action_3 there's a new round to play, false if there are other
+     * players that must play their action phase yet
+     */
+    private boolean nextPlanningPhase = false;
 
     public AckMessage(){
         this.object = "ack";
@@ -306,6 +311,15 @@ public class AckMessage extends Message{
     public boolean isEndOfMatch() {
         return endOfMatch;
     }
+
+    // SETTER AND GETTER FOR nextPlanningPhase
+    public void setNextPlanningPhase(boolean nextPlanningPhase) {
+        this.nextPlanningPhase = nextPlanningPhase;
+    }
+
+    public boolean isNextPlanningPhase() {
+        return nextPlanningPhase;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -385,4 +399,9 @@ public class AckMessage extends Message{
       it means that the students on the cloud were moved into the entrance of the player and
       - 'nextPlayer' contains the ID of the next player to move
       - 'cloudChosen_ID' contains the ID of the chosen cloud
-      - 'students' contains the students in the recipient's entrance after the refill*/
+      - 'students' contains the students in the recipient's entrance after the refill
+      - 'nextPlanningPhase' true if the action phase ended, and it's now time to start a new round or
+                            false if there are players that have not played their action phase yet
+                            N.B. The planning phase starts from the 'RefillClouds' state
+      - 'endOfMatch' true if there are no more students to be drawn from the bag or if a player
+                     used all of his assistant cards*/

@@ -398,6 +398,8 @@ public class Action_2 implements ControllerState{
             }
         }
 
+        /* N.B. There could be no more students in the bag even if the action_3 results to be possible
+                in this case there were just the right number of students in the bag*/
         if(!action3Possible){
             assert match.getBagOfTheMatch().getNumberOfRemainingStudents() == 0;
         }

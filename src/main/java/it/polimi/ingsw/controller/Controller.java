@@ -195,7 +195,9 @@ public class Controller {
     }
 
     /**
-     * This method decrease of 1 the number of actual playing players , this is because it was disconnected
+     * This method decrease of 1 the number of actual playing players , this is because it was disconnected.
+     * Then it controls if there are more than 1 players connected, if it's not so the match can end, so
+     * the methode notifies the clientHandlers end calls the end of the match.
      * @param playerID ID of the player who disconnected
      */
     public void onePlayerDisconnected(int playerID){
@@ -210,7 +212,17 @@ public class Controller {
         }
 
         if(numberOfPlayerDisconnected == numberOfPlayers){
-            //TODO we must stop the game
+            //TODO: notify the clientHandler that the match can end
+        }else if(numberOfPlayerDisconnected == numberOfPlayers - 1){
+            int lastPlayer_ID = -1;
+
+            for(int i = 0; i < numberOfPlayers; i++){
+                if(!playersDisconnected.get(i)){
+                    assert lastPlayer_ID == -1 : "There should be only one player still connected";
+                    lastPlayer_ID = i;
+                }
+            }
+            SupportFunctions.endMatch(this, "disconnection", lastPlayer_ID);
         }
     }
 

@@ -13,16 +13,24 @@ public class EndOfMatchMessage extends Message {
      */
     private int winner;
     /**
+     * This attribute is the nickname of the winner
+     */
+    private String winnerNickname = "";
+    /**
      * This attribute is the reason why the match ended
      */
     private String reason = "";
+
 
     public EndOfMatchMessage(){
         this.object = "end";
     }
 
-    public EndOfMatchMessage(int winner_ID, String reason){
+    public EndOfMatchMessage(int winner_ID, String winnerNickname, String reason){
         this.object = "end";
+        this.winner = winner_ID;
+        this.reason = reason;
+        this.winnerNickname = winnerNickname;
     }
 
     public void setReason(String reason) {
@@ -40,6 +48,14 @@ public class EndOfMatchMessage extends Message {
     public int getWinner() {
         return winner;
     }
+
+    public void setWinnerNickname(String winnerNickname) {
+        this.winnerNickname = winnerNickname;
+    }
+
+    public String getWinnerNickname() {
+        return winnerNickname;
+    }
 }
 
 /*POSSIBLE VALUES OF 'reason' ATTRIBUTE:
@@ -50,4 +66,6 @@ public class EndOfMatchMessage extends Message {
 *           it means that one player used all of his towers
 
         3. 'three islands:
-            it means that there are only three islands (group of islands) left'*/
+            it means that there are only three islands (group of islands) left'
+
+        4. 'assistants_finished' */
