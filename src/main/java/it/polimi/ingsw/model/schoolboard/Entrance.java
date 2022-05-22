@@ -66,7 +66,7 @@ public class Entrance {
      * This method adds multiple students to the entrance in the spots where there is a null pointer
      * @param students array of students that will be added
      */
-    public void addMultipleStudents(ArrayList<Creature> students){
+    public ArrayList<Creature> addMultipleStudents(ArrayList<Creature> students){
         int indexOfParameter = 0;
         for(int j = 0; j < studentsInTheEntrance.size(); j++){
             if(studentsInTheEntrance.get(j) == null){
@@ -79,6 +79,8 @@ public class Entrance {
                 }
             }
         }
+
+        return this.studentsInTheEntrance;
     }
 
     /**

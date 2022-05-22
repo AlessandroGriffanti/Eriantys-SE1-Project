@@ -163,7 +163,7 @@ public class Realm{
 
     /**
      * This method call each cloud belonging to the "cloudRegion" so that they can refill
-     * themselves with neew students taken from the bag
+     * themselves with new students taken from the bag
      * @return the array of all the students taken (students on cloud0 - students on cloud1...)
      */
     public ArrayList<Creature> moveStudentsToClouds(){

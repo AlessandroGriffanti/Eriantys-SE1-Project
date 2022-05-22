@@ -62,16 +62,24 @@ public class BagTest {
     }
 
     /**
-     * We test the case where the amount of students requested is greater than
-     * the number of students in the Bag; the methode must throw an Exception
-     * (NotEnoughStudentsException)
+     * This method control if the bag returns all its student left if we want to draw more
+     * students than it has
      */
-    @Test(expected = NotEnoughStudentsException.class)
+    @Test
     public void drawStudents_notEnoughStudents(){
         Bag bag = new Bag();
-        int tooManyStudents = 1150;
-        System.out.println("If we try to draw more students than there is in the bag then:");
-        bag.drawStudents(tooManyStudents);
+        // reduce the number of students in the bag to 5 students
+        int studentsLeft = bag.getNumberOfRemainingStudents();
+        bag.drawStudents(studentsLeft - 5);
+        assert bag.getNumberOfRemainingStudents() == 5;
+
+        // we want to draw 10 students
+        int tooManyStudents = 10;
+
+        ArrayList<Creature> studentsDrawn = bag.drawStudents(tooManyStudents);
+        /* we expect the number of students drawn to be less than the number of students required
+           and in particular equals to the number of students left in the bag*/
+        assertTrue(studentsDrawn.size() == 5);
     }
 
 

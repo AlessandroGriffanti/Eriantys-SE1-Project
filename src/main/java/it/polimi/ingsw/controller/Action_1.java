@@ -85,9 +85,16 @@ public class Action_1 implements ControllerState{
             controller.sendMessageAsBroadcast(response);
             studentsMoved++;
 
-            // if 3 students have been moved we can change state
-            if(studentsMoved == 3){
-                controller.nextState();
+            if(controller.getNumberOfPlayers() == 2){
+                // if 3 students have been moved we can change state
+                if(studentsMoved == 3){
+                    controller.nextState();
+                }
+            }else if(controller.getNumberOfPlayers() == 3){
+                // if 4 students have been moved we can change state
+                if(studentsMoved == 4){
+                    controller.nextState();
+                }
             }
         }
     }

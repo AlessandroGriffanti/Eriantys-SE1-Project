@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.VirtualView;
 import it.polimi.ingsw.model.schoolboard.Entrance;
 import it.polimi.ingsw.model.schoolboard.ProfessorTable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -138,18 +139,21 @@ public class Match {
     }
 
     /**
-     *
+     *This method fills the clouds with new students taken from the bag of the match
      */
     public ArrayList<Creature> moveStudentsFromBagToCloudsEveryRound(){
         return getRealmOfTheMatch().moveStudentsToClouds();
     }
 
-    public void moveStudentsFromCloudToEntrance(int cloud_ID){
+    public ArrayList<Creature> moveStudentsFromCloudToEntrance(int cloud_ID){
+        Entrance entrance = players.get(currentPlayer).getSchoolBoard().getEntrance();
+
         //calls the Realm to take the students on the cloud
         ArrayList<Creature> takenStudents = this.realmOfTheMatch.takeStudentsFromCloud(cloud_ID);
 
         //adds the students to the current player's entrance
-        players.get(currentPlayer).getSchoolBoard().getEntrance().addMultipleStudents(takenStudents);
+        ArrayList<Creature> newEntrance = entrance.addMultipleStudents(takenStudents);
+        return newEntrance;
     }
 
     /**
@@ -283,14 +287,18 @@ public class Match {
     /**
      * This method set a new master on the current island where mother nature is
      * @param playerMaster_ID ID of the new master
+     * @return true if the match must end because the player has no more towers left
+     *         false if the match can continue
      */
-    public void newMasterOnIsland(int playerMaster_ID){
+    public boolean newMasterOnIsland(int playerMaster_ID){
         // who is the new master ?
         Player newMaster = players.get(playerMaster_ID);
         // take the current island
         Archipelago currentIsland = realmOfTheMatch.getArchipelagos().get(getPositionOfMotherNature());
         // set new master
-        currentIsland.setMasterOfArchipelago(newMaster);
+        boolean endOfMatch = currentIsland.setMasterOfArchipelago(newMaster);
+
+        return endOfMatch;
     }
 
     public Bag getBagOfTheMatch() {

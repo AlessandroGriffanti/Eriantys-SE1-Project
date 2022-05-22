@@ -149,18 +149,23 @@ public class Archipelago {
      * Controls if the master is the same or has changed, in this last case retrieves towers from the new
      * master and returns the same number of towers to the old master
      * @param p reference to the Player for the highest influence over the archipelago
+     * @return true if the match must end because the player has no more towers left
+     *         false if the match can continue
      */
-    public void setMasterOfArchipelago(Player p){
+    public boolean setMasterOfArchipelago(Player p){
+
         if(masterOfArchipelago == null){
             masterOfArchipelago = p;
-            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         }else if (!masterOfArchipelago.equals(p)){
             masterOfArchipelago.getSchoolBoard().putTowers(this.numberOfIslands);
             masterOfArchipelago = p;
-            masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         }
-
+        // take towers from the player's tower-area
+        boolean endOfMatch = masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
+        // update tower(s)' color
         setTowerColor();
+
+        return endOfMatch;
     }
 
     /**

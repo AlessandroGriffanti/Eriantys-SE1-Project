@@ -38,24 +38,40 @@ public class SchoolBoard {
         return controlledProfessorsList;
     }
 
-    /** We use the 2 following methods to add and remove towers from and to the islands, in particular they are used
-        in the Archipelago class in the setMasterOfArchipelago method, where the player with the highest influence
-        over the archipelago (or island) changes, and we need to substitute multiple towers */
+    /**
+     * This method controls if there are enough towers and remove theme from the tower-area;
+     * if there are not enough towers then the match must end, so the return value will be false
+     * @param numberOfTowers
+     * @return true if there were enough towers to be taken from the tower-area
+     *         false if taking the towers requested the players remains with 0 towers
+     */
+    public boolean takeTowers(int numberOfTowers){
+        boolean endOfMatch = false;
 
-    public void takeTowers(int numberOfTowers){
-        towerArea.removeTower(numberOfTowers);
+        // if there was not enough towers
+        if(numberOfTowers > towerArea.getCurrentNumberOfTowers()){
+            endOfMatch = true;
+            // remove all the towers left
+            towerArea.removeTower(towerArea.getCurrentNumberOfTowers());
+        }
+        // if there are enough towers left
+        else{
+            towerArea.removeTower(numberOfTowers);
+        }
+
+        return endOfMatch;
     }
 
+    /**
+     * This method put towers into the tower-area
+     * @param numberOfTowers number of towers to add
+     */
     public void putTowers(int numberOfTowers){
         towerArea.addTower(numberOfTowers);
-    }
 
-
-    /*
-    public void setCoinManager(CoinManagerObserver c){
-        this.diningRoom.setCoinObserver(c);
+        // there should never be more towers than the area can keep
+        assert towerArea.getCurrentNumberOfTowers() <= towerArea.getCapacity();
     }
-    */
 
     public TowerArea getTowerArea(){
         return towerArea;
@@ -64,7 +80,6 @@ public class SchoolBoard {
     public ProfessorTable getProfessorTable() {
         return professorTable;
     }
-
 
     public DiningRoom getDiningRoom() {
         return diningRoom;

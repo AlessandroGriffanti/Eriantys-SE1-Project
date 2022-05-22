@@ -26,7 +26,7 @@ public class AckMessage extends Message{
     /**
      * This attribute is the list of all the students added to the clouds
      */
-    private ArrayList<Creature> studentsAddedToTheClouds;
+    private ArrayList<Creature> students;
     /**
      * This attribute is the list of already chosen tower colors
      */
@@ -95,7 +95,19 @@ public class AckMessage extends Message{
      * the master changed
      */
     private int newMaster_ID = -1;
-
+    /**
+     * This attribute is true if there were enough students for refilling the clouds
+     *                   false if there weren't enough students for refilling the clouds -> action_3 not played
+     */
+    private boolean action3Valid = true;
+    /**
+     * This attribute is the ID of the cloud chosen by the player to refill his entrance
+     */
+    private int cloudChosen_ID;
+    /**
+     * This attribute is true if the match has come to its end or false otherwise
+     */
+    private boolean endOfMatch = false;
 
     public AckMessage(){
         this.object = "ack";
@@ -103,7 +115,7 @@ public class AckMessage extends Message{
         this.nextPlayer = -1;
 
         notAvailableDecks = new ArrayList<Wizard>();
-        studentsAddedToTheClouds = new ArrayList<Creature>();
+        students = new ArrayList<Creature>();
         assistantAlreadyUsedInThisRound = new ArrayList<Integer>();
     }
 
@@ -132,12 +144,12 @@ public class AckMessage extends Message{
     }
 
     //SETTER AND GETTER FOR studentsAddedToTheClouds
-    public void setStudentsAddedToTheClouds(ArrayList<Creature> studentsAddedToTheClouds) {
-        this.studentsAddedToTheClouds = studentsAddedToTheClouds;
+    public void setStudents(ArrayList<Creature> students) {
+        this.students = students;
     }
 
-    public ArrayList<Creature> getStudentsAddedToTheClouds() {
-        return studentsAddedToTheClouds;
+    public ArrayList<Creature> getStudents() {
+        return students;
     }
 
     //SETTER AND GETTER FOR notAvailableDecks
@@ -267,6 +279,33 @@ public class AckMessage extends Message{
     public int getNewMaster_ID() {
         return newMaster_ID;
     }
+
+    // SETTER AND GETTER FOR cloudChosen_ID
+    public void setCloudChosen_ID(int cloudChosen_ID) {
+        this.cloudChosen_ID = cloudChosen_ID;
+    }
+
+    public int getCloudChosen_ID() {
+        return cloudChosen_ID;
+    }
+
+    // SETTER AND GETTER FOR action3IsValid
+    public void setAction3Valid(boolean action3Valid) {
+        this.action3Valid = action3Valid;
+    }
+
+    public boolean isAction3Valid() {
+        return action3Valid;
+    }
+
+    // SETTER AND GETTER FOR endOfMatch
+    public void setEndOfMatch(boolean endOfMatch) {
+        this.endOfMatch = endOfMatch;
+    }
+
+    public boolean isEndOfMatch() {
+        return endOfMatch;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -274,18 +313,21 @@ public class AckMessage extends Message{
       it means that the match has been just created and is waiting to start; no more data required.
 
    1. fillClouds:
-      it means that all the clouds have been refilled and 'studentsAddedToTheClouds' contains all te students
+      it means that all the clouds have been refilled and 'students' contains all te students
       added on each cloud
       [ex. 2 players => 2 clouds with 3 students each => in the attribute there will be 6 objects Creature, the first 3 belong to the cloud0 the last 3 to the cloud1]
 
    2. tower_color:
       it means that the color chosen is legit and 'notAvailableTowerColors' contains the already chosen colors
+      - 'nextPlayer'
 
    3. deck:
       it means that the deck chosen by the player is legit and 'notAvailableDecks' contains the decks that are no more available (useful for the next players)
+      - 'nextPlayer'
 
    4. assistant:
       it means that the assistant chosen by the player is legit and 'assistantAlreadyUsedInThisRound' contains the assistants already chosen in this round's planning phase
+      - 'nextPlayer'
 
    5. action_1_dining_room:
       it means that the student has been moved into the dining room and
@@ -302,19 +344,45 @@ public class AckMessage extends Message{
         - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
         - 'destinationIsland_ID' contains the ID of the island where the student has been moved
 
-   7. action_2:
-      it means that mother nature has been moved successfully and
-        - 'nextPlayer' = -1
+   7.1. action_2_movement:
+        it means that mother nature has been moved successfully and
         - 'destinationIsland_ID' the island reached by mother nature
         - 'removedNoEntryTile' tells if a no entry tile has been removed
+                               if TRUE then the client can send the message for action_3
+           these next attribute must be controlled only if removedNoEntryTile==true
         - 'islandThatLostNoEntryTile' tells form which island the no entry tile (if one has been removed) was taken
+        - 'action3Valid' if removedNoEntryTile is true then the client must control this value otherwise he can just
+                           ignore it
+        - 'endOfMatch' it's true if action3IsValid=false
+        - 'nextPlayer' is the next player of action phase (!= -1 only if removedNoEntry=true and action3IsValid=false
+                       and endOfMatch=false)
+
+   7.2. action_2_influence:
+        it means that the influence has been computed and all changes needed were made
         - 'masterChanged' true if the master has changed, false otherwise
         - 'previousMaster_ID' the ID of the previous player master of the island or
                               -1 if the master did not change
         - 'newMaster_ID' the ID of the new master on the island reached by mother nature or
                          -1 if the master did not change
+        - 'endOfMatch'
+
+   7.3 action_2_union:
+       it means that the control on the union of the islands was done and the changes needed were applied
+        - 'nextPlayer' contains the ID of the next player
+                       -1: if action3Valid==true || endOfMatch==true
+                       the next player of action phase
         - 'islandsUnified' contains a String that says if two or more islands have been unified
                           - none -> no unification
                           - previous
                           - next
-                          - both*/
+                          - both
+        - 'removedNoEntryTile' if an island  that was unified with the current one removed a noEntryTile
+        - 'islandThatLostNoEntryTile' which one of the islands unified lost the noEntryTile
+        - 'action3Valid'
+        - 'endOfMatch' true if there are only three islands left, false if the match can continue
+
+   8. action_3:
+      it means that the students on the cloud were moved into the entrance of the player and
+      - 'nextPlayer' contains the ID of the next player to move
+      - 'cloudChosen_ID' contains the ID of the chosen cloud
+      - 'students' contains the students in the recipient's entrance after the refill*/

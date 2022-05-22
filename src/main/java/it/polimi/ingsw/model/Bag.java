@@ -129,21 +129,22 @@ public class Bag {
     public ArrayList<Creature> drawStudents(int numberOfStudentsToDraw){
         ArrayList<Creature> caughtStudents = null;
         Random randomGenerator;
-        boolean invalidDrawn = false;
         int randomIndex;
         int i;
-
-        if(numberOfStudentsToDraw > this.getNumberOfRemainingStudents()){
-            throw new NotEnoughStudentsException(numberOfStudentsToDraw, this.getNumberOfRemainingStudents());
-        }
 
         caughtStudents = new ArrayList<Creature>();
         randomGenerator = new Random();
 
         for(i = 0; i < numberOfStudentsToDraw; i++) {
-            randomIndex = randomGenerator.nextInt(this.remainingStudents.size());
-            caughtStudents.add(this.remainingStudents.get(randomIndex));
-            this.remainingStudents.remove(randomIndex);
+
+            if(!(this.getNumberOfRemainingStudents()==0)){
+                randomIndex = randomGenerator.nextInt(this.remainingStudents.size());
+                caughtStudents.add(this.remainingStudents.get(randomIndex));
+                this.remainingStudents.remove(randomIndex);
+            }else{
+                break;
+            }
+
         }
 
         return caughtStudents;

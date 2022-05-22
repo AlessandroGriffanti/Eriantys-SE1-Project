@@ -31,7 +31,7 @@ public class RefillClouds implements ControllerState{
             //send an ack message with the drawn students in order to update the Client' s data
             AckMessage response = new AckMessage();
             response.setSubObject("refillClouds");
-            response.setStudentsAddedToTheClouds(studentsPutOnEachCloud);
+            response.setStudents(studentsPutOnEachCloud);
 
 
             controller.sendMessageAsBroadcast(response);

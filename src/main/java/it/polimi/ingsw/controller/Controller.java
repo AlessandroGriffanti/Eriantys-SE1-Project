@@ -165,7 +165,7 @@ public class Controller {
      */
     public void sendMessageAsBroadcast(Message msg){
         for(ClientHandler p: clientHandlers){
-            //p.messageToSerialize(msg);
+            p.messageToSerialize(msg);
         }
     }
 
@@ -200,6 +200,18 @@ public class Controller {
      */
     public void onePlayerDisconnected(int playerID){
         playersDisconnected.set(playerID, true);
+
+        int numberOfPlayerDisconnected = 0;
+
+        for(boolean i: playersDisconnected){
+            if(i){
+                numberOfPlayerDisconnected++;
+            }
+        }
+
+        if(numberOfPlayerDisconnected == numberOfPlayers){
+            //TODO we must stop the game
+        }
     }
 
     /**
@@ -254,6 +266,10 @@ public class Controller {
         this.expertMode = mode;
     }
 
+    public boolean isExpertMode() {
+        return expertMode;
+    }
+
     public ArrayList<ClientHandler> getClientHandlers() {
         return clientHandlers;
     }
@@ -268,6 +284,10 @@ public class Controller {
 
     public void setActionPhase(boolean actionPhase) {
         this.actionPhase = actionPhase;
+    }
+
+    public boolean isActionPhase() {
+        return actionPhase;
     }
 
     public int getPlayersAddedCounter() {
@@ -300,5 +320,9 @@ public class Controller {
 
     public ArrayList<String> getPlayersNickname() {
         return playersNickname;
+    }
+
+    public ArrayList<Boolean> getPlayersDisconnected() {
+        return playersDisconnected;
     }
 }

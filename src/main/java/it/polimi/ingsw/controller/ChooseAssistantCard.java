@@ -13,11 +13,10 @@ public class ChooseAssistantCard implements ControllerState{
      */
     private int playersCounter = 0;
     /**
-     * This attribute is the list of assistants already chosen by the players
-     * key: order value that identifies the card
-     * value: ID of the player that used it
+     * This attribute is the list of used cards and for each one of them an array of players
+     * that used that card in the exact order the chose the card
      */
-    private HashMap<Integer, Integer> usedCards = new HashMap<>();
+    private HashMap<Integer, ArrayList<Integer>> usedCards = new HashMap<>();
     /**
      * This attribute tells if the card chosen is legit or not
      */
@@ -41,12 +40,12 @@ public class ChooseAssistantCard implements ControllerState{
             controller.getMatch().setCurrentPlayer(request.getSender_ID());
 
             /*CONTROL:
-            can the card be used? if it can be used we set cardLegit to 'true'*/
+            can the card be used? if it can be used we set cardLegit to 'true' (already set)*/
             if(usedCards.containsKey(request.getAssistantChosen())){
                 //get the number of cards left
                 int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSender_ID());
 
-                //if the player has more cards than the already chosen ones then he can choose another assistant
+                //if the player has more cards than the that already chosen then he can choose another assistant
                 if(numberOfRemainingCards > usedCards.size()){
                     cardLegit = false;
                     NackMessage nack = new NackMessage();
@@ -57,16 +56,17 @@ public class ChooseAssistantCard implements ControllerState{
                     System.out.println("NACK:" + controller.getPlayersNickname().get(request.getSender_ID()) +
                             ", you chose a not valid assistant card");
                 }
+            }else{
+                // if there is not the entry for this then we create it
+                usedCards.put(request.getAssistantChosen(), new ArrayList<>());
             }
 
             if(cardLegit){
                 //modify the model
                 controller.getMatch().useCard(request.getAssistantChosen());
 
-                //add to used cards only if this is the first player using the card
-                if(!usedCards.containsKey(request.getAssistantChosen())){
-                    usedCards.put(request.getAssistantChosen(), request.getSender_ID());
-                }
+                //add the player to the list of users of this card
+                usedCards.get(request.getAssistantChosen()).add(request.getSender_ID());
 
                 //count that another player has ended its turn
                 playersCounter++;
@@ -104,26 +104,30 @@ public class ChooseAssistantCard implements ControllerState{
      * @return the ID of the first player of the action phase
      */
     private int defineActionPhaseOrder(Controller controller) {
-        ArrayList<Integer> arr = new ArrayList<Integer>(usedCards.keySet());
+        ArrayList<Integer> cardsOrder = new ArrayList<Integer>(usedCards.keySet());
 
-        int n = arr.size();
+        int n = cardsOrder.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++){
-                if (arr.get(j) > arr.get(j + 1)) {
-                    // swap arr[j+1] and arr[j]
-                    int temp = arr.get(j);
-                    arr.set(j, arr.get(j + 1));
-                    arr.set(j + 1, temp);
+                if (cardsOrder.get(j) > cardsOrder.get(j + 1)) {
+                    // swap cardsOrder[j+1] and cardsOrder[j]
+                    int temp = cardsOrder.get(j);
+                    cardsOrder.set(j, cardsOrder.get(j + 1));
+                    cardsOrder.set(j + 1, temp);
                 }
             }
         }
 
+        ArrayList<Integer> playerOrder = new ArrayList<Integer>();
+
         // substitute the cards' values with players' ID
-        for(int k = 0; k < arr.size(); k++){
-            arr.set(k, usedCards.get(arr.get(k)));
+        for(int k : cardsOrder){
+            for(int j: usedCards.get(k)){
+                playerOrder.add(j);
+            }
         }
 
-        controller.setActionPhaseOrder(arr);
-        return arr.get(0);
+        controller.setActionPhaseOrder(playerOrder);
+        return playerOrder.get(0);
     }
 }

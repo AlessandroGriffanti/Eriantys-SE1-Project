@@ -30,4 +30,7 @@ public class NackMessage extends Message{
 *
 *   2. invalid_mother_nature_movement:
 *      it means that the movement of mother nature is not legit because it does not respect the maximum distance
-*      feasible for mother nature which is written on the last used assistant card*/
+*      feasible for mother nature which is written on the last used assistant card
+*
+*   3. invalid_cloud:
+*      it means that the cloud chosen had been already chosen by another player and now is empty of students*/

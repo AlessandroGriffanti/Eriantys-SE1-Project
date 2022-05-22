@@ -4,6 +4,9 @@ import it.polimi.ingsw.model.Creature;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class MatchStartMessage extends Message{
     private int firstPlayer;
     private int motherNaturePosition;
