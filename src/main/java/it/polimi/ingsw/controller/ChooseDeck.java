@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Wizard;
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.ChosenDeckMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenDeckMessage;
 
 import java.util.ArrayList;
 

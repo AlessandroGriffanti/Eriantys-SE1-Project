@@ -1,6 +1,8 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.serverMessages;
 
-public class LoginSuccessMessage extends Message{
+import it.polimi.ingsw.network.messages.Message;
+
+public class LoginSuccessMessage extends Message {
     private int playerID;
 
     private boolean newMatchNeeded;

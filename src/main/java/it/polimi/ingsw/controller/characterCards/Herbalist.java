@@ -1,10 +1,10 @@
 package it.polimi.ingsw.controller.characterCards;
 
-public class FruitSeller extends Character {
+public class Herbalist extends Character {
     private int remainingNoEntryTiles;
     private int islandID;
 
-    public FruitSeller() {
+    public Herbalist() {
         this.price = 2;
         this.remainingNoEntryTiles = 4;
     }

@@ -1,6 +1,8 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
 
-public class ChosenAssistantCardMessage extends  Message{
+import it.polimi.ingsw.network.messages.Message;
+
+public class ChosenAssistantCardMessage extends Message {
     private int assistantChosen;
 
     public ChosenAssistantCardMessage(){

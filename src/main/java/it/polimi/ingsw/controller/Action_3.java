@@ -1,12 +1,11 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.ChosenCloudMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCloudMessage;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.NackMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
-import javax.annotation.processing.SupportedOptions;
 import java.util.ArrayList;
 
 public class Action_3 implements ControllerState{

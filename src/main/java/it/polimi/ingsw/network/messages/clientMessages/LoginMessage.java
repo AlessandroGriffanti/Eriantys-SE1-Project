@@ -1,4 +1,6 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
+
+import it.polimi.ingsw.network.messages.Message;
 
 public class LoginMessage extends Message {
     String nicknameOfPlayer;

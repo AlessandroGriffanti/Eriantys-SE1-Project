@@ -1,10 +1,10 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.AckMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.MovedMotherNatureMessage;
-import it.polimi.ingsw.network.messages.NackMessage;
+import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

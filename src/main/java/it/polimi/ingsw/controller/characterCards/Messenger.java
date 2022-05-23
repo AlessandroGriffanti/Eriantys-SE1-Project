@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.characterCards;
 
-public class PizzaFlag  extends Character {
+public class Messenger extends Character {
 
     public void effect() {
 

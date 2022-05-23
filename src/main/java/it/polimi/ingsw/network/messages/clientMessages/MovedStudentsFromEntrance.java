@@ -1,13 +1,14 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.network.messages.Message;
 
 /**
  * This class represent the message sent by the client for the first part of action phase, that is the
  * movement of students from the entrance to the dining room or the islands.
  * A message is sent for every student moved.
  */
-public class MovedStudentsFromEntrance extends Message{
+public class MovedStudentsFromEntrance extends Message {
 
     /**
      * This attribute is the ID used to identify the student, that has just been moved,

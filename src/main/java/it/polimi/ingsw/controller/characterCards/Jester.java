@@ -4,13 +4,13 @@ import it.polimi.ingsw.model.Creature;
 
 import java.util.ArrayList;
 
-public class Joker extends Character {
+public class Jester extends Character {
 
     /** this attribute handles the students on the card */
     private ArrayList<Creature> studentsOnJoker;
 
 
-    public Joker(){
+    public Jester(){
         this.price = 1;
         this.studentsOnJoker = new ArrayList<>();
     }

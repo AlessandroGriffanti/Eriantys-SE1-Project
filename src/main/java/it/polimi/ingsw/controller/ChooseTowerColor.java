@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Tower;
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.ChosenTowerColorMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenTowerColorMessage;
 
 import java.util.ArrayList;
 

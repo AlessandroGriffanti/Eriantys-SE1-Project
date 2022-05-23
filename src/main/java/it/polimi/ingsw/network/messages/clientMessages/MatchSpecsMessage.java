@@ -1,9 +1,11 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
+
+import it.polimi.ingsw.network.messages.Message;
 
 /**
  * This class represents the message sent by the client to the server providing the information needed to creat the new match
  */
-public class MatchSpecsMessage extends Message{
+public class MatchSpecsMessage extends Message {
     int numOfPlayers;
     boolean expertMode;
 

@@ -2,8 +2,8 @@ package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.model.Creature;
 
-public class DrugDealer extends Character {
-    public DrugDealer() {
+public class Trafficker extends Character {
+    public Trafficker() {
         this.price = 3;
     }
 

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.ChosenAssistantCardMessage;
-import it.polimi.ingsw.network.messages.NackMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenAssistantCardMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

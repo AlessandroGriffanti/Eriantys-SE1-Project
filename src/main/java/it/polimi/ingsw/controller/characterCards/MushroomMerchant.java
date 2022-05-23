@@ -1,9 +1,9 @@
 package it.polimi.ingsw.controller.characterCards;
 
 
-public class MushroomFellow extends Character {
+public class MushroomMerchant extends Character {
 
-    public MushroomFellow(){
+    public MushroomMerchant(){
         this.price = 3;
     }
     public void effect(){};

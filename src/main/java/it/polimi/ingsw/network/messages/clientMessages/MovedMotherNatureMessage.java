@@ -1,6 +1,8 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
 
-public class MovedMotherNatureMessage extends Message{
+import it.polimi.ingsw.network.messages.Message;
+
+public class MovedMotherNatureMessage extends Message {
 
     /**
      * This attribute is the ID of the island where the player chose to move mother nature

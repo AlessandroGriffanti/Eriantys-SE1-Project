@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.MatchSpecsMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
 
 /**
  * This class represents the state of the controller in which it's waiting for other players to join the match

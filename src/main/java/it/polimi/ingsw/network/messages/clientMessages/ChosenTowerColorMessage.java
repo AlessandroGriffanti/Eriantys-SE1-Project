@@ -1,8 +1,9 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.model.Tower;
+import it.polimi.ingsw.network.messages.Message;
 
-public class ChosenTowerColorMessage extends Message{
+public class ChosenTowerColorMessage extends Message {
     Tower color;
 
     public ChosenTowerColorMessage(){

@@ -1,107 +1,118 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.controller.characterCards.*;
-import it.polimi.ingsw.controller.characterCards.Character;
-import it.polimi.ingsw.model.Player;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 public class CharactersManager {
-    private ArrayList<Character> charactersList;
+    /**
+     * This attribute is the list of chosen characters for the match (references to the Character(s))
+     */
+    private ArrayList<Character> characterCards;
+    /**
+     * This attribute is the list of name associated with each Character chosen
+     */
+    private ArrayList<String> charactersName;
+    /**
+     * This attribute is the list of boolean that tell if a particular Character has been already used
+     */
     private ArrayList<Boolean> charactersUsed;
-    private Player p;
 
     public CharactersManager() {
-        this.charactersList= new ArrayList<>(3);
+        this.characterCards = new ArrayList<Character>();
+        this.charactersName = new ArrayList<String>();
 
-        this.charactersUsed = new ArrayList<>(3);
+        this.charactersUsed = new ArrayList<Boolean>();
         charactersUsed.add(false);
         charactersUsed.add(false);
         charactersUsed.add(false);
 
-        Random randomGeneratorCharacter;
+    }
 
-        int randomIndexCharacter, i;
-        int old1, old2;
+    /**
+     * This method chooses randomly, between all the available characters, only 3 of them
+     * @return list of names associated with characters chosen in the exact order of choice
+     */
+    public ArrayList<String> chooseCharacter(){
 
-        Character x = null;
-        Character character0 = null;
-        Character character1 = null;
-        Character character2 = null;
+        Random random = new Random();;
+        int randomNumber;
 
-        randomGeneratorCharacter = new Random();
-        old1 = 14;
-        old2 = 14;
+        ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<Integer>();
 
-        for(i = 0; i < 3; i++) {
-            do{
-                randomIndexCharacter = randomGeneratorCharacter.nextInt(13);
-            }while (randomIndexCharacter == old1 || randomIndexCharacter == old2);
+        for(int i = 0; i < 3; i++) {
+            randomNumber = random.nextInt(13);
 
-            switch (randomIndexCharacter) {
-                case 1:
-                    x = new Monk();
-                    break;
-                case 2:
-                    x = new Cook();
-                    break;
-                case 3:
-                    x = new PizzaFlag();
-                    break;
-                case 4:
-                    x = new PiedPiper();
-                    break;
-                case 5:
-                    x = new FruitSeller();
-                    break;
-                case 6:
-                    x = new Centaur();
-                    break;
-                case 7:
-                    x = new Joker();
-                    break;
-                case 8:
-                    x = new Knight();
-                    break;
-                case 9:
-                    x = new MushroomFellow();
-                    break;
-                case 10:
-                    x = new Bard();
-                    break;
-                case 11:
-                    x = new Princess();
-                    break;
-                case 12:
-                    x = new DrugDealer();
-                    break;
-            }
-            if (i == 0) {
-                character0 = x;
-            } else if (i == 1) {
-                old1 = randomIndexCharacter;
-                character1 = x;
-            } else if (i == 2) {
-                old2 = randomIndexCharacter;
-                character2 = x;
+            if(!alreadyDrawnNumbers.contains(randomNumber)){
+                /* add the number just drawn to the array so that we can choose a different card the
+                   next time we draw another number*/
+                alreadyDrawnNumbers.add(randomNumber);
+
+                // control to which one of the characters the number corresponds
+                switch (randomNumber) {
+                    case 1:
+                        characterCards.add(new Monk());
+                        charactersName.add("monk");
+                        break;
+                    case 2:
+                        characterCards.add(new Cook());
+                        charactersName.add("cook");
+                        break;
+                    case 3:
+                        characterCards.add(new Ambassador());
+                        charactersName.add("ambassador");
+                        break;
+                    case 4:
+                        characterCards.add(new Messenger());
+                        charactersName.add("messenger");
+                        break;
+                    case 5:
+                        characterCards.add(new Herbalist());
+                        charactersName.add("herbalist");
+                        break;
+                    case 6:
+                        characterCards.add(new Centaur());
+                        charactersName.add("centaur");
+                        break;
+                    case 7:
+                        characterCards.add(new Jester());
+                        charactersName.add("jester");
+                        break;
+                    case 8:
+                        characterCards.add(new Knight());
+                        charactersName.add("knight");
+                        break;
+                    case 9:
+                        characterCards.add(new MushroomMerchant());
+                        charactersName.add("mushroomMerchant");
+                        break;
+                    case 10:
+                        characterCards.add(new Bard());
+                        charactersName.add("bard");
+                        break;
+                    case 11:
+                        characterCards.add(new Princess());
+                        charactersName.add("princess");
+                        break;
+                    case 12:
+                        characterCards.add(new Trafficker());
+                        charactersName.add("trafficker");
+                        break;
+                }
             }
         }
 
-        charactersList.add(character0);
-        charactersList.add(character1);
-        charactersList.add(character2);
+        return charactersName;
     }
 
 
-    public void useCharacter(int index){
+   /* public void useCharacter(int index){
         int priceCharacterSelected;
         int coinsOwned;
 
         this.charactersUsed.set(index, true);
 
          //coin usage
-         priceCharacterSelected = this.charactersList.get(index).getPrice();
+         priceCharacterSelected = this.characterCards.get(index).getPrice();
 
          if(charactersUsed.get(index)) {
              priceCharacterSelected = priceCharacterSelected + 1;
@@ -116,8 +127,8 @@ public class CharactersManager {
              //System.out.println("Not enough money!");
          }
 
-         charactersList.get(index).effect();
+         characterCards.get(index).effect();
 
-    }
+    }*/
 
 }

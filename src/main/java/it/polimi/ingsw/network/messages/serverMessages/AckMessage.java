@@ -1,15 +1,16 @@
-package it.polimi.ingsw.network.messages;
+package it.polimi.ingsw.network.messages.serverMessages;
 
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
+import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
 
 /**
  * This class represents the message sent by the server to the client to notify about the correct receiving of the message (client -> server)
  */
-public class AckMessage extends Message{
+public class AckMessage extends Message {
     /**
      * This attribute is the second object of the message, and it tells which data are stored in this message
      */

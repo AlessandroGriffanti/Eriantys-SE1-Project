@@ -1,9 +1,10 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.characterCards.CharactersManager;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.network.messages.AckMessage;
-import it.polimi.ingsw.network.messages.MatchStartMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.network.messages.serverMessages.MatchStartMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.ClientHandler;
 
@@ -24,6 +25,10 @@ public class Controller {
      * This attribute is the reference to the Model of the match
      */
     private Match match = null;
+    /**
+     * This attribute is the reference to the characters' manager of the match
+     */
+    private CharactersManager charactersManager = null;
     /**
      * This attribute is the number of players needed to start the match
      */
@@ -141,8 +146,14 @@ public class Controller {
 
         for(int i = 0; i < clientHandlers.size(); i++){
             ArrayList<Creature> studentsInEntrance = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
-            MatchStartMessage msg = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, studentsInEntrance);
-            sendMessageToPlayer(i, msg);
+            MatchStartMessage message = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, studentsInEntrance);
+
+            if(expertMode){
+                this.charactersManager = new CharactersManager();
+                ArrayList<String> characters = charactersManager.chooseCharacter();
+                message.setCharacters(characters);
+            }
+            sendMessageToPlayer(i, message);
         }
 
         playing = true;
