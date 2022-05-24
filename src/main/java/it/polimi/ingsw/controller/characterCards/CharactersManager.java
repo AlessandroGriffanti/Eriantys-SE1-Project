@@ -20,7 +20,12 @@ public class CharactersManager {
     /**
      * This attribute is the reference to the controller of the match
      */
-    private Controller controller;
+    Controller controller;
+    /**
+     * This attribute is true if the cook characterCard has been used
+     *                   false otherwise
+     */
+    private boolean cookUsed;
 
 
     public CharactersManager(Controller controller) {
@@ -52,7 +57,7 @@ public class CharactersManager {
                         cards.put("monk", new Monk(controller));
                         break;
                     case 2:
-                        cards.put("cook", new Cook());
+                        cards.put("cook", new Cook(controller));
                         break;
                     case 3:
                         cards.put("ambassador", new Ambassador());
@@ -126,4 +131,12 @@ public class CharactersManager {
         cards.get(cardChosen).effect(request);
     }
 
+    // SETTER AND GETTER FOR cookUsed
+    public void setCookUsed(boolean cookUsed) {
+        this.cookUsed = cookUsed;
+    }
+
+    public boolean isCookUsed() {
+        return cookUsed;
+    }
 }

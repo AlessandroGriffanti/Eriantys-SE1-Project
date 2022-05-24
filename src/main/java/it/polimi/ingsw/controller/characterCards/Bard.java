@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 public class Bard extends Character {
     public Bard() {
@@ -8,7 +9,7 @@ public class Bard extends Character {
     }
 
     @Override
-    public void effect() {
+    public void effect(ChosenCharacterMessage request) {
         System.out.println("Error: no variables received");
     }
 
@@ -23,12 +24,12 @@ public class Bard extends Character {
      * @param creatureChosenOne first student chosen from the hashmap of the students in the dining room
      * @param creatureChosenTwo second student chosen from the hashmap of the students in the dining room
      */
-    public void effect(int indexOfPlayer, int positionEntranceOne, int positionEntranceTwo, Creature creatureChosenOne, Creature creatureChosenTwo) throws Exception {
+    /*public void effect(int indexOfPlayer, int positionEntranceOne, int positionEntranceTwo, Creature creatureChosenOne, Creature creatureChosenTwo) throws Exception {
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudentToDiningRoom(positionEntranceOne);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().moveStudentToDiningRoom(positionEntranceTwo);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().removeStudent(creatureChosenOne);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureChosenOne);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().removeStudent(creatureChosenTwo);
         getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getEntrance().addStudent(creatureChosenTwo);
-    }
+    }*/
 }

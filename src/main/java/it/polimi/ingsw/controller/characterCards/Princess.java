@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 import java.util.ArrayList;
 
@@ -14,23 +15,12 @@ public class Princess extends Character {
         studentsOnPrincess = new ArrayList<>();
     }
 
-    /** same idea as the one explained in the joker character card */
-    public void setUpEffect(){
-        studentsOnPrincess.addAll(getMatch().getBagOfTheMatch().drawStudents(4));
-    }
-    public void effect(){};
-
-    /** the idea of this method is nearly the same as the one in the joker */
-    public void effect(int indexOfPlayer, int indexOfTheStudentOnPrincess, int indexOfTheStudentInTheDiningRoom){
-        Creature creatureToRemoveFromPrincess = getStudentsOnPrincess().get(indexOfTheStudentOnPrincess);
-        getMatch().getPlayers().get(indexOfPlayer).getSchoolBoard().getDiningRoom().addStudent(creatureToRemoveFromPrincess);
-
-        ArrayList<Creature> newStudentToAddToPrincess = getMatch().getBagOfTheMatch().drawStudents(1);
-        studentsOnPrincess.addAll(newStudentToAddToPrincess);
-    }
-
     public ArrayList<Creature> getStudentsOnPrincess() {
         return studentsOnPrincess;
     }
 
+    @Override
+    public void effect(ChosenCharacterMessage request) {
+
+    }
 }

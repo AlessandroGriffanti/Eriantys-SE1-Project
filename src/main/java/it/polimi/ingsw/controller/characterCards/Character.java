@@ -11,11 +11,11 @@ public abstract class Character{
     /**
      * This attribute is the price of the card
      */
-    public int price;
+    int price;
     /**
      * This attribute is the reference to the controller of the match
      */
-    private Controller controller;
+    Controller controller;
     /**
      * This attribute says if the card has already been used one time , hence the price increased
      */

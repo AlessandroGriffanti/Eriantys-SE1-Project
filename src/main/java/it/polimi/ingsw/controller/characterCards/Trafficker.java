@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 public class Trafficker extends Character {
     public Trafficker() {
@@ -8,7 +9,7 @@ public class Trafficker extends Character {
     }
 
     @Override
-    public void effect() {
+    public void effect(ChosenCharacterMessage request) {
     }
 
     /**
@@ -16,7 +17,7 @@ public class Trafficker extends Character {
      * If there aren't enought students of the choosen type, will be returned as many students as there are.
      * @param chosenCreature type of student chosen
      */
-    public void effect(Creature chosenCreature) throws Exception {
+    /*public void effect(Creature chosenCreature) throws Exception {
         int numberOfStudentsOfTheChosenCreature; //number of students of the chosen creature type of the "current" (the one selected by the index) player
         int i;
         int indexOfPlayer;
@@ -28,5 +29,5 @@ public class Trafficker extends Character {
                 getMatch().getBagOfTheMatch().addOneStudentToBag(chosenCreature);
             }
         }
-    }
+    }*/
 }
