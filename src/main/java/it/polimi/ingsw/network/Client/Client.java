@@ -25,8 +25,8 @@ public class Client {
             client.startClient();
 
         }catch(IOException e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            //e.printStackTrace();
+            System.out.println("" + e.getMessage());
         }
     }
 

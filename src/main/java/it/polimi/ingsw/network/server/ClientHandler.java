@@ -54,7 +54,7 @@ public class ClientHandler extends Thread {
                 System.out.println("pippo while");
             }*/
             System.out.println("pippo while");
-            while(clientSocket.isConnected()){
+            while( !( server.getLobbies().get(0).isMatchEnded() ) ){
                 server.getLobbies().get(String.valueOf(0)).manageMsg(inputHandler.readLine());
                         //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
 
@@ -72,6 +72,7 @@ public class ClientHandler extends Thread {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            server.getLobbies().get(0).onePlayerDisconnected(playerID);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
