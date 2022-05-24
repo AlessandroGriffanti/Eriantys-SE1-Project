@@ -2,76 +2,79 @@ package it.polimi.ingsw.network.server;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.messages.LoginMessage;
-import it.polimi.ingsw.network.messages.LoginSuccessMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.NicknameNotValidMessage;
+import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.server.Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
- * it should deserialize the json received and pass the information to the controller
+ * it should deserialize the json received and pass the information to the controller.
+ * @server is a reference to the main server
  */
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
     private Socket clientSocket;
     private Server server;
     private String nicknamePlayer;
-
-    /**
-     * input and output stream
-     */
-    private PrintWriter outputHandler;
-    private BufferedReader inputHandler;
-
+    private int playerID;
     /**
      * Gson object "gsonObj" to deserialize the json message received
      */
     private final Gson gsonObj = new Gson();
+
+    //input and output stream
+    private InputStream inputStream = null;
+    private PrintWriter outputHandler = null;
+    private BufferedReader inputHandler = null;
+
 
     public ClientHandler(Socket socket, Server server) {
         this.clientSocket = socket;
         this.server = server;
     }
 
-    @Override
     public void run() {
+
         try {
-            System.err.println("running");
-
-            outputHandler = new PrintWriter(clientSocket.getOutputStream());
+            System.out.println("running");
             inputHandler = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            outputHandler = new PrintWriter(clientSocket.getOutputStream());
 
-            /*
-            String outputFromServer = inputHandler.readLine();
-            System.out.println("nickreceived: " + outputFromServer); //ricevuto dal client
-
-            outputHandler.println(outputFromServer + " ok\n");
-            outputHandler.flush();
-            System.out.println("sent ok");
-            */
-
+            //while (true) {
             loginInServer(inputHandler.readLine());
-
+            //}
             //aggiungere qui il controllo sull'hashmap, quella con il controller, (e sull'attributo booleano del controller per vedere se creare un nuovo controller o meno.
 
-            while(clientSocket.isConnected()){
+
+            /*while(clientSocket.isConnected()){
                 server.getLobbies().get(server.getLobbyIDByPlayerName(nicknamePlayer)).manageMsg(inputHandler.readLine());          //messaggio passato in json al controller
                 System.out.println("pippo while");
+            }*/
+            System.out.println("pippo while");
+            while( !( server.getLobbies().get(0).isMatchEnded() ) ){
+                server.getLobbies().get(String.valueOf(0)).manageMsg(inputHandler.readLine());
+                //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
+
             }
 
-            System.out.println("end");
 
+            //System.out.println("end");
+
+            /*
             outputHandler.close();
             inputHandler.close();
             clientSocket.close();
             System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
+             */
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            server.getLobbies().get(0).onePlayerDisconnected(playerID);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -83,99 +86,203 @@ public class ClientHandler implements Runnable {
      * through the addPlayerHandler method. If it is true, then we add a new lobby to lobbies and we create the new corresponding
      * controller to which we pass the lobby ID
      */
+    //    public synchronized boolean checkNewLobbyCreation(String nicknameOfNewPlayer)
 
-    public synchronized boolean checkNewLobbyCreation(String nicknameOfNewPlayer) {
-        if (server.getLobbies().keySet().isEmpty()) {
-            int newNumberOfTotalLobbies = 1;
-            server.getLobbies().put((String.valueOf(newNumberOfTotalLobbies)), new Controller(newNumberOfTotalLobbies));
-            server.getLobbies().get(newNumberOfTotalLobbies).addPlayerHandler(this, nicknameOfNewPlayer);
-            return true;
-        } else {
-            for (String lobbyID : server.getLobbies().keySet()) {
-                if ((server.getLobbies().get(lobbyID).getPlayingStatus()) == false) {
-                    server.getLobbies().get(lobbyID).addPlayerHandler(this, nicknameOfNewPlayer);
-                    return false;
-                } else {
-                    int newNumberOfTotalLobbies = server.getLobbies().size() + 1;
-                    server.getLobbies().put((String.valueOf(newNumberOfTotalLobbies)), new Controller(newNumberOfTotalLobbies));
-                    server.getLobbies().get(newNumberOfTotalLobbies).addPlayerHandler(this, nicknameOfNewPlayer);
-                    return true;
-                }
-            }
-        }
-        return true;
-    }
+
 
     /**
      * This method in the server analyse all the received message from the client and calls the right method in consequence.
      *
      * @param receivedMessageInJson is the message received in json format through the socket reader.
      */
-    public void loginInServer(String receivedMessageInJson) {
+    public void loginInServer(String receivedMessageInJson) throws IOException, InterruptedException {
         System.out.println(receivedMessageInJson);
-        LoginMessage receivedMessageFromJson = new LoginMessage();
+        LoginMessage receivedMessageFromJson; //= new LoginMessage();
         receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
         System.out.println("Message translated");
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
         System.out.println("Object Found.");
+
         if (messageObject.equals("login")) {
             System.out.println("I received a login message");
-            // System.out.println(receivedMessageFromJson.getNicknameOfPlayer());
-            int j = this.server.getPlayersNicknames().size();
-            if (j == 0) {
-                //PRIMO GIOCATORE COLLEGATO
-                server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());
-                nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();
-                System.out.println("primo nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
-                System.out.println("nickname ok");
 
-                boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
-                sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
+            System.out.println("Nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
 
-                System.out.println("sent ok");
 
-            } else {
-                int flag = 0;
-                for (int k = 0; k < j; k++) {
-                    if (server.getPlayersNicknames().get(k).equals(receivedMessageFromJson.getNicknameOfPlayer())) {
-                        flag = 1;
-                        System.out.println("equals");
-                        break;
-                    }
+            if (checkNickname(receivedMessageFromJson.getNicknameOfPlayer())){  //if checkNickname returns true, which means the nickname of the player isn't already used
+                server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());    //aggiungiamo il nickname del giocatore all'arraylist nel server
+                nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();                     //settiamo la variabile nicknamePlayer del clientHandler con il valore del nickname proveniente dal client
+                playerID = server.getPlayersNicknames().size()-1;
+                System.out.println("Player id " + playerID);
+
+                System.out.println("checked the nickname, it is ok");
+                System.out.println("Player " + server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()) + ": " + receivedMessageFromJson.getNicknameOfPlayer());
+                System.out.println("player ok");
+
+                checkNewMatchRequest(receivedMessageFromJson.isCreateNewMatch(), nicknamePlayer);   //controlliamo se vuole creare un nuovo match. se sì mandiamo un loginSuccess
+                //se no, mandiamo un nolobbyavailable (se non ce ne sono) o un askmatchtojoin
+
+                String messageReceivedInJson = inputHandler.readLine();                             //qui riceve il nuovo mex dal client
+                Message messageReceivedFromJson = gsonObj.fromJson(messageReceivedInJson, Message.class);
+
+                if(messageReceivedFromJson.getObjectOfMessage().equals("creation")){                //se riceve il messaggio di MatchSpecs
+                    System.out.println("I received a new match specs message");
+                    lobbyCreation(nicknamePlayer);                                                  // --> allora crea la lobby
+
+                    System.out.println("Lobby created");
+                    // wait(5*1000);   //ATTENZIONE
+
+                    System.out.println("num giocatori: " + server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size()-1)).getPlayersAddedCounter());    //stampo il numero di giocatori della lobby per controllo
+                    server.getLobbies().get(String.valueOf(server.getLobbies().keySet().size() - 1)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
+
+
+                }else if(messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {          //se il server riceve questo significa che il player ha scelto a che lobby unirsi
+                    System.out.println("I received a new chosen lobby message");
+                    ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
+
+                    server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
+                    /*ackMessage.setSubObject("waiting");
+                    ackMessage.setPlayerIDtoAssign(server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter() -1);
+                    outputHandler.println(gsonObj.toJson(ackMessage));
+                    outputHandler.flush(); */
+
+                    System.out.println("nuovo numero di giocatori nella lobby: " + server.getLobbies().get(String.valueOf(replyChosenLobbyToJoinMessage.getLobbyIDchosen())).getPlayersAddedCounter());
+
+                }else {
+                    System.out.println("Error: not right specs message");
                 }
-                System.out.println("flag");
-                if (flag != 1) {
-                    server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());
-                    nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();
-                    System.out.println("altro nickname ricevuto: " + receivedMessageFromJson.getNicknameOfPlayer());
-                    System.out.println("nickname ok");
 
-                    boolean checkNew = checkNewLobbyCreation(receivedMessageFromJson.getNicknameOfPlayer());
-                    sendingLoginSuccess(server.getPlayersNicknames().indexOf(receivedMessageFromJson.getNicknameOfPlayer()), checkNew);
+                //SIAMO ARRIVATI QUI
 
-                } else {
-                    System.out.println("nickname already used");
-                    sendingNicknameNotValid();
 
+            }else{                                                //se il check del nome dà false, finiamo qui dove viene inviato un nicknamenotvalid e nel client verrà rifatto il login
+                System.out.println("nickname already used");
+                sendingNicknameNotValid();
+                System.out.println("sent nack ok");
+
+                loginInServer(inputHandler.readLine());
+            }
+        }else {
+            System.out.println("Error: not a Login message");
+        }
+    }
+
+    /** this method checks if the nickname of the player who wants to login is already
+     * used or not in the server, where we store in an arraylist (playersNicknames) all the nicknames
+     * @param nicknameChosenPlayer is the nickname to check
+     * @return true: the first one means that the size of the arraylist is not 0, but the nickname is not used
+     * @return false: we check, the nickname is already used, 'equal' is set to 1 and we return false
+     * @return true: the second one means the arraylist is empty, so the player is the first one, which means
+     * his nickname can't be already used, so we return true.
+     * */
+    public boolean checkNickname(String nicknameChosenPlayer){
+        int totalNumberOfPlayers = this.server.getPlayersNicknames().size(); //IN QUESTO CASO FORSE BISOGNA CREARE SUBITO LA LOBBY
+        if (totalNumberOfPlayers != 0) {
+            int equal = 0;
+            for(int k = 0; k < totalNumberOfPlayers; k++){
+                if (server.getPlayersNicknames().get(k).equals(nicknameChosenPlayer)){
+                    equal = 1;                                              //se ne trovo uno uguale setto equal a 1
+                    System.out.println("equals");
+                    break;
                 }
-                System.out.println("sent ok");
+            }
+            if(equal != 1){                         //quindi il nickname non è stato usato -> ritorno true
+                return true;
+            }else{                                  //ritorno false se  è già usato
+                return false;
+            }
+        }else{                                       //se la size dell'arraylist dei player è 0, non può essere usato
+            return true;                                //dunque ritorno true
+        }
+    }
+
+    /** this methood checks if the player wants to create a new match or not.
+     * @param requestValue is the boolean 'createNewMatch' in the LoginMessage, true if he wants to create a new match, false otherwise. If
+     * @param requestValue is false, we first check if the number of total lobbies is 0, which means there is no lobby to join.
+     * If so, we send a NoLobbyAvailableMessage, otherwise we call the method askMatchToJoin.
+     * @param nicknameOfPlayer is the nickname of the player who wants to create, or not, the new match
+     */
+    public void checkNewMatchRequest(boolean requestValue, String nicknameOfPlayer){
+        if(requestValue == true){
+            sendingLoginSuccess(playerID, true);  //server.getPlayersNicknames().indexOf(nicknameOfPlayer
+        }else{
+            if(server.getLobbies().keySet().size() == 0){
+                NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+
+                outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
+                outputHandler.flush();
+
+                System.out.println("sent NoLobbyAvailableMessage ok");
+            }else{
+                askMatchToJoin();
             }
         }
     }
 
-
+    /**
+     * this method sends a LoginSuccess message after checking no other player has the same nickname and after adding
+     * the new player's nickname to the arraylist in the main server.
+     * @param playerID is the unique ID associated to the player and it is the index in the playersNicknames arraylist
+     * @param newMatchNeeded is true if the player wants to create a new game, otherwise is false.
+     */
     public void sendingLoginSuccess(int playerID, boolean newMatchNeeded){
         LoginSuccessMessage loginSuccessMessage = new LoginSuccessMessage(playerID, newMatchNeeded);
         outputHandler.println(gsonObj.toJson(loginSuccessMessage));
         outputHandler.flush();
-        System.out.println("sent ok");
+        System.out.println("sent LoginSuccessMessage");
     }
 
+    /** This method checks the status of each lobby (which is the controller associated in the hashmap lobbies).
+     * If the status is false, it means the match is waiting for other players to join, so it is available and we add the boolean 'false' and we increase the counter
+     * of lobbies that are waiting. If the status is true, it means the match has already started, so it's not available and we add the boolean 'true'.
+     * After that, if the counter is 0, it means all the lobbies are full, so a new one is required and we
+     * send a NoLobbyAvailable Message, otherwise we send a AskMatchToJoinMessage. In the end, we set the player ID
+     */
+    public void askMatchToJoin() {
+        ArrayList<Boolean> listAvailableLobbies = new ArrayList<>();
+        int numberOfLobbiesInWaiting = 0;
+        for(String lobby : server.getLobbies().keySet()) {
+            if(server.getLobbies().get(lobby).getPlayingStatus() == true) {
+                listAvailableLobbies.add(true);
+            }else {
+                listAvailableLobbies.add(false);
+                numberOfLobbiesInWaiting ++;
+            }
+        }
+        if(numberOfLobbiesInWaiting == 0){
+            NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            outputHandler.println(gsonObj.toJson(noLobbyAvailableMessage));
+            outputHandler.flush();
+        }else {
+            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies, playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            outputHandler.println(gsonObj.toJson(askMatchToJoinMessage));
+            outputHandler.flush();
+            System.out.println("sent AskMatchToJoinMessage");
+        }
+    }
+
+    /** this method creates a new lobby if the player wants, so if he has declared in the previous messages (e.g. LoginMessage)
+     * that he wants to create a new one.
+     * @param nicknameOfNewPlayer is the nickname of the player who wants to create the new lobby.
+     * @numberOfTotalLobbies is the number of lobbies we have reached, so it is the size of the keyset of the hashmap lobbies, which is in the main server
+     * @addPlayerHandler is the method through which we add the player to its game in the controller
+     */
+    public synchronized void lobbyCreation(String nicknameOfNewPlayer) {
+        int numberOfTotalLobbies = server.getLobbies().keySet().size();                                                            //+1 ???
+        server.getLobbies().put((String.valueOf(numberOfTotalLobbies)), new Controller(numberOfTotalLobbies));
+        server.getLobbies().get(String.valueOf(numberOfTotalLobbies)).addPlayerHandler(this, nicknameOfNewPlayer);
+    }
+
+
+    /** this method sends a NicknameNotValid Message if the login fails, which means there is another
+     * player with the same nickname.
+     */
     public void sendingNicknameNotValid(){
         NicknameNotValidMessage nicknameNotValidMessage = new NicknameNotValidMessage();
         outputHandler.println(gsonObj.toJson(nicknameNotValidMessage));
         outputHandler.flush();
-        System.out.println("sent ok");
+        System.out.println("sent nickNameNotValid ok");
+
     }
 
     /**
@@ -185,7 +292,7 @@ public class ClientHandler implements Runnable {
     public void messageToSerialize(Message msgToSerialize){
         outputHandler.println(gsonObj.toJson(msgToSerialize));
         outputHandler.flush();
-        System.out.println("sent ok");
+        //System.out.println("sent ok");
     }
 
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-//import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 
 import it.polimi.ingsw.controller.Controller;
 
@@ -31,7 +31,7 @@ public class Server {
 
 
     /** hashmap that links the player's name to the lobby ID the player is registered */
-    private HashMap<String, String> playerInTheLobby;       //questa non serve
+    //private HashMap<String, String> playerInTheLobby;       //questa non serve
 
 
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
@@ -40,14 +40,22 @@ public class Server {
     /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
      */
-    private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
+    //private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
+
+
+    /** this arraylist keeps a track of the connections */
+    private ArrayList <Socket> connections;
+
+    //posso aggiungere un hashmap di string(o int) che indica il numeero della partita, della lobby, e di boolean
+    //in cui true mi indica ad esempio se la partita è in attesa e false se è completa
 
 
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
-        this.playerInTheLobby = new HashMap<>();
+        //this.playerInTheLobby = new HashMap<>();
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
+        this.connections = new ArrayList<>();
     }
 
 
@@ -67,15 +75,16 @@ public class Server {
      * @param nickname player's name.
      * @return the lobby id.
      */
-    public String getLobbyIDByPlayerName(String nickname) {
-        return playerInTheLobby.get(nickname);
-    }
+    //public String getLobbyIDByPlayerName(String nickname) {
+    //   return playerInTheLobby.get(nickname);
+    //}
 
     /**
      * This method returns the list of players that have joined the selected lobby.
-     * @param lobbyID the lobby id.
+     // * @param lobbyID the lobby id.
      * @return a list of player's nickname.
      */
+    /*
     public ArrayList<String> getPlayersNameByLobby(String lobbyID) {
         ArrayList<String> players = new ArrayList<>();
         for (String nickname : playerInTheLobby.keySet()) {
@@ -86,21 +95,7 @@ public class Server {
         return players;
     }
 
-    /** this method launches the server.
-     * It initializes the serverSocket.
-     * executorService creates a new pool of threads, the ones really dealing with clients.
-     * In the loop we accept a connection from a client and we 'deliver' it to a new thread through the submit method.
      */
-    public void start() throws IOException{
-        serverSocket = new ServerSocket(4444);
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        System.err.println("Waiting for connections...");
-        while(true){
-            Socket clientSocket = serverSocket.accept();
-            System.err.println("Client connected " + clientSocket.getRemoteSocketAddress());
-            executorService.submit(new ClientHandler(clientSocket, this));
-        }
-    }
 
     public ArrayList<String> getPlayersNicknames() {
         return this.playersNicknames;
@@ -110,21 +105,80 @@ public class Server {
         return lobbies;
     }
 
+    public ArrayList<Socket> getConnections() {
+        return connections;
+    }
+
+
     public void setPlayersNicknames(ArrayList<String> playersNicknames) {
         this.playersNicknames = playersNicknames;
     }
 
 
+
+    /*
     public static void main(String[] args) {
-        /*System.out.println("Insert number of server port: ");
-        Scanner in = new Scanner(System.in);
-        int numberOfPort = in.nextInt(); */
+        //System.out.println("Insert number of server port: ");
+        //Scanner in = new Scanner(System.in);
+        //int numberOfPort = in.nextInt();
         Server server = new Server(4444);
         try{
             server.start();
         }catch(IOException e){
             e.printStackTrace();
             System.out.println("Error in the server launch");
+        }
+    }
+
+    this method launches the server.
+     It initializes the serverSocket.
+     executorService creates a new pool of threads, the ones really dealing with clients.
+     In the loop we accept a connection from a client and we 'deliver' it to a new thread through the submit method.
+
+    public void start() throws IOException{
+        serverSocket = new ServerSocket(4444);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        System.err.println("Waiting for connections...");
+        while(true){
+            Socket clientSocket = serverSocket.accept();
+            connections.add(clientSocket);
+            System.err.println("Client connected " + clientSocket.getRemoteSocketAddress() + ", number of clients: " + connections.size());
+            executorService.submit(new ClientHandler(clientSocket, this));
+        }
+    }
+
+    */
+
+    public static void main(String[] args) {
+        ServerSocket serverSocket = null;
+        Server server = new Server(4444);   //ripetitivo
+
+        try{
+            System.out.println("Server ready");
+            server.start();
+
+        }catch(IOException e){
+            e.printStackTrace();
+            System.out.println("Error in server launch");
+        }
+
+
+    }
+
+    public void start() throws IOException {
+        serverSocket = new ServerSocket(4444);
+        Socket clientSocket = null;
+        while(true){
+            try{
+                clientSocket = serverSocket.accept();
+                System.out.println("Client connected " + clientSocket.getRemoteSocketAddress());
+            } catch (IOException e) {
+                System.out.println("I/O error: " + e);
+            }
+
+            // new thread for a client
+            new ClientHandler(clientSocket, this).start();
+
         }
     }
 
