@@ -75,6 +75,10 @@ public class Controller {
      * This attribute is the list of disconnected players where the indexes correspond to the IDs of the players
      */
     private ArrayList<Boolean> playersDisconnected;
+    /**
+     * This attribute is set to true if the match is ended and false otherwise
+     */
+    private boolean matchEnded;
 
     /**
      * Controller constructor
@@ -91,6 +95,8 @@ public class Controller {
         this.actionPhase = false;
 
         this.playersDisconnected = new ArrayList<Boolean>();
+
+        matchEnded = false;
     }
 
     /**
@@ -347,5 +353,13 @@ public class Controller {
 
     public ArrayList<Boolean> getPlayersDisconnected() {
         return playersDisconnected;
+    }
+
+    public void setMatchEnded(boolean matchEnded) {
+        this.matchEnded = matchEnded;
+    }
+
+    public boolean isMatchEnded() {
+        return matchEnded;
     }
 }

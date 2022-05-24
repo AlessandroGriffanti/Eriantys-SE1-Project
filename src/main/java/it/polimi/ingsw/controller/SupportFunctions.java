@@ -119,6 +119,9 @@ public class SupportFunctions {
         for(ClientHandler c: controller.getClientHandlers()){
             // TODO: notify each clientHandler that the connection can be turned off
         }
+
+        // set to true the attribute matchEnded inside the Controller
+        controller.setMatchEnded(true);
     }
 
     /**
@@ -138,6 +141,9 @@ public class SupportFunctions {
         for(ClientHandler c: controller.getClientHandlers()){
             // TODO: notify each clientHandler that the connection can be turned off
         }
+
+        // set to true the attribute matchEnded inside the Controller
+        controller.setMatchEnded(true);
     }
 
     /**
