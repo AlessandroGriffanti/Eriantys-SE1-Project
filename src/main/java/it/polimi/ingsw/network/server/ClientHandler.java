@@ -3,13 +3,12 @@ package it.polimi.ingsw.network.server;
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.network.messages.*;
-import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.network.messages.clientMessages.*;
+import it.polimi.ingsw.network.messages.serverMessages.*;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
  * it should deserialize the json received and pass the information to the controller.

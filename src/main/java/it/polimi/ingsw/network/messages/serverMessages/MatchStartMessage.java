@@ -26,4 +26,8 @@ public class MatchStartMessage extends Message {
     public void setCharacters(ArrayList<String> characters) {
         this.characters = characters;
     }
+
+    public int getFirstPlayer() {
+        return firstPlayer;
+    }
 }

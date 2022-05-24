@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.Client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.messages.serverMessages.*;
+import it.polimi.ingsw.network.messages.clientMessages.*;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
