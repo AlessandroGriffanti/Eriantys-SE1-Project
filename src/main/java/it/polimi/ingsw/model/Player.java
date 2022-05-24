@@ -36,13 +36,13 @@ public class Player {
     }
 
     /**
-     * This method set the number of coins owned by the player
-     * N.B. used in CharactersManager in the useCharacter method
-     * @param coinsOwned number of coins owned
+     * This method decreases the amount of coins owned by the player by the value specified
+     * @param price number of coins taken
      */
-    public void setCoinsOwned(int coinsOwned) {
-        this.coinsOwned = coinsOwned;
+    public void spendCoins(int price){
+        coinsOwned -= price;
     }
+
     public int getCoinsOwned() {
         return coinsOwned;
     }

@@ -40,11 +40,6 @@ public class Match {
      */
     private int coinReserve;
     /**
-     * This attribute is the virtual view behaving as an observer of the Model.
-     * It will be called after changes inside the Model
-     */
-    private VirtualView virtualView;
-    /**
      * This attribute memorizes the professors that are not already controlled by any of the players
      */
     private ArrayList<Creature> notControlledProfessors;
@@ -60,8 +55,7 @@ public class Match {
         this.bagOfTheMatch = new Bag();
         this.realmOfTheMatch = new Realm(numberOfPlayers, bagOfTheMatch);
         this.players = new ArrayList<Player>();
-        this.coinReserve = 20; //expert mode
-        this.virtualView = vv;
+        this.coinReserve = 20;
 
         this.notControlledProfessors = new ArrayList<Creature>();
         for(Creature c: Creature.values()){
@@ -85,10 +79,6 @@ public class Match {
     public int getNumberOfPlayers() {
         //this.numberOfPlayers = getPlayers().size();
         return numberOfPlayers;
-    }
-
-    public int getPositionOfMotherNature(){
-        return realmOfTheMatch.getPositionOfMotherNature();
     }
 
     /**
@@ -170,7 +160,7 @@ public class Match {
      * @param student_ID the ID used to identify the student inside th entrance
      * @param island_ID the ID of the island where to move the student
      */
-    public  void moveStudentFromEntranceToIsland(int student_ID, int island_ID){
+    public void moveStudentFromEntranceToIsland(int student_ID, int island_ID){
         players.get(currentPlayer).getSchoolBoard().getEntrance().moveStudentToIsland(student_ID, island_ID);
     }
     /**
@@ -301,6 +291,10 @@ public class Match {
         return endOfMatch;
     }
 
+    public int getPositionOfMotherNature(){
+        return realmOfTheMatch.getPositionOfMotherNature();
+    }
+
     public Bag getBagOfTheMatch() {
         return bagOfTheMatch;
     }
@@ -319,5 +313,20 @@ public class Match {
 
     public ArrayList<Creature> getNotControlledProfessors() {
         return notControlledProfessors;
+    }
+
+    /**
+     * This method put a certain amount of coins in the coin reserve
+     * @param quantity number of coins to deposit in the  coin reserve
+     * @return number of coins actually in the coin reserve
+     */
+    public int depositInCoinReserve(int quantity){
+        coinReserve += quantity;
+
+        return coinReserve;
+    }
+
+    public int getCoinReserve() {
+        return coinReserve;
     }
 }

@@ -1,38 +1,37 @@
 package it.polimi.ingsw.controller.characterCards;
 
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 public class CharactersManager {
     /**
-     * This attribute is the list of chosen characters for the match (references to the Character(s))
+     * This attribute contains the name and reference of each of the three cards chosen at the beginning of the match
+     * key: card's name
+     * value: reference to the Character object
      */
-    private ArrayList<Character> characterCards;
+    private HashMap<String, Character> cards;
     /**
-     * This attribute is the list of name associated with each Character chosen
+     * This attribute is the reference to the controller of the match
      */
-    private ArrayList<String> charactersName;
-    /**
-     * This attribute is the list of boolean that tell if a particular Character has been already used
-     */
-    private ArrayList<Boolean> charactersUsed;
+    private Controller controller;
 
-    public CharactersManager() {
-        this.characterCards = new ArrayList<Character>();
-        this.charactersName = new ArrayList<String>();
 
-        this.charactersUsed = new ArrayList<Boolean>();
-        charactersUsed.add(false);
-        charactersUsed.add(false);
-        charactersUsed.add(false);
-
+    public CharactersManager(Controller controller) {
+        this.cards = new HashMap<String, Character>();
     }
 
     /**
      * This method chooses randomly, between all the available characters, only 3 of them
      * @return list of names associated with characters chosen in the exact order of choice
      */
-    public ArrayList<String> chooseCharacter(){
+    public Set<String> chooseCharacter(){
 
         Random random = new Random();;
         int randomNumber;
@@ -50,85 +49,81 @@ public class CharactersManager {
                 // control to which one of the characters the number corresponds
                 switch (randomNumber) {
                     case 1:
-                        characterCards.add(new Monk());
-                        charactersName.add("monk");
+                        cards.put("monk", new Monk(controller));
                         break;
                     case 2:
-                        characterCards.add(new Cook());
-                        charactersName.add("cook");
+                        cards.put("cook", new Cook());
                         break;
                     case 3:
-                        characterCards.add(new Ambassador());
-                        charactersName.add("ambassador");
+                        cards.put("ambassador", new Ambassador());
                         break;
                     case 4:
-                        characterCards.add(new Messenger());
-                        charactersName.add("messenger");
+                        cards.put("messenger", new Messenger());
                         break;
                     case 5:
-                        characterCards.add(new Herbalist());
-                        charactersName.add("herbalist");
+                        cards.put("herbalist", new Herbalist());
                         break;
                     case 6:
-                        characterCards.add(new Centaur());
-                        charactersName.add("centaur");
+                        cards.put("centaur", new Centaur());
                         break;
                     case 7:
-                        characterCards.add(new Jester());
-                        charactersName.add("jester");
+                        cards.put("jester", new Jester());
                         break;
                     case 8:
-                        characterCards.add(new Knight());
-                        charactersName.add("knight");
+                        cards.put("knight", new Knight());
                         break;
                     case 9:
-                        characterCards.add(new MushroomMerchant());
-                        charactersName.add("mushroomMerchant");
+                        cards.put("mushroomMerchant", new MushroomMerchant());
                         break;
                     case 10:
-                        characterCards.add(new Bard());
-                        charactersName.add("bard");
+                        cards.put("bard", new Bard());
                         break;
                     case 11:
-                        characterCards.add(new Princess());
-                        charactersName.add("princess");
+                        cards.put("princess", new Princess());
                         break;
                     case 12:
-                        characterCards.add(new Trafficker());
-                        charactersName.add("trafficker");
+                        cards.put("trafficker", new Trafficker());
                         break;
                 }
             }
         }
 
-        return charactersName;
+        return cards.keySet();
     }
 
+    /**
+     *This method controls if the player has enough coins to use the character, if so it withdraws the price from the player
+     * and put the same amount of coins in the public reserve of coins and then calls the effect of the
+     * chosen character
+     * @param request message sent by the client asking to use the character
+     */
+    public void useCard(ChosenCharacterMessage request){
 
-   /* public void useCharacter(int index){
-        int priceCharacterSelected;
-        int coinsOwned;
+        int player_ID = request.getSender_ID();
+        Player player = controller.getMatch().getPlayerByID(player_ID);
+        String cardChosen = request.getCardName();
 
-        this.charactersUsed.set(index, true);
+        // get the current price of the card
+        int price = cards.get(cardChosen).getPrice();
 
-         //coin usage
-         priceCharacterSelected = this.characterCards.get(index).getPrice();
+        // the card chosen must be one of the three cards chosen at the beginning of the match
+        assert cards.containsKey(cardChosen) : "The player chose a card that was not chosen as one of the three cards of this match!!";
 
-         if(charactersUsed.get(index)) {
-             priceCharacterSelected = priceCharacterSelected + 1;
-         }
+        // control if the number of coins is sufficient, if so collect them
+        int playerCoins = player.getCoinsOwned();
+        if(price > playerCoins){
+            NackMessage nack = new NackMessage();
+            nack.setSubObject("character");
+        }
 
-         try {
-             if (p.getCoinsOwned() >= priceCharacterSelected) {
-                 coinsOwned = p.getCoinsOwned() - priceCharacterSelected;
-                 p.setCoinsOwned(coinsOwned);
-             }
-         } catch (Exception e) {
-             //System.out.println("Not enough money!");
-         }
+        // withdraw coins from player
+        player.spendCoins(price);
 
-         characterCards.get(index).effect();
+        // put the same amount of coins in the public reserve
+        controller.getMatch().depositInCoinReserve(price);
 
-    }*/
+        // call the effect of the card
+        cards.get(cardChosen).effect(request);
+    }
 
 }

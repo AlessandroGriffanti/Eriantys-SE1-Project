@@ -10,6 +10,7 @@ import it.polimi.ingsw.network.server.ClientHandler;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 public class Controller {
     /**
@@ -155,8 +156,8 @@ public class Controller {
             MatchStartMessage message = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, studentsInEntrance);
 
             if(expertMode){
-                this.charactersManager = new CharactersManager();
-                ArrayList<String> characters = charactersManager.chooseCharacter();
+                this.charactersManager = new CharactersManager(this);
+                Set<String> characters = charactersManager.chooseCharacter();
                 message.setCharacters(characters);
             }
             sendMessageToPlayer(i, message);
@@ -361,5 +362,9 @@ public class Controller {
 
     public boolean isMatchEnded() {
         return matchEnded;
+    }
+
+    public CharactersManager getCharactersManager() {
+        return charactersManager;
     }
 }
