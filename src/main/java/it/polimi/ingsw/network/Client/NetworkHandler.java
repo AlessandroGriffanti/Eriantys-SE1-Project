@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
+import it.polimi.ingsw.view.cli.CLI;
 
 
 import java.io.BufferedReader;
@@ -14,23 +15,22 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+public class NetworkHandler {
+    private CLI cli;
+    private String nickNamePlayer;
     private int playerID;
     private Socket clientSocket = null;
     private Gson gsonObj = new Gson();
     private BufferedReader inputBufferClient = null;
     private PrintWriter outputPrintClient = null;
+    private String ip;
+    private int port;
 
 
-    public static void main(String[] args) throws IOException {
-        try{
-            Client client = new Client();
-            client.startClient();
-
-        }catch(IOException e){
-            //e.printStackTrace();
-            System.out.println("" + e.getMessage());
-        }
+    public NetworkHandler(String ipReceived, int portReceived, CLI cliReceived) {
+        this.ip = ipReceived;
+        this.port = portReceived;
+        this.cli = cliReceived;
     }
 
 
@@ -41,7 +41,7 @@ public class Client {
      * @throws IOException
      */
     public void startClient() throws IOException{
-        clientSocket = new Socket("localhost", 4444);
+        clientSocket = new Socket(ip, port);
 
         inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
@@ -49,13 +49,10 @@ public class Client {
         // 1- per prima cosa il client avviato fa un login sul server
         loginFromClient();
 
-
-
         while(true){            // TODO: controllo connessione
-            System.out.println("Still connected");
-            String msgFromServer = new String();
-            msgFromServer = inputBufferClient.readLine();
-            System.out.println("messaggio dal server: " + msgFromServer);
+            //System.out.println("Still connected");
+            String msgFromServer = inputBufferClient.readLine();
+            //System.out.println("messaggio dal server: " + msgFromServer);
             analysisOfReceivedMessageServer(msgFromServer);
         }
 
@@ -69,39 +66,28 @@ public class Client {
 
 
     /**
+     * This method serialize in json and send the passed message.
+     * @param msgToSend is the message to be sent.
+     */
+    public void sendMessage(Message msgToSend){
+        outputPrintClient.println(gsonObj.toJson(msgToSend));
+        outputPrintClient.flush();
+    }
+
+
+    /**
      * This method is used by client (player) to access the game:
      * First, player's nickname is asked,the the player is asked if he wants to create a new match (y/n) and his ansswer
      * his saved in the 'newMatchStr' variable. If he inserts 'y', it will later bepl created a new match,
      * otherwise the player will be asked which lobby, so which match, he wants to join.
      */
     public void loginFromClient() {
-        Scanner loginScanner = new Scanner(System.in);
+        nickNamePlayer = cli.loginNickname();
 
-        System.out.println("Insert nickname: ");
-        String nickNamePlayer = loginScanner.nextLine();
-        System.out.println("ok");
-
-        System.out.println("do you wat to create a new match? (y/n) ");
-        String newMatchStr = loginScanner.nextLine();
-        boolean newMatchBool;
-
-        while ( !( (newMatchStr.equals("y")) || (newMatchStr.equals("n")))){
-            System.out.println("please insert y if you want to create a new match: (y/n) ");
-            newMatchStr = loginScanner.nextLine();
-        }
-        System.out.println("ok");
-
-        if(newMatchStr.equals("y")){
-            newMatchBool = true;
-        }else {
-            newMatchBool = false;
-        }
+        boolean newMatchBool = cli.newMatchBoolean();
 
         LoginMessage msgLogin = new LoginMessage(nickNamePlayer, newMatchBool);
-        outputPrintClient.println(gsonObj.toJson(msgLogin));
-        outputPrintClient.flush();
-
-        System.out.println("sent");
+        sendMessage(msgLogin);
     }
 
 
@@ -111,17 +97,17 @@ public class Client {
      * case "LoginSuccess": it means the player has logged in and h
      */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson){
-        System.out.println("Message analysis in progress...");
-        System.out.println("messaggio ricevuto in json: " + receivedMessageInJson);
+        //System.out.println("Message analysis in progress...");
+        //System.out.println("messaggio ricevuto in json: " + receivedMessageInJson);
 
         Message receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
 
-        System.out.println("Message translated");
+        //System.out.println("Message translated");
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
-        System.out.println(messageObject);
-        System.out.println("Object Found.");
+        //System.out.println(messageObject);
+        //System.out.println("Object Found.");
 
-        //switch per l'analisi dell'oggetto del messaggio
+        ////switch per l'analisi dell'oggetto del messaggio
         switch (messageObject) {
 
             /* DEFAULT TO USE:
@@ -133,11 +119,11 @@ public class Client {
                 */
 
             case "LoginSuccess":
-                System.out.println("login success");
+                cli.loginSuccess();
                 LoginSuccessMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
-                System.out.println("player id " + playerID);
+                //System.out.println("player id " + playerID);
                 if (newMatchNeeded == true) {
                     creatingNewSpecsFromClient();
                 }else{
@@ -148,37 +134,33 @@ public class Client {
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
                 playerID = askMatchToJoinMessage.getPlayerID();
-                System.out.println("player id" + playerID);
-                System.out.println("Chose a Lobby: ");
-                for (int i = 0; i < askMatchToJoinMessage.getLobbiesTmp().size(); i++) {
-                    System.out.print(i + "  ");
-                    System.out.println(" " + askMatchToJoinMessage.getLobbiesTmp().get(i));
-                }
-                Scanner scannerLobbyChosen = new Scanner(System.in);
-                int lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
-                while(askMatchToJoinMessage.getLobbiesTmp().get(lobbyIDchosenByPlayer) == true){
-                    System.out.println("You can't join this lobby, select another one");
-                    lobbyIDchosenByPlayer = scannerLobbyChosen.nextInt();
-                }
+                //System.out.println("player id" + playerID);
+                //TODO CORREGGERE QUESTIONE PLAYER ID
+
+                int lobbyIDchosenByPlayer = cli.lobbyToChoose( askMatchToJoinMessage.getLobbiesTmp() );
+
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
-                outputPrintClient.println(gsonObj.toJson(replyChosenLobbyToJoinMessage));
-                outputPrintClient.flush();
+                sendMessage(replyChosenLobbyToJoinMessage);
                 break;
 
             case "NicknameNotValid":
-                System.out.println("Insert new nickname: ");
+                cli.nicknameNotAvailable();
                 loginFromClient();
                 break;
+
             case "start":
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
                 if (matchStartMessage.getFirstPlayer() == playerID) {
-                    sendBagClickedByFirstClient();
+
+                    //TODO TORRI
+
                     break;
                 } else {
                     sendAckFromClient();
                     break;
                 }
+
             case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
                 switch(ackMessageMapped.getSubObject()) {
@@ -191,18 +173,44 @@ public class Client {
                         System.out.println("aaa player id " + playerID); */
                 }
                 break;
+
             case "no lobby available" :
                 NoLobbyAvailableMessage noLobbyAvailableMessage = gsonObj.fromJson(receivedMessageInJson, NoLobbyAvailableMessage.class);
                 playerID = noLobbyAvailableMessage.getPlayerID();
-                System.out.println("Player id: " + playerID);
-                System.out.println("No lobby available, creating a new one...");
+                cli.lobbyNotAvailable();
                 creatingNewSpecsFromClient();
                 break;
 
             default:
-                System.err.println("Error with the object of the message.");
+                cli.errorObject();
         }
     }
+
+    /**
+     * This method is used to send an ack message to the server.
+     * It create an AckMessage object which will be serialized in json in order to be sent.
+     */
+    private void sendAckFromClient(){
+        AckMessage ackMessage = new AckMessage();
+        sendMessage(ackMessage);
+    }
+
+
+    /**
+     * This method is used by the client after receiving a loginSuccess message from the server;
+     * he has to declare the number of players of the lobby and if he wants to play in expert mode or not.
+     * */
+    public void creatingNewSpecsFromClient(){
+        MatchSpecsMessage newMatchSpecsMessage;
+
+        int numberOfPlayerInTheLobby = cli.numberOfPlayer();
+        boolean expertMode = cli.expertModeSelection();
+
+        newMatchSpecsMessage = new MatchSpecsMessage( numberOfPlayerInTheLobby, expertMode );
+
+        sendMessage(newMatchSpecsMessage);
+    }
+
 
     /** this method is used to send the BagClick message */
     public void sendBagClickedByFirstClient(){
@@ -211,49 +219,7 @@ public class Client {
         outputPrintClient.flush();
         System.out.println("sendBagClickedbyFirst sent");
     }
-    /**
-     * This method is used to send an ack message to the server.
-     * It create an AckMessage object which will be serialized in json in order to be sent.
-     */
-    private void sendAckFromClient(){
-        AckMessage ackMessage = new AckMessage();
-        outputPrintClient.println(gsonObj.toJson(ackMessage));
-        outputPrintClient.flush();
-        System.out.println("sent ack from client");
-    }
 
-    /**
-     * This method is used by the client after receiving a loginSuccess message from the server;
-     * he has to declare the number of players of the lobby and if he wants to play in expert mode or not.
-     * */
-    public void creatingNewSpecsFromClient(){
-        Scanner inputForSpecs = new Scanner(System.in);
-        MatchSpecsMessage newMatchSpecsMessage;
-        System.out.println("Please insert the number of the player you want in the lobby: ");
-        int numberOfPlayerInTheLobby = inputForSpecs.nextInt();
-        System.out.println(numberOfPlayerInTheLobby);
-        while( (numberOfPlayerInTheLobby <= 1) || (numberOfPlayerInTheLobby >= 4) ){
-            System.out.println("Please, insert a valid number of players");
-            numberOfPlayerInTheLobby = inputForSpecs.nextInt();
-        }
-
-        System.out.println("Do you want to play in expert mode? (y/n)");
-        String expertMode = inputForSpecs.nextLine();
-
-        while(!(expertMode.equals("y") || expertMode.equals("n"))){
-            System.out.println("Please, insert y or n");
-            expertMode = inputForSpecs.nextLine();
-        }
-
-        if(expertMode.equals("y")) {
-            newMatchSpecsMessage = new MatchSpecsMessage(numberOfPlayerInTheLobby, true);
-        }else{
-            newMatchSpecsMessage = new MatchSpecsMessage(numberOfPlayerInTheLobby, false);
-        }
-        outputPrintClient.println(gsonObj.toJson(newMatchSpecsMessage));
-        outputPrintClient.flush();
-
-    }
 
 
 }
