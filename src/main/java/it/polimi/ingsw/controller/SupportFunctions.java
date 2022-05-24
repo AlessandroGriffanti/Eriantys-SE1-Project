@@ -1,9 +1,6 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.Archipelago;
-import it.polimi.ingsw.model.Bag;
-import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.server.ClientHandler;
 
 import java.lang.reflect.Array;
@@ -185,6 +182,34 @@ public class SupportFunctions {
 
         assert tempWinner != null;
         return tie ? -1 : tempWinner.getID();
+    }
+
+    /**
+     * This method finds which player is currently controlling the professor given as argument
+     * @param match reference to the match (model)
+     * @param creature the kind of professor we are interested in
+     * @return ID of the player controlling the professor or -1 if no player controls it
+     */
+    static int whoControlsTheProfessor(Match match, Creature creature){
+        int player_ID = -1;
+
+        for(int i = 0; i < match.getPlayers().size(); i++){
+
+            if(match.getPlayers().get(i).getSchoolBoard().getProfessorTable().isOccupied(creature)){
+                assert player_ID == -1 : "ACTION_1 controller state:\ntwo players simultaneously " +
+                        "controlling the" + creature + "creature";
+                player_ID = i;
+            }
+        }
+
+        // if nobody controls the creature it should be in the notControlledProfessors list
+        if(player_ID == -1){
+            assert match.getNotControlledProfessors().contains(creature) :
+                    "The creature is not yet controlled but it is not inside the notoControlledProfessors attribute" +
+                            "inside the class match";
+        }
+
+        return player_ID;
     }
 
 }

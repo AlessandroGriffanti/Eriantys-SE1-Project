@@ -48,31 +48,45 @@ public class Action_1 implements ControllerState{
             if(location == -1){
                 response.setSubObject("action_1_dining_room");
 
-                int previousOwnerOfProfessor;
+                // find who is controlling the professor of the same type chosen by the player
+                int previousOwnerOfProfessor = SupportFunctions.whoControlsTheProfessor(match, creature);
 
-                // who is controlling the professor of the same type as the student chosen ?
-                previousOwnerOfProfessor = whoControlsTheProfessor(match, creature);
+                // move the student from entrance to dining room
+                match.moveStudentFromEntranceToDiningRoom(request.getStudent_ID());
 
                 // if the player controlling the professor is another player then...
                 if(previousOwnerOfProfessor != request.getSender_ID() && previousOwnerOfProfessor != -1){
-
                     int previousNumberOfStudents = match.getPlayerByID(previousOwnerOfProfessor).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
                     int currentPlayerStudents = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
 
-                    //the current player takes control over the professor only if it has more students than the old player
-                    if(currentPlayerStudents +1 > previousNumberOfStudents){
-                        match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
-                        match.acquireControlOnProfessor(creature);
+                    if(controller.getCharactersManager().isCookUsed()){
 
-                        response.setProfessorTaken(true);
-                        response.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
+                        /*the current player takes control over the professor even if he has the same number of students
+                          as the previousOwnerOfProfessor*/
+                        if((currentPlayerStudents >= previousNumberOfStudents)){
+                            match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
+                            match.acquireControlOnProfessor(creature);
+
+                            response.setProfessorTaken(true);
+                            response.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
+                        }
+
+                        // reset the value of cookUsed (it lasts only for the current players' round)
+                        controller.getCharactersManager().setCookUsed(false);
+                    }else{
+
+                        //the current player takes control over the professor only if it has more students than the old player
+                        if((currentPlayerStudents > previousNumberOfStudents)){
+                            match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
+                            match.acquireControlOnProfessor(creature);
+
+                            response.setProfessorTaken(true);
+                            response.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
+                        }
                     }
                 }else if(previousOwnerOfProfessor == -1){
                     match.acquireControlOnProfessor(creature);
                 }
-
-                // move the student from entrance to dining room
-                match.moveStudentFromEntranceToDiningRoom(request.getStudent_ID());
             }
             // student moved on an island
             else{
@@ -98,34 +112,4 @@ public class Action_1 implements ControllerState{
             }
         }
     }
-
-
-    /**
-     * This method finds which player is currently controlling the professor given as argument
-     * @param match reference to the match (model)
-     * @param creature the kind of professor we are interested in
-     * @return ID of the player controlling the professor or -1 if no player controls it
-     */
-    private int whoControlsTheProfessor(Match match, Creature creature){
-        int player_ID = -1;
-
-        for(int i = 0; i < match.getPlayers().size(); i++){
-
-            if(match.getPlayers().get(i).getSchoolBoard().getProfessorTable().isOccupied(creature)){
-                assert player_ID == -1 : "ACTION_1 controller state:\ntwo players simultaneously " +
-                                         "controlling the" + creature + "creature";
-                player_ID = i;
-            }
-        }
-
-        // if nobody controls the creature it should be in the notControlledProfessors list
-        if(player_ID == -1){
-            assert match.getNotControlledProfessors().contains(creature) :
-                "The creature is not yet controlled but it is not inside the notoControlledProfessors attribute" +
-                "inside the class match";
-        }
-
-        return player_ID;
-    }
-
 }

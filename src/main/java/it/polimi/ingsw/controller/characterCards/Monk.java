@@ -8,7 +8,9 @@ import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class represents the character card called 'monk' (first one in the rules' file)
+ */
 public class Monk  extends Character {
     /**
      * This attribute is the list of students placed on the card
@@ -18,10 +20,7 @@ public class Monk  extends Character {
      * This attribute is the reference to the bag used in the match
      */
     private Bag bag;
-    /**
-     * This attribute is the reference to the controller of the match
-     */
-    Controller controller;
+
 
     public Monk(Controller controller) {
         this.controller = controller;
@@ -65,6 +64,8 @@ public class Monk  extends Character {
         ack.setCoinReserve(controller.getMatch().getCoinReserve());
         ack.setStudent(chosenStudent);
         ack.setStudentsOnCard(this.students);
+
+        controller.sendMessageAsBroadcast(ack);
     }
 
     /**

@@ -32,6 +32,9 @@ public class NackMessage extends Message {
                 break;
             case "invalid_cloud":
                 this.explanationMessage = "Another player already took the students from this cloud, please choose another cloud!";
+                break;
+            case "character":
+                this.explanationMessage = "I see yuo are not rich enough to buy the character, come back when you have more coins!";
         }
     }
 
@@ -54,4 +57,7 @@ public class NackMessage extends Message {
 *      feasible for mother nature which is written on the last used assistant card
 *
 *   3. invalid_cloud:
-*      it means that the cloud chosen had been already chosen by another player and now is empty of students*/
+*      it means that the cloud chosen had been already chosen by another player and now is empty of students
+*
+*   4. character:
+*      it means that the player has not enough coins to use the character card*/
