@@ -1,49 +1,83 @@
 package it.polimi.ingsw.controller.characterCards;
 
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
 
 
 public class Monk  extends Character {
-    private ArrayList<Creature> studentsOnMonk;
-
-    public Monk() {
-        this.price = 1;                                      //price of the card
-        studentsOnMonk = new ArrayList<>(4);     //arraylist of the 4 students which will be drawn from the bag
-    }
-
-
     /**
-     * setUpEffect method prepare the card to be used in the game.
-     * With this method, 4 students are drawn from the bag, and place on the monk card
-     * (the 4 students are place in the arraylist of the students who are on the monk card)
+     * This attribute is the list of students placed on the card
      */
-    public void setUpEffect() {
-        this.studentsOnMonk = getMatch().getBagOfTheMatch().drawStudents(4);
-    }
+    private ArrayList<Creature> students;
+    /**
+     * This attribute is the reference to the bag used in the match
+     */
+    private Bag bag;
+    /**
+     * This attribute is the reference to the controller of the match
+     */
+    Controller controller;
 
+    public Monk(Controller controller) {
+        this.controller = controller;
+        this.price = 1;
+        this.bag = controller.getMatch().getBagOfTheMatch();
+
+        this.students = controller.getMatch().getBagOfTheMatch().drawStudents(4);
+    }
 
     /**
-     * effect method takes one student from the monk card and place it on an island.
-     * Then 1 student will be drawn from the bag and placed on the monk card
-     * (it will be placed in the arraylist of the students who are on the monk card).
-     * @param islandToPutID id of the island on which the student is placed
-     * @param chosenStudentIndex int number of the chosen student from studentOnMonk arraylist
-    */
-    public void effect(int islandToPutID, int chosenStudentIndex) {
-        Creature chosenStudent;
-        Creature caughtStudentFromBag;
+     * This method takes one of the students on the monk-card and puts it on an island chosen by the player;
+     * finally it creates the AckCharacter message to send back to all the players
+     * @param request message containing island_ID and student_ID chosen by the player
+     *
+     */
+    @Override
+    public void effect(ChosenCharacterMessage request) {
+        // increase price by one if this is the first time that the card is used
+        increasePrice();
 
-        chosenStudent = studentsOnMonk.get(chosenStudentIndex);
-        getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, islandToPutID);
+        int student_ID = request.getStudent_ID();
+        int island_ID = request.getIsland_ID();
 
-        caughtStudentFromBag = getMatch().getBagOfTheMatch().drawOneStudent();
-        studentsOnMonk.add(caughtStudentFromBag);
+        // the island must not be null
+        assert controller.getMatch().getRealmOfTheMatch().getArchipelagos().get(island_ID) != null : "The island chosen by the player turned out to be NULL !!";
+
+        // take the students from the card
+        Creature chosenStudent = students.get(student_ID);
+        students.set(student_ID, null);
+
+        // put the student on the island
+        this.controller.getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, island_ID);
+
+        // draw new student from the bag and put it on the card
+        Creature caughtStudentFromBag = bag.drawOneStudent();
+        addStudent(caughtStudentFromBag);
+
+        // create and send the response
+        AckCharactersMessage ack = new AckCharactersMessage();
+        ack.setCard("monk");
+        ack.setCoinReserve(controller.getMatch().getCoinReserve());
+        ack.setStudent(chosenStudent);
+        ack.setStudentsOnCard(this.students);
     }
 
+    /**
+     * This method puts the student specified into the array of students in the position where it finds a null pointer
+     * (we know that there is only one position of the array containing a null pointer)
+     * @param student the type of student to add to the array
+     */
+    private void addStudent(Creature student){
 
-    @Override
-    public void effect() {
+        for(int i = 0; i < 4; i++){
+            if(students.get(i) == null){
+                students.set(i, student);
+            }
+        }
     }
 }

@@ -6,13 +6,11 @@ public class CoinManagerObserver {
     public CoinManagerObserver(Player p){
         this.player = p;
     }
+
+    /**
+     * This method gives one coin to the player
+     */
     public void depositCoin(){
         this.player.earnCoin();
     }
-
-   /* public void withdrawCoins(int coinsTaken){
-        player.spendCoins(coinsTaken);
-    } */
-
-
 }

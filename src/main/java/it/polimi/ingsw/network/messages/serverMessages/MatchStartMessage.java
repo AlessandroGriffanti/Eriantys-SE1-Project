@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *This class represents the message sent by the server when a match starts to each one of the players
@@ -12,7 +13,7 @@ public class MatchStartMessage extends Message {
     private int firstPlayer;
     private int motherNaturePosition;
     private ArrayList<Creature> studentsInEntrance;
-    private ArrayList<String> characters;
+    private Set<String> characters;
 
     public MatchStartMessage(){}
 
@@ -23,7 +24,7 @@ public class MatchStartMessage extends Message {
         this.motherNaturePosition = motherNaturePosition;
     }
 
-    public void setCharacters(ArrayList<String> characters) {
+    public void setCharacters(Set<String> characters) {
         this.characters = characters;
     }
 
