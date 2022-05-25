@@ -1,12 +1,16 @@
 package it.polimi.ingsw.controller.characterCards;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 public class Centaur extends Character {
-    public Centaur() {
+
+
+    public Centaur(Controller controller) {
         this.price = 3;
+        this.controller = controller;
     }
 
     /** the idea is that we change the tower color to all the players in the game to a constant called "TRANSPARENT" and, in the
@@ -20,6 +24,6 @@ public class Centaur extends Character {
      */
     @Override
     public void effect(ChosenCharacterMessage request) {
-
+        controller.getCharactersManager().setCentaurUsed(true);
     }
 }

@@ -133,9 +133,8 @@ public class Controller {
      * sends the message to the ClientHandlers
      */
     public void startMatch(){
-        //Creates the virtualView so that it can notify the client (client side)
-        VirtualView vv = new VirtualView(this.match);
-        this.match = new Match(this.match_ID, this.numberOfPlayers, vv, expertMode);
+
+        this.match = new Match(this.match_ID, this.numberOfPlayers, expertMode);
         //adds all the players
         for(String s: playersNickname){
             this.match.addPlayer(s);
@@ -151,16 +150,18 @@ public class Controller {
         //prepares MatchStart message for all the clients
         int motherNatureInitialPosition = match.getPositionOfMotherNature();
 
-        for(int i = 0; i < clientHandlers.size(); i++){
-            ArrayList<Creature> studentsInEntrance = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
-            MatchStartMessage message = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, studentsInEntrance);
+        // create the startOfMatch message
+        MatchStartMessage startMessage = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition);
+        // add characters if the match will be played in expert mode
+        if(expertMode){
+            this.charactersManager = new CharactersManager(this);
+            Set<String> characters = charactersManager.chooseCharacter();
+            startMessage.setCharacters(characters);
+        }
 
-            if(expertMode){
-                this.charactersManager = new CharactersManager(this);
-                Set<String> characters = charactersManager.chooseCharacter();
-                message.setCharacters(characters);
-            }
-            sendMessageToPlayer(i, message);
+        for(int i = 0; i < clientHandlers.size(); i++){
+            ArrayList<Creature> students = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
+            startMessage.setStudentsInEntrance(i, students);
         }
 
         playing = true;
