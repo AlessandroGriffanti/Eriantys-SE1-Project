@@ -2,23 +2,18 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
+import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.MovedStudentsFromEntrance;
 
 public class Action_1 implements ControllerState{
 
     private int studentsMoved = 0;
-    private boolean characterUseRequest = false;
 
 
     @Override
     public void nextState(Controller controller) {
-        if (characterUseRequest){
-            /* todo: state of character's management
-                   could be better having a parallel state into this one (the same for the nest states)*/
-        }else{
-            controller.setState(new Action_2());
-        }
+        controller.setState(new Action_2());
     }
 
     @Override
@@ -28,9 +23,12 @@ public class Action_1 implements ControllerState{
         String json = controller.getMsg();
         MovedStudentsFromEntrance request = gson.fromJson(json, MovedStudentsFromEntrance.class);
 
-        if(!(request.getObjectOfMessage().equals("action_1"))){
-            System.out.println("ACTION_1: \nexpected message with object [action_1]\nreceived message with object["+ request.getObjectOfMessage() + "]");
-        }else{
+        if(request.getObjectOfMessage().equals("character")){
+
+            ChosenCharacterMessage characterRequest = gson.fromJson(json, ChosenCharacterMessage.class);
+            controller.getCharactersManager().useCard(characterRequest);
+
+        }else if(request.getObjectOfMessage().equals("action_1")){
 
             match.setCurrentPlayer(request.getSender_ID());
 
@@ -110,6 +108,9 @@ public class Action_1 implements ControllerState{
                     controller.nextState();
                 }
             }
+        }else{
+            System.out.println("ACTION_1: \nexpected message with object [action_1] or [character]" +
+                                          "\nreceived message with object["+ request.getObjectOfMessage() + "]");
         }
     }
 }

@@ -25,7 +25,13 @@ public class CharactersManager {
      * This attribute is true if the cook characterCard has been used
      *                   false otherwise
      */
-    private boolean cookUsed;
+    private boolean cookUsed = false;
+    /**
+     * This attribute tells us if the character card showing a centaur has been played,
+     * in this case the computation of the influence won't take into account the towers
+     * on the island
+     */
+    boolean centaurUsed = false;
 
 
     public CharactersManager(Controller controller) {
@@ -69,7 +75,7 @@ public class CharactersManager {
                         cards.put("herbalist", new Herbalist());
                         break;
                     case 6:
-                        cards.put("centaur", new Centaur());
+                        cards.put("centaur", new Centaur(controller));
                         break;
                     case 7:
                         cards.put("jester", new Jester());
@@ -138,5 +144,14 @@ public class CharactersManager {
 
     public boolean isCookUsed() {
         return cookUsed;
+    }
+
+    // SETTER AND GETTER FOR centaurUsed
+    public void setCentaurUsed(boolean centaurUsed) {
+        this.centaurUsed = centaurUsed;
+    }
+
+    public boolean isCentaurUsed() {
+        return centaurUsed;
     }
 }

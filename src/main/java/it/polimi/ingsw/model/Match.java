@@ -49,7 +49,7 @@ public class Match {
     private boolean expertMode;
 
 
-    public Match(int ID, int numberOfPlayers, VirtualView vv, boolean expertMode) {
+    public Match(int ID, int numberOfPlayers, boolean expertMode) {
         this.ID = ID;
         this.numberOfPlayers = numberOfPlayers;
         this.bagOfTheMatch = new Bag();
