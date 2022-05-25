@@ -19,12 +19,7 @@ public class Action_2 implements ControllerState{
      * on the clouds)
      */
     private boolean action3Allowed = true;
-    /**
-     * This attribute tells us if the character card showing a centaur has been played,
-     * in this case the computation of the influence won't take into account the towers
-     * on the island
-     */
-    boolean centaurEffect = false;
+
 
     @Override
     public void nextState(Controller controller) {
@@ -55,7 +50,8 @@ public class Action_2 implements ControllerState{
 
 
     /**
-     * This method takes care of all the controls and actions needed when the player moves mother nature
+     * This method takes care of all the controls and actions needed when the player moves mother nature,
+     * if the movement is legit it moves mother nature
      * @param controller reference to the controller of this match
      * @param json message received by the player, not yet deserialized
      */
@@ -129,7 +125,7 @@ public class Action_2 implements ControllerState{
 
 
     /**
-     * This method performs the control on the influence on the island, if a new master must be declared and if
+     * This method performs the control on the influence over the island, if a new master must be declared and if
      * some islands must be unified
      * @param controller reference to the controller
      * @param request message received from the client
@@ -148,7 +144,7 @@ public class Action_2 implements ControllerState{
         if(archipelago.getMasterOfArchipelago() == null){
 
             // compute influence
-            int newMaster = influenceComputation(match, currentIsland);
+            int newMaster = influenceComputation(controller, currentIsland);
 
             // if there is a valid new master then we apply the modification
             if(newMaster != -1){
@@ -165,7 +161,7 @@ public class Action_2 implements ControllerState{
         // in the case there is already an island-master...
         else{
             int previousMaster = archipelago.getMasterOfArchipelago().getID();
-            int newMaster = influenceComputation(match, currentIsland);
+            int newMaster = influenceComputation(controller, currentIsland);
 
             if(newMaster != -1){
 
@@ -332,12 +328,14 @@ public class Action_2 implements ControllerState{
     /**
      * This method computes the influence of all players on the island and returns the player who is the
      * master of the island
-     * @param match
+     * @param controller reference to the controller of the match
      * @param island_ID
      * @return ID of the player or if the there are two players with the same influence value, which is the maximum
      *         value, then -1 is returned
      */
-    private int influenceComputation(Match match, int island_ID){
+    private int influenceComputation(Controller controller, int island_ID){
+        Match match = controller.getMatch();
+
         // in this variable we store for each player the influence on the island : HashMap<player_ID, influence>
         HashMap<Integer, Integer> allPlayersInfluence = new HashMap<Integer, Integer>();
 
@@ -354,13 +352,15 @@ public class Action_2 implements ControllerState{
                 playerInfluence += island.getStudentsOfType(creature);
             }
 
-            if(!centaurEffect){
+            if(!(controller.getCharactersManager().isCentaurUsed())){
                 // if the players owns the tower(s) then we also count them in the influence
                 playerInfluence += match.numberOfTowersOnTheIsland(player_ID, island_ID);
             }
 
             allPlayersInfluence.put(player_ID, playerInfluence);
         }
+        // RESET centaur character card
+        controller.getCharactersManager().setCentaurUsed(false);
 
         // control who has the higher influence
         int maxInfluence = 0;
