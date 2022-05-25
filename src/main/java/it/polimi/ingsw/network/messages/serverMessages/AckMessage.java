@@ -328,21 +328,24 @@ public class AckMessage extends Message {
       it means that the match has been just created and is waiting to start; no more data required.
 
    1. fillClouds:
-      it means that all the clouds have been refilled and 'students' contains all te students
-      added on each cloud
+      it means that all the clouds have been refilled and
+      - 'students' contains all te students added on each cloud
       [ex. 2 players => 2 clouds with 3 students each => in the attribute there will be 6 objects Creature, the first 3 belong to the cloud0 the last 3 to the cloud1]
 
    2. tower_color:
       it means that the color chosen is legit and 'notAvailableTowerColors' contains the already chosen colors
       - 'nextPlayer'
+      - notAvailableTowerColors: colors already chosen
 
    3. deck:
       it means that the deck chosen by the player is legit and 'notAvailableDecks' contains the decks that are no more available (useful for the next players)
       - 'nextPlayer'
+      - notAvailableDecks: deck already chosen
 
    4. assistant:
       it means that the assistant chosen by the player is legit and 'assistantAlreadyUsedInThisRound' contains the assistants already chosen in this round's planning phase
       - 'nextPlayer'
+      - assistantAlreadyUsedInThisRound: assistants already used in this round (could be useful)
 
    5. action_1_dining_room:
       it means that the student has been moved into the dining room and
