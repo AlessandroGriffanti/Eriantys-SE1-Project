@@ -157,7 +157,7 @@ public class ClientHandler extends Thread {
                     System.out.println("Error: not right specs message");
                 }
 
-             }else{                                                //se il check del nome dà false, finiamo qui dove viene inviato un nicknamenotvalid e nel client verrà rifatto il login
+            }else{                                                //se il check del nome dà false, finiamo qui dove viene inviato un nicknamenotvalid e nel client verrà rifatto il login
                 System.out.println("nickname already used");
                 sendingNicknameNotValid();
                 System.out.println("sent nack ok");
