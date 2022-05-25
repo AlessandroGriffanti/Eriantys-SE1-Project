@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.Client;
 
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class NetworkHandler {
     private CLI cli;
@@ -25,6 +26,7 @@ public class NetworkHandler {
     private PrintWriter outputPrintClient = null;
     private String ip;
     private int port;
+    Tower towerColor;
 
 
     public NetworkHandler(String ipReceived, int portReceived, CLI cliReceived) {
@@ -50,9 +52,9 @@ public class NetworkHandler {
         loginFromClient();
 
         while(true){            // TODO: controllo connessione
-            //System.out.println("Still connected");
+            System.out.println("Still connected");
             String msgFromServer = inputBufferClient.readLine();
-            //System.out.println("messaggio dal server: " + msgFromServer);
+            System.out.println("messaggio dal server: " + msgFromServer);
             analysisOfReceivedMessageServer(msgFromServer);
         }
 
@@ -96,7 +98,7 @@ public class NetworkHandler {
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
      * case "LoginSuccess": it means the player has logged in and h
      */
-    public void analysisOfReceivedMessageServer(String receivedMessageInJson){
+    public synchronized void analysisOfReceivedMessageServer(String receivedMessageInJson){
         //System.out.println("Message analysis in progress...");
         //System.out.println("messaggio ricevuto in json: " + receivedMessageInJson);
 
@@ -133,14 +135,19 @@ public class NetworkHandler {
 
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
-                playerID = askMatchToJoinMessage.getPlayerID();
                 //System.out.println("player id" + playerID);
-                //TODO CORREGGERE QUESTIONE PLAYER ID
 
                 int lobbyIDchosenByPlayer = cli.lobbyToChoose( askMatchToJoinMessage.getLobbiesTmp() );
 
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
                 sendMessage(replyChosenLobbyToJoinMessage);
+
+                break;
+
+            case "playerID_set":
+                IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoiceMessage = gsonObj.fromJson(receivedMessageInJson, IDSetAfterLobbyChoiceMessage.class);
+                playerID = idSetAfterLobbyChoiceMessage.getPlayerID();
+                System.out.println("player id: " + playerID);
                 break;
 
             case "NicknameNotValid":
@@ -149,15 +156,25 @@ public class NetworkHandler {
                 break;
 
             case "start":
+                cli.startAlert();
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
+                System.out.println("player id: " + playerID);
+                System.out.println("first id: " + matchStartMessage.getFirstPlayer());
                 if (matchStartMessage.getFirstPlayer() == playerID) {
+                    cli.isYourTurn();
 
-                    //TODO TORRI
+                    towerColor = cli.towerChoice();
+
+                    ChosenTowerColorMessage chosenTowerColorMessage = new ChosenTowerColorMessage();
+                    chosenTowerColorMessage.setColor(towerColor);
+                    chosenTowerColorMessage.setSender_ID(playerID);
+                    sendMessage(chosenTowerColorMessage);
+                    System.out.println("sent ok");
 
                     break;
                 } else {
-                    sendAckFromClient();
+                    cli.turnWaiting();
                     break;
                 }
 
@@ -165,12 +182,46 @@ public class NetworkHandler {
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
                 switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
-                        // sendAckFromClient();
+                        cli.ackWaiting();
                         break;
-                   /* case "assigningID":
-                        System.out.println("received assigningID");
-                        playerID = ackMessageMapped.getPlayerIDtoAssign();
-                        System.out.println("aaa player id " + playerID); */
+
+                    case "tower_color":
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            ArrayList<Tower> notAvailableTowerColors = ackMessageMapped.getNotAvailableTowerColors();
+
+                            boolean blackAvailability = true;
+                            boolean greyAvailability = true;
+                            boolean whiteAvailability = true;
+
+                            for(int i = 0; i < notAvailableTowerColors.size(); i++){
+                                if(String.valueOf(notAvailableTowerColors.get(i)) == "BLACK"){
+                                    blackAvailability = false;
+                                    //System.out.println(blackAvailability);
+                                }
+                                if(String.valueOf(notAvailableTowerColors.get(i)) == "GREY"){
+                                    greyAvailability = false;
+                                    //System.out.println(greyAvailability);
+                                }
+                                if(String.valueOf(notAvailableTowerColors.get(i)) == "WHITE"){
+                                    whiteAvailability = false;
+                                    //System.out.println(whiteAvailability);
+                                }
+                            }
+
+                            towerColor = Tower.valueOf(cli.towerChoiceNext(blackAvailability, greyAvailability, whiteAvailability) );
+
+                            ChosenTowerColorMessage chosenTowerColorMessage = new ChosenTowerColorMessage();
+                            chosenTowerColorMessage.setColor(towerColor);
+                            chosenTowerColorMessage.setSender_ID(playerID);
+                            sendMessage(chosenTowerColorMessage);
+                            System.out.println("sent ok");
+
+                            break;
+                        } else {
+                            //sendAckFromClient();
+                            cli.turnWaiting();
+                            break;
+                        }
                 }
                 break;
 
