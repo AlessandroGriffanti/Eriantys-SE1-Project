@@ -129,8 +129,8 @@ public class Controller {
         return clientHandlers.size() - 1;
     }
     /**
-     * This method lets the match start, creates the view and chooses the first player of the match randomly; finally it
-     * sends the message to the ClientHandlers
+     * This method lets the match start, chooses the first player of the match randomly, and finally it
+     * sends the message to all the players through the ClientHandlers
      */
     public void startMatch(){
 
@@ -147,7 +147,7 @@ public class Controller {
         //set the current player inside the model
         match.setCurrentPlayer(firstPlayer_ID);
 
-        //prepares MatchStart message for all the clients
+        // get initial position of mother nature
         int motherNatureInitialPosition = match.getPositionOfMotherNature();
 
         // create the startOfMatch message
@@ -158,12 +158,13 @@ public class Controller {
             Set<String> characters = charactersManager.chooseCharacter();
             startMessage.setCharacters(characters);
         }
-
+        // add the students in the entrance of each player
         for(int i = 0; i < clientHandlers.size(); i++){
             ArrayList<Creature> students = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
             startMessage.setStudentsInEntrance(i, students);
         }
 
+        sendMessageAsBroadcast(startMessage);
         playing = true;
         nextState();
     }
