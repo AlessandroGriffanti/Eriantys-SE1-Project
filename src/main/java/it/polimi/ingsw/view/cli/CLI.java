@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.Tower;
+import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
 import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
 
@@ -237,9 +238,9 @@ public class CLI {
 
     /**
      * This method is used to ask the following players which color they want their towers to be.
-     * @param blackAvailability indicates whether the BLACK color has been already used or not.
-     * @param greyAvailability indicates whether the GREY color has been already used or not.
-     * @param whiteAvailability indicates whether the WHITE color has been already used or not.
+     * @param blackAvailability indicates whether the BLACK color has been already chosen or not.
+     * @param greyAvailability indicates whether the GREY color has been already chosen or not.
+     * @param whiteAvailability indicates whether the WHITE color has been already chosen or not.
      * @return the color chosen in Tower type.
      */
     public synchronized String towerChoiceNext (boolean blackAvailability, boolean greyAvailability, boolean whiteAvailability) {
@@ -282,6 +283,55 @@ public class CLI {
 
         return strTowerColorChosenNext;
     }
+
+    /**
+     * This method is used to ask the player which deck he wants to play with.
+     * @return the deck chosen in Wizard type.
+     */
+    public synchronized Wizard deckChoice(){
+        println("Please choose your deck among the following: ");
+        println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
+
+        String strDeckChosen = scannerCLI.nextLine();
+
+        while(!( strDeckChosen.equals("FORESTWIZARD") || strDeckChosen.equals("DESERTWIZARD") || strDeckChosen.equals("CLOUDWITCH") || strDeckChosen.equals("LIGHTNINGWIZARD")) ){
+            println("Please insert a correct deck: ");
+            strDeckChosen = scannerCLI.nextLine();
+        }
+
+        return Wizard.valueOf(strDeckChosen);
+    }
+
+    /**
+     * This method is used to ask the following players which deck they want to use.
+     * @param forestWizardAvailability indicates whether the FORESTWIZARD deck has been already chosen or not.
+     * @param desertWizardAvailability indicates whether the DESERTWIZARD deck has been already chosen or not.
+     * @param cloudWitchAvailability   indicates whether the CLOUDWITCH deck has been already chosen or not.
+     * @param lightningWizardAvailability indicates whether the LIGHTNINGWIZARD deck has been already chosen or not.
+     * @return the deck chosen in Wizard type
+     */
+    public synchronized Wizard deckChoiceNext(boolean forestWizardAvailability, boolean desertWizardAvailability, boolean cloudWitchAvailability, boolean lightningWizardAvailability) {
+        println("Choose your deck among the following: ");
+        if (forestWizardAvailability) {
+            print("FORESTWIZARD ");
+        }
+        if (desertWizardAvailability) {
+            print("DESERTWIZARD ");
+        }
+        if (cloudWitchAvailability) {
+            print("CLOUDWITCH ");
+        }
+        if (lightningWizardAvailability) {
+            println("LIGHTNINGWIZARD");
+        }
+        String strDeckChosen = scannerCLI.nextLine();
+        while(!(strDeckChosen.equals("FORESTWIZARD") || strDeckChosen.equals("DESERTWIZARD") || strDeckChosen.equals("CLOUDWITCH") || strDeckChosen.equals("LIGHTNINGWIZARD"))){
+            println("Please, insert a correct deck: ");
+            strDeckChosen = scannerCLI.nextLine();
+        }
+        return Wizard.valueOf(strDeckChosen);
+    }
+
 
 
     public void print(String strToPrint){
