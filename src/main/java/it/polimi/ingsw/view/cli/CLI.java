@@ -10,29 +10,27 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
+/**
+ * This class represents the CLI: it manages the game through the command line interface.
+ */
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
 
-
+    /**
+     * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
+     * @param ip is the server ip
+     * @param port is the server port
+     */
     public CLI(String ip, int port) throws IOException {
         NetworkHandler networkHandler = new NetworkHandler(ip, port, this);
         networkHandler.startClient();
     }
 
-    public void print(String strToPrint){
-        System.out.print(strToPrint);
-    }
-
-    public void println(String strToPrint){
-        System.out.println(strToPrint);
-    }
-
-    public void printInt(int intToPrint){
-        System.out.println(intToPrint);
-    }
-
+    /**
+     * Main method
+     * @param args are the main args.
+     */
     public static void main(String[] args) {
         System.out.println(" _______   ________  ___  ________  ________   _________    ___    ___ ________      \n" +
                 "|\\  ___ \\ |\\   __  \\|\\  \\|\\   __  \\|\\   ___  \\|\\___   ___\\ |\\  \\  /  /|\\   ____\\     \n" +
@@ -66,6 +64,10 @@ public class CLI {
 
     }
 
+    /**
+     * This method is used to ask the nickname the player wants.
+     * @return the nickname chosen.
+     */
     public String loginNickname(){
         println("Insert nickname: ");
         String nickNamePlayer = scannerCLI.nextLine();
@@ -74,6 +76,10 @@ public class CLI {
         return nickNamePlayer;
     }
 
+    /**
+     * This method is used to ask if the player wants to create a new match or not.
+     * @return true if he wants to create a new match, false otherwise.
+     */
     public boolean newMatchBoolean(){
         println("do you want to create a new match? (y/n) ");
         String newMatchStr = scannerCLI.nextLine();
@@ -91,10 +97,17 @@ public class CLI {
         }
     }
 
+    /**
+     * this method is used to notify the user the login has been successful and that he has created a new match.
+     */
     public void loginSuccess(){
         println("login success");
     }
 
+    /**
+     * This method is used to ask the number of players wanted in the match by the player creating a new game.
+     * @return the number of players chosen.
+     */
     public int numberOfPlayer(){
         println("Please insert the number of the player you want in the lobby: ");
 
@@ -108,6 +121,10 @@ public class CLI {
         return numberOfPlayerInTheLobby;
     }
 
+    /**
+     * This method is used to ask whether the player wants to play with the expert mode enabled or not.
+     * @return true if the player wants to play with the expert mode, false otherwise.
+     */
     public boolean expertModeSelection(){
         println("Do you want to play in expert mode? (y/n)");
         String expertMode = scannerCLI.nextLine();
@@ -124,6 +141,11 @@ public class CLI {
         }
     }
 
+    /**
+     * This method is used to ask the player which lobby he wants to join among the ones already existing.
+     * @param arrayLobby is the arraylist of boolean representing the existing lobby: true means the lobby is full, false means it's not full.
+     * @return the lobby chosen by the player.
+     */
     public int lobbyToChoose(ArrayList<Boolean> arrayLobby){
         println("Choose a Lobby. \n");
 
@@ -152,10 +174,16 @@ public class CLI {
         return lobbyIDchosenByPlayer;
     }
 
+    /**
+     * This method is used to notify the player the nickname he had chosen is not available.
+     */
     public void nicknameNotAvailable (){
         println("Nickname not available, insert a new nickname: ");
     }
 
+    /**
+     * This method is used to notify the player he can't join a lobby and he needs to create a new one.
+     */
     public void lobbyNotAvailable(){
         println("No lobby available, creating a new one...");
     }
@@ -164,20 +192,36 @@ public class CLI {
         println("Error with the object of the message. ");
     }
 
-    public void ackWaiting () { println("Waiting for match to start... :/ "); }
+    /**
+     * This method is used to notify the player that the match is waiting for other players to start.
+     */
+    public void ackWaiting () { println("Waiting for match to start...  "); }
 
+    /**
+     * This method is used to notify the player that the game has started.
+     */
     public void startAlert () {
         println("\n - - - GAME IS STARTED !!! - - - \n");
     }
 
+    /**
+     * This method is used to notify the player that it's not his turn, so he has to wait.
+     */
     public void turnWaiting () {
         println("Wait for your turn!");
     }
 
+    /**
+     * This method is used to notify the player that it's his turn, so he has to act.
+     */
     public void isYourTurn() {
         println("Is your Turn! Make your choice: ");
     }
 
+    /**
+     * This method is used to ask the first player which color he wants his towers to be.
+     * @return the color chosen in Tower type.
+     */
     public Tower towerChoice () {
         println("Choose the COLOR of your tower: ");
         println("BLACK , WHITE, GREY");
@@ -191,6 +235,13 @@ public class CLI {
         return Tower.valueOf(strTowerColorChosen);
     }
 
+    /**
+     * This method is used to ask the following players which color they want their towers to be.
+     * @param blackAvailability indicates whether the BLACK color has been already used or not.
+     * @param greyAvailability indicates whether the GREY color has been already used or not.
+     * @param whiteAvailability indicates whether the WHITE color has been already used or not.
+     * @return the color chosen in Tower type.
+     */
     public synchronized String towerChoiceNext (boolean blackAvailability, boolean greyAvailability, boolean whiteAvailability) {
         System.out.println("B: " + blackAvailability);
         System.out.println("W: " + whiteAvailability);
@@ -214,7 +265,6 @@ public class CLI {
         strTowerColorChosenNext = scannerCLI.next();
         println(strTowerColorChosenNext);
 
-
         while( !( strTowerColorChosenNext.equals("BLACK") || strTowerColorChosenNext.equals("WHITE") || strTowerColorChosenNext.equals("GREY") ) ){
             if(!blackAvailability){
                 println("BLACK Towers not available. Please, insert the right color: ");
@@ -232,5 +282,19 @@ public class CLI {
 
         return strTowerColorChosenNext;
     }
+
+
+    public void print(String strToPrint){
+        System.out.print(strToPrint);
+    }
+
+    public void println(String strToPrint){
+        System.out.println(strToPrint);
+    }
+
+    public void printInt(int intToPrint){
+        System.out.println(intToPrint);
+    }
+
 
 }
