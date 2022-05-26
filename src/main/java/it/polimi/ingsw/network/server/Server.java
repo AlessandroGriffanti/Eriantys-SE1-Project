@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    /** the main server will deliver to a client handler the handling of the client connected */
+    /** the main server will deliver to a ClientHandler the handling of the client connected */
     private ClientHandler clientHandler;
 
     private int numberOfPort;           //passed in the main
@@ -25,7 +25,7 @@ public class Server {
 
 
     /**
-     * this is the list of the players nicknames registered, connected, to the server
+     * this is the list of the players nicknames registered, connected, to the server.
      */
     private ArrayList<String> playersNicknames;
 
@@ -43,32 +43,23 @@ public class Server {
     //private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
 
 
-    /** this arraylist keeps a track of the connections */
-    private ArrayList <Socket> connections;
+
 
     //posso aggiungere un hashmap di string(o int) che indica il numeero della partita, della lobby, e di boolean
     //in cui true mi indica ad esempio se la partita è in attesa e false se è completa
 
-
+    /**
+     * This constructor creates a new instance of the server.
+     * @param numberOfPort is the server port.
+     */
     public Server(int numberOfPort){
         this.numberOfPort = numberOfPort;
         //this.playerInTheLobby = new HashMap<>();
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
-        this.connections = new ArrayList<>();
     }
 
 
-    /**
-     * Method createLobby creates a new lobby (managed by a GameHandler) and associates the lobby id with the new GameHandler instance.
-     * @param lobbyID lobby id that represents a game.
-     * @param numPlayers maximum number of players for that lobby.
-     */
-    /*
-    public synchronized void createLobby(String lobbyID, int numPlayers){     //probabilmente va nel ClientHandler
-        lobbies.put(lobbyID, new GameHandler(this, lobbyID));
-        lobbyMaxNumPlayers.put(lobbyID, numPlayers);
-    } */
 
     /**
      * Method getLobbyIDByPlayer returns the lobby id of the game the player participates.
@@ -103,10 +94,6 @@ public class Server {
 
     public HashMap<String, Controller> getLobbies() {
         return lobbies;
-    }
-
-    public ArrayList<Socket> getConnections() {
-        return connections;
     }
 
 
@@ -149,6 +136,10 @@ public class Server {
 
     */
 
+    /**
+     * Main method of the server
+     * @param args are the main args.
+     */
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Server server = new Server(4444);   //ripetitivo
@@ -165,6 +156,9 @@ public class Server {
 
     }
 
+    /**
+     * this method launches the server.
+     */
     public void start() throws IOException {
         serverSocket = new ServerSocket(4444);
         Socket clientSocket = null;

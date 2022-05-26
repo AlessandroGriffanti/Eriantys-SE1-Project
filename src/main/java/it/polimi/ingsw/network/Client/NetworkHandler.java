@@ -16,6 +16,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * The class NetworkHandler handles the client-side connection between the server and the client
+ */
 public class NetworkHandler {
     private CLI cli;
     private String nickNamePlayer;
@@ -29,6 +32,12 @@ public class NetworkHandler {
     Tower towerColor;
 
 
+    /**
+     * NetworkHandler constructor which creates a new instance of the NetworkHandler
+     * @param ipReceived is the server ip
+     * @param portReceived is the server port
+     * @param cliReceived is a reference to the cli
+     */
     public NetworkHandler(String ipReceived, int portReceived, CLI cliReceived) {
         this.ip = ipReceived;
         this.port = portReceived;
@@ -37,10 +46,8 @@ public class NetworkHandler {
 
 
     /**
-     * This startClient method is called in the main method.
-     * It starts the socket of client execution, and prepare it to be ready for a "conversation" with the server.
-     * The first message is the login one: login().
-     * @throws IOException
+     * This method starts the communication between the client (NetworkHandler) and the server.
+     * It initializes the socket, the input and output buffer and launches the login part through the loginFromClient method.
      */
     public void startClient() throws IOException{
         clientSocket = new Socket(ip, port);
@@ -66,9 +73,8 @@ public class NetworkHandler {
          */
     }
 
-
     /**
-     * This method serialize in json and send the passed message.
+     * This method serializes the client message in json and sends it to the server.
      * @param msgToSend is the message to be sent.
      */
     public void sendMessage(Message msgToSend){
@@ -76,27 +82,22 @@ public class NetworkHandler {
         outputPrintClient.flush();
     }
 
-
     /**
-     * This method is used by client (player) to access the game:
-     * First, player's nickname is asked,the the player is asked if he wants to create a new match (y/n) and his ansswer
-     * his saved in the 'newMatchStr' variable. If he inserts 'y', it will later bepl created a new match,
-     * otherwise the player will be asked which lobby, so which match, he wants to join.
+     * This method is used by the NetworkHandler, which represent the client-side of the game, to access the game:
+     * nickNamePlayer represents the nickName chosen.
+     * newMatchBool specifies whether the player wants to create a new match or not.
      */
     public void loginFromClient() {
         nickNamePlayer = cli.loginNickname();
-
         boolean newMatchBool = cli.newMatchBoolean();
-
         LoginMessage msgLogin = new LoginMessage(nickNamePlayer, newMatchBool);
         sendMessage(msgLogin);
     }
 
 
     /**
-     * This method is used by client class to analyse the received message.
+     * This method is used by the NetworkHandler class to analyse the received message from the server.
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
-     * case "LoginSuccess": it means the player has logged in and h
      */
     public synchronized void analysisOfReceivedMessageServer(String receivedMessageInJson){
         //System.out.println("Message analysis in progress...");
@@ -238,8 +239,7 @@ public class NetworkHandler {
     }
 
     /**
-     * This method is used to send an ack message to the server.
-     * It create an AckMessage object which will be serialized in json in order to be sent.
+     * This method creates an Ack message and sends it to the server.
      */
     private void sendAckFromClient(){
         AckMessage ackMessage = new AckMessage();
@@ -249,8 +249,8 @@ public class NetworkHandler {
 
     /**
      * This method is used by the client after receiving a loginSuccess message from the server;
-     * he has to declare the number of players of the lobby and if he wants to play in expert mode or not.
-     * */
+     * It creates a MatchSpecsMessage message with the number of players and the variant (expert mode) chosen by the player
+     */
     public void creatingNewSpecsFromClient(){
         MatchSpecsMessage newMatchSpecsMessage;
 
@@ -263,11 +263,10 @@ public class NetworkHandler {
     }
 
 
-    /** this method is used to send the BagClick message */
+    /** this method creates a new  BagClick message and sends it to the server */
     public void sendBagClickedByFirstClient(){
         BagClickMessage bagClickMessage = new BagClickMessage();
-        outputPrintClient.println(gsonObj.toJson(bagClickMessage));
-        outputPrintClient.flush();
+        sendMessage(bagClickMessage);
         System.out.println("sendBagClickedbyFirst sent");
     }
 
