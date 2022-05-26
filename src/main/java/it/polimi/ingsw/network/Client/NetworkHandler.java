@@ -236,7 +236,7 @@ public class NetworkHandler {
                         }
 
                     case "deck":
-                        if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard == null)) {
+                        if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard == null)){
                             boolean forestWizardAvailability = true;
                             boolean desertWizardAvailability = true;
                             boolean cloudWitchAvailability = true;
@@ -263,6 +263,9 @@ public class NetworkHandler {
                             chosenDeckMessage.setSender_ID(playerID);
                             System.out.println("DECK SCELTO NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
+                            break;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && wizard != null){
+                            cli.turnWaiting();
                             break;
                         }
 
