@@ -24,6 +24,8 @@ public class ChooseTowerColor implements ControllerState{
 
     @Override
     public void stateExecution(Controller controller) {
+        playersCounter++;
+
         String jsonRequest = controller.getMsg();
         ChosenTowerColorMessage request = gson.fromJson(jsonRequest, ChosenTowerColorMessage.class);
 
