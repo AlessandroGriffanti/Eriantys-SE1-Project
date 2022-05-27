@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 public class AckCharactersMessage extends Message {
 
+
+    /**
+     * This attribute is the ID of the player after whose action this message is sent
+     */
+    private int recipient;
     /**
      * This attribute is the name of the character card used
      */
@@ -27,10 +32,23 @@ public class AckCharactersMessage extends Message {
      * This attribute is the list of students on the card (if necessary)
      */
     private ArrayList<Creature> studentsOnCard;
+    /**
+     * This attribute is the number of elements (e.g. students / no-entry-tiles) on a character
+     */
+    private int numberOfElementsOnTheCard;
 
 
     public AckCharactersMessage(){
         this.object = "ack";
+    }
+
+    // SETTER AND GETTER FOR recipient
+    public void setRecipient(int recipient) {
+        this.recipient = recipient;
+    }
+
+    public int getRecipient() {
+        return recipient;
     }
 
     // SETTER AND GETTER FOR card
@@ -68,11 +86,33 @@ public class AckCharactersMessage extends Message {
     public int getCoinReserve() {
         return coinReserve;
     }
+
+    // SETTER AND GETTER FOR island_ID
+
+    public void setIsland_ID(int island_ID) {
+        this.island_ID = island_ID;
+    }
+
+    public int getIsland_ID() {
+        return island_ID;
+    }
+
+    // SETTER AND GETTER FOR numberOfElementsOnTheCard
+    public void setNumberOfElementsOnTheCard(int numberOfElementsOnTheCard) {
+        this.numberOfElementsOnTheCard = numberOfElementsOnTheCard;
+    }
+
+    public int getNumberOfElementsOnTheCard() {
+        return numberOfElementsOnTheCard;
+    }
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
         N.B. In all messages the current amount of money in the reserve is specified
 
-*       1. monk:
-*          - student: the type of student taken from the card and put on the island
-           - */
+        1. monk:
+           - student: the type of student taken from the card and put on the island
+
+        5. herbalist:
+           - island_ID: ID of the island where the no-entry-tile was put
+           - getNumberOfElementsOnTheCard: number of no-entry-tiles remained on the character card*/

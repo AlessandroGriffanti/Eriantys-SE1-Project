@@ -60,6 +60,7 @@ public class Monk  extends Character {
 
         // create and send the response
         AckCharactersMessage ack = new AckCharactersMessage();
+        ack.setRecipient(request.getSender_ID());
         ack.setCard("monk");
         ack.setCoinReserve(controller.getMatch().getCoinReserve());
         ack.setStudent(chosenStudent);

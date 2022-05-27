@@ -14,6 +14,10 @@ public class MatchCreating implements ControllerState{
         controller.setState(new ChooseTowerColor());
     }
 
+    /**
+     *  This method initializes the specifics of the match inside the model
+     * @param controller reference of the controller of the match
+     */
     @Override
     public void stateExecution(Controller controller) {
         //read the message in controller and map it in MatchSpecs

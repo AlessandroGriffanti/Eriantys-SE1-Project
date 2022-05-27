@@ -1,16 +1,14 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.characterCards.CharactersManager;
+import it.polimi.ingsw.controller.characterCards.Herbalist;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCloudMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Action_2 implements ControllerState{
 
@@ -33,7 +31,6 @@ public class Action_2 implements ControllerState{
     @Override
     public void stateExecution(Controller controller){
 
-        Match match = controller.getMatch();
         String json = controller.getMsg();
 
         Message request = gson.fromJson(json, Message.class);
@@ -75,13 +72,18 @@ public class Action_2 implements ControllerState{
 
             System.out.println("Nack sent for invalid mother nature movement");
         } else {
+
             // move mother nature
             match.getRealmOfTheMatch().setDestinationOfMotherNature(destinationIsland);
 
             // if there is at least one noEntryTile on the island we do not compute the influence on it
             if (archipelago.getNoEntryTiles() > 0) {
+
                 //remove one no entry tile
                 archipelago.removeNoEntryTile();
+                // put the tile on the character herbalist
+                controller.getCharactersManager().returnTileToHerbalist();
+
                 ack.setRemovedNoEntryTile(true);
                 ack.setIslandThatLostNoEntryTile(destinationIsland);
 
@@ -89,7 +91,7 @@ public class Action_2 implements ControllerState{
                 ack.setAction3Valid(controlAction3Allowed(match));
                 action3Allowed = controlAction3Allowed(match);
 
-                if(action3Allowed){
+                if(!action3Allowed){
                     assert SupportFunctions.noMoreStudentsToDraw(match);
 
                     ack.setAction3Valid(false);
@@ -144,7 +146,7 @@ public class Action_2 implements ControllerState{
         if(archipelago.getMasterOfArchipelago() == null){
 
             // compute influence
-            int newMaster = influenceComputation(controller, currentIsland);
+            int newMaster = SupportFunctions.influenceComputation(controller, currentIsland);
 
             // if there is a valid new master then we apply the modification
             if(newMaster != -1){
@@ -161,7 +163,7 @@ public class Action_2 implements ControllerState{
         // in the case there is already an island-master...
         else{
             int previousMaster = archipelago.getMasterOfArchipelago().getID();
-            int newMaster = influenceComputation(controller, currentIsland);
+            int newMaster = SupportFunctions.influenceComputation(controller, currentIsland);
 
             if(newMaster != -1){
 
@@ -215,6 +217,8 @@ public class Action_2 implements ControllerState{
                 // if the previous island has at least one noEntryTile we remove it
                 if(match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).getNoEntryTiles() > 0){
                     match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).removeNoEntryTile();
+                    // return the no-entry-tile to the herbalist
+                    controller.getCharactersManager().returnTileToHerbalist();
 
                     ack.setRemovedNoEntryTile(true);
                     ack.setIslandThatLostNoEntryTile(previousIsland_ID);
@@ -227,6 +231,8 @@ public class Action_2 implements ControllerState{
                 // if the next island has at least one noEntryTile we remove it
                 if(match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).getNoEntryTiles() > 0){
                     match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).removeNoEntryTile();
+                    // return the no-entry-tile to the herbalist
+                    controller.getCharactersManager().returnTileToHerbalist();
 
                     ack.setRemovedNoEntryTile(true);
                     ack.setIslandThatLostNoEntryTile(nextIsland_ID);
@@ -241,6 +247,8 @@ public class Action_2 implements ControllerState{
 
                 if(match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).getNoEntryTiles() > 0){
                     match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).removeNoEntryTile();
+                    // return the no-entry-tile to the herbalist
+                    controller.getCharactersManager().returnTileToHerbalist();
                     alreadyRemovedTile = true;
 
                     ack.setRemovedNoEntryTile(true);
@@ -249,6 +257,8 @@ public class Action_2 implements ControllerState{
 
                 if(match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).getNoEntryTiles() > 0 && !alreadyRemovedTile){
                     match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).removeNoEntryTile();
+                    // return the no-entry-tile to the herbalist
+                    controller.getCharactersManager().returnTileToHerbalist();
 
                     ack.setRemovedNoEntryTile(true);
                     ack.setIslandThatLostNoEntryTile(nextIsland_ID);
@@ -308,7 +318,6 @@ public class Action_2 implements ControllerState{
     private boolean isMovementValid(Match match, int destinationIsland_ID, int player_ID){
         int currentMotherNaturePosition = match.getPositionOfMotherNature();
         int steps = 0;
-        int futurePosition_ID;
         int tempIsland_ID = currentMotherNaturePosition;
 
         assert match.getRealmOfTheMatch().getArchipelagos().get(destinationIsland_ID) != null :
@@ -323,67 +332,6 @@ public class Action_2 implements ControllerState{
         // if the steps are more than the number allowed the movement is not legit
         Assistant lastPlayedCard = match.getPlayers().get(player_ID).getAssistantsDeck().getLastUsedCard();
         return steps <= lastPlayedCard.getMotherNatureMovementValue();
-    }
-
-    /**
-     * This method computes the influence of all players on the island and returns the player who is the
-     * master of the island
-     * @param controller reference to the controller of the match
-     * @param island_ID
-     * @return ID of the player or if the there are two players with the same influence value, which is the maximum
-     *         value, then -1 is returned
-     */
-    private int influenceComputation(Controller controller, int island_ID){
-        Match match = controller.getMatch();
-
-        // in this variable we store for each player the influence on the island : HashMap<player_ID, influence>
-        HashMap<Integer, Integer> allPlayersInfluence = new HashMap<Integer, Integer>();
-
-        Archipelago island = match.getRealmOfTheMatch().getArchipelagos().get(island_ID);
-        ArrayList<Creature> playerProfessors;
-
-        for(int player_ID = 0; player_ID < match.getPlayers().size(); player_ID++){
-            Player player = match.getPlayers().get(player_ID);
-            playerProfessors = player.getMyProfessors();
-
-            // count the number of students of each type on the island
-            int playerInfluence = 0;
-            for(Creature creature: playerProfessors){
-                playerInfluence += island.getStudentsOfType(creature);
-            }
-
-            if(!(controller.getCharactersManager().isCentaurUsed())){
-                // if the players owns the tower(s) then we also count them in the influence
-                playerInfluence += match.numberOfTowersOnTheIsland(player_ID, island_ID);
-            }
-
-            allPlayersInfluence.put(player_ID, playerInfluence);
-        }
-        // RESET centaur character card
-        controller.getCharactersManager().setCentaurUsed(false);
-
-        // control who has the higher influence
-        int maxInfluence = 0;
-        int playerWithmaxInfluence = -1;
-        int repetitions = 0;
-
-        for(int i = 0; i < match.getPlayers().size(); i++){
-            if(allPlayersInfluence.get(i) > maxInfluence){
-                repetitions = 1;
-                playerWithmaxInfluence = i;
-                maxInfluence = allPlayersInfluence.get(i);
-            }else if(allPlayersInfluence.get(i) == maxInfluence){
-                repetitions++;
-            }
-        }
-
-        /* if we found a max value more than once then the influence is not valid, meaning no one is getting the
-        control over the island */
-        if(repetitions > 1){
-            return -1;
-        }else {
-            return playerWithmaxInfluence;
-        }
     }
 
     /**

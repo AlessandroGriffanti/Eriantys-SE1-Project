@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.messages.Message;
 import java.util.ArrayList;
 
 public class NackMessage extends Message {
+
     /**
      * This attribute is the second object of the message, and it tells which data are stored in this message
      */
@@ -35,6 +36,10 @@ public class NackMessage extends Message {
                 break;
             case "character":
                 this.explanationMessage = "I see yuo are not rich enough to buy the character, come back when you have more coins!";
+                break;
+            case "herbalist":
+                this.explanationMessage = "There is a limited number of no-entry-tiles (just four) in the realm and all of them are being " +
+                                          "used somewhere else right now.\nErgo you can't use a no-entry-tile!";
         }
     }
 
@@ -59,5 +64,8 @@ public class NackMessage extends Message {
 *   3. invalid_cloud:
 *      it means that the cloud chosen had been already chosen by another player and now is empty of students
 *
-*   4. character:
-*      it means that the player has not enough coins to use the character card*/
+*   4. character_price:
+*      it means that the player has not enough coins to use the character card
+*
+*   5. herbalist:
+*      it means that there wasn't any no-entry-tile on the character, all the cards were already in use*/

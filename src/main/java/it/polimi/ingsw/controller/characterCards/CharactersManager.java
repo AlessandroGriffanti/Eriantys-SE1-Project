@@ -23,18 +23,23 @@ public class CharactersManager {
     Controller controller;
     /**
      * This attribute is true if the cook characterCard has been used
-     *                   false otherwise
+     * false otherwise
      */
     private boolean cookUsed = false;
     /**
-     * This attribute tells us if the character card showing a centaur has been played,
+     * This attribute tells us if the centaur character has been played,
      * in this case the computation of the influence won't take into account the towers
      * on the island
      */
     boolean centaurUsed = false;
+    /**
+     * This attribute is true if the ambassador character has been used false otherwise
+     */
+    boolean ambassadorActive = false;
 
 
     public CharactersManager(Controller controller) {
+        this.controller = controller;
         this.cards = new HashMap<String, Character>();
     }
 
@@ -44,7 +49,7 @@ public class CharactersManager {
      */
     public Set<String> chooseCharacter(){
 
-        Random random = new Random();;
+        Random random = new Random();
         int randomNumber;
 
         ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<Integer>();
@@ -72,7 +77,7 @@ public class CharactersManager {
                         cards.put("messenger", new Messenger());
                         break;
                     case 5:
-                        cards.put("herbalist", new Herbalist());
+                        cards.put("herbalist", new Herbalist(controller));
                         break;
                     case 6:
                         cards.put("centaur", new Centaur(controller));
@@ -124,7 +129,7 @@ public class CharactersManager {
         int playerCoins = player.getCoinsOwned();
         if(price > playerCoins){
             NackMessage nack = new NackMessage();
-            nack.setSubObject("character");
+            nack.setSubObject("character_price");
         }
 
         // withdraw coins from player
@@ -135,6 +140,20 @@ public class CharactersManager {
 
         // call the effect of the card
         cards.get(cardChosen).effect(request);
+    }
+
+    /**
+     * This method return one no-entry-tile to the herbalist character card
+     */
+    public void returnTileToHerbalist(){
+        Herbalist herbalist =  (Herbalist) cards.get("herbalist");
+
+        herbalist.addOneTile();
+    }
+
+
+    public HashMap<String, Character> getCards() {
+        return cards;
     }
 
     // SETTER AND GETTER FOR cookUsed
@@ -154,4 +173,14 @@ public class CharactersManager {
     public boolean isCentaurUsed() {
         return centaurUsed;
     }
+
+    // SETTER AND GETTER FOR ambassadorActive
+    public void setAmbassadorActive(boolean ambassadorActive) {
+        this.ambassadorActive = ambassadorActive;
+    }
+
+    public boolean isAmbassadorActive() {
+        return ambassadorActive;
+    }
+
 }

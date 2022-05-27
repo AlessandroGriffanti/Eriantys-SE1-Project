@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.messages.Message;
 
 public class ChosenCharacterMessage extends Message {
 
+
     /**
      * This attribute is the name of the character card chosen by the player
      */
@@ -16,6 +17,7 @@ public class ChosenCharacterMessage extends Message {
      * This attribute is the ID of the island chosen by the player (used for various cards)
      */
     private int island_ID;
+
 
     public ChosenCharacterMessage(){
         this.object = "character";
@@ -47,9 +49,20 @@ public class ChosenCharacterMessage extends Message {
     public int getIsland_ID() {
         return island_ID;
     }
+
 }
 
 /*POSSIBLE VALUES OF cardName:
+        For every message there is the sender_ID attribute set
+
 *       1. "monk":
 *           - student_ID: ID of the student on the card
-*           - island_ID: ID of the island where the student will be put*/
+*           - island_ID: ID of the island where the student will be put
+        2. "cook":
+            - no further attributes
+
+        5. "herbalist":
+            - island_ID: the ID of the island where to put the noEntryTile
+
+        6. "centaur":
+            - no further attributes*/

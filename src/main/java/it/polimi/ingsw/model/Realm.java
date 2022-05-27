@@ -216,7 +216,5 @@ public class Realm{
      */
     public void setDestinationOfMotherNature(int destinationIsland_ID){
         positionOfMotherNature = destinationIsland_ID;
-
-        archipelagos.get(positionOfMotherNature).removeNoEntryTile();
     }
 }
