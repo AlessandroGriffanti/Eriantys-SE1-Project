@@ -22,8 +22,19 @@ public class MovedStudentsFromEntrance extends Message {
      */
     private int location;
 
-
+    /**
+     * This constructor can be used by the controller to deserialize the message received
+     */
     public MovedStudentsFromEntrance(){
+        this.object = "action_1";
+    }
+
+    /**
+     * This constructor can be used by the Client to create the message to send
+     * to the server
+     * @param sender_ID ID of the player that send the message
+     */
+    public MovedStudentsFromEntrance(int sender_ID){
         this.object = "action_1";
     }
 

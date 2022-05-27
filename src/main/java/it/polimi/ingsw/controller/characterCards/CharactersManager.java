@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class CharactersManager {
      * chosen character
      * @param request message sent by the client asking to use the character
      */
-    public void useCard(ChosenCharacterMessage request){
+    public void useCard(CharacterDataMessage request){
 
         int player_ID = request.getSender_ID();
         Player player = controller.getMatch().getPlayerByID(player_ID);

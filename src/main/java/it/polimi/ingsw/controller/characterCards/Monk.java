@@ -3,7 +3,7 @@ package it.polimi.ingsw.controller.characterCards;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
@@ -39,7 +39,7 @@ public class Monk  extends Character {
      * @return true if the effect was activated, false otherwise
      */
     @Override
-    public boolean effect(ChosenCharacterMessage request) {
+    public boolean effect(CharacterDataMessage request) {
         // increase price by one if this is the first time that the card is used
         increasePrice();
 

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
 /**
@@ -22,7 +22,7 @@ public class Centaur extends Character {
      * @return true if the effect was activated, false otherwise
      */
     @Override
-    public boolean effect(ChosenCharacterMessage request) {
+    public boolean effect(CharacterDataMessage request) {
         increasePrice();
 
         controller.getCharactersManager().setCentaurUsed(true);

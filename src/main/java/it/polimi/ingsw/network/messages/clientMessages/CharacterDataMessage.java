@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
-public class ChosenCharacterMessage extends Message {
+public class CharacterDataMessage extends Message {
 
 
     /**
@@ -19,8 +19,8 @@ public class ChosenCharacterMessage extends Message {
     private int island_ID;
 
 
-    public ChosenCharacterMessage(){
-        this.object = "character";
+    public CharacterDataMessage(){
+        this.object = "character_data";
     }
 
     // SETTER AND GETTER FOR cardName

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.characterCards.Herbalist;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
@@ -37,7 +36,7 @@ public class Action_2 implements ControllerState{
         if(request.getObjectOfMessage().equals("action_2")){
             executeAction_2_movement(controller, json);
         }else if(request.getObjectOfMessage().equals("character")){
-            ChosenCharacterMessage characterRequest = gson.fromJson(json, ChosenCharacterMessage.class);
+            CharacterDataMessage characterRequest = gson.fromJson(json, CharacterDataMessage.class);
             controller.getCharactersManager().useCard(characterRequest);
         }else{
             System.out.println("ACTION_2: \nexpected message with object [action_2] or [character]" +

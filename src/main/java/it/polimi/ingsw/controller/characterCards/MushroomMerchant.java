@@ -1,14 +1,14 @@
 package it.polimi.ingsw.controller.characterCards;
 
 
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 
 public class MushroomMerchant extends Character {
 
     public MushroomMerchant(){
         this.price = 3;
     }
-    public boolean effect(ChosenCharacterMessage request){return true;};
+    public boolean effect(CharacterDataMessage request){return true;};
 
 
     /** same idea as the one presented in the centaur character card but concerning the students. The idea is that we set

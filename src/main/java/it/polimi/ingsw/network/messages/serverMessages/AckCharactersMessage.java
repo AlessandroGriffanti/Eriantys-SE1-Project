@@ -107,13 +107,14 @@ public class AckCharactersMessage extends Message {
 
         1. monk:
            - student: the type of student taken from the card and put on the island
+           - studentsOnCard
 
         2. cook:
-           it means that the recipient (attribute)
+           it means that the recipient (attribute) used the cook character
 
         4. messenger:
-           - no further attributes, it just means that during the movement of mother nature it will
-             be taken into account
+           - no further attributes, it just means that during the movement of mother nature
+           (only of the player who used the card)it will be taken into account the messenger card effect
 
         5. herbalist:
            - island_ID: ID of the island where the no-entry-tile was put

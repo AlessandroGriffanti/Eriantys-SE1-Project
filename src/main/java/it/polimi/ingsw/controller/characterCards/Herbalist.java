@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Archipelago;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
@@ -29,7 +29,7 @@ public class Herbalist extends Character {
      * @return true if the effect was activated, false otherwise
      */
     @Override
-    public boolean effect(ChosenCharacterMessage request) {
+    public boolean effect(CharacterDataMessage request) {
         increasePrice();
         // this variable tells if the effect of the character was activated or not
         boolean effectActivated;

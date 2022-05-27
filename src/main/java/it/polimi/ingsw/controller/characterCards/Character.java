@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 
 /**
  * This class represent one character card
@@ -40,6 +40,6 @@ public abstract class Character{
         }
     }
 
-    public abstract boolean effect(ChosenCharacterMessage request);
+    public abstract boolean effect(CharacterDataMessage request);
 
 }

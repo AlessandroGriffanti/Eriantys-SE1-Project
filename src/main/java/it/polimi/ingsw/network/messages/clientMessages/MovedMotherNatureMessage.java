@@ -9,8 +9,21 @@ public class MovedMotherNatureMessage extends Message {
      */
     private int destinationIsland_ID;
 
+    /**
+     * This constructor can be used by the  controller to deserialize the message received
+     */
     public MovedMotherNatureMessage(){
         this.object = "action_2";
+    }
+
+    /**
+     * This constructor can be used by the client to create the message to send
+     * to the server
+     * @param sender_ID ID of the player that send the message
+     */
+    public MovedMotherNatureMessage(int sender_ID){
+        this.object = "action_2";
+        this.sender_ID = sender_ID;
     }
 
     public void setDestinationIsland_ID(int destinationIsland_ID) {

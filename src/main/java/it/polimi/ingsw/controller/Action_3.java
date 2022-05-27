@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCloudMessage;
 import it.polimi.ingsw.network.messages.Message;
@@ -31,7 +31,7 @@ public class Action_3 implements ControllerState{
         if(request.getObjectOfMessage().equals("action_3")){
             executeAction_3(controller, json);
         }else if(request.getObjectOfMessage().equals("character")){
-            ChosenCharacterMessage characterRequest = gson.fromJson(json, ChosenCharacterMessage.class);
+            CharacterDataMessage characterRequest = gson.fromJson(json, CharacterDataMessage.class);
             controller.getCharactersManager().useCard(characterRequest);
         }else{
             System.out.println("ACTION_3: \nexpected message with object [action_3] or [character]" +

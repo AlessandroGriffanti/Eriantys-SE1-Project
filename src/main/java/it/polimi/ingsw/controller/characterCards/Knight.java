@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 
 public class Knight extends Character {
     public Knight() {
@@ -11,7 +11,7 @@ public class Knight extends Character {
 
 
     @Override
-    public boolean effect(ChosenCharacterMessage request) {
+    public boolean effect(CharacterDataMessage request) {
 return true;
     }
 }

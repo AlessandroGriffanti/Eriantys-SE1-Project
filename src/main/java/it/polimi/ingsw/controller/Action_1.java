@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.MovedStudentsFromEntrance;
 
@@ -25,7 +25,7 @@ public class Action_1 implements ControllerState{
 
         if(request.getObjectOfMessage().equals("character")){
 
-            ChosenCharacterMessage characterRequest = gson.fromJson(json, ChosenCharacterMessage.class);
+            CharacterDataMessage characterRequest = gson.fromJson(json, CharacterDataMessage.class);
             controller.getCharactersManager().useCard(characterRequest);
 
         }else if(request.getObjectOfMessage().equals("action_1")){
