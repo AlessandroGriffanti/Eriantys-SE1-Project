@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.Client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.model.Tower;
+import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
@@ -30,6 +31,7 @@ public class NetworkHandler {
     private String ip;
     private int port;
     Tower towerColor;
+    Wizard wizard;
 
 
     /**
@@ -187,7 +189,7 @@ public class NetworkHandler {
                         break;
 
                     case "tower_color":
-                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                        if ((ackMessageMapped.getNextPlayer() == playerID) && (towerColor == null)){
                             ArrayList<Tower> notAvailableTowerColors = ackMessageMapped.getNotAvailableTowerColors();
 
                             boolean blackAvailability = true;
@@ -218,11 +220,56 @@ public class NetworkHandler {
                             System.out.println("sent ok");
 
                             break;
-                        } else {
+                        }else if((ackMessageMapped.getNextPlayer() == playerID) && (towerColor != null)) {
                             //sendAckFromClient();
+                            //cli.turnWaiting();
+                            wizard = cli.deckChoice();
+                            ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
+                            chosenDeckMessage.setDeck(wizard);
+                            chosenDeckMessage.setSender_ID(playerID);
+                            System.out.println("DECK SCELTO NON NELL'ACK: " + chosenDeckMessage.getDeck());
+                            sendMessage(chosenDeckMessage);
+                            break;
+                        }else if((ackMessageMapped.getNextPlayer() != playerID) && (towerColor != null)){
                             cli.turnWaiting();
                             break;
                         }
+
+                    case "deck":
+                        if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard == null)){
+                            boolean forestWizardAvailability = true;
+                            boolean desertWizardAvailability = true;
+                            boolean cloudWitchAvailability = true;
+                            boolean lightningWizardAvailability = true;
+                            ArrayList<Wizard> notAvailableDecks = ackMessageMapped.getNotAvailableDecks();
+                            for(int i = 0; i < notAvailableDecks.size(); i++){
+                                if(String.valueOf(notAvailableDecks.get(i)).equals("FORESTWIZARD")){
+                                    forestWizardAvailability = false;
+                                }
+                                if(String.valueOf(notAvailableDecks.get(i)).equals("DESERTWIZARD")){
+                                    desertWizardAvailability = false;
+                                }
+                                if(String.valueOf(notAvailableDecks.get(i)).equals("CLOUDWITCH")){
+                                    cloudWitchAvailability = false;
+                                }
+                                if(String.valueOf(notAvailableDecks.get(i)).equals("LIGHTNINGWIZARD")){
+                                    lightningWizardAvailability = false;
+                                }
+                            }
+
+                            wizard = cli.deckChoiceNext(forestWizardAvailability, desertWizardAvailability, cloudWitchAvailability, lightningWizardAvailability);
+                            ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
+                            chosenDeckMessage.setDeck(wizard);
+                            chosenDeckMessage.setSender_ID(playerID);
+                            System.out.println("DECK SCELTO NELL'ACK: " + chosenDeckMessage.getDeck());
+                            sendMessage(chosenDeckMessage);
+                            break;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && wizard != null){
+                            cli.turnWaiting();
+                            break;
+                        }
+
+
                 }
                 break;
 
