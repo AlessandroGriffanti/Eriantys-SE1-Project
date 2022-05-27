@@ -38,26 +38,28 @@ public class AckCharactersMessage extends Message {
     private int numberOfElementsOnTheCard;
 
 
-    public AckCharactersMessage(){
-        this.object = "ack";
+    public AckCharactersMessage(){this.object = "character_ack";}
+
+    public AckCharactersMessage(int recipient_ID, String card, int coinReserve){
+        this.object = "character_ack";
+        this.recipient = recipient_ID;
+        this.card = card;
+        this.coinReserve = coinReserve;
     }
 
-    // SETTER AND GETTER FOR recipient
-    public void setRecipient(int recipient) {
-        this.recipient = recipient;
-    }
-
+    // GETTER FOR recipient
     public int getRecipient() {
         return recipient;
     }
 
-    // SETTER AND GETTER FOR card
-    public void setCard(String card) {
-        this.card = card;
-    }
-
+    // GETTER FOR card
     public String getCard() {
         return card;
+    }
+
+    // GETTER FOR coinReserve
+    public int getCoinReserve() {
+        return coinReserve;
     }
 
     // SETTER AND GETTER FOR student
@@ -76,15 +78,6 @@ public class AckCharactersMessage extends Message {
 
     public ArrayList<Creature> getStudentsOnCard() {
         return studentsOnCard;
-    }
-
-    // SETTER AND GETTER FOR coinReserve
-    public void setCoinReserve(int coinReserve) {
-        this.coinReserve = coinReserve;
-    }
-
-    public int getCoinReserve() {
-        return coinReserve;
     }
 
     // SETTER AND GETTER FOR island_ID
@@ -108,10 +101,19 @@ public class AckCharactersMessage extends Message {
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
-        N.B. In all messages the current amount of money in the reserve is specified
+        N.B. In all messages:
+            - the current amount of money in the reserve is specified
+            - the recipient , that is the player who used the character, is specified
 
         1. monk:
            - student: the type of student taken from the card and put on the island
+
+        2. cook:
+           it means that the recipient (attribute)
+
+        4. messenger:
+           - no further attributes, it just means that during the movement of mother nature it will
+             be taken into account
 
         5. herbalist:
            - island_ID: ID of the island where the no-entry-tile was put

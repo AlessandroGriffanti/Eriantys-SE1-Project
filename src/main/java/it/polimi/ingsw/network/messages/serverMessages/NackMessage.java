@@ -40,6 +40,10 @@ public class NackMessage extends Message {
             case "herbalist":
                 this.explanationMessage = "There is a limited number of no-entry-tiles (just four) in the realm and all of them are being " +
                                           "used somewhere else right now.\nErgo you can't use a no-entry-tile!";
+                break;
+            case "monk":
+                this.explanationMessage = "The monk has no more students, so he can't give you one student anymore." +
+                                          "Sorry for the inconvenience.";
         }
     }
 
@@ -68,4 +72,7 @@ public class NackMessage extends Message {
 *      it means that the player has not enough coins to use the character card
 *
 *   5. herbalist:
-*      it means that there wasn't any no-entry-tile on the character, all the cards were already in use*/
+*      it means that there wasn't any no-entry-tile on the character, all the cards were already in use
+*
+*   6. monk:
+*      it means that the character card monk has no more students on it*/

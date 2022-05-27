@@ -20,7 +20,7 @@ public class Princess extends Character {
     }
 
     @Override
-    public void effect(ChosenCharacterMessage request) {
-
+    public boolean effect(ChosenCharacterMessage request) {
+return true;
     }
 }

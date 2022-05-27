@@ -40,6 +40,6 @@ public abstract class Character{
         }
     }
 
-    public abstract void effect(ChosenCharacterMessage request);
+    public abstract boolean effect(ChosenCharacterMessage request);
 
 }

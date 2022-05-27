@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 public class Bard extends Character {
@@ -9,7 +8,7 @@ public class Bard extends Character {
     }
 
     @Override
-    public void effect(ChosenCharacterMessage request) {
+    public boolean effect(ChosenCharacterMessage request) {
         System.out.println("Error: no variables received");
     }
 

@@ -27,6 +27,11 @@ public class CharactersManager {
      */
     private boolean cookUsed = false;
     /**
+     * This attribute is true if the messenger character card has been used by a player
+     * and false otherwise
+     */
+    private boolean messengerActive = false;
+    /**
      * This attribute tells us if the centaur character has been played,
      * in this case the computation of the influence won't take into account the towers
      * on the island
@@ -74,7 +79,7 @@ public class CharactersManager {
                         cards.put("ambassador", new Ambassador());
                         break;
                     case 4:
-                        cards.put("messenger", new Messenger());
+                        cards.put("messenger", new Messenger(controller));
                         break;
                     case 5:
                         cards.put("herbalist", new Herbalist(controller));
@@ -132,14 +137,15 @@ public class CharactersManager {
             nack.setSubObject("character_price");
         }
 
-        // withdraw coins from player
-        player.spendCoins(price);
-
-        // put the same amount of coins in the public reserve
-        controller.getMatch().depositInCoinReserve(price);
-
         // call the effect of the card
-        cards.get(cardChosen).effect(request);
+        boolean effectAvtivated = cards.get(cardChosen).effect(request);
+        if(effectAvtivated){
+            // withdraw coins from player
+            player.spendCoins(price);
+
+            // put the same amount of coins in the public reserve
+            controller.getMatch().depositInCoinReserve(price);
+        }
     }
 
     /**
@@ -163,6 +169,15 @@ public class CharactersManager {
 
     public boolean isCookUsed() {
         return cookUsed;
+    }
+
+    // SETTER AND GETTER FOR messengerActive
+    public void setMessengerActive(boolean messengerActive) {
+        this.messengerActive = messengerActive;
+    }
+
+    public boolean isMessengerActive() {
+        return messengerActive;
     }
 
     // SETTER AND GETTER FOR centaurUsed

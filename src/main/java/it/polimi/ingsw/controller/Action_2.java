@@ -65,7 +65,7 @@ public class Action_2 implements ControllerState{
         ack.setRecipient(request.getSender_ID());
 
         // control if the movement is legit
-        if (!isMovementValid(match, destinationIsland, request.getSender_ID())) {
+        if (!isMovementValid(controller, destinationIsland, request.getSender_ID())) {
             NackMessage nack = new NackMessage();
             nack.setSubObject("invalid_mother_nature_movement");
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
@@ -311,11 +311,13 @@ public class Action_2 implements ControllerState{
     /**
      * This method controls if the movement made by mother nature is valid accordingly to the last assistant card
      * played by the player
-     * @param match reference to the Match
+     * @param controller reference to the controller
      * @param destinationIsland_ID ID of the island that is the destination of mother nature's movement
      * @return true if the movement is legit, false otherwise
      */
-    private boolean isMovementValid(Match match, int destinationIsland_ID, int player_ID){
+    private boolean isMovementValid(Controller controller, int destinationIsland_ID, int player_ID){
+        Match match = controller.getMatch();
+
         int currentMotherNaturePosition = match.getPositionOfMotherNature();
         int steps = 0;
         int tempIsland_ID = currentMotherNaturePosition;
@@ -331,7 +333,18 @@ public class Action_2 implements ControllerState{
 
         // if the steps are more than the number allowed the movement is not legit
         Assistant lastPlayedCard = match.getPlayers().get(player_ID).getAssistantsDeck().getLastUsedCard();
-        return steps <= lastPlayedCard.getMotherNatureMovementValue();
+
+        int maxSteps;
+        // the return value depends on weather the messenger character has been used or not
+        if(controller.getCharactersManager().isMessengerActive()){
+            // if messenger is active we can move mother nature two islands farther than usual
+            maxSteps = lastPlayedCard.getMotherNatureMovementValue() + 2;
+            controller.getCharactersManager().setMessengerActive(false);
+        }else{
+            maxSteps = lastPlayedCard.getMotherNatureMovementValue();
+        }
+
+        return steps <= maxSteps;
     }
 
     /**

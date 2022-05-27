@@ -1,10 +1,13 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
+/**
+ * This class represents the character card called 'centaur' (sixth in the rules' file).
+ * It allows the players not to count towers during influence computation.
+ */
 public class Centaur extends Character {
 
 
@@ -13,17 +16,22 @@ public class Centaur extends Character {
         this.controller = controller;
     }
 
-    /** the idea is that we change the tower color to all the players in the game to a constant called "TRANSPARENT" and, in the
-     * controller, where we manage the influence computing, we check if the tower color of the player is TRANSPARENT and , if so,
-     * we do not count its influence.
-     *
-     * Another Idea could be to delete the "TRANSPARENT" costant in the Tower enum and 'delete' this card and handle it all in the
-     * controller where the influence is computed.
-     * @param request
-     *
+    /** This method sets the attribute centaurUsed to true; this means that the towers on the islands
+     * won't be taken into account during the influence computation
+     * @param request the message containing the request of the client to use the character
+     * @return true if the effect was activated, false otherwise
      */
     @Override
-    public void effect(ChosenCharacterMessage request) {
+    public boolean effect(ChosenCharacterMessage request) {
+        increasePrice();
+
         controller.getCharactersManager().setCentaurUsed(true);
+
+        int coinsInReserve = controller.getMatch().getCoinReserve();
+        AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "centaur", coinsInReserve);
+
+        controller.sendMessageAsBroadcast(ack);
+
+        return true;
     }
 }

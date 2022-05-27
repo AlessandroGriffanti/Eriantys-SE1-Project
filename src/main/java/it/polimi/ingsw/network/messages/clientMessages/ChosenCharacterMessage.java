@@ -61,6 +61,9 @@ public class ChosenCharacterMessage extends Message {
         2. "cook":
             - no further attributes
 
+        4. "messenger":
+            - no further attributes
+
         5. "herbalist":
             - island_ID: the ID of the island where to put the noEntryTile
 

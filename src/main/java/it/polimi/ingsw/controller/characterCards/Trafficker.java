@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 
 public class Trafficker extends Character {
@@ -9,7 +8,8 @@ public class Trafficker extends Character {
     }
 
     @Override
-    public void effect(ChosenCharacterMessage request) {
+    public boolean effect(ChosenCharacterMessage request) {
+        return true;
     }
 
     /**

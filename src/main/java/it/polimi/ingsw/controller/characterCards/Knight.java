@@ -11,7 +11,7 @@ public class Knight extends Character {
 
 
     @Override
-    public void effect(ChosenCharacterMessage request) {
-
+    public boolean effect(ChosenCharacterMessage request) {
+return true;
     }
 }

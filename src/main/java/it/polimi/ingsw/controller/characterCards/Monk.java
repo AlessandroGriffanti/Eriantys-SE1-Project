@@ -5,11 +5,13 @@ import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 
 /**
- * This class represents the character card called 'monk' (first one in the rules' file)
+ * This class represents the character card called 'monk' (first one in the rules' file).
+ * It allows players to take one of its students and put it on an island.
  */
 public class Monk  extends Character {
     /**
@@ -34,39 +36,53 @@ public class Monk  extends Character {
      * This method takes one of the students on the monk-card and puts it on an island chosen by the player;
      * finally it creates the AckCharacter message to send back to all the players
      * @param request message containing island_ID and student_ID chosen by the player
-     *
+     * @return true if the effect was activated, false otherwise
      */
     @Override
-    public void effect(ChosenCharacterMessage request) {
+    public boolean effect(ChosenCharacterMessage request) {
         // increase price by one if this is the first time that the card is used
         increasePrice();
 
-        int student_ID = request.getStudent_ID();
-        int island_ID = request.getIsland_ID();
+        // this variable tells if the effect of the character was activated or not
+        boolean effectActivated;
 
-        // the island must not be null
-        assert controller.getMatch().getRealmOfTheMatch().getArchipelagos().get(island_ID) != null : "The island chosen by the player turned out to be NULL !!";
+        if(students.size() == 0){
+            effectActivated = false;
 
-        // take the students from the card
-        Creature chosenStudent = students.get(student_ID);
-        students.set(student_ID, null);
+            NackMessage nack = new NackMessage();
+            nack.setSubObject("monk");
 
-        // put the student on the island
-        this.controller.getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, island_ID);
+            controller.sendMessageToPlayer(request.getSender_ID(), nack);
+        }else{
+            effectActivated = true;
 
-        // draw new student from the bag and put it on the card
-        Creature caughtStudentFromBag = bag.drawOneStudent();
-        addStudent(caughtStudentFromBag);
+            int student_ID = request.getStudent_ID();
+            int island_ID = request.getIsland_ID();
 
-        // create and send the response
-        AckCharactersMessage ack = new AckCharactersMessage();
-        ack.setRecipient(request.getSender_ID());
-        ack.setCard("monk");
-        ack.setCoinReserve(controller.getMatch().getCoinReserve());
-        ack.setStudent(chosenStudent);
-        ack.setStudentsOnCard(this.students);
+            // the island must not be null
+            assert controller.getMatch().getRealmOfTheMatch().getArchipelagos().get(island_ID) != null : "The island chosen by the player turned out to be NULL !!";
 
-        controller.sendMessageAsBroadcast(ack);
+            // take the students from the card
+            Creature chosenStudent = students.get(student_ID);
+            students.set(student_ID, null);
+
+            // put the student on the island
+            this.controller.getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, island_ID);
+
+            // draw new student from the bag and put it on the card
+            Creature caughtStudentFromBag = bag.drawOneStudent();
+            addStudent(caughtStudentFromBag);
+
+            // create and send the response
+            int coinsInReserve = controller.getMatch().getCoinReserve();
+            AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "monk", coinsInReserve);
+            ack.setStudent(chosenStudent);
+            ack.setStudentsOnCard(this.students);
+
+            controller.sendMessageAsBroadcast(ack);
+        }
+
+        return effectActivated;
     }
 
     /**
