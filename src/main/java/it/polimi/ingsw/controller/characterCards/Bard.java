@@ -10,6 +10,7 @@ public class Bard extends Character {
     @Override
     public boolean effect(ChosenCharacterMessage request) {
         System.out.println("Error: no variables received");
+        return true;
     }
 
     /**

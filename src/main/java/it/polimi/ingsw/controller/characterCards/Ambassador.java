@@ -8,7 +8,7 @@ import it.polimi.ingsw.network.messages.clientMessages.ChosenCharacterMessage;
 public class Ambassador extends Character {
 
     public boolean effect(ChosenCharacterMessage request) {
-
+return true;
     }
 
 
