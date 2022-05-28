@@ -14,13 +14,23 @@ public class Messenger extends Character {
     public Messenger(Controller controller){
         this.controller = controller;
     }
+
+    /**
+     * This method controls if the character can be used (in this case the card can always be used
+     * because there are no restrictions)
+     * @return always true
+     */
+    @Override
+    public boolean checkCharacterAvailability() {
+        return true;
+    }
+
     /**
      * This method set to true the attribute in CharactersManager instance that tells if the
      * messenger card has been used or not
      * @param request message sent by the client
-     * @return true if the effect was activated, false otherwise
      */
-    public boolean effect(CharacterDataMessage request) {
+    public void effect(CharacterDataMessage request) {
         increasePrice();
 
         controller.getCharactersManager().setMessengerActive(true);
@@ -29,7 +39,5 @@ public class Messenger extends Character {
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "messenger", coinsInReserve);
 
         controller.sendMessageAsBroadcast(ack);
-
-        return true;
     }
 }

@@ -23,7 +23,12 @@ public class Jester extends Character {
     }
 
     @Override
-    public boolean effect(CharacterDataMessage request) {
-return true;
+    public boolean checkCharacterAvailability() {
+        return false;
+    }
+
+    @Override
+    public void effect(CharacterDataMessage request) {
+
     }
 }

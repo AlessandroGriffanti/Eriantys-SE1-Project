@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.ChosenCloudMessage;
 import it.polimi.ingsw.network.messages.Message;
@@ -19,7 +20,38 @@ public class Action_3 implements ControllerState{
         }else{
             controller.setState(new RefillClouds());
         }
-        // TODO: we could have to add the management of the characters cards
+    }
+
+    /**
+     * This method controls if the message must be handed over to the character manager or
+     * to the stateExecution method
+     * @param controller reference to the controller of the match
+     */
+    @Override
+    public void controlMessageAndExecute(Controller controller) {
+        Match match = controller.getMatch();
+        String json = controller.getMsg();
+
+        Message message = gson.fromJson(json, Message.class);
+        String object = message.getObjectOfMessage();
+
+        switch (object){
+            case "character_request":
+                CharacterRequestMessage request = gson.fromJson(json, CharacterRequestMessage.class);
+                controller.getCharactersManager().checkCard(request);
+                break;
+            case "character_data":
+                CharacterDataMessage dataMessage = gson.fromJson(json, CharacterDataMessage.class);
+                controller.getCharactersManager().useCard(dataMessage);
+                break;
+            case "action_3":
+                stateExecution(controller);
+                break;
+            default:
+                System.out.println("ACTION_3: \nexpected message with object [action_3] or [character]" +
+                        "\nreceived message with object["+ message.getObjectOfMessage() + "]");
+                break;
+        }
     }
 
     @Override
@@ -27,27 +59,11 @@ public class Action_3 implements ControllerState{
         Match match = controller.getMatch();
         String json = controller.getMsg();
 
-        Message request = gson.fromJson(json, Message.class);
-        if(request.getObjectOfMessage().equals("action_3")){
-            executeAction_3(controller, json);
-        }else if(request.getObjectOfMessage().equals("character")){
-            CharacterDataMessage characterRequest = gson.fromJson(json, CharacterDataMessage.class);
-            controller.getCharactersManager().useCard(characterRequest);
-        }else{
-            System.out.println("ACTION_3: \nexpected message with object [action_3] or [character]" +
-                                         "\nreceived message with object["+ request.getObjectOfMessage() + "]");
-        }
-    }
-
-    private void executeAction_3(Controller controller, String json){
-        Match match = controller.getMatch();
-
         ChosenCloudMessage request = gson.fromJson(json, ChosenCloudMessage.class);
         CloudTile cloud = match.getRealmOfTheMatch().getCloudRegion().get(request.getCloud_ID());
 
         if(cloud.getStudents().size() == 0){
-            NackMessage nack = new NackMessage();
-            nack.setSubObject("invalid_cloud");
+            NackMessage nack = new NackMessage("invalid_cloud");
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
         }else{
             assert cloud.getStudents().size() == cloud.getCapacity();
@@ -101,5 +117,4 @@ public class Action_3 implements ControllerState{
             controller.nextState();
         }
     }
-
 }

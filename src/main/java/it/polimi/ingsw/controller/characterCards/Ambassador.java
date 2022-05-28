@@ -7,8 +7,12 @@ import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
  */
 public class Ambassador extends Character {
 
-    public boolean effect(CharacterDataMessage request) {
-return true;
+    @Override
+    public boolean checkCharacterAvailability() {
+        return false;
+    }
+
+    public void effect(CharacterDataMessage request) {
     }
 
 

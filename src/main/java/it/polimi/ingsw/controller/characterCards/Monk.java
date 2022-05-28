@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
-import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 
@@ -33,56 +32,49 @@ public class Monk  extends Character {
     }
 
     /**
+     * This method controls if there are students left on the character card
+     * @return true if the character can be used and false otherwise
+     */
+    @Override
+    public boolean checkCharacterAvailability() {
+        return students.size() > 0;
+    }
+
+    /**
      * This method takes one of the students on the monk-card and puts it on an island chosen by the player;
      * finally it creates the AckCharacter message to send back to all the players
      * @param request message containing island_ID and student_ID chosen by the player
-     * @return true if the effect was activated, false otherwise
      */
     @Override
-    public boolean effect(CharacterDataMessage request) {
+    public void effect(CharacterDataMessage request) {
         // increase price by one if this is the first time that the card is used
         increasePrice();
 
-        // this variable tells if the effect of the character was activated or not
-        boolean effectActivated;
+        int student_ID = request.getStudent_ID();
+        int island_ID = request.getIsland_ID();
 
-        if(students.size() == 0){
-            effectActivated = false;
+        // the island must not be null
+        assert controller.getMatch().getRealmOfTheMatch().getArchipelagos().get(island_ID) != null : "The island chosen by the player turned out to be NULL !!";
 
-            NackMessage nack = new NackMessage();
-            nack.setSubObject("monk");
+        // take the students from the card
+        Creature chosenStudent = students.get(student_ID);
+        students.set(student_ID, null);
 
-            controller.sendMessageToPlayer(request.getSender_ID(), nack);
-        }else{
-            effectActivated = true;
+        // put the student on the island
+        this.controller.getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, island_ID);
 
-            int student_ID = request.getStudent_ID();
-            int island_ID = request.getIsland_ID();
+        // draw new student from the bag and put it on the card
+        Creature caughtStudentFromBag = bag.drawOneStudent();
+        addStudent(caughtStudentFromBag);
 
-            // the island must not be null
-            assert controller.getMatch().getRealmOfTheMatch().getArchipelagos().get(island_ID) != null : "The island chosen by the player turned out to be NULL !!";
+        // create and send the response
+        int coinsInReserve = controller.getMatch().getCoinReserve();
+        AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "monk", coinsInReserve);
+        ack.setStudent(chosenStudent);
+        ack.setStudentsOnCard(this.students);
 
-            // take the students from the card
-            Creature chosenStudent = students.get(student_ID);
-            students.set(student_ID, null);
+        controller.sendMessageAsBroadcast(ack);
 
-            // put the student on the island
-            this.controller.getMatch().getRealmOfTheMatch().addStudentToIsland(chosenStudent, island_ID);
-
-            // draw new student from the bag and put it on the card
-            Creature caughtStudentFromBag = bag.drawOneStudent();
-            addStudent(caughtStudentFromBag);
-
-            // create and send the response
-            int coinsInReserve = controller.getMatch().getCoinReserve();
-            AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "monk", coinsInReserve);
-            ack.setStudent(chosenStudent);
-            ack.setStudentsOnCard(this.students);
-
-            controller.sendMessageAsBroadcast(ack);
-        }
-
-        return effectActivated;
     }
 
     /**
@@ -90,10 +82,10 @@ public class Monk  extends Character {
      * (we know that there is only one position of the array containing a null pointer)
      * @param student the type of student to add to the array
      */
-    private void addStudent(Creature student){
+    private void addStudent(Creature student) {
 
-        for(int i = 0; i < 4; i++){
-            if(students.get(i) == null){
+        for (int i = 0; i < 4; i++) {
+            if (students.get(i) == null) {
                 students.set(i, student);
             }
         }

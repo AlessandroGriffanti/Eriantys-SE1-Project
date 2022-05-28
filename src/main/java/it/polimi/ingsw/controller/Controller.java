@@ -195,7 +195,9 @@ public class Controller {
      */
     public void manageMsg(String msg){
         msg_in = msg;
-        state.stateExecution(this);
+
+        // the state will control the type of message and will execute the actions required
+        state.controlMessageAndExecute(this);
     }
 
     /**

@@ -40,6 +40,7 @@ public abstract class Character{
         }
     }
 
-    public abstract boolean effect(CharacterDataMessage request);
+    public abstract boolean checkCharacterAvailability();
 
+    public abstract void effect(CharacterDataMessage request);
 }

@@ -3,6 +3,8 @@ package it.polimi.ingsw.controller.characterCards;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
+import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
@@ -120,9 +122,24 @@ public class CharactersManager {
      */
     public void useCard(CharacterDataMessage request){
 
+        String cardChosen = request.getCharacter();
+        Player player = controller.getMatch().getPlayerByID(request.getSender_ID());
+        int price = cards.get(cardChosen).getPrice();
+
+        // withdraw coins from player
+        player.spendCoins(price);
+
+        // put the same amount of coins in the public reserve
+        controller.getMatch().depositInCoinReserve(price);
+
+        // call the effect of the card
+        cards.get(cardChosen).effect(request);
+    }
+
+    public void checkCard(CharacterRequestMessage request){
         int player_ID = request.getSender_ID();
         Player player = controller.getMatch().getPlayerByID(player_ID);
-        String cardChosen = request.getCardName();
+        String cardChosen = request.getCharacter();
 
         // get the current price of the card
         int price = cards.get(cardChosen).getPrice();
@@ -133,18 +150,21 @@ public class CharactersManager {
         // control if the number of coins is sufficient, if so collect them
         int playerCoins = player.getCoinsOwned();
         if(price > playerCoins){
-            NackMessage nack = new NackMessage();
-            nack.setSubObject("character_price");
+            NackMessage nack = new NackMessage("character_price");
+
+            controller.sendMessageToPlayer(request.getSender_ID(), nack);
         }
 
-        // call the effect of the card
-        boolean effectAvtivated = cards.get(cardChosen).effect(request);
-        if(effectAvtivated){
-            // withdraw coins from player
-            player.spendCoins(price);
+        // control if the card can be used
+        if(cards.get(cardChosen).checkCharacterAvailability()){
+            AckMessage ack = new AckMessage();
+            ack.setSubObject(cardChosen);
 
-            // put the same amount of coins in the public reserve
-            controller.getMatch().depositInCoinReserve(price);
+            controller.sendMessageToPlayer(request.getSender_ID(), ack);
+        }else{
+            NackMessage nack = new NackMessage(cardChosen);
+
+            controller.sendMessageToPlayer(request.getSender_ID(), nack);
         }
     }
 

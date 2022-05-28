@@ -16,13 +16,22 @@ public class Centaur extends Character {
         this.controller = controller;
     }
 
+    /**
+     * This method controls if the character can be used (in this case the card can always be used
+     * because there are no restrictions)
+     * @return always true
+     */
+    @Override
+    public boolean checkCharacterAvailability() {
+        return true;
+    }
+
     /** This method sets the attribute centaurUsed to true; this means that the towers on the islands
      * won't be taken into account during the influence computation
      * @param request the message containing the request of the client to use the character
-     * @return true if the effect was activated, false otherwise
      */
     @Override
-    public boolean effect(CharacterDataMessage request) {
+    public void effect(CharacterDataMessage request) {
         increasePrice();
 
         controller.getCharactersManager().setCentaurUsed(true);
@@ -31,7 +40,6 @@ public class Centaur extends Character {
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "centaur", coinsInReserve);
 
         controller.sendMessageAsBroadcast(ack);
-
-        return true;
     }
+
 }

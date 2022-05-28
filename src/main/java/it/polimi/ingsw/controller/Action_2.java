@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
@@ -27,21 +28,46 @@ public class Action_2 implements ControllerState{
         }
     }
 
+    /**
+     * This method controls if the message must be handed over to the character manager or
+     * to the stateExecution method
+     * @param controller reference to the controller of the match
+     */
     @Override
-    public void stateExecution(Controller controller){
-
+    public void controlMessageAndExecute(Controller controller) {
         String json = controller.getMsg();
 
-        Message request = gson.fromJson(json, Message.class);
-        if(request.getObjectOfMessage().equals("action_2")){
-            executeAction_2_movement(controller, json);
-        }else if(request.getObjectOfMessage().equals("character")){
-            CharacterDataMessage characterRequest = gson.fromJson(json, CharacterDataMessage.class);
-            controller.getCharactersManager().useCard(characterRequest);
-        }else{
-            System.out.println("ACTION_2: \nexpected message with object [action_2] or [character]" +
-                                         "\nreceived message with object["+ request.getObjectOfMessage() + "]");
+        Message message = gson.fromJson(json, Message.class);
+        String object = message.getObjectOfMessage();
+
+        switch (object){
+            case "character_request":
+                CharacterRequestMessage request = gson.fromJson(json, CharacterRequestMessage.class);
+                controller.getCharactersManager().checkCard(request);
+                break;
+            case "character_data":
+                CharacterDataMessage dataMessage = gson.fromJson(json, CharacterDataMessage.class);
+                controller.getCharactersManager().useCard(dataMessage);
+                break;
+            case "action_2":
+                executeAction_2_movement(controller, json);
+                break;
+            default:
+                System.out.println("ACTION_2: \nexpected message with object [action_2] or [character]" +
+                    "\nreceived message with object["+ message.getObjectOfMessage() + "]");
+                break;
         }
+    }
+
+    /**
+     * This method calls the execution of the first part of action_2, that is the movement of mother nature
+     * @param controller reference to the controller of the match
+     */
+    @Override
+    public void stateExecution(Controller controller){
+        String json = controller.getMsg();
+
+        executeAction_2_movement(controller, json);
     }
 
 
@@ -65,8 +91,7 @@ public class Action_2 implements ControllerState{
 
         // control if the movement is legit
         if (!isMovementValid(controller, destinationIsland, request.getSender_ID())) {
-            NackMessage nack = new NackMessage();
-            nack.setSubObject("invalid_mother_nature_movement");
+            NackMessage nack = new NackMessage("invalid_mother_nature_movement");
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
 
             System.out.println("Nack sent for invalid mother nature movement");

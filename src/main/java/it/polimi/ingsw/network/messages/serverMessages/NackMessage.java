@@ -17,14 +17,24 @@ public class NackMessage extends Message {
      */
     private String explanationMessage;
 
-    public NackMessage(){
-        this.object = "nack";
-    }
+    public NackMessage(){this.object = "nack";}
 
-    public void setSubObject(String subObject) {
+    /**
+     *  This constructor initializes the subObject attribute of the message,
+     *  useful to create the message inside the controller
+     * @param subObject the subObject of the message created
+     */
+    public NackMessage(String subObject){
+        this.object = "nack";
         this.subObject = subObject;
 
         switch (subObject){
+            case "tower_color":
+                this.explanationMessage = "The color you chose is not available, please choose another color!";
+                break;
+            case "deck":
+                this.explanationMessage = "The deck you chose is not available, please choose another deck!";
+                break;
             case "assistant":
                 this.explanationMessage = "Another player already chose this assistant, please choose another assistant!";
                 break;
@@ -39,12 +49,16 @@ public class NackMessage extends Message {
                 break;
             case "herbalist":
                 this.explanationMessage = "There is a limited number of no-entry-tiles (just four) in the realm and all of them are being " +
-                                          "used somewhere else right now.\nErgo you can't use a no-entry-tile!";
+                        "used somewhere else right now.\nErgo you can't use a no-entry-tile!";
                 break;
             case "monk":
                 this.explanationMessage = "The monk has no more students, so he can't give you one student anymore." +
-                                          "Sorry for the inconvenience.";
+                        "Sorry for the inconvenience.";
         }
+    }
+
+    public void setSubObject(String subObject) {
+        this.subObject = subObject;
     }
 
     public String getSubObject() {
@@ -57,22 +71,29 @@ public class NackMessage extends Message {
 }
 
 /*POSSIBLE VALUES OF "subObject":
-*   1. assistant:
+
+    1. tower_color:
+       it means that the tower chosen by the player is no more available
+
+    2. deck:
+       it means that the deck chosen by the player is no more available
+
+*   3. assistant:
 *      it means that the assistant card chosen is not legit because another player has already chosen it and the current
 *      player has other cards that can choose
 *
-*   2. invalid_mother_nature_movement:
+*   4. invalid_mother_nature_movement:
 *      it means that the movement of mother nature is not legit because it does not respect the maximum distance
 *      feasible for mother nature which is written on the last used assistant card
 *
-*   3. invalid_cloud:
+*   5. invalid_cloud:
 *      it means that the cloud chosen had been already chosen by another player and now is empty of students
 *
-*   4. character_price:
+*   6. character_price:
 *      it means that the player has not enough coins to use the character card
 *
-*   5. herbalist:
+*   7. herbalist:
 *      it means that there wasn't any no-entry-tile on the character, all the cards were already in use
 *
-*   6. monk:
+*   8. monk:
 *      it means that the character card monk has no more students on it*/

@@ -8,7 +8,13 @@ public class MushroomMerchant extends Character {
     public MushroomMerchant(){
         this.price = 3;
     }
-    public boolean effect(CharacterDataMessage request){return true;};
+
+    @Override
+    public boolean checkCharacterAvailability() {
+        return false;
+    }
+
+    public void effect(CharacterDataMessage request){};
 
 
     /** same idea as the one presented in the centaur character card but concerning the students. The idea is that we set

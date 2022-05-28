@@ -8,7 +8,7 @@ public class CharacterDataMessage extends Message {
     /**
      * This attribute is the name of the character card chosen by the player
      */
-    private String cardName = "";
+    private String character = "";
     /**
      * This attribute is the ID of the student chosen by the player (used for various cards)
      */
@@ -24,12 +24,12 @@ public class CharacterDataMessage extends Message {
     }
 
     // SETTER AND GETTER FOR cardName
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
+    public void setCharacter(String character) {
+        this.character = character;
     }
 
-    public String getCardName() {
-        return cardName;
+    public String getCharacter() {
+        return character;
     }
 
     // SETTER AND GETTER FOR student_ID
