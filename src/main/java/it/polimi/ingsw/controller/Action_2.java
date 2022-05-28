@@ -53,7 +53,7 @@ public class Action_2 implements ControllerState{
                 executeAction_2_movement(controller, json);
                 break;
             default:
-                System.out.println("ACTION_2: \nexpected message with object [action_2] or [character]" +
+                System.out.println("ACTION_2: \nexpected message with object [action_2] or [character_request] or [character_data]" +
                     "\nreceived message with object["+ message.getObjectOfMessage() + "]");
                 break;
         }

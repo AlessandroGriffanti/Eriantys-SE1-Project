@@ -88,7 +88,7 @@ public class Action_1 implements ControllerState{
                 int previousNumberOfStudents = match.getPlayerByID(previousOwnerOfProfessor).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
                 int currentPlayerStudents = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
 
-                if(controller.getCharactersManager().isCookUsed()){
+                if(controller.getCharactersManager().isCookActive()){
 
                         /*the current player takes control over the professor even if he has the same number of students
                           as the previousOwnerOfProfessor*/
@@ -101,7 +101,7 @@ public class Action_1 implements ControllerState{
                     }
 
                     // reset the value of cookUsed (it lasts only for the current players' round)
-                    controller.getCharactersManager().setCookUsed(false);
+                    controller.getCharactersManager().setCookActive(false);
                 }else{
 
                     //the current player takes control over the professor only if it has more students than the old player

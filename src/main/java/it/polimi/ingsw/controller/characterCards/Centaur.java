@@ -34,7 +34,7 @@ public class Centaur extends Character {
     public void effect(CharacterDataMessage request) {
         increasePrice();
 
-        controller.getCharactersManager().setCentaurUsed(true);
+        controller.getCharactersManager().setCentaurActive(true);
 
         int coinsInReserve = controller.getMatch().getCoinReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "centaur", coinsInReserve);

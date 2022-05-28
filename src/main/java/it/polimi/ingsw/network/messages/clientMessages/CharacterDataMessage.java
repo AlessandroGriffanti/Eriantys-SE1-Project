@@ -53,7 +53,8 @@ public class CharacterDataMessage extends Message {
 }
 
 /*POSSIBLE VALUES OF cardName:
-        For every message there is the sender_ID attribute set
+        For every message must be set:
+        - sender_ID
 
 *       1. "monk":
 *           - student_ID: ID of the student on the card
@@ -68,4 +69,7 @@ public class CharacterDataMessage extends Message {
             - island_ID: the ID of the island where to put the noEntryTile
 
         6. "centaur":
-            - no further attributes*/
+            - no further attributes
+
+        8. "knight":
+            - no more attributes*/

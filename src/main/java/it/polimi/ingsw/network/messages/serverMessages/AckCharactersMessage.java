@@ -15,7 +15,7 @@ public class AckCharactersMessage extends Message {
     /**
      * This attribute is the name of the character card used
      */
-    private String card = "";
+    private String character = "";
     /**
      * This attribute is the amount of coins currently kept in the general reserve (at the center of the table)
      */
@@ -43,7 +43,7 @@ public class AckCharactersMessage extends Message {
     public AckCharactersMessage(int recipient_ID, String card, int coinReserve){
         this.object = "character_ack";
         this.recipient = recipient_ID;
-        this.card = card;
+        this.character = card;
         this.coinReserve = coinReserve;
     }
 
@@ -53,8 +53,8 @@ public class AckCharactersMessage extends Message {
     }
 
     // GETTER FOR card
-    public String getCard() {
-        return card;
+    public String getCharacter() {
+        return character;
     }
 
     // GETTER FOR coinReserve
@@ -101,21 +101,24 @@ public class AckCharactersMessage extends Message {
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
-        N.B. In all messages:
-            - the current amount of money in the reserve is specified
-            - the recipient , that is the player who used the character, is specified
+        For every message must be set:
+        - coinReserve: the current amount of money in the reserve
+        - recipient: the player who used the character
 
         1. monk:
            - student: the type of student taken from the card and put on the island
            - studentsOnCard
 
-        2. cook:
-           it means that the recipient (attribute) used the cook character
+        2. cook: the card will be taken into account during action_1, movement to dining room
+           - no more attributes set
 
         4. messenger:
-           - no further attributes, it just means that during the movement of mother nature
+           - no more attributes set, it just means that during the movement of mother nature
            (only of the player who used the card)it will be taken into account the messenger card effect
 
         5. herbalist:
            - island_ID: ID of the island where the no-entry-tile was put
-           - getNumberOfElementsOnTheCard: number of no-entry-tiles remained on the character card*/
+           - getNumberOfElementsOnTheCard: number of no-entry-tiles remained on the character card
+
+        6. centaur: the card will be taken into account during influence computation
+           - no more attributes set*/

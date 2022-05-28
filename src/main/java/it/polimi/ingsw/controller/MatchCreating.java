@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
 
@@ -12,6 +13,21 @@ public class MatchCreating implements ControllerState{
     @Override
     public void nextState(Controller controller) {
         controller.setState(new ChooseTowerColor());
+    }
+
+    @Override
+    public void controlMessageAndExecute(Controller controller) {
+        String json = controller.getMsg();
+
+        Message message = gson.fromJson(json, Message.class);
+        String object = message.getObjectOfMessage();
+
+        if(object.equals("creation")){
+            stateExecution(controller);
+        }else{
+            System.out.println("MATCH_CREATING: \nexpected message with object [creation]" +
+                               "\nreceived message with object["+ message.getObjectOfMessage() + "]");
+        }
     }
 
     /**

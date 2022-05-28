@@ -27,7 +27,7 @@ public class CharactersManager {
      * This attribute is true if the cook characterCard has been used
      * false otherwise
      */
-    private boolean cookUsed = false;
+    private boolean cookActive = false;
     /**
      * This attribute is true if the messenger character card has been used by a player
      * and false otherwise
@@ -38,11 +38,15 @@ public class CharactersManager {
      * in this case the computation of the influence won't take into account the towers
      * on the island
      */
-    boolean centaurUsed = false;
+    boolean centaurActive = false;
     /**
      * This attribute is true if the ambassador character has been used false otherwise
      */
     boolean ambassadorActive = false;
+    /**
+     * This attribute is ID of the player that chose to use the knight character card
+     */
+    private int knightUser = -1;
 
 
     public CharactersManager(Controller controller) {
@@ -93,7 +97,7 @@ public class CharactersManager {
                         cards.put("jester", new Jester());
                         break;
                     case 8:
-                        cards.put("knight", new Knight());
+                        cards.put("knight", new Knight(controller));
                         break;
                     case 9:
                         cards.put("mushroomMerchant", new MushroomMerchant());
@@ -177,18 +181,32 @@ public class CharactersManager {
         herbalist.addOneTile();
     }
 
+    /**
+     * This method resets the attributes used for character usage to their default values
+     * (so that the characters won't be used by mistake the next round)
+     */
+    public void resetCharacterAttributes(){
+        cookActive = false;
+        messengerActive = false;
+        centaurActive = false;
+        ambassadorActive = false;
+        knightUser = -1;
+
+        // todo: complete with the other attributes
+    }
+
 
     public HashMap<String, Character> getCards() {
         return cards;
     }
 
-    // SETTER AND GETTER FOR cookUsed
-    public void setCookUsed(boolean cookUsed) {
-        this.cookUsed = cookUsed;
+    // SETTER AND GETTER FOR cookActive
+    public void setCookActive(boolean cookActive) {
+        this.cookActive = cookActive;
     }
 
-    public boolean isCookUsed() {
-        return cookUsed;
+    public boolean isCookActive() {
+        return cookActive;
     }
 
     // SETTER AND GETTER FOR messengerActive
@@ -200,13 +218,13 @@ public class CharactersManager {
         return messengerActive;
     }
 
-    // SETTER AND GETTER FOR centaurUsed
-    public void setCentaurUsed(boolean centaurUsed) {
-        this.centaurUsed = centaurUsed;
+    // SETTER AND GETTER FOR centaurActive
+    public void setCentaurActive(boolean centaurActive) {
+        this.centaurActive = centaurActive;
     }
 
-    public boolean isCentaurUsed() {
-        return centaurUsed;
+    public boolean isCentaurActive() {
+        return centaurActive;
     }
 
     // SETTER AND GETTER FOR ambassadorActive
@@ -218,4 +236,12 @@ public class CharactersManager {
         return ambassadorActive;
     }
 
+    // SETTER AND GETTER FOR knightActive
+    public void setKnightUser (int knightUser) {
+        this.knightUser = knightUser;
+    }
+
+    public int getKnightUser() {
+        return knightUser;
+    }
 }

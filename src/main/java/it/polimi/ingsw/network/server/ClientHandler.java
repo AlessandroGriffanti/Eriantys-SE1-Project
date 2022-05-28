@@ -293,8 +293,8 @@ public class ClientHandler extends Thread {
      * @param msgToSerialize is the message passed by the controller and sent to the client.
      */
     public void messageToSerialize(Message msgToSerialize){
-        outputHandler.println(gsonObj.toJson(msgToSerialize));
-        outputHandler.flush();
+        /*outputHandler.println(gsonObj.toJson(msgToSerialize));
+        outputHandler.flush();*/
         //System.out.println("sent ok");
     }
 

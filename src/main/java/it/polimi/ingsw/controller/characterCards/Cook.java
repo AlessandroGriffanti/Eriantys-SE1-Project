@@ -36,7 +36,7 @@ public class Cook  extends Character {
     public void effect(CharacterDataMessage request) {
         increasePrice();
 
-        controller.getCharactersManager().setCookUsed(true);
+        controller.getCharactersManager().setCookActive(true);
 
         int coinsInReserve = controller.getMatch().getCoinReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "cook", coinsInReserve);
