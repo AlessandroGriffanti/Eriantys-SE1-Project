@@ -114,6 +114,7 @@ public class Action_3 implements ControllerState{
                 SupportFunctions.endMatch(controller, "empty_bag");
             }
 
+            controller.getCharactersManager().resetCharacterAttributes();
             controller.nextState();
         }
     }

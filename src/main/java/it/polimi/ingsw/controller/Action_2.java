@@ -126,6 +126,9 @@ public class Action_2 implements ControllerState{
                     if(request.getSender_ID() == lastPlayerOfAction){
                         ack.setEndOfMatch(true);
                     }else{
+                        // reset characters' attributes in CharacterManager
+                        controller.getCharactersManager().resetCharacterAttributes();
+
                         // set the next player
                         int nextPlayer = controller.nextPlayer(request.getSender_ID());
                         ack.setNextPlayer(nextPlayer);
@@ -140,6 +143,7 @@ public class Action_2 implements ControllerState{
             }
 
             // send the ack message for the movement
+            ack.setNextPlayer(request.getSender_ID());
             controller.sendMessageAsBroadcast(ack);
 
             // send the endOfMatch message if needed
@@ -205,13 +209,13 @@ public class Action_2 implements ControllerState{
             }
         }
 
-        // send the ack message
-        controller.sendMessageAsBroadcast(ack);
-
         // send end-of-match message if needed
         if(ack.isEndOfMatch()){
             SupportFunctions.endMatch(controller, "towers_finished", request.getSender_ID());
         }else{
+            // send the ack message
+            controller.sendMessageAsBroadcast(ack);
+
             executeAction_2_union(controller, request);
         }
     }
@@ -314,6 +318,9 @@ public class Action_2 implements ControllerState{
                     controller.sendMessageAsBroadcast(ack);
                     SupportFunctions.endMatch(controller, "empty_bag");
                 }else{
+                    // reset the characters' attributes in CharacterManager
+                    controller.getCharactersManager().resetCharacterAttributes();
+
                     // find the first player of a new round
                     int nextPlayer = controller.nextPlayer(request.getSender_ID());
                     ack.setNextPlayer(nextPlayer);
@@ -325,6 +332,7 @@ public class Action_2 implements ControllerState{
                 }
             }else{
                 // send message and change state (action_3)
+                ack.setNextPlayer(request.getSender_ID());
                 controller.sendMessageAsBroadcast(ack);
                 controller.nextState();
             }

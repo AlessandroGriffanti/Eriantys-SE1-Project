@@ -349,7 +349,7 @@ public class AckMessage extends Message {
 
    5. action_1_dining_room:
       it means that the student has been moved into the dining room and
-        - 'nextPlayer' = -1
+        - 'nextPlayer': it doesn't change
         - 'studentMoved_ID' contains the ID of the student in the entrance of the recipient of this message
         - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
         - 'professorTaken' tell us if the player has now control over the professor
@@ -357,13 +357,14 @@ public class AckMessage extends Message {
 
    6. action_1_island:
       it means that the student has been moved to the island and
-        - 'nextPlayer' = -1
+        - 'nextPlayer': it doesn't change
         - 'studentMoved_ID' contains the ID of the student in the entrance of the recipient of this message
         - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
         - 'destinationIsland_ID' contains the ID of the island where the student has been moved
 
    7.1. action_2_movement:
         it means that mother nature has been moved successfully and
+        - 'nextPlayer': it doesn't change
         - 'destinationIsland_ID' the island reached by mother nature
         - 'removedNoEntryTile' tells if a no entry tile has been removed
                                if TRUE then the client can send the message for action_3
@@ -377,6 +378,7 @@ public class AckMessage extends Message {
 
    7.2. action_2_influence:
         it means that the influence has been computed and all changes needed were made
+        - 'nextPlayer': it doesn't change
         - 'masterChanged' true if the master has changed, false otherwise
         - 'previousMaster_ID' the ID of the previous player master of the island or
                               -1 if the master did not change
@@ -386,9 +388,9 @@ public class AckMessage extends Message {
 
    7.3 action_2_union:
        it means that the control on the union of the islands was done and the changes needed were applied
-        - 'nextPlayer' contains the ID of the next player
-                       -1: if action3Valid==true || endOfMatch==true
-                       the next player of action phase
+        - 'nextPlayer' + the player does not change (-> action_3)
+                       + -1: if endOfMatch==true
+                       + the next player of action phase (not action_3)
         - 'islandsUnified' contains a String that says if two or more islands have been unified
                           - none -> no unification
                           - previous

@@ -67,15 +67,14 @@ public class Action_1 implements ControllerState{
         int location = request.getLocation();
         Creature creature = match.getStudentInEntranceOfPlayerByID(request.getSender_ID(), request.getStudent_ID());
 
-
-        AckMessage response = new AckMessage();
-        response.setRecipient(request.getSender_ID());
-        response.setTypeOfStudentMoved(creature);
-        response.setStudentMoved_ID(request.getStudent_ID());
+        AckMessage ack = new AckMessage();
+        ack.setRecipient(request.getSender_ID());
+        ack.setTypeOfStudentMoved(creature);
+        ack.setStudentMoved_ID(request.getStudent_ID());
 
         // student moved in the dining room
         if(location == -1){
-            response.setSubObject("action_1_dining_room");
+            ack.setSubObject("action_1_dining_room");
 
             // find who is controlling the professor of the same type chosen by the player
             int previousOwnerOfProfessor = SupportFunctions.whoControlsTheProfessor(match, creature);
@@ -96,8 +95,8 @@ public class Action_1 implements ControllerState{
                         match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
                         match.acquireControlOnProfessor(creature);
 
-                        response.setProfessorTaken(true);
-                        response.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
+                        ack.setProfessorTaken(true);
+                        ack.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
                     }
 
                     // reset the value of cookUsed (it lasts only for the current players' round)
@@ -109,8 +108,8 @@ public class Action_1 implements ControllerState{
                         match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
                         match.acquireControlOnProfessor(creature);
 
-                        response.setProfessorTaken(true);
-                        response.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
+                        ack.setProfessorTaken(true);
+                        ack.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
                     }
                 }
             }else if(previousOwnerOfProfessor == -1){
@@ -119,13 +118,15 @@ public class Action_1 implements ControllerState{
         }
         // student moved on an island
         else{
-            response.setSubObject("action_1_island");
-            response.setDestinationIsland_ID(request.getLocation());
+            ack.setSubObject("action_1_island");
+            ack.setDestinationIsland_ID(request.getLocation());
 
             match.moveStudentFromEntranceToIsland(request.getStudent_ID(), request.getLocation());
         }
+
         // send the ack message in broadcast
-        controller.sendMessageAsBroadcast(response);
+        ack.setNextPlayer(request.getSender_ID());
+        controller.sendMessageAsBroadcast(ack);
         studentsMoved++;
 
         if(controller.getNumberOfPlayers() == 2){
