@@ -2,6 +2,8 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
+import java.util.ArrayList;
+
 public class CharacterDataMessage extends Message {
 
 
@@ -17,9 +19,23 @@ public class CharacterDataMessage extends Message {
      * This attribute is the ID of the island chosen by the player (used for various cards)
      */
     private int island_ID;
+    /**
+     * This attribute is the list of IDs of the elements (students) on the character card
+     */
+    private ArrayList<Integer> elementsFromCard;
+    /**
+     * This attribute is the list of IDs of the elements belonging to the player
+     */
+    private ArrayList<Integer> elementsOfPlayer;
 
 
     public CharacterDataMessage(){
+        this.object = "character_data";
+    }
+
+    public CharacterDataMessage(int sender_ID, String character){
+        this.sender_ID = sender_ID;
+        this.character = character;
         this.object = "character_data";
     }
 
@@ -50,6 +66,23 @@ public class CharacterDataMessage extends Message {
         return island_ID;
     }
 
+    // SETTER AND GETTER FOR elementsFromCard
+    public void setElementsFromCard(ArrayList<Integer> elementsFromCard) {
+        this.elementsFromCard = elementsFromCard;
+    }
+
+    public ArrayList<Integer> getElementsFromCard() {
+        return elementsFromCard;
+    }
+
+    // SETTER AND GETTER FOR elementsOfPlayer
+    public void setElementsOfPlayer(ArrayList<Integer> elementsOfPlayer) {
+        this.elementsOfPlayer = elementsOfPlayer;
+    }
+
+    public ArrayList<Integer> getElementsOfPlayer() {
+        return elementsOfPlayer;
+    }
 }
 
 /*POSSIBLE VALUES OF cardName:
@@ -70,6 +103,10 @@ public class CharacterDataMessage extends Message {
 
         6. "centaur":
             - no further attributes
+
+        7. "jester":
+            - elementsOfPlayer: the list of IDs of the students in the entrance of the player
+            - elementsFromCard: the list of IDs of the students on the character card
 
         8. "knight":
             - no more attributes*/

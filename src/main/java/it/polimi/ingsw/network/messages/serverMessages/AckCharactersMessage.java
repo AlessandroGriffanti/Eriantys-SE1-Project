@@ -17,7 +17,8 @@ public class AckCharactersMessage extends Message {
      */
     private String character = "";
     /**
-     * This attribute is the amount of coins currently kept in the general reserve (at the center of the table)
+     * This attribute is the amount of coins currently kept in the general reserve
+     * (at the center of the table)
      */
     private int coinReserve;
     /**
@@ -36,6 +37,11 @@ public class AckCharactersMessage extends Message {
      * This attribute is the number of elements (e.g. students / no-entry-tiles) on a character
      */
     private int numberOfElementsOnTheCard;
+    /**
+     * This attribute is the list of students belonging to the player
+     * (for example in the entrance of his school-board)
+     */
+    private ArrayList<Creature> studentsOfPlayer;
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -71,13 +77,22 @@ public class AckCharactersMessage extends Message {
         return student;
     }
 
-    // SETTER AND GETTER FOR students [array]
+    // SETTER AND GETTER FOR studentsOnCard [array]
     public void setStudentsOnCard(ArrayList<Creature> studentsOnCard) {
         this.studentsOnCard = studentsOnCard;
     }
 
     public ArrayList<Creature> getStudentsOnCard() {
         return studentsOnCard;
+    }
+
+    // SETTER AND GETTER FOR studentsOfPlayer
+    public void setStudentsOfPlayer(ArrayList<Creature> studentsOfPlayer) {
+        this.studentsOfPlayer = studentsOfPlayer;
+    }
+
+    public ArrayList<Creature> getStudentsOfPlayer() {
+        return studentsOfPlayer;
     }
 
     // SETTER AND GETTER FOR island_ID
@@ -98,6 +113,7 @@ public class AckCharactersMessage extends Message {
     public int getNumberOfElementsOnTheCard() {
         return numberOfElementsOnTheCard;
     }
+
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
@@ -121,4 +137,7 @@ public class AckCharactersMessage extends Message {
            - getNumberOfElementsOnTheCard: number of no-entry-tiles remained on the character card
 
         6. centaur: the card will be taken into account during influence computation
-           - no more attributes set*/
+           - no more attributes set
+
+        7. jester:
+           - studentsOnCard: all the students on the character card*/

@@ -28,7 +28,7 @@ public class Monk  extends Character {
         this.price = 1;
         this.bag = controller.getMatch().getBagOfTheMatch();
 
-        this.students = controller.getMatch().getBagOfTheMatch().drawStudents(4);
+        this.students = bag.drawStudents(4);
     }
 
     /**

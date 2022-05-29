@@ -57,7 +57,7 @@ public class Entrance {
         for(int j = 0; j < studentsInTheEntrance.size(); j++){
             if(studentsInTheEntrance.get(j) == null){
                 studentsInTheEntrance.set(j, s);
-
+                break;
             }
         }
     }

@@ -94,7 +94,7 @@ public class CharactersManager {
                         cards.put("centaur", new Centaur(controller));
                         break;
                     case 7:
-                        cards.put("jester", new Jester());
+                        cards.put("jester", new Jester(controller));
                         break;
                     case 8:
                         cards.put("knight", new Knight(controller));

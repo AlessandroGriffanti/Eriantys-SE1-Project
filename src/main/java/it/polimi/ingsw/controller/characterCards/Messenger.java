@@ -13,6 +13,7 @@ public class Messenger extends Character {
 
     public Messenger(Controller controller){
         this.controller = controller;
+        this.price = 1;
     }
 
     /**
