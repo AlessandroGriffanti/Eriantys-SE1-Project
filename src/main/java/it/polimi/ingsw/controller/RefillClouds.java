@@ -49,7 +49,7 @@ public class RefillClouds implements ControllerState{
         response.setSubObject("refillClouds");
         response.setStudents(studentsPutOnEachCloud);
 
-
+        response.setNextPlayer(request.getSender_ID());
         controller.sendMessageAsBroadcast(response);
 
         //takes the controller to the next state
