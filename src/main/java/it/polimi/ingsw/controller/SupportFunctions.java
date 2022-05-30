@@ -3,8 +3,8 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.server.ClientHandler;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SupportFunctions {
 
@@ -32,7 +32,7 @@ public class SupportFunctions {
      * @return true if there are 3 islands left
      *         false if there are more than three islands
      */
-    static boolean onlyThreeIslandsLeft(Match match){
+    static public boolean onlyThreeIslandsLeft(Match match){
         int islandsLeftCounter = 0;
 
         ArrayList<Archipelago> islands = match.getRealmOfTheMatch().getArchipelagos();
@@ -107,7 +107,7 @@ public class SupportFunctions {
      * @param reason reason why the match ended, put in the message
      * @param winner ID of the player who's the winner of this match
      */
-    static void endMatch(Controller controller, String reason, int winner){
+    static public void endMatch(Controller controller, String reason, int winner){
         String winnerNickname = controller.getPlayersNickname().get(winner);
 
         EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
@@ -128,7 +128,7 @@ public class SupportFunctions {
      * @param controller reference to the controller of the match that must end
      * @param reason reason why the match ended
      */
-    static void endMatch(Controller controller, String reason){
+    static public void endMatch(Controller controller, String reason){
         int winner = computeWinner(controller.getMatch());
         String winnerNickname = controller.getPlayersNickname().get(winner);
 
@@ -171,7 +171,8 @@ public class SupportFunctions {
                 tempPlayerProfessors = p.getMyProfessors().size();
 
                 if(tempPlayerProfessors > winnerProfessors){
-                    winnerTowers = tempTowersOfPlayer;
+                    /* N.B. We don't need to assign tempTowersOfPlayer to winnerTowers
+                    * because they are already the same value (in fact we are inside the else if(...)) */
                     tempWinner = p;
                     tie = false;
                 }else if(tempPlayerProfessors == winnerProfessors){
@@ -212,4 +213,71 @@ public class SupportFunctions {
         return player_ID;
     }
 
+    /**
+     * This method computes the influence of all players on the island and returns the player who is the
+     * master of the island
+     * @param controller reference to the controller of the match
+     * @param island_ID the ID of the island whose influence we are interested in
+     * @return ID of the player or if the there are two players with the same influence value, which is the maximum
+     *         value, then -1 is returned
+     */
+    static public int influenceComputation(Controller controller, int island_ID){
+        Match match = controller.getMatch();
+
+        // in this variable we store for each player the influence on the island : HashMap<player_ID, influence>
+        HashMap<Integer, Integer> allPlayersInfluence = new HashMap<Integer, Integer>();
+
+        Archipelago island = match.getRealmOfTheMatch().getArchipelagos().get(island_ID);
+        ArrayList<Creature> playerProfessors;
+
+        for(int player_ID = 0; player_ID < match.getPlayers().size(); player_ID++){
+            Player player = match.getPlayers().get(player_ID);
+            playerProfessors = player.getMyProfessors();
+
+            // count the number of students of each type on the island
+            int playerInfluence = 0;
+            for(Creature creature: playerProfessors){
+                playerInfluence += island.getStudentsOfType(creature);
+            }
+
+            if(!(controller.getCharactersManager().isCentaurActive())){
+                // if the players owns the tower(s) then we also count them in the influence
+                playerInfluence += match.numberOfTowersOnTheIsland(player_ID, island_ID);
+            }
+
+            // if the player is using the knight character two points are added to the influence
+            if(controller.getCharactersManager().getKnightUser() == player_ID){
+                allPlayersInfluence.put(player_ID, playerInfluence + 2);
+                // reset knightUser
+                controller.getCharactersManager().setKnightUser(-1);
+            }else{
+                allPlayersInfluence.put(player_ID, playerInfluence);
+            }
+        }
+        // RESET centaur character card
+        controller.getCharactersManager().setCentaurActive(false);
+
+        // control who has the higher influence
+        int maxInfluence = 0;
+        int playerWithMaxInfluence = -1;
+        int repetitions = 0;
+
+        for(int i = 0; i < match.getPlayers().size(); i++){
+            if(allPlayersInfluence.get(i) > maxInfluence){
+                repetitions = 1;
+                playerWithMaxInfluence = i;
+                maxInfluence = allPlayersInfluence.get(i);
+            }else if(allPlayersInfluence.get(i) == maxInfluence){
+                repetitions++;
+            }
+        }
+
+        /* if we found a max value more than once then the influence is not valid, meaning no one is getting the
+        control over the island */
+        if(repetitions > 1){
+            return -1;
+        }else {
+            return playerWithMaxInfluence;
+        }
+    }
 }
