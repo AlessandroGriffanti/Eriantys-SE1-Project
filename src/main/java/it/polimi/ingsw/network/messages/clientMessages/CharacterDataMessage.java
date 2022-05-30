@@ -83,6 +83,7 @@ public class CharacterDataMessage extends Message {
     public ArrayList<Integer> getElementsOfPlayer() {
         return elementsOfPlayer;
     }
+
 }
 
 /*POSSIBLE VALUES OF cardName:

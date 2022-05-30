@@ -59,23 +59,22 @@ public class Jester extends Character {
         Entrance entrance = player.getSchoolBoard().getEntrance();
 
         // type of students taken from the entrance
-        ArrayList<Creature> studentsFromEntrance = new ArrayList<Creature>();
+        Creature studentFromEntrance;
 
-        // take the students from the entrance
-        for(int i: studentsFromEntrance_ID){
-            studentsFromEntrance.add(entrance.getStudentsInTheEntrance().get(i));
-            entrance.removeStudent(i);
-        }
 
-        // move the students from the card to the entrance
+        int entranceIndex = 0;
+
         for(int j: studentsFromTheCard_ID){
+
+            // take the students from the entrance
+            studentFromEntrance =  entrance.getStudentsInTheEntrance().get(entranceIndex);
+            entrance.removeStudent(entranceIndex);
+            // move the students from the card to the entrance
             entrance.addStudent(takeStudent(j));
+            // put the students taken from the entrance on the card
+            addStudentToCard(studentFromEntrance);
         }
 
-        // add the students taken from the entrance to the card
-        for(Creature c: studentsFromEntrance){
-            addStudentToCard(c);
-        }
 
         int coinsInReserve = controller.getMatch().getCoinReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "jester", coinsInReserve);

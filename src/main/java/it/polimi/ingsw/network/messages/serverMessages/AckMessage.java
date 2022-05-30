@@ -410,4 +410,7 @@ public class AckMessage extends Message {
                             false if there are players that have not played their action phase yet
                             N.B. The planning phase starts from the 'RefillClouds' state
       - 'endOfMatch' true if there are no more students to be drawn from the bag or if a player
-                     used all of his assistant cards*/
+                     used all of his assistant cards
+
+   9. Response to the CharacterRequestMessage:
+      - subObject = <name of the character in lowercase> */

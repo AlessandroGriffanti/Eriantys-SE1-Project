@@ -30,7 +30,9 @@ public class MatchStartMessage extends Message {
      */
     private Set<String> characters;
 
-    public MatchStartMessage(){}
+    public MatchStartMessage(){
+        this.object = "start";
+    }
 
     public MatchStartMessage(int firstPlayer_ID, int motherNaturePosition){
         this.object = "start";

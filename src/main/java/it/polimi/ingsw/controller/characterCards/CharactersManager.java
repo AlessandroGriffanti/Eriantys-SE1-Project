@@ -82,7 +82,7 @@ public class CharactersManager {
                         cards.put("cook", new Cook(controller));
                         break;
                     case 3:
-                        cards.put("ambassador", new Ambassador());
+                        cards.put("ambassador", new Ambassador(controller));
                         break;
                     case 4:
                         cards.put("messenger", new Messenger(controller));
@@ -157,18 +157,18 @@ public class CharactersManager {
             NackMessage nack = new NackMessage("character_price");
 
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
-        }
-
-        // control if the card can be used
-        if(cards.get(cardChosen).checkCharacterAvailability()){
-            AckMessage ack = new AckMessage();
-            ack.setSubObject(cardChosen);
-
-            controller.sendMessageToPlayer(request.getSender_ID(), ack);
         }else{
-            NackMessage nack = new NackMessage(cardChosen);
+            // control if the card can be used
+            if(cards.get(cardChosen).checkCharacterAvailability()){
+                AckMessage ack = new AckMessage();
+                ack.setSubObject(cardChosen);
 
-            controller.sendMessageToPlayer(request.getSender_ID(), nack);
+                controller.sendMessageToPlayer(request.getSender_ID(), ack);
+            }else{
+                NackMessage nack = new NackMessage(cardChosen);
+
+                controller.sendMessageToPlayer(request.getSender_ID(), nack);
+            }
         }
     }
 

@@ -42,6 +42,33 @@ public class AckCharactersMessage extends Message {
      * (for example in the entrance of his school-board)
      */
     private ArrayList<Creature> studentsOfPlayer;
+    /**
+     * This attribute is true if the match has come to its end or false otherwise
+     */
+    private boolean endOfMatch = false;
+    /**
+     * This attribute tells if the master on the island reached by mother nature changed
+     */
+    private boolean masterChanged = false;
+    /**
+     * This attribute tells, if the master changed, who was the previous one;
+     * the current master could anyone of the players not necessarily the one who moved mother nature or
+     * could be no one if there wasn't any tower yet
+     */
+    private int previousMaster_ID = -1;
+    /**
+     * This attribute tells who the new master of the island where mother nature arrived is, only if
+     * the master changed
+     */
+    private int newMaster_ID = -1;
+    /**
+     * This attribute tells if some islands have been unified
+     * - none: current island unified with no other island
+     * - previous: current island unified woth the previous one
+     * - next: current island unified with the next one
+     * - both: current island unified with both the next and the previous
+     */
+    private String islandsUnified = "none";
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -114,6 +141,50 @@ public class AckCharactersMessage extends Message {
         return numberOfElementsOnTheCard;
     }
 
+    // SETTER AND GETTER FOR endOfMatch
+    public void setEndOfMatch(boolean endOfMatch) {
+        this.endOfMatch = endOfMatch;
+    }
+
+    public boolean isEndOfMatch() {
+        return endOfMatch;
+    }
+
+    // SETTER AND GETTER FOR masterChanged
+    public void setMasterChanged(boolean masterChanged) {
+        this.masterChanged = masterChanged;
+    }
+
+    public boolean isMasterChanged() {
+        return masterChanged;
+    }
+
+    // SETTER AND GETTER FOR previousMaster_ID
+    public void setPreviousMaster_ID(int previousMaster_ID) {
+        this.previousMaster_ID = previousMaster_ID;
+    }
+
+    public int getPreviousMaster_ID() {
+        return previousMaster_ID;
+    }
+
+    // SETTER AND GETTER FOR newMaster_ID
+    public void setNewMaster_ID(int newMaster_ID) {
+        this.newMaster_ID = newMaster_ID;
+    }
+
+    public int getNewMaster_ID() {
+        return newMaster_ID;
+    }
+
+    // SETTER AND GETTER FOR islandsUnified
+    public void setIslandsUnified(String islandsUnified) {
+        this.islandsUnified = islandsUnified;
+    }
+
+    public String getIslandsUnified() {
+        return islandsUnified;
+    }
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
@@ -127,6 +198,16 @@ public class AckCharactersMessage extends Message {
 
         2. cook: the card will be taken into account during action_1, movement to dining room
            - no more attributes set
+
+        3.1 ambassador_influence:
+           - endOfMatch
+           - masterChanged
+           - previousMaster_ID
+           - newMaster_ID
+
+        3.2 ambassador_union:
+           - islandsUnified
+           - endOfMatch
 
         4. messenger:
            - no more attributes set, it just means that during the movement of mother nature
