@@ -9,6 +9,12 @@ public class ChosenAssistantCardMessage extends Message {
         this.object = "assistant_chosen";
     }
 
+    public ChosenAssistantCardMessage(int assistantChosenReceived){
+        this.object = "assistant_chosen";
+        this.assistantChosen = assistantChosenReceived;
+    }
+
+
     public void setAssistantChosen(int assistantChosen) {
         this.assistantChosen = assistantChosen;
     }

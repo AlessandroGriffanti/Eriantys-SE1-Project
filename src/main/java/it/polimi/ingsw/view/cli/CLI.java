@@ -333,6 +333,25 @@ public class CLI {
     }
 
 
+    public void bagClick(){
+        println("You drew the students from the bag");
+    }
+
+    public int assistantChoice(ArrayList<Integer> availableAssistantCard){
+        println("Which assistant do you want to play?");
+        for(Integer i : availableAssistantCard){
+            print(i + " ");
+        }
+        int assistantChosen = scannerCLI.nextInt();
+        while(!(availableAssistantCard.contains(assistantChosen))){
+            println("You can't use this assistant, please select another one from this list: ");
+            for(Integer i : availableAssistantCard){
+                print(i + " ");
+            }
+            assistantChosen = scannerCLI.nextInt();
+        }
+        return assistantChosen;
+    }
 
     public void print(String strToPrint){
         System.out.print(strToPrint);

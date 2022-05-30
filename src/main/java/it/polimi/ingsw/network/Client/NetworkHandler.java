@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.view.cli.CLI;
+import it.polimi.ingsw.view.cli.ModelView;
 
 
 import java.io.BufferedReader;
@@ -30,8 +31,10 @@ public class NetworkHandler {
     private PrintWriter outputPrintClient = null;
     private String ip;
     private int port;
-    Tower towerColor;
-    Wizard wizard;
+    private Tower towerColor;
+    private Wizard wizard;
+    private ModelView modelView;
+    private boolean assistantChoiceFlag = false;
 
 
     /**
@@ -160,6 +163,7 @@ public class NetworkHandler {
 
             case "start":
                 cli.startAlert();
+                modelView = new ModelView(); //qui settiamo la model view con i dati iniziali dell'ack
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
                 System.out.println("player id: " + playerID);
@@ -267,6 +271,32 @@ public class NetworkHandler {
                         }else if(ackMessageMapped.getNextPlayer() != playerID && wizard != null){
                             cli.turnWaiting();
                             break;
+                        }else if((ackMessageMapped.getNextPlayer() == playerID) && (wizard != null)) {
+                            cli.bagClick();
+                            sendBagClickedByFirstClient();
+                            break;
+                        }
+                    case "fillClouds":
+                        if(ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag){
+                            int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
+                            assistantChoiceFlag = true;
+                            sendChosenAssistantCardMessage(assistantChosen);
+                            break;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag){ //se non tocca a te e non l'hai ancora scelta
+                            cli.turnWaiting();
+                            break;
+                        }
+                    case "assistant":
+                        if(ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag){
+                            int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
+                            assistantChoiceFlag = true;
+                            sendChosenAssistantCardMessage(assistantChosen);
+                            break;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag){
+                            cli.turnWaiting();
+                            break;
+                        }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
+                            assistantChoiceFlag = false;                                                 //qui cambia la flag il primo giocatore
                         }
 
 
@@ -314,7 +344,11 @@ public class NetworkHandler {
     public void sendBagClickedByFirstClient(){
         BagClickMessage bagClickMessage = new BagClickMessage();
         sendMessage(bagClickMessage);
-        System.out.println("sendBagClickedbyFirst sent");
+    }
+
+    public void sendChosenAssistantCardMessage(int assistantChosen){
+        ChosenAssistantCardMessage chosenAssistantCardMessage = new ChosenAssistantCardMessage(assistantChosen);
+        sendMessage(chosenAssistantCardMessage);
     }
 
 
