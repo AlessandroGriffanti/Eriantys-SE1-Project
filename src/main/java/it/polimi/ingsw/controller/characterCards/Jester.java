@@ -59,20 +59,21 @@ public class Jester extends Character {
         Entrance entrance = player.getSchoolBoard().getEntrance();
 
         // type of students taken from the entrance
+        int i = 0;
+        int entranceIndex;
         Creature studentFromEntrance;
 
-
-        int entranceIndex = 0;
-
         for(int j: studentsFromTheCard_ID){
-
             // take the students from the entrance
+            entranceIndex = studentsFromEntrance_ID.get(i);
             studentFromEntrance =  entrance.getStudentsInTheEntrance().get(entranceIndex);
             entrance.removeStudent(entranceIndex);
             // move the students from the card to the entrance
-            entrance.addStudent(takeStudent(j));
+            entrance.addStudent(takeStudentFromCard(j));
             // put the students taken from the entrance on the card
             addStudentToCard(studentFromEntrance);
+
+            i++;
         }
 
 
@@ -89,7 +90,7 @@ public class Jester extends Character {
      * @param student_ID ID of the student to take
      * @return type of student taken
      */
-    private Creature takeStudent(int student_ID){
+    private Creature takeStudentFromCard(int student_ID){
         // take student
         Creature student = studentsOnCard.get(student_ID);
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.messages.clientMessages;
 
+import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class CharacterDataMessage extends Message {
      * This attribute is the list of IDs of the elements belonging to the player
      */
     private ArrayList<Integer> elementsOfPlayer;
+    /**
+     * This attribute is the type of student chosen by the player (ex. character MushroomsMerchant)
+     */
+    private Creature creature = null;
 
 
     public CharacterDataMessage(){
@@ -84,6 +89,14 @@ public class CharacterDataMessage extends Message {
         return elementsOfPlayer;
     }
 
+    // SETTER AND GETTER FOR creature
+    public void setCreature(Creature creature) {
+        this.creature = creature;
+    }
+
+    public Creature getCreature() {
+        return creature;
+    }
 }
 
 /*POSSIBLE VALUES OF cardName:
@@ -110,4 +123,7 @@ public class CharacterDataMessage extends Message {
             - elementsFromCard: the list of IDs of the students on the character card
 
         8. "knight":
-            - no more attributes*/
+            - no more attributes
+
+        9. "mushroomsMerchant";
+            - creature: type of student chosen by the player*/

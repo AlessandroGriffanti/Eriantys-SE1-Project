@@ -69,6 +69,11 @@ public class AckCharactersMessage extends Message {
      * - both: current island unified with both the next and the previous
      */
     private String islandsUnified = "none";
+    /**
+     * This attribute is the kind of student chosen by the player or used during the
+     * effect of a character
+     */
+    private Creature creature;
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -185,6 +190,16 @@ public class AckCharactersMessage extends Message {
     public String getIslandsUnified() {
         return islandsUnified;
     }
+
+    // SETTER AND GETTER FOR creature
+    public void setCreature(Creature creature) {
+        this.creature = creature;
+    }
+
+    public Creature getCreature() {
+        return creature;
+    }
+
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
@@ -221,4 +236,10 @@ public class AckCharactersMessage extends Message {
            - no more attributes set
 
         7. jester:
-           - studentsOnCard: all the students on the character card*/
+           - studentsOnCard: all the students on the character card
+
+        8. knight:
+           - no more attributes set
+
+        9. mushroomsMerchant:
+           - creature: type of student that won't be counted in the influence*/

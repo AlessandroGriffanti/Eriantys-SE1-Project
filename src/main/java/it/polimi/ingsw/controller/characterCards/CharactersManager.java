@@ -40,13 +40,14 @@ public class CharactersManager {
      */
     boolean centaurActive = false;
     /**
-     * This attribute is true if the ambassador character has been used false otherwise
-     */
-    boolean ambassadorActive = false;
-    /**
      * This attribute is ID of the player that chose to use the knight character card
      */
     private int knightUser = -1;
+    /**
+     * This attribute is true if the mushrooms-merchant character has been activated
+     * by a player and false otherwise
+     */
+    private boolean mushroomsMerchantActive = false;
 
 
     public CharactersManager(Controller controller) {
@@ -100,7 +101,7 @@ public class CharactersManager {
                         cards.put("knight", new Knight(controller));
                         break;
                     case 9:
-                        cards.put("mushroomMerchant", new MushroomMerchant());
+                        cards.put("mushroomMerchant", new MushroomsMerchant(controller));
                         break;
                     case 10:
                         cards.put("bard", new Bard());
@@ -189,8 +190,8 @@ public class CharactersManager {
         cookActive = false;
         messengerActive = false;
         centaurActive = false;
-        ambassadorActive = false;
         knightUser = -1;
+        mushroomsMerchantActive = false;
 
         // todo: complete with the other attributes
     }
@@ -227,15 +228,6 @@ public class CharactersManager {
         return centaurActive;
     }
 
-    // SETTER AND GETTER FOR ambassadorActive
-    public void setAmbassadorActive(boolean ambassadorActive) {
-        this.ambassadorActive = ambassadorActive;
-    }
-
-    public boolean isAmbassadorActive() {
-        return ambassadorActive;
-    }
-
     // SETTER AND GETTER FOR knightActive
     public void setKnightUser (int knightUser) {
         this.knightUser = knightUser;
@@ -243,5 +235,14 @@ public class CharactersManager {
 
     public int getKnightUser() {
         return knightUser;
+    }
+
+    // SETTER AND GETTER FOR mushroomsMerchantActive
+    public void setMushroomsMerchantActive(boolean mushroomsMerchantActive) {
+        this.mushroomsMerchantActive = mushroomsMerchantActive;
+    }
+
+    public boolean isMushroomsMerchantActive() {
+        return mushroomsMerchantActive;
     }
 }

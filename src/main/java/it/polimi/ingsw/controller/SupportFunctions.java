@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.characterCards.MushroomsMerchant;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.server.ClientHandler;
 
@@ -237,7 +238,18 @@ public class SupportFunctions {
             // count the number of students of each type on the island
             int playerInfluence = 0;
             for(Creature creature: playerProfessors){
-                playerInfluence += island.getStudentsOfType(creature);
+
+                // control if mushroom-merchant has been used
+                if(controller.getCharactersManager().isMushroomsMerchantActive()){
+                    MushroomsMerchant mushroomsMerchant = (MushroomsMerchant) controller.getCharactersManager().getCards().get("mushroomsMerchant");
+                    /* we count the number of students only if they are not of the type
+                    to which the effect of the mushrooms-merchant card is applied*/
+                    if(!(mushroomsMerchant.getCreatureChosen().equals(creature))){
+                        playerInfluence += island.getStudentsOfType(creature);
+                    }
+                }else{
+                    playerInfluence += island.getStudentsOfType(creature);
+                }
             }
 
             if(!(controller.getCharactersManager().isCentaurActive())){

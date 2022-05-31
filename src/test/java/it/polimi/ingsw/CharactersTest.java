@@ -8,10 +8,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.characterCards.Herbalist;
 import it.polimi.ingsw.controller.characterCards.Jester;
 import it.polimi.ingsw.controller.characterCards.Messenger;
-import it.polimi.ingsw.model.Archipelago;
-import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Wizard;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
@@ -25,6 +22,14 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class performs some tests on the character cards
+ *
+ * PLEASE PAY ATTENTION:
+ * before running this tests we need to comment the lines inside the methode
+ * messageToSerialize of the class ClientHandler; this is because otherwise we receive
+ * an error of outputStream not initialized.
+ */
 public class CharactersTest {
 
     /**
@@ -121,17 +126,26 @@ public class CharactersTest {
         String json = "";
 
         Player mario = controller.getMatch().getPlayerByID(0);
-        System.out.println("Initial entrance of Mario: " + mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance());
+        //System.out.println("Initial entrance of Mario: " + mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance());
+
+        Creature playerStudent_1 = mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(1);
+        Creature playerStudent_2 = mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(2);
+        Creature playerStudent_3 = mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(3);
 
         // ADD CHARACTER
         controller.getCharactersManager().getCards().put("jester", new Jester(controller));
         Jester jester = (Jester)controller.getCharactersManager().getCards().get("jester");
-        System.out.println("Initial students on the card: " + jester.getStudentsOnCard());
+        //System.out.println("Initial students on the card: " + jester.getStudentsOnCard());
 
-        // use character jester
+        Creature jesterStudent_5 = jester.getStudentsOnCard().get(5);
+        Creature jesterStudent_4 = jester.getStudentsOnCard().get(4);
+        Creature jesterStudent_3 = jester.getStudentsOnCard().get(3);
+
+        // ask to use character jester
         json = "{ \"object\": \"character_request\", \"sender_ID\": \"0\", \"character\": \"jester\" }";
         controller.manageMsg(json);
 
+        // use character jester
         CharacterDataMessage dataMessage = new CharacterDataMessage(0, "jester");
         ArrayList<Integer> students = new ArrayList<Integer>(List.of(1, 2, 3));
         dataMessage.setElementsOfPlayer(students);
@@ -144,8 +158,23 @@ public class CharactersTest {
         controller.manageMsg(json);
 
         assertEquals(2, controller.getCharactersManager().getCards().get("jester").getPrice());
-        System.out.println("Final entrance of Mario: " + mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance());
-        System.out.println("Final students on the card: " + jester.getStudentsOnCard());
+        assertEquals(playerStudent_1, jester.getStudentsOnCard().get(5));
+        assertEquals(jesterStudent_5, mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(1));
+
+        assertEquals(playerStudent_2, jester.getStudentsOnCard().get(4));
+        assertEquals(jesterStudent_4, mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(2));
+
+        assertEquals(playerStudent_3, jester.getStudentsOnCard().get(3));
+        assertEquals(jesterStudent_3, mario.getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(3));
+
+    }
+
+    @Test
+    public void ambassadorTest(){
+        Controller controller = createMatch();
+        String json = "";
+
+
     }
 
     /**
