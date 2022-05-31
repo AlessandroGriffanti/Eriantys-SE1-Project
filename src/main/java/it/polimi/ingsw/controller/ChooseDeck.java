@@ -43,7 +43,6 @@ public class ChooseDeck implements ControllerState{
 
     @Override
     public void stateExecution(Controller controller) {
-        playersCounter++;
 
         String jsonMsg = controller.getMsg();
         ChosenDeckMessage request = gson.fromJson(jsonMsg, ChosenDeckMessage.class);
@@ -53,6 +52,8 @@ public class ChooseDeck implements ControllerState{
             NackMessage nack = new NackMessage("deck");
             controller.sendMessageToPlayer(request.getSender_ID(), nack);
         }else{
+            playersCounter++;
+
             //adds the chosen deck to the list of not available decks anymore
             notAvailableDecks.add(request.getDeck());
 
@@ -68,12 +69,14 @@ public class ChooseDeck implements ControllerState{
             response.setNextPlayer(nextPlayer);
 
             response.setNotAvailableDecks(notAvailableDecks);
-            controller.sendMessageAsBroadcast(response);
 
             //controls if all the players have chosen a deck
             if(playersCounter == controller.getNumberOfPlayers()){
                 controller.nextState();
             }
+
+            controller.sendMessageAsBroadcast(response);
+
         }
     }
 
