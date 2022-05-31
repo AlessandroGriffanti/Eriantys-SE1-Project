@@ -43,6 +43,8 @@ public class MatchStartMessage extends Message {
     }
 
     public MatchStartMessage(int firstPlayer_ID, int motherNaturePosition, int numPlayer, boolean expertMode){
+        this.numPlayer = numPlayer;
+        this.expertMode = expertMode;
         this.object = "start";
         this.firstPlayer = firstPlayer_ID;
         this.motherNaturePosition = motherNaturePosition;
