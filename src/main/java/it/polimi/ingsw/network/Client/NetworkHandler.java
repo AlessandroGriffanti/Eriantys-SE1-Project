@@ -38,10 +38,10 @@ public class NetworkHandler {
 
 
     /**
-     * NetworkHandler constructor which creates a new instance of the NetworkHandler
-     * @param ipReceived is the server ip
-     * @param portReceived is the server port
-     * @param cliReceived is a reference to the cli
+     * NetworkHandler constructor which creates a new instance of the NetworkHandler.
+     * @param ipReceived is the server ip.
+     * @param portReceived is the server port.
+     * @param cliReceived is a reference to the cli.
      */
     public NetworkHandler(String ipReceived, int portReceived, CLI cliReceived) {
         this.ip = ipReceived;
@@ -163,8 +163,10 @@ public class NetworkHandler {
 
             case "start":
                 cli.startAlert();
-                modelView = new ModelView(); //qui settiamo la model view con i dati iniziali dell'ack
+
+                System.out.println("Il numero di giocatori nella partita è: " + modelView.getNumberOfPlayersGame());
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
+
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
                 System.out.println("player id: " + playerID);
                 System.out.println("first id: " + matchStartMessage.getFirstPlayer());
@@ -189,39 +191,22 @@ public class NetworkHandler {
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
                 switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
+                        /*modelView = new ModelView(); //qui settiamo la model view con i dati iniziali dell'ack
+                        modelView.setNumberOfPlayersGame(playerID + 1); */
                         cli.ackWaiting();
                         break;
 
                     case "tower_color":
                         if ((ackMessageMapped.getNextPlayer() == playerID) && (towerColor == null)){
                             ArrayList<Tower> notAvailableTowerColors = ackMessageMapped.getNotAvailableTowerColors();
-
-                            boolean blackAvailability = true;
-                            boolean greyAvailability = true;
-                            boolean whiteAvailability = true;
-
-                            for(int i = 0; i < notAvailableTowerColors.size(); i++){
-                                if(String.valueOf(notAvailableTowerColors.get(i)) == "BLACK"){
-                                    blackAvailability = false;
-                                    //System.out.println(blackAvailability);
-                                }
-                                if(String.valueOf(notAvailableTowerColors.get(i)) == "GREY"){
-                                    greyAvailability = false;
-                                    //System.out.println(greyAvailability);
-                                }
-                                if(String.valueOf(notAvailableTowerColors.get(i)) == "WHITE"){
-                                    whiteAvailability = false;
-                                    //System.out.println(whiteAvailability);
-                                }
-                            }
-
-                            towerColor = Tower.valueOf(cli.towerChoiceNext(blackAvailability, greyAvailability, whiteAvailability) );
+                            towerColor = cli.towerChoiceNext(notAvailableTowerColors);
 
                             ChosenTowerColorMessage chosenTowerColorMessage = new ChosenTowerColorMessage();
                             chosenTowerColorMessage.setColor(towerColor);
                             chosenTowerColorMessage.setSender_ID(playerID);
                             sendMessage(chosenTowerColorMessage);
                             System.out.println("sent ok");
+                            System.out.println("Il numero di giocatori nella partita è: " + modelView.getNumberOfPlayersGame());
 
                             break;
                         }else if((ackMessageMapped.getNextPlayer() == playerID) && (towerColor != null)) {
@@ -241,34 +226,16 @@ public class NetworkHandler {
 
                     case "deck":
                         if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard == null)){
-                            boolean forestWizardAvailability = true;
-                            boolean desertWizardAvailability = true;
-                            boolean cloudWitchAvailability = true;
-                            boolean lightningWizardAvailability = true;
                             ArrayList<Wizard> notAvailableDecks = ackMessageMapped.getNotAvailableDecks();
-                            for(int i = 0; i < notAvailableDecks.size(); i++){
-                                if(String.valueOf(notAvailableDecks.get(i)).equals("FORESTWIZARD")){
-                                    forestWizardAvailability = false;
-                                }
-                                if(String.valueOf(notAvailableDecks.get(i)).equals("DESERTWIZARD")){
-                                    desertWizardAvailability = false;
-                                }
-                                if(String.valueOf(notAvailableDecks.get(i)).equals("CLOUDWITCH")){
-                                    cloudWitchAvailability = false;
-                                }
-                                if(String.valueOf(notAvailableDecks.get(i)).equals("LIGHTNINGWIZARD")){
-                                    lightningWizardAvailability = false;
-                                }
-                            }
 
-                            wizard = cli.deckChoiceNext(forestWizardAvailability, desertWizardAvailability, cloudWitchAvailability, lightningWizardAvailability);
+                            wizard = cli.deckChoiceNext(notAvailableDecks);
                             ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
                             chosenDeckMessage.setDeck(wizard);
                             chosenDeckMessage.setSender_ID(playerID);
                             System.out.println("DECK SCELTO NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
                             break;
-                        }else if(ackMessageMapped.getNextPlayer() != playerID && wizard != null){
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && (wizard != null)){
                             cli.turnWaiting();
                             break;
                         }else if((ackMessageMapped.getNextPlayer() == playerID) && (wizard != null)) {
@@ -276,26 +243,35 @@ public class NetworkHandler {
                             sendBagClickedByFirstClient();
                             break;
                         }
-                    case "fillClouds":
-                        if(ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag){
+                    case "refillClouds":
+                        if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
+                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));          //rimuovo la carta scelta dal giocatore dalla modelview
+                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){
+                                System.out.print(i + " ");
+                            }
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                             break;
-                        }else if(ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag){ //se non tocca a te e non l'hai ancora scelta
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false){ //se non tocca a te e non l'hai ancora scelta
                             cli.turnWaiting();
                             break;
                         }
-                    case "assistant":
-                        if(ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag){
-                            int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
+                    case "assistant":                                                                          //significa che il giocatore in questione non è il primo giocatore a scegliere l'assistente
+                        if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
+                            ArrayList<Integer> assistantAlreadyUsedInThisRound = ackMessageMapped.getAssistantAlreadyUsedInThisRound();
+                            int assistantChosen = cli.assistantChoiceNext(modelView.getAssistantCardsValuesPlayer(), assistantAlreadyUsedInThisRound );
+                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen)); //lo rimuovo dalla modelview
+                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){
+                                System.out.print(i + " ");
+                            }
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                             break;
                         }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag){
                             cli.turnWaiting();
                             break;
-                        }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
+                        }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
                             assistantChoiceFlag = false;                                                 //qui cambia la flag il primo giocatore
                         }
 
@@ -340,14 +316,23 @@ public class NetworkHandler {
     }
 
 
-    /** this method creates a new  BagClick message and sends it to the server */
+    /**
+     * This method creates a new  BagClick message and sends it to the server.
+     */
     public void sendBagClickedByFirstClient(){
         BagClickMessage bagClickMessage = new BagClickMessage();
+        bagClickMessage.setSender_ID(playerID);
         sendMessage(bagClickMessage);
+        System.out.println("SENT BAG CLICKED OK");
     }
 
+    /**
+     * This method creates a new ChosenAssistantCard message and sends it to the server.
+     * @param assistantChosen is the assistant chosen.
+     */
     public void sendChosenAssistantCardMessage(int assistantChosen){
         ChosenAssistantCardMessage chosenAssistantCardMessage = new ChosenAssistantCardMessage(assistantChosen);
+        chosenAssistantCardMessage.setSender_ID(playerID);
         sendMessage(chosenAssistantCardMessage);
     }
 

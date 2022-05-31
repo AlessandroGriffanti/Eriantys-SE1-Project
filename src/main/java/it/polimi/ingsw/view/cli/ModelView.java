@@ -21,6 +21,7 @@ public class ModelView {
 
 
     public ModelView(){ //qui dobbiamo avere il primo messaggio di match start per inizializzare le cose come argomento del costruttore
+        numberOfPlayersGame = 0;
         assistantCardsValuesPlayer = new ArrayList<>();
         for(int i = 1; i<= 10; i++){
             assistantCardsValuesPlayer.add(i);
@@ -29,7 +30,13 @@ public class ModelView {
 
     }
 
+    public synchronized int getNumberOfPlayersGame() {
+        return numberOfPlayersGame;
+    }
 
+    public synchronized void setNumberOfPlayersGame(int numberOfPlayersGame) {
+        this.numberOfPlayersGame = numberOfPlayersGame;
+    }
     public ArrayList<Integer> getAssistantCardsValuesPlayer() {
         return assistantCardsValuesPlayer;
     }
@@ -37,4 +44,6 @@ public class ModelView {
     public void setAssistantCardsValuesPlayer(ArrayList<Integer> assistantCardValuePlayer) {
         this.assistantCardsValuesPlayer = assistantCardValuePlayer;
     }
+
+
 }

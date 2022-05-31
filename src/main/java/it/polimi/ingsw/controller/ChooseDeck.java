@@ -45,6 +45,10 @@ public class ChooseDeck implements ControllerState{
     public void stateExecution(Controller controller) {
         playersCounter++;
 
+        if(playersCounter == controller.getNumberOfPlayers()){
+            controller.nextState();
+        }
+
         String jsonMsg = controller.getMsg();
         ChosenDeckMessage request = gson.fromJson(jsonMsg, ChosenDeckMessage.class);
 
@@ -71,9 +75,7 @@ public class ChooseDeck implements ControllerState{
             controller.sendMessageAsBroadcast(response);
 
             //controls if all the players have chosen a deck
-            if(playersCounter == controller.getNumberOfPlayers()){
-                controller.nextState();
-            }
+
         }
     }
 
