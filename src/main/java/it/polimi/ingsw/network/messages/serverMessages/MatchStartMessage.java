@@ -16,6 +16,14 @@ public class MatchStartMessage extends Message {
      */
     private int firstPlayer;
     /**
+     * This attribute is the number of players of the match
+     */
+    private int numPlayer;
+    /**
+     * This attribute is true if the match is played in expert mode, false otherwise
+     */
+    private boolean expertMode;
+    /**
      * This attribute is the initial position of mother nature
      */
     private int motherNaturePosition;
@@ -34,7 +42,7 @@ public class MatchStartMessage extends Message {
         this.object = "start";
     }
 
-    public MatchStartMessage(int firstPlayer_ID, int motherNaturePosition){
+    public MatchStartMessage(int firstPlayer_ID, int motherNaturePosition, int numPlayer, boolean expertMode){
         this.object = "start";
         this.firstPlayer = firstPlayer_ID;
         this.motherNaturePosition = motherNaturePosition;

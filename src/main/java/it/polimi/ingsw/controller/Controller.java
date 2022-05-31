@@ -33,7 +33,7 @@ public class Controller {
     /**
      * This attribute is the number of players needed to start the match
      */
-    private int numberOfPlayers = 0;
+    private int numberOfPlayers;
     /**
      * This attribute tells if the match must ber played in expert mode or not
      */
@@ -151,7 +151,7 @@ public class Controller {
         int motherNatureInitialPosition = match.getPositionOfMotherNature();
 
         // create the startOfMatch message
-        MatchStartMessage startMessage = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition);
+        MatchStartMessage startMessage = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, numberOfPlayers, expertMode);
         // add characters if the match will be played in expert mode
         if(expertMode){
             this.charactersManager = new CharactersManager(this);
