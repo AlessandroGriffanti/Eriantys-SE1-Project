@@ -17,6 +17,7 @@ import java.util.Scanner;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
+   // private ModelView modelView = new ModelView(); //potrei crearla qui e nel costruttore della cli passare questo riferimento, così dovrebbe essere condiviso
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
@@ -26,6 +27,7 @@ public class CLI {
     public CLI(String ip, int port) throws IOException {
         NetworkHandler networkHandler = new NetworkHandler(ip, port, this);
         networkHandler.startClient();
+
     }
 
     /**
@@ -238,51 +240,25 @@ public class CLI {
 
     /**
      * This method is used to ask the following players which color they want their towers to be.
-     * @param blackAvailability indicates whether the BLACK color has been already chosen or not.
-     * @param greyAvailability indicates whether the GREY color has been already chosen or not.
-     * @param whiteAvailability indicates whether the WHITE color has been already chosen or not.
-     * @return the color chosen in Tower type.
+     * @param notAvailableTowerColors is the list of  colors that have already been chosen.
+     * @return the color chosen.
      */
-    public synchronized String towerChoiceNext (boolean blackAvailability, boolean greyAvailability, boolean whiteAvailability) {
-        System.out.println("B: " + blackAvailability);
-        System.out.println("W: " + whiteAvailability);
-        System.out.println("G: " + greyAvailability);
+    public synchronized Tower towerChoiceNext (ArrayList<Tower> notAvailableTowerColors) {
+        println("Choose your tower color: BLACK, WHITE, GREY ");
+        String strTowerColorChosen = scannerCLI.nextLine();
 
-        String strTowerColorChosenNext = null;
-        boolean flag = true;
-        
-        println("Choose the COLOR of your tower: ");
-        if (blackAvailability) {
-            print("BLACK ");
+        while(!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY"))){
+            println("Please insert a valid color tower: ");
+            strTowerColorChosen = scannerCLI.nextLine();
         }
-        if (greyAvailability) {
-            print("GREY ");
-        }
-        if (whiteAvailability) {
-            print("WHITE ");
-        }
-        println(" ");
-
-        strTowerColorChosenNext = scannerCLI.next();
-        println(strTowerColorChosenNext);
-
-        while( !( strTowerColorChosenNext.equals("BLACK") || strTowerColorChosenNext.equals("WHITE") || strTowerColorChosenNext.equals("GREY") ) ){
-            if(!blackAvailability){
-                println("BLACK Towers not available. Please, insert the right color: ");
-            }
-            if(!greyAvailability){
-                println("GREY Towers not available. Please, insert the right color: ");
-            }
-            if(whiteAvailability){
-                println("WHITE Towers not available. Please, insert the right color: ");
-            } {
-                println("Please, insert the right color: ");
-            }
-            strTowerColorChosenNext = scannerCLI.next();
+        while(notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen))){
+            println("This color has already been selected, please choose another one: ");
+            strTowerColorChosen = scannerCLI.nextLine();
         }
 
-        return strTowerColorChosenNext;
+        return Tower.valueOf(strTowerColorChosen);
     }
+
 
     /**
      * This method is used to ask the player which deck he wants to play with.
@@ -304,44 +280,44 @@ public class CLI {
 
     /**
      * This method is used to ask the following players which deck they want to use.
-     * @param forestWizardAvailability indicates whether the FORESTWIZARD deck has been already chosen or not.
-     * @param desertWizardAvailability indicates whether the DESERTWIZARD deck has been already chosen or not.
-     * @param cloudWitchAvailability   indicates whether the CLOUDWITCH deck has been already chosen or not.
-     * @param lightningWizardAvailability indicates whether the LIGHTNINGWIZARD deck has been already chosen or not.
-     * @return the deck chosen in Wizard type
+     * @param notAvailableDecks is the list of decks that have been already chosen.
+     * @return the deck chosen.
      */
-    public synchronized Wizard deckChoiceNext(boolean forestWizardAvailability, boolean desertWizardAvailability, boolean cloudWitchAvailability, boolean lightningWizardAvailability) {
+    public synchronized Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {
         println("Choose your deck among the following: ");
-        if (forestWizardAvailability) {
-            print("FORESTWIZARD ");
-        }
-        if (desertWizardAvailability) {
-            print("DESERTWIZARD ");
-        }
-        if (cloudWitchAvailability) {
-            print("CLOUDWITCH ");
-        }
-        if (lightningWizardAvailability) {
-            println("LIGHTNINGWIZARD");
-        }
+        println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
+
         String strDeckChosen = scannerCLI.nextLine();
+
         while(!(strDeckChosen.equals("FORESTWIZARD") || strDeckChosen.equals("DESERTWIZARD") || strDeckChosen.equals("CLOUDWITCH") || strDeckChosen.equals("LIGHTNINGWIZARD"))){
             println("Please, insert a correct deck: ");
+            strDeckChosen = scannerCLI.nextLine();
+        }
+        while(notAvailableDecks.contains(Wizard.valueOf(strDeckChosen))){
+            println("This deck has already been chosen, plase select another one: ");
             strDeckChosen = scannerCLI.nextLine();
         }
         return Wizard.valueOf(strDeckChosen);
     }
 
-
+    /**
+     * This method is used to notify the player he has clicked the bag to refill the clouds.
+     */
     public void bagClick(){
         println("You drew the students from the bag");
     }
 
+    /**
+     * This method is used to ask the first player which assistant card he wants to play.
+     * @param availableAssistantCard is the list of assistant cards the player has not used yet in the game.
+     * @return the assistant card chosen.
+     */
     public int assistantChoice(ArrayList<Integer> availableAssistantCard){
         println("Which assistant do you want to play?");
         for(Integer i : availableAssistantCard){
             print(i + " ");
         }
+        print("\n");
         int assistantChosen = scannerCLI.nextInt();
         while(!(availableAssistantCard.contains(assistantChosen))){
             println("You can't use this assistant, please select another one from this list: ");
@@ -351,6 +327,26 @@ public class CLI {
             assistantChosen = scannerCLI.nextInt();
         }
         return assistantChosen;
+    }
+
+    /**
+     * This method is used to ask the following players which assistant card they want to use.
+     * @param availableAssistantCard is the list of assistant cards the player has not used yet in the game.
+     * @param assistantCardsAlreadyUsedThisRound is the list of the assistant cards already used in this round which can't be used by the other players.
+     * @return the assistant card chosen.
+     */
+    public int assistantChoiceNext(ArrayList<Integer> availableAssistantCard, ArrayList<Integer> assistantCardsAlreadyUsedThisRound){
+        println("Which assistant do you want to play?");
+        for(Integer i : availableAssistantCard){
+            print(i + " ");
+        }
+        print("\n");
+        int assistantChosen = scannerCLI.nextInt();
+        while(assistantCardsAlreadyUsedThisRound.contains(assistantChosen)){
+            println("You can't use this assistant, it has already been used this round. Please select another one");
+            assistantChosen = scannerCLI.nextInt();
+        }
+        return  assistantChosen;
     }
 
     public void print(String strToPrint){
