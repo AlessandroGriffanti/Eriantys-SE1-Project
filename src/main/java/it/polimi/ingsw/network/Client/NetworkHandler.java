@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.Client;
 
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.messages.*;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.ModelView;
+import it.polimi.ingsw.view.cli.SchoolBoardView;
 
 
 import java.io.BufferedReader;
@@ -34,6 +36,9 @@ public class NetworkHandler {
     private Tower towerColor;
     private Wizard wizard;
     private ModelView modelView;
+    /**
+     * We use this flag to understand if the player has already used the assistant card.
+     */
     private boolean assistantChoiceFlag = false;
 
 
@@ -163,13 +168,19 @@ public class NetworkHandler {
 
             case "start":
                 cli.startAlert();
-
-                System.out.println("Il numero di giocatori nella partita è: " + modelView.getNumberOfPlayersGame());
+                modelView = new ModelView();
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
-
+                //qui va settato il numero di giocatori totali della partita, verrà passato dal server (controller)
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
+
+                System.out.println("NUMERO DI GIOCATORI TOTALI: " + matchStartMessage.getNumPlayer());
+                System.out.println("PARTITA IN EXPERT MODE: " + matchStartMessage.isExpertMode());
+
                 System.out.println("player id: " + playerID);
                 System.out.println("first id: " + matchStartMessage.getFirstPlayer());
+
+                updateStartModelView(matchStartMessage);                                            //primo update della cli, gli passo il messaggio ricevuto dal server così come parametro così
+
                 if (matchStartMessage.getFirstPlayer() == playerID) {
                     cli.isYourTurn();
 
@@ -191,8 +202,6 @@ public class NetworkHandler {
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
                 switch(ackMessageMapped.getSubObject()) {
                     case "waiting":
-                        /*modelView = new ModelView(); //qui settiamo la model view con i dati iniziali dell'ack
-                        modelView.setNumberOfPlayersGame(playerID + 1); */
                         cli.ackWaiting();
                         break;
 
@@ -206,7 +215,6 @@ public class NetworkHandler {
                             chosenTowerColorMessage.setSender_ID(playerID);
                             sendMessage(chosenTowerColorMessage);
                             System.out.println("sent ok");
-                            System.out.println("Il numero di giocatori nella partita è: " + modelView.getNumberOfPlayersGame());
 
                             break;
                         }else if((ackMessageMapped.getNextPlayer() == playerID) && (towerColor != null)) {
@@ -244,16 +252,18 @@ public class NetworkHandler {
                             break;
                         }
                     case "refillClouds":
+                        cli.showStudentsInEntrancePlayer(playerID, modelView);                         //A questo punto della partita ad esempio, cioè prima della scelta dell'assistente, possiamo mostrare al giocatore i suoi studenti nell'entrance.
+
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
                             modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));          //rimuovo la carta scelta dal giocatore dalla modelview
-                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){
+                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){                                                                     //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
                                 System.out.print(i + " ");
                             }
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                             break;
-                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false){ //se non tocca a te e non l'hai ancora scelta
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false){                 //se non tocca a te e non l'hai ancora scelta
                             cli.turnWaiting();
                             break;
                         }
@@ -262,7 +272,7 @@ public class NetworkHandler {
                             ArrayList<Integer> assistantAlreadyUsedInThisRound = ackMessageMapped.getAssistantAlreadyUsedInThisRound();
                             int assistantChosen = cli.assistantChoiceNext(modelView.getAssistantCardsValuesPlayer(), assistantAlreadyUsedInThisRound );
                             modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen)); //lo rimuovo dalla modelview
-                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){
+                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){                                                             //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
                                 System.out.print(i + " ");
                             }
                             assistantChoiceFlag = true;
@@ -272,7 +282,7 @@ public class NetworkHandler {
                             cli.turnWaiting();
                             break;
                         }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
-                            assistantChoiceFlag = false;                                                 //qui cambia la flag il primo giocatore
+                            assistantChoiceFlag = false;                                                        //qui cambia la flag il primo giocatore
                         }
 
 
@@ -334,6 +344,20 @@ public class NetworkHandler {
         ChosenAssistantCardMessage chosenAssistantCardMessage = new ChosenAssistantCardMessage(assistantChosen);
         chosenAssistantCardMessage.setSender_ID(playerID);
         sendMessage(chosenAssistantCardMessage);
+    }
+
+    /**
+     * This method is used to update the modelView after receiving the matchStartMessage.
+     * @param matchStartMessage is the matchStartMatchMessage received.
+     */
+    public void updateStartModelView(MatchStartMessage matchStartMessage){
+        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                     //setto il numero di giocatori della partita
+        modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmo
+        for(Integer i : matchStartMessage.getStudentsInEntrance().keySet()){
+            ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);           //Questo dovrebbe essere l'update degli studenti nell'entrance
+            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView));
+            modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
+        }
     }
 
 

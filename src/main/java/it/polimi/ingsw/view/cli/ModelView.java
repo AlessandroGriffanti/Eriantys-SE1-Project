@@ -1,31 +1,36 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.schoolboard.SchoolBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ModelView {
     private int CoinGame;
-    private int numberOfPlayersGame;
+    private int numberOfPlayersGame = 0;
+
     private boolean expertModeGame;
-    //private HashMap <Integer, Creature> entranceGame; //Integer è l'id del player,
-    private ArrayList <Creature> entrancePlayer;
-    private int towerPlayer;
-    private HashMap<Creature, Integer> diningRoomPlayer;
     private HashMap<Integer, Assistant> deckPlayer; //integer rappresenta l'order-value, Assistant contiene lo stesso order value e mothernature value, magari possiamo toglierla visto cjhe ha già scelto il mago
     private ArrayList <Archipelago> islandGame = new ArrayList<>();
     private int motherNaturePositionGame;
 
+    /**
+     * This HashMap gathers the SchoolBoard (a miniature) of all players.
+     * The key is the playerID; the value is the SchoolBoardView indeed.
+     */
+    private HashMap<Integer, SchoolBoardView> schoolBoardPlayers;
+
     private ArrayList <Integer> assistantCardsValuesPlayer;
 
 
-    public ModelView(){ //qui dobbiamo avere il primo messaggio di match start per inizializzare le cose come argomento del costruttore
-        numberOfPlayersGame = 0;
+    public ModelView(){
         assistantCardsValuesPlayer = new ArrayList<>();
         for(int i = 1; i<= 10; i++){
             assistantCardsValuesPlayer.add(i);
         }
+
+        schoolBoardPlayers = new HashMap<>();
 
 
     }
@@ -43,6 +48,17 @@ public class ModelView {
 
     public void setAssistantCardsValuesPlayer(ArrayList<Integer> assistantCardValuePlayer) {
         this.assistantCardsValuesPlayer = assistantCardValuePlayer;
+    }
+
+    public HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
+        return schoolBoardPlayers;
+    }
+    public synchronized void setExpertModeGame(boolean expertModeGame) {
+        this.expertModeGame = expertModeGame;
+    }
+
+    public synchronized boolean isExpertModeGame() {
+        return expertModeGame;
     }
 
 

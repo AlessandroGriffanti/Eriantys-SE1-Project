@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.cli;
 
+import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
@@ -17,7 +18,7 @@ import java.util.Scanner;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
-   // private ModelView modelView = new ModelView(); //potrei crearla qui e nel costruttore della cli passare questo riferimento, così dovrebbe essere condiviso
+
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
@@ -27,7 +28,6 @@ public class CLI {
     public CLI(String ip, int port) throws IOException {
         NetworkHandler networkHandler = new NetworkHandler(ip, port, this);
         networkHandler.startClient();
-
     }
 
     /**
@@ -347,6 +347,22 @@ public class CLI {
             assistantChosen = scannerCLI.nextInt();
         }
         return  assistantChosen;
+    }
+
+    /**
+     * This method is used to show to the player his students at the beginning of the match, after receveing the MatchStartMessage.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public synchronized void showStudentsInEntrancePlayer(int playerID, ModelView modelView){
+        println("Your students in the entrance at the beginning of the game are: ");
+        for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
+            print(c + " ");
+        }
+        print("\n");
+
+        println("Numero di giocatori totali della partita: " + modelView.getNumberOfPlayersGame());
+        println("Partita in expertmode? " + String.valueOf(modelView.isExpertModeGame()));
     }
 
     public void print(String strToPrint){

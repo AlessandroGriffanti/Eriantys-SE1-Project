@@ -15,6 +15,7 @@ public class MatchStartMessage extends Message {
      * This attribute is the ID of the first player of the match
      */
     private int firstPlayer;
+
     /**
      * This attribute is the number of players of the match
      */
@@ -27,6 +28,8 @@ public class MatchStartMessage extends Message {
      * This attribute is the initial position of mother nature
      */
     private int motherNaturePosition;
+
+
     /**
      * This attribute contains the list of students in the entrance of each player
      * key: ID of the player
@@ -67,23 +70,26 @@ public class MatchStartMessage extends Message {
         studentsInEntrance.put(player_ID, students);
     }
 
-    public int getNumPlayer() {
-        return numPlayer;
-    }
 
-    public boolean isExpertMode() {
-        return expertMode;
-    }
 
     public int getMotherNaturePosition() {
         return motherNaturePosition;
+    }
+
+
+    public Set<String> getCharacters() {
+        return characters;
     }
 
     public HashMap<Integer, ArrayList<Creature>> getStudentsInEntrance() {
         return studentsInEntrance;
     }
 
-    public Set<String> getCharacters() {
-        return characters;
+    public int getNumPlayer() {
+        return numPlayer;
+    }
+
+    public boolean isExpertMode() {
+        return expertMode;
     }
 }
