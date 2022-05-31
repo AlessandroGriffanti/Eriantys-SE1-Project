@@ -66,4 +66,24 @@ public class MatchStartMessage extends Message {
     public void setStudentsInEntrance(int player_ID, ArrayList<Creature> students){
         studentsInEntrance.put(player_ID, students);
     }
+
+    public int getNumPlayer() {
+        return numPlayer;
+    }
+
+    public boolean isExpertMode() {
+        return expertMode;
+    }
+
+    public int getMotherNaturePosition() {
+        return motherNaturePosition;
+    }
+
+    public HashMap<Integer, ArrayList<Creature>> getStudentsInEntrance() {
+        return studentsInEntrance;
+    }
+
+    public Set<String> getCharacters() {
+        return characters;
+    }
 }
