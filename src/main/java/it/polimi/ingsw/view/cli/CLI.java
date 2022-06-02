@@ -350,7 +350,7 @@ public class CLI {
     }
 
     /**
-     * This method is used to show to the player his students at the beginning of the match, after receveing the MatchStartMessage
+     * This method is used to show to the player his students at the beginning of the match, after receiving the MatchStartMessage.
      * and the character cards available for the game, if the game is in expert mode.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
      * @param modelView is the reference to the modelView.
@@ -401,7 +401,7 @@ public class CLI {
         }
         int islandChosen;
         if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
-            println("Which island do you want to move your students to? ");     //nel messaggio movedstudentsFromEntrance.
+            println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
             for(int i = 0; i < 12; i++){
                 print(i + " ");
             }
@@ -417,6 +417,29 @@ public class CLI {
         return islandChosen;
 
     }
+
+    /**
+     * This method is used to show the initial situation on the islands, including mother nature position.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showStudentsOnIslands(ModelView modelView){
+        for(int i = 0; i < 12; i++){
+            if(modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0){           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
+                if(modelView.getIslandGame().get(i).isMotherNaturePresence()){
+                    print("Studenti sull'isola " + i +": nessuno, qui c'è madre natura.");
+                }else {
+                    print("Studenti sull'isola " + i + ": nessuno");
+                }
+            }
+            for(Creature c : Creature.values()) {
+                if(modelView.getIslandGame().get(i).getStudentsOfType(c) != 0){
+                    print("Studenti sull'isola " + i + " : " + c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c));
+                }
+            }
+            print("\n");
+        }
+    }
+
     public void print(String strToPrint){
         System.out.print(strToPrint);
     }

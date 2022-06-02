@@ -32,7 +32,8 @@ public class MatchStartMessage extends Message {
      * This attribute is the list of students initially positioned on each island
      */
     private ArrayList<Creature> studentsOnIslands;
-
+    //il primo studente nella lista è lo studente sull'isola successiva alla posizione di madre natura, il secondo sulla seconda dopo
+    //la posizione di madre natura e così via. N.B. sulla sesta dopo madre natura(quella opposta) non ci sono studenti quindi è da saltare.
 
     /**
      * This attribute contains the list of students in the entrance of each player

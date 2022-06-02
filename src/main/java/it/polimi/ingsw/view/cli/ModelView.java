@@ -7,7 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ModelView {
+    /**
+     * This attribute tracks the number of total coin the game, the reserve.
+     */
     private int coinGame;
+
+    /**
+     * This attribute tracks the number of coins for each player.
+     * Key: player ID, value: number of coins.
+     */
+    private HashMap<Integer, Integer> coinPlayer;
     private int numberOfPlayersGame;
     private boolean expertModeGame;
     private HashMap<Integer, Assistant> deckPlayer; //integer rappresenta l'order-value, Assistant contiene lo stesso order value e mothernature value, magari possiamo toglierla visto cjhe ha già scelto il mago
@@ -23,7 +32,7 @@ public class ModelView {
      */
     private HashMap<Integer, SchoolBoardView> schoolBoardPlayers;
 
-    private ArrayList<Archipelago> islandsGame = new ArrayList<>();
+    //private ArrayList<Archipelago> islandsGame = new ArrayList<>();
 
     private ArrayList <Integer> assistantCardsValuesPlayer;
 
@@ -33,6 +42,7 @@ public class ModelView {
      * This constructor creates a new instance of the modelView.
      */
     public ModelView(){
+        coinPlayer = new HashMap<>();
         assistantCardsValuesPlayer = new ArrayList<>();
         characterCardsInTheGame = new ArrayList<>();
         for(int i = 1; i<= 10; i++){                        //creo le carte assistente
@@ -56,11 +66,11 @@ public class ModelView {
     public synchronized void setCharacterCardsInTheGame(ArrayList<String> characterCardsInTheGame) {
         this.characterCardsInTheGame = characterCardsInTheGame;
     }
-    public int getCoinGame() {
+    public synchronized  int getCoinGame() {
         return coinGame;
     }
 
-    public void setCoinGame(int coinGame) {
+    public synchronized void setCoinGame(int coinGame) {
         this.coinGame = coinGame;
     }
 
@@ -72,15 +82,15 @@ public class ModelView {
     public synchronized void setNumberOfPlayersGame(int numberOfPlayersGame) {
         this.numberOfPlayersGame = numberOfPlayersGame;
     }
-    public ArrayList<Integer> getAssistantCardsValuesPlayer() {
+    public synchronized ArrayList<Integer> getAssistantCardsValuesPlayer() {
         return assistantCardsValuesPlayer;
     }
 
-    public void setAssistantCardsValuesPlayer(ArrayList<Integer> assistantCardValuePlayer) {
+    public synchronized void setAssistantCardsValuesPlayer(ArrayList<Integer> assistantCardValuePlayer) {
         this.assistantCardsValuesPlayer = assistantCardValuePlayer;
     }
 
-    public HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
+    public synchronized HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
         return schoolBoardPlayers;
     }
     public synchronized void setExpertModeGame(boolean expertModeGame) {
@@ -91,13 +101,20 @@ public class ModelView {
         return expertModeGame;
     }
 
-    public ArrayList<ArchipelagoView> getIslandGame() {
+    public synchronized ArrayList<ArchipelagoView> getIslandGame() {
         return islandGame;
     }
 
-    public void setIslandGame(ArrayList<ArchipelagoView> islandGame) {
+    public synchronized void setIslandGame(ArrayList<ArchipelagoView> islandGame) {
         this.islandGame = islandGame;
     }
 
+    public synchronized HashMap<Integer, Integer> getCoinPlayer() {
+        return coinPlayer;
+    }
+
+    public synchronized void setCoinPlayer(HashMap<Integer, Integer> coinPlayer) {
+        this.coinPlayer = coinPlayer;
+    }
 
 }

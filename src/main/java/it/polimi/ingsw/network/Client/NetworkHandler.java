@@ -182,7 +182,8 @@ public class NetworkHandler {
                 System.out.println("player id: " + playerID);
                 System.out.println("first id: " + matchStartMessage.getFirstPlayer());
 
-                updateStartModelView(matchStartMessage);                                            //primo update della cli, gli passo il messaggio ricevuto dal server così come parametro così
+                updateStartModelView(matchStartMessage);                                            //primo update della cli, gli passo il messaggio ricevuto dal server così posso inizializzare
+                                                                                                    //cose nel modelview sulla base di ciò che ricevo
 
                 if (matchStartMessage.getFirstPlayer() == playerID) {
                     cli.isYourTurn();
@@ -256,7 +257,8 @@ public class NetworkHandler {
                         }
                     case "refillClouds":
                         cli.showStudentsInEntrancePlayer(playerID, modelView);                         //A questo punto della partita ad esempio, cioè prima della scelta dell'assistente, possiamo mostrare al giocatore i suoi studenti nell'entrance.
-                                                                                                            //e sempre qui inserirei la stampa della la situazione iniziale delle isole (con uno studente su ciascuna tranne dove c'è MN e nell'isola opposta) quando viene messa nel messaggio di start match
+                        cli.showStudentsOnIslands(modelView);                                           //e sempre qui possiamo mettere la stampa della la situazione iniziale delle isole (con uno studente su ciascuna tranne dove c'è MN e nell'isola opposta) quando viene messa nel messaggio di start match
+
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
                             modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));          //rimuovo la carta scelta dal giocatore dalla modelview
@@ -396,6 +398,7 @@ public class NetworkHandler {
         modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                     //setto il numero di giocatori totali della partita
         modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
         if(modelView.isExpertModeGame() == true){                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
+            modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
             modelView.setCoinGame(20);
             for(String s : matchStartMessage.getCharacters()){
                 modelView.getCharacterCardsInTheGame().add(s);
@@ -405,14 +408,38 @@ public class NetworkHandler {
         //System.out.println("partita in expert mode??? " + modelView.isExpertModeGame());
         modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
 
+        int motherNaturePosition = matchStartMessage.getMotherNaturePosition();                 //metto gli studenti iniziali (uno per isola tranne dove c'è MN e isola opposta) sulle giuste isole
+        int j = 1;
+        for(Creature c : matchStartMessage.getStudentsOnIslands()){
+            int islandID = motherNaturePosition + j;
+            if(j == 6){
+                modelView.getIslandGame().get((islandID + 1) % 12).addStudent(c);
+                j+=2;
+            }else {
+                modelView.getIslandGame().get(islandID % 12).addStudent(c);
+                j++;
+            }
+        }
+
+        /*System.out.println("creature sulle isole all'inizio: ");            //controllo quali siano gli studenti di inizio partita sulle isole passate nel messaggio di match start message.
+        for(Creature c : matchStartMessage.getStudentsOnIslands()){
+            System.out.print(c + " ");
+        }*/
+
+        /*for(Creature c : Creature.values()){                                //controllo se sono stati messi correttamente sulle isole nel modelview
+            for(int k = 0; k < 12; k++){
+                System.out.println("Studente " + c + "sull'isola: " + k + " :" + modelView.getIslandGame().get(k).getStudentsOfType(c));
+            }
+        } */
+
         /*for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i).isMotherNaturePresence() == true){
                 System.out.println("MADRE NATURA è SULL'ISOLA: " + i);                      //controllo se ho messo madre natura sull'isola corretta
             }
         } */
-        for(Integer i : matchStartMessage.getStudentsInEntrance().keySet()){                                                //integer è la key dell'hashmap del match start message, è l'id del player
-            ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);           //Questo dovrebbe essere l'update degli studenti nell'entrance
-            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));     //passo anche il numero di giocatori totali della partita così posso settare il numero di torri in towerAreaView
+        for(Integer i : matchStartMessage.getStudentsInEntrance().keySet()){                                                        //integer è la key dell'hashmap del match start message, è l'id del player
+            ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);                       //Questo dovrebbe essere l'update degli studenti nell'entrance
+            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));             //passo anche il numero di giocatori totali della partita così posso settare il numero di torri in towerAreaView
             modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
         }
 
