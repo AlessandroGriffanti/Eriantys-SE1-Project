@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.characterCards.CharactersManager;
+import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
@@ -163,6 +164,10 @@ public class Controller {
             ArrayList<Creature> students = match.getPlayerByID(i).getSchoolBoard().getEntrance().getStudentsInTheEntrance();
             startMessage.setStudentsInEntrance(i, students);
         }
+
+        // add initial students put on each island
+        ArrayList<Creature> studentOnEachIsland = match.getInitialStudentsOnEachIsland();
+        startMessage.setStudentsOnIslands(studentOnEachIsland);
 
         sendMessageAsBroadcast(startMessage);
         playing = true;

@@ -52,13 +52,19 @@ public class Realm{
 
         // put one student on each island(Archipelago)
         ArrayList<Creature> setUpStudents = bag.drawSetUpStudents();
-        int k = (positionOfMotherNature+1) % 12;
-        for(Creature c: setUpStudents){
-            if(k != (positionOfMotherNature+6)%12){
-                archipelagos.get(k).addStudent(c);
+        Creature c;
+
+        int island_ID = (positionOfMotherNature+1) % 12;
+        int i = 0;
+        do {
+            c = setUpStudents.get(i);
+
+            if(island_ID != (positionOfMotherNature+6)%12){
+                archipelagos.get(island_ID).addStudent(c);
+                i++;
             }
-            k = (k+1)%12;
-        }
+            island_ID = (island_ID+1)%12;
+        }while(i < 10);
     }
 
     public Bag getBag(){

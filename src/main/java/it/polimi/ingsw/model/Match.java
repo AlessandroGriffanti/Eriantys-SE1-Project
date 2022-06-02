@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.schoolboard.Entrance;
 import it.polimi.ingsw.model.schoolboard.ProfessorTable;
 
 import java.lang.reflect.Array;
+import java.net.CacheResponse;
 import java.util.ArrayList;
 
 /**
@@ -126,6 +127,32 @@ public class Match {
      */
     public Creature getStudentInEntranceOfPlayerByID(int player_ID, int student_ID){
         return players.get(player_ID).getSchoolBoard().getEntrance().getStudentsInTheEntrance().get(student_ID);
+    }
+
+    /**
+     * This method search all the students on each island beginning from the one where mother nature is
+     * @return list of students on each island
+     */
+    public ArrayList<Creature> getInitialStudentsOnEachIsland(){
+        ArrayList<Creature> studentsOnEachIsland = new ArrayList<Creature>();
+        Archipelago archipelago;
+
+        int island_ID = getPositionOfMotherNature();
+        do{
+            //get the island reference
+            archipelago = realmOfTheMatch.getArchipelagos().get(island_ID);
+
+            for(Creature c: Creature.values()){
+                for(int j = 0; j < archipelago.getStudentsOfType(c); j++){
+                    studentsOnEachIsland.add(c);
+                }
+            }
+
+            // go to the next island
+            island_ID = realmOfTheMatch.nextIsland(island_ID);
+        }while (island_ID != getPositionOfMotherNature());
+
+        return studentsOnEachIsland;
     }
 
     /**

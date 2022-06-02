@@ -28,6 +28,10 @@ public class MatchStartMessage extends Message {
      * This attribute is the initial position of mother nature
      */
     private int motherNaturePosition;
+    /**
+     * This attribute is the list of students initially positioned on each island
+     */
+    private ArrayList<Creature> studentsOnIslands;
 
 
     /**
@@ -91,5 +95,13 @@ public class MatchStartMessage extends Message {
 
     public boolean isExpertMode() {
         return expertMode;
+    }
+
+    public void setStudentsOnIslands(ArrayList<Creature> studentsOnIslands) {
+        this.studentsOnIslands = studentsOnIslands;
+    }
+
+    public ArrayList<Creature> getStudentsOnIslands() {
+        return studentsOnIslands;
     }
 }
