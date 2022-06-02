@@ -192,7 +192,7 @@ public class SupportFunctions {
      * @param creature the kind of professor we are interested in
      * @return ID of the player controlling the professor or -1 if no player controls it
      */
-    static int whoControlsTheProfessor(Match match, Creature creature){
+    static public int whoControlsTheProfessor(Match match, Creature creature){
         int player_ID = -1;
 
         for(int i = 0; i < match.getPlayers().size(); i++){
