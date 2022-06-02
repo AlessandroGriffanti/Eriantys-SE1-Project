@@ -40,6 +40,10 @@ public class NetworkHandler {
      * We use this flag to understand if the player has already used the assistant card.
      */
     private boolean assistantChoiceFlag = false;
+    /**
+     * We use this attribute to know how many students have been moved by the player.
+     */
+    private int numberOfChosenStudent = 0;
 
 
     /**
@@ -170,7 +174,6 @@ public class NetworkHandler {
                 cli.startAlert();
                 modelView = new ModelView();
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
-                //qui va settato il numero di giocatori totali della partita, verrà passato dal server (controller)
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
 
                 System.out.println("NUMERO DI GIOCATORI TOTALI: " + matchStartMessage.getNumPlayer());
@@ -253,7 +256,7 @@ public class NetworkHandler {
                         }
                     case "refillClouds":
                         cli.showStudentsInEntrancePlayer(playerID, modelView);                         //A questo punto della partita ad esempio, cioè prima della scelta dell'assistente, possiamo mostrare al giocatore i suoi studenti nell'entrance.
-
+                                                                                                            //e sempre qui inserirei la stampa della la situazione iniziale delle isole (con uno studente su ciascuna tranne dove c'è MN e nell'isola opposta) quando viene messa nel messaggio di start match
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
                             modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));          //rimuovo la carta scelta dal giocatore dalla modelview
@@ -271,20 +274,46 @@ public class NetworkHandler {
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             ArrayList<Integer> assistantAlreadyUsedInThisRound = ackMessageMapped.getAssistantAlreadyUsedInThisRound();
                             int assistantChosen = cli.assistantChoiceNext(modelView.getAssistantCardsValuesPlayer(), assistantAlreadyUsedInThisRound );
-                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen)); //lo rimuovo dalla modelview
+                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));   //lo rimuovo dalla modelview
                             for(Integer i : modelView.getAssistantCardsValuesPlayer()){                                                             //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
                                 System.out.print(i + " ");
                             }
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                             break;
-                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag){
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false){
                             cli.turnWaiting();
                             break;
                         }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
-                            assistantChoiceFlag = false;                                                        //qui cambia la flag il primo giocatore
-                        }
 
+                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
+                            int locationChosen = cli.choiceLocationToMove(modelView);                           //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
+                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
+                            //updateModelViewAfterFirstStudent(ackMessageMappaed);                              ////dopo questo ++ potrebbe esserci un update della modelview, oppure possiamo farlo dopo la scelta del 3° studente.
+                            numberOfChosenStudent++;
+                            assistantChoiceFlag = false;                                                        //qui cambia la flag il primo giocatore
+                            break;
+                        }
+                    case "action_1_dining_room":
+                        if(ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < 3){            //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su diningroom
+                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            int locationChosen = cli.choiceLocationToMove(modelView);
+                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
+                            numberOfChosenStudent++;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <3){
+                            cli.turnWaiting();
+                        }
+                        break;
+                    case "action_1_island":
+                        if(ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < 3){          //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su isola
+                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            int locationChosen = cli.choiceLocationToMove(modelView);
+                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
+                            numberOfChosenStudent++;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <3){
+                            cli.turnWaiting();
+                        }
+                        break;
 
                 }
                 break;
@@ -347,17 +376,48 @@ public class NetworkHandler {
     }
 
     /**
+     * This method creates a new MovedStudentsFromEntrance message and sends it to the server.
+     * @param studentChosen is the student chosen.
+     * @param locationChosen is the location, island or dining room, chosen.
+     */
+    public void sendMovedStudentsFromEntranceMessage(int studentChosen, int locationChosen){
+        MovedStudentsFromEntrance movedStudentsFromEntrance = new MovedStudentsFromEntrance();
+        movedStudentsFromEntrance.setStudent_ID(studentChosen);
+        movedStudentsFromEntrance.setLocation(locationChosen);
+        movedStudentsFromEntrance.setSender_ID(playerID);
+        sendMessage(movedStudentsFromEntrance);
+    }
+
+    /**
      * This method is used to update the modelView after receiving the matchStartMessage.
      * @param matchStartMessage is the matchStartMatchMessage received.
      */
     public void updateStartModelView(MatchStartMessage matchStartMessage){
-        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                     //setto il numero di giocatori della partita
-        modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmo
-        for(Integer i : matchStartMessage.getStudentsInEntrance().keySet()){
+        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                     //setto il numero di giocatori totali della partita
+        modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
+        if(modelView.isExpertModeGame() == true){                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
+            modelView.setCoinGame(20);
+            for(String s : matchStartMessage.getCharacters()){
+                modelView.getCharacterCardsInTheGame().add(s);
+            }
+        }
+        //System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
+        //System.out.println("partita in expert mode??? " + modelView.isExpertModeGame());
+        modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
+
+        /*for(int i = 0; i < 12; i++){
+            if(modelView.getIslandGame().get(i).isMotherNaturePresence() == true){
+                System.out.println("MADRE NATURA è SULL'ISOLA: " + i);                      //controllo se ho messo madre natura sull'isola corretta
+            }
+        } */
+        for(Integer i : matchStartMessage.getStudentsInEntrance().keySet()){                                                //integer è la key dell'hashmap del match start message, è l'id del player
             ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);           //Questo dovrebbe essere l'update degli studenti nell'entrance
-            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView));
+            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));     //passo anche il numero di giocatori totali della partita così posso settare il numero di torri in towerAreaView
             modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
         }
+
+        //System.out.println("numero torri: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());     //stampa di controllo
+
     }
 
 
