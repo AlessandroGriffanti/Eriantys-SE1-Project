@@ -19,9 +19,9 @@ public class SchoolBoardView {
      * This constructor creates a new instance of the SchoolBoardView.
      * @param modelview is the reference to the modelView created in the NetworkHandler.
      */
-    public SchoolBoardView(ModelView modelview){
+    public SchoolBoardView(ModelView modelview, int numberOfTotalPlayers){
         this.modelview = modelview;
-        this.towerAreaPlayer = new TowerAreaView(); //forse qui devo passargli il numero di giocatori totali della partita della partita, quelli che dovrebber aggiungere luca nel mex di match start
+        this.towerAreaPlayer = new TowerAreaView(numberOfTotalPlayers);
         this.diningRoomPlayer = new DiningRoomView();
         this.entrancePlayer = new EntranceView(diningRoomPlayer);
     }

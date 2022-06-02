@@ -350,7 +350,8 @@ public class CLI {
     }
 
     /**
-     * This method is used to show to the player his students at the beginning of the match, after receveing the MatchStartMessage.
+     * This method is used to show to the player his students at the beginning of the match, after receveing the MatchStartMessage
+     * and the character cards available for the game, if the game is in expert mode.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
      * @param modelView is the reference to the modelView.
      */
@@ -361,10 +362,61 @@ public class CLI {
         }
         print("\n");
 
+        if(modelView.isExpertModeGame() == true){
+            println("The character cards in this game are: ");
+            for(String s : modelView.getCharacterCardsInTheGame()){
+                print(s + " ");
+            }
+            print("\n");
+        }
         println("Numero di giocatori totali della partita: " + modelView.getNumberOfPlayersGame());
         println("Partita in expertmode? " + String.valueOf(modelView.isExpertModeGame()));
     }
 
+    /**
+     * This method is used to ask the player which students he wants to move from the entrance.
+     * @param modelView is the reference to the modelView.
+     */
+    public synchronized int choiceOfStudentsToMove(int playerID, ModelView modelView ){
+        println("Which student do you want to move from the entrance? ");
+        int studentChosen = scannerCLI.nextInt();                         //lo studente è rappresentato da un intero come si vede nel messaggio di MovedStudentsFromEntrance
+        while(studentChosen < 0 || studentChosen >= modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()){
+            println("Plase insert a valid student: ");
+            studentChosen = scannerCLI.nextInt();
+        }
+        return studentChosen;
+    }
+
+    /**
+     * This method is used to ask the player where he wants to move the student he chose.
+     * @param modelView is the reference to the modelView.
+     * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
+     */
+    public synchronized int choiceLocationToMove(ModelView modelView){
+        println("Where do you want to move the student you chose? diningroom/island");
+        String locationChosen = scannerCLI.nextLine();
+        while(!(locationChosen.equals("diningroom") || (locationChosen.equals("island")))){
+            println("Please insert 'diningroom' or 'island': ");
+            locationChosen = scannerCLI.nextLine();
+        }
+        int islandChosen;
+        if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
+            println("Which island do you want to move your students to? ");     //nel messaggio movedstudentsFromEntrance.
+            for(int i = 0; i < 12; i++){
+                print(i + " ");
+            }
+            print("\n");
+            islandChosen = scannerCLI.nextInt();
+            while(islandChosen < 0 || islandChosen >= 12){
+                println("Please insert a valid island ID: ");
+                islandChosen = scannerCLI.nextInt();
+            }
+        }else{
+            return -1;
+        }
+        return islandChosen;
+
+    }
     public void print(String strToPrint){
         System.out.print(strToPrint);
     }
