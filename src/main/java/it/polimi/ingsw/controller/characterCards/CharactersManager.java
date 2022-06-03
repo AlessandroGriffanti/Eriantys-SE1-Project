@@ -104,7 +104,7 @@ public class CharactersManager {
                         cards.put("mushroomMerchant", new MushroomsMerchant(controller));
                         break;
                     case 10:
-                        cards.put("bard", new Bard());
+                        cards.put("bard", new Bard(controller));
                         break;
                     case 11:
                         cards.put("princess", new Princess());

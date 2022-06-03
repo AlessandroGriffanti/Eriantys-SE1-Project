@@ -74,7 +74,7 @@ class EntranceTest {
 
         Creature creatureMoved = entrance.getStudentsInTheEntrance().get(2);
         entrance.moveStudentToDiningRoom(2);
-        assertEquals(1, entrance.getDoorToTheDiningRoom().getAllOccupiedSeats().get(creatureMoved).intValue());
+        assertEquals(1, entrance.getDoorToTheDiningRoom().getOccupiedSeats().get(creatureMoved).intValue());
     }
 
     /** checks if it correctly moves 2 students from the entrance to an island: a dragon type one on the island where mother nature currently stands, a fairy one

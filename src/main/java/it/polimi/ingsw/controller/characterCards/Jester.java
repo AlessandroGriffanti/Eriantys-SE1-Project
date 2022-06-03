@@ -10,6 +10,11 @@ import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the character card called "jester".
+ * It allows the player to switch at maximum 3 students between the character's students and
+ * the students in the player's entrance.
+ */
 public class Jester extends Character {
 
     /**
@@ -48,11 +53,11 @@ public class Jester extends Character {
 
         // control the number of students chosen
         assert request.getElementsFromCard().size() > 0 && request.getElementsFromCard().size() < 4;
-        assert request.getElementsOfPlayer().size() > 0 && request.getElementsOfPlayer().size() < 4;
+        assert request.getStudentsFromPlayerEntrance().size() > 0 && request.getStudentsFromPlayerEntrance().size() < 4;
 
         // take data from the message
         ArrayList<Integer> studentsFromTheCard_ID = request.getElementsFromCard();
-        ArrayList<Integer> studentsFromEntrance_ID = request.getElementsOfPlayer();
+        ArrayList<Integer> studentsFromEntrance_ID = request.getStudentsFromPlayerEntrance();
 
         // take the entrance of the player
         Player player = controller.getMatch().getPlayerByID(request.getSender_ID());
@@ -80,7 +85,7 @@ public class Jester extends Character {
         int coinsInReserve = controller.getMatch().getCoinReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "jester", coinsInReserve);
         ack.setStudentsOnCard(this.studentsOnCard);
-        ack.setStudentsOfPlayer(entrance.getStudentsInTheEntrance());
+        ack.setEntranceOfPlayer(entrance.getStudentsInTheEntrance());
 
         controller.sendMessageAsBroadcast(ack);
     }

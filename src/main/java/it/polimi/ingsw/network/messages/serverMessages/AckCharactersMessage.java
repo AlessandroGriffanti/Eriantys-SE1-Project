@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AckCharactersMessage extends Message {
 
@@ -41,7 +42,7 @@ public class AckCharactersMessage extends Message {
      * This attribute is the list of students belonging to the player
      * (for example in the entrance of his school-board)
      */
-    private ArrayList<Creature> studentsOfPlayer;
+    private ArrayList<Creature> entranceOfPlayer;
     /**
      * This attribute is true if the match has come to its end or false otherwise
      */
@@ -74,6 +75,20 @@ public class AckCharactersMessage extends Message {
      * effect of a character
      */
     private Creature creature;
+    /**
+     * This attribute is the dining room of the player, for each type of students
+     * the number of students on the table
+     * key: type of students
+     * value: number of student of the table
+     */
+    private HashMap<Creature, Integer> playerDiningRoom;
+    /**
+     * This attribute is the correspondence between player_ID and its professors
+     * as list of creature
+     * key: player's ID
+     * value: array of Creature corresponding to the professors controlled by the player
+     */
+    private HashMap<Integer, ArrayList<Creature>> allPlayersProfessors = new HashMap<Integer, ArrayList<Creature>>();
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -119,12 +134,12 @@ public class AckCharactersMessage extends Message {
     }
 
     // SETTER AND GETTER FOR studentsOfPlayer
-    public void setStudentsOfPlayer(ArrayList<Creature> studentsOfPlayer) {
-        this.studentsOfPlayer = studentsOfPlayer;
+    public void setEntranceOfPlayer(ArrayList<Creature> entranceOfPlayer) {
+        this.entranceOfPlayer = entranceOfPlayer;
     }
 
-    public ArrayList<Creature> getStudentsOfPlayer() {
-        return studentsOfPlayer;
+    public ArrayList<Creature> getEntranceOfPlayer() {
+        return entranceOfPlayer;
     }
 
     // SETTER AND GETTER FOR island_ID
@@ -200,6 +215,23 @@ public class AckCharactersMessage extends Message {
         return creature;
     }
 
+    // SETTER AND GETTER FOR playerDiningRoom
+    public void setPlayerDiningRoom(HashMap<Creature, Integer> playerDiningRoom) {
+        this.playerDiningRoom = playerDiningRoom;
+    }
+
+    public HashMap<Creature, Integer> getPlayerDiningRoom() {
+        return playerDiningRoom;
+    }
+
+    // ADDER AND GETTER FOR allPlayersProfessors
+    public void setPlayerProfessors(int player_ID, ArrayList<Creature> playerProfessors) {
+        allPlayersProfessors.put(player_ID, playerProfessors);
+    }
+
+    public HashMap<Integer, ArrayList<Creature>> getAllPlayersProfessors() {
+        return allPlayersProfessors;
+    }
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
@@ -237,9 +269,15 @@ public class AckCharactersMessage extends Message {
 
         7. jester:
            - studentsOnCard: all the students on the character card
+           - entranceOfPlayer: the new entrance of the player
 
         8. knight:
            - no more attributes set
 
         9. mushroomsMerchant:
-           - creature: type of student that won't be counted in the influence*/
+           - creature: type of student that won't be counted in the influence
+
+        10. bard:
+           - entranceOfPlayer: the new entrance of the player that used the character
+           - playerDiningRoom: the new dining room of the player that used the character
+           - allPlayersProfessors: for each player his professors table as array of Creature*/

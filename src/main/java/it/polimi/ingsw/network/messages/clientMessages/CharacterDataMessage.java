@@ -22,12 +22,19 @@ public class CharacterDataMessage extends Message {
     private int island_ID;
     /**
      * This attribute is the list of IDs of the elements (students) on the character card
+     * selected by the player
      */
     private ArrayList<Integer> elementsFromCard;
     /**
-     * This attribute is the list of IDs of the elements belonging to the player
+     * This attribute is the list of IDs of the students selected by the player
+     * from his entrance
      */
-    private ArrayList<Integer> elementsOfPlayer;
+    private ArrayList<Integer> studentsFromPlayerEntrance;
+    /**
+     * This attribute is the list of types of student selected by the player
+     * from his dining room
+     */
+    private ArrayList<Creature> studentsFromPlayerDiningRoom;
     /**
      * This attribute is the type of student chosen by the player (ex. character MushroomsMerchant)
      */
@@ -80,13 +87,13 @@ public class CharacterDataMessage extends Message {
         return elementsFromCard;
     }
 
-    // SETTER AND GETTER FOR elementsOfPlayer
-    public void setElementsOfPlayer(ArrayList<Integer> elementsOfPlayer) {
-        this.elementsOfPlayer = elementsOfPlayer;
+    // SETTER AND GETTER FOR studentsFromPlayerEntrance
+    public void setStudentsFromPlayerEntrance(ArrayList<Integer> studentsFromPlayerEntrance) {
+        this.studentsFromPlayerEntrance = studentsFromPlayerEntrance;
     }
 
-    public ArrayList<Integer> getElementsOfPlayer() {
-        return elementsOfPlayer;
+    public ArrayList<Integer> getStudentsFromPlayerEntrance() {
+        return studentsFromPlayerEntrance;
     }
 
     // SETTER AND GETTER FOR creature
@@ -96,6 +103,15 @@ public class CharacterDataMessage extends Message {
 
     public Creature getCreature() {
         return creature;
+    }
+
+    // SETTER AND GETTER FOR studentsFromPlayerDiningRoom
+    public void setStudentsFromPlayerDiningRoom(ArrayList<Creature> studentsFromPlayerDiningRoom) {
+        this.studentsFromPlayerDiningRoom = studentsFromPlayerDiningRoom;
+    }
+
+    public ArrayList<Creature> getStudentsFromPlayerDiningRoom() {
+        return studentsFromPlayerDiningRoom;
     }
 }
 
@@ -119,11 +135,15 @@ public class CharacterDataMessage extends Message {
             - no further attributes
 
         7. "jester":
-            - elementsOfPlayer: the list of IDs of the students in the entrance of the player
+            - studentsFromPlayerEntrance: the list of IDs of the students in the entrance of the player
             - elementsFromCard: the list of IDs of the students on the character card
 
         8. "knight":
             - no more attributes
 
-        9. "mushroomsMerchant";
-            - creature: type of student chosen by the player*/
+        9. "mushroomsMerchant":
+            - creature: type of student chosen by the player
+
+        10. "bard":
+            - studentsFromPlayerDiningRoom
+            - studentsFromPlayerEntrance*/

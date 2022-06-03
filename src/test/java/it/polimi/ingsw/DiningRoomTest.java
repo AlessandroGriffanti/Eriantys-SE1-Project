@@ -18,7 +18,7 @@ class DiningRoomTest {
         DiningRoom diningroom = new DiningRoom(p);
         for (Creature c : Creature.values()){
             diningroom.addStudent(c);
-            assertEquals(1, diningroom.getAllOccupiedSeats().get(c).intValue());
+            assertEquals(1, diningroom.getOccupiedSeats().get(c).intValue());
         }
     }
 
@@ -27,12 +27,12 @@ class DiningRoomTest {
      * to 1
      */
     @Test
-    void adding3DragonTogetACoin() {
+    void adding3DragonToGetACoin() {
         Player p = new Player(1, "player", 3, new Realm(3, new Bag()));
         DiningRoom diningroom = new DiningRoom(p);
         //CoinManagerObserver c = new CoinManagerObserver(p);
-        //diningroom.setCoinObserver(c);
-        diningroom.getAllOccupiedSeats().replace(Creature.DRAGON,2);
+        //diningRoom.setCoinObserver(c);
+        diningroom.getOccupiedSeats().replace(Creature.DRAGON,2);
         diningroom.addStudent(Creature.DRAGON);
         assertEquals(2, p.getCoinsOwned());
     }
@@ -44,10 +44,10 @@ class DiningRoomTest {
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
         DiningRoom diningRoom = new DiningRoom(p);
         for(Creature c : Creature.values()) {
-            diningRoom.getAllOccupiedSeats().replace(c, 1);
+            diningRoom.getOccupiedSeats().replace(c, 1);
             try{
                 diningRoom.removeStudent(c);
-                assertEquals(0, diningRoom.getAllOccupiedSeats().get(c).intValue());
+                assertEquals(0, diningRoom.getOccupiedSeats().get(c).intValue());
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -60,10 +60,10 @@ class DiningRoomTest {
     void removeOneDragon (){
         Player p = new Player(0, "james",2, new Realm(2, new Bag()));
         DiningRoom diningRoom = new DiningRoom(p);
-        diningRoom.getAllOccupiedSeats().replace(Creature.DRAGON, 1);
+        diningRoom.getOccupiedSeats().replace(Creature.DRAGON, 1);
         try {
             diningRoom.removeStudent(Creature.DRAGON);
-            assertEquals(0, diningRoom.getAllOccupiedSeats().get(Creature.DRAGON).intValue());
+            assertEquals(0, diningRoom.getOccupiedSeats().get(Creature.DRAGON).intValue());
         } catch (Exception e) {
             e.printStackTrace();
         }
