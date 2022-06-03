@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.schoolboard;
 
 import it.polimi.ingsw.model.CoinManagerObserver;
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Match;
 import it.polimi.ingsw.model.Player;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public class DiningRoom {
     private Entrance entrance;
     private CoinManagerObserver coinObserver;
 
-    public DiningRoom(Player p){
+    public DiningRoom(Match match, Player p){
         occupiedSeats = new HashMap<>();
         occupiedSeats.put(Creature.DRAGON,0);
         occupiedSeats.put(Creature.UNICORN,0);
@@ -19,7 +20,7 @@ public class DiningRoom {
         occupiedSeats.put(Creature.FAIRY,0);
         occupiedSeats.put(Creature.GNOME,0);
 
-        coinObserver = new CoinManagerObserver(p);
+        coinObserver = new CoinManagerObserver(match, p);
     }
 
     /**

@@ -78,7 +78,7 @@ public class Princess extends Character {
         SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
 
         // create and send the ack message
-        int coinReserve = controller.getMatch().getCoinReserve();
+        int coinReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "princess", coinReserve);
 
         ack.setStudentsOnCard(studentsOnPrincess);

@@ -13,13 +13,13 @@ public class Player {
     private Tower towerColor;
     private Realm realm;
 
-    public Player(int id, String nickName, int numPlayers, Realm r){
+    public Player(Match match, int id, String nickName, int numPlayers, Realm r){
         this.nickName = nickName;
         this.ID = id;
         this.realm = r;
 
         this.coinsOwned = 1;
-        this.schoolBoard = new SchoolBoard(numPlayers, r, this);
+        this.schoolBoard = new SchoolBoard(match, numPlayers, r, this);
     }
 
 

@@ -4,7 +4,6 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
-import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 /**
  * This class represents the character card called 'herbalist' (the fifth in the rules file).
@@ -51,7 +50,7 @@ public class Herbalist extends Character {
         // put the tile on the island chosen by the player
         island.addNoEntryTile();
 
-        int coinsInReserve = controller.getMatch().getCoinReserve();
+        int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "herbalist", coinsInReserve);
         ack.setIsland_ID(island_ID);
         ack.setNumberOfElementsOnTheCard(tilesOnTheCard);

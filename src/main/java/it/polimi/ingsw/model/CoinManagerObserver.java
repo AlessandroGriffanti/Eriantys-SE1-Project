@@ -1,10 +1,19 @@
 package it.polimi.ingsw.model;
 
 public class CoinManagerObserver {
-    private Player player;
+    /**
+     * This attribute is the reference to the player object to which this coin-manager
+     * refers to
+     */
+    private final Player player;
+    /**
+     * This attribute is the reference to the match object
+     */
+    private final Match match;
 
-    public CoinManagerObserver(Player p){
+    public CoinManagerObserver(Match match, Player p){
         this.player = p;
+        this.match = match;
     }
 
     /**
@@ -12,5 +21,6 @@ public class CoinManagerObserver {
      */
     public void depositCoin(){
         this.player.earnCoin();
+        match.takeCoinsFromReserve(1);
     }
 }

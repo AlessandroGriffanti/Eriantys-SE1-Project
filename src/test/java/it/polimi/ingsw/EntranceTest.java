@@ -18,8 +18,9 @@ class EntranceTest {
      */
     @Test
     void removeOneStudent_positionBecomesNull(){
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        Match match = new Match(0, 2, true);
+        Player p = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        Entrance entrance = new Entrance(new DiningRoom(match, p), match.getRealmOfTheMatch(), 2);
         entrance.removeStudent(2);
         assertEquals(null, entrance.getStudentsInTheEntrance().get(2));
 
@@ -30,8 +31,9 @@ class EntranceTest {
      */
     @Test
     void addStudentAfterRemoval_studentAddedInTheSpotWithNul(){
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        Match match = new Match(0, 2, true);
+        Player p = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        Entrance entrance = new Entrance(new DiningRoom(match, p), match.getRealmOfTheMatch(), 2);
 
         entrance.removeStudent(2);
 
@@ -43,8 +45,9 @@ class EntranceTest {
     /** check if a few students are correctly removed */
     @Test
     void addMultipleStudentsAfterRemoval_studentAddedInTheSpotWithNul(){
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        Match match = new Match(0, 2, true);
+        Player p = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        Entrance entrance = new Entrance(new DiningRoom(match, p), match.getRealmOfTheMatch(), 2);
 
         ArrayList<Creature> studentsToAdd = new ArrayList<Creature>();
         studentsToAdd.add(Creature.FROG);
@@ -69,8 +72,9 @@ class EntranceTest {
     /** Checks if it correctly moves a Dragon type student to the dining room from the entrance */
     @Test
     void moveStudent_onlyOneStudentInTheDiningRoomTable() {
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        Match match = new Match(0, 2, true);
+        Player p = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        Entrance entrance = new Entrance(new DiningRoom(match, p), match.getRealmOfTheMatch(), 2);
 
         Creature creatureMoved = entrance.getStudentsInTheEntrance().get(2);
         entrance.moveStudentToDiningRoom(2);
@@ -79,13 +83,14 @@ class EntranceTest {
 
     /** checks if it correctly moves 2 students from the entrance to an island: a dragon type one on the island where mother nature currently stands, a fairy one
      * in the following island so that the total number of students on the island where mother nature currently stands is 1,
-     * the number of students on the following island is 2 (one added and one from the set up of the islands), while
+     * the number of students on the following island is 2 (one added and one from the setup of the islands), while
      * the total number of students on the opposite island (mother nature position + 6) is 0
      */
     @Test
     void moveStudentsToIsland() {
-        Player p = new Player(0, "james",2, new Realm(2, new Bag()));
-        Entrance entrance = new Entrance(new DiningRoom(p), new Realm(3, new Bag()), 2);
+        Match match = new Match(0, 2, true);
+        Player p = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        Entrance entrance = new Entrance(new DiningRoom(match, p), match.getRealmOfTheMatch(), 2);
         entrance.addStudent(Creature.DRAGON);
         entrance.addStudent(Creature.FAIRY);
 

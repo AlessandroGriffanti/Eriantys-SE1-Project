@@ -82,7 +82,7 @@ public class Jester extends Character {
         }
 
 
-        int coinsInReserve = controller.getMatch().getCoinReserve();
+        int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "jester", coinsInReserve);
         ack.setStudentsOnCard(this.studentsOnCard);
         ack.setEntranceOfPlayer(entrance.getStudentsInTheEntrance());

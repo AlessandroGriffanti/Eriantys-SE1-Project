@@ -125,6 +125,9 @@ public class CharacterDataMessage extends Message {
         2. "cook":
             - no further attributes
 
+        3. "ambassador":
+            - island_ID: the island chosen by the player where to compute the influence
+
         4. "messenger":
             - no further attributes
 

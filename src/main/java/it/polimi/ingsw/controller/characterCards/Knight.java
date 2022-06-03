@@ -32,7 +32,7 @@ public class Knight extends Character {
 
         controller.getCharactersManager().setKnightUser(request.getSender_ID());
 
-        int coinsInReserve = controller.getMatch().getCoinReserve();
+        int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "knight", coinsInReserve);
 
         controller.sendMessageAsBroadcast(ack);

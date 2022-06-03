@@ -87,7 +87,7 @@ public class Trafficker extends Character {
         SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
 
         // create and send ack message
-        int coinsReserve = controller.getMatch().getCoinReserve();
+        int coinsReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "trafficker", coinsReserve);
         ack.setCreature(creatureChosen);
 

@@ -192,8 +192,6 @@ public class CharactersManager {
         centaurActive = false;
         knightUser = -1;
         mushroomsMerchantActive = false;
-
-        // todo: complete with the other attributes
     }
 
 

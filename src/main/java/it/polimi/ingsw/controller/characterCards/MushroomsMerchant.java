@@ -30,7 +30,7 @@ public class MushroomsMerchant extends Character {
         creatureChosen = request.getCreature();
         controller.getCharactersManager().setMushroomsMerchantActive(true);
 
-        int coinReserve = controller.getMatch().getCoinReserve();
+        int coinReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "mushroomsMerchant", coinReserve);
         ack.setCreature(creatureChosen);
 

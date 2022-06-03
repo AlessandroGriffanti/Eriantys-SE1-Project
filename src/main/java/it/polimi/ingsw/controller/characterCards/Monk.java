@@ -68,7 +68,7 @@ public class Monk  extends Character {
         addStudent(caughtStudentFromBag);
 
         // create and send the response
-        int coinsInReserve = controller.getMatch().getCoinReserve();
+        int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "monk", coinsInReserve);
         ack.setStudent(chosenStudent);
         ack.setStudentsOnCard(this.students);

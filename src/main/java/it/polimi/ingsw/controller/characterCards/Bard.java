@@ -87,7 +87,7 @@ public class Bard extends Character {
         SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
 
         // create and send the ack message
-        int coinsReserve = controller.getMatch().getCoinReserve();
+        int coinsReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "bard", coinsReserve);
 
         ack.setEntranceOfPlayer(player.getSchoolBoard().getEntrance().getStudentsInTheEntrance());

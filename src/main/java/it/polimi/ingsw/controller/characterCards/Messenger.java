@@ -36,7 +36,7 @@ public class Messenger extends Character {
 
         controller.getCharactersManager().setMessengerActive(true);
 
-        int coinsInReserve = controller.getMatch().getCoinReserve();
+        int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "messenger", coinsInReserve);
 
         controller.sendMessageAsBroadcast(ack);

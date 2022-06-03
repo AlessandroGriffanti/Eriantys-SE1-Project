@@ -12,9 +12,9 @@ public class SchoolBoard {
     private Bag bagForInitialSetUp;
     private int numOfPlayers;
 
-    public SchoolBoard(int numPlayers, Realm r, Player p){
+    public SchoolBoard(Match match, int numPlayers, Realm r, Player p){
         this.towerArea = new TowerArea(numPlayers);
-        this.diningRoom = new DiningRoom(p);
+        this.diningRoom = new DiningRoom(match, p);
         this.numOfPlayers = numPlayers;
         this.bagForInitialSetUp = r.getBag();
 

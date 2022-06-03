@@ -11,7 +11,9 @@ class SchoolBoardTest {
     /** checks if correctly returns the controlled dragon professor */
     @Test
     void getControlledProfessors() {
-        SchoolBoard schoolBoard = new SchoolBoard(3, new Realm(3, new Bag()), new Player(0, "james",2, new Realm(2, new Bag())));
+        Match match = new Match(0, 2, true);
+        Player james = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        SchoolBoard schoolBoard = new SchoolBoard(match, 3, match.getRealmOfTheMatch(), james);
         schoolBoard.getProfessorTable().addProfessor(Creature.DRAGON);
         assertTrue(schoolBoard.getControlledProfessors().contains(Creature.DRAGON));
     }
@@ -19,16 +21,13 @@ class SchoolBoardTest {
     /** checks if the initial setup of the entrance correctly works */
     @Test
     void initialSetUpStudentsInTheEntrance(){
-        Bag bag = new Bag();
-        Realm r = new Realm(2, bag);
-        SchoolBoard schoolBoard = new SchoolBoard(2, r, new Player(0, "james",2, new Realm(2, new Bag())));
+        Match match = new Match(0, 2, true);
+        Realm r = match.getRealmOfTheMatch();
+        Player james = new Player(match, 0, "james",2, match.getRealmOfTheMatch());
+        SchoolBoard schoolBoard = new SchoolBoard(match, 2, r, james);
 
-        assertTrue(schoolBoard.getEntrance().getStudentsInTheEntrance().size() == 7);
+        assertEquals(7, schoolBoard.getEntrance().getStudentsInTheEntrance().size());
     }
-    @Test
-    void setCoinManager() {
-    }
-
 
     /** this test checks if the players' tower Areas are correctly updated: first of all p1 is set as the master of the
      * archipelago 0 (which is just and island now) and his towers are correctly lowered by one (from 8 to 7). Then p1 becomes
@@ -38,10 +37,10 @@ class SchoolBoardTest {
      */
     @Test
     void takeTowers(){
-        Bag bag = new Bag();
-        Realm realm = new Realm(2, bag);
-        Player p1 = new Player(1, "Jack", 2, realm);
-        Player p2 = new Player(2, "Lisa", 2, realm);
+        Match match = new Match(0, 2, true);
+        Realm realm = match.getRealmOfTheMatch();
+        Player p1 = new Player(match, 1, "Jack", 2, realm);
+        Player p2 = new Player(match, 2, "Lisa", 2, realm);
 
         p1.setTowerColor(Tower.BLACK);
         p2.setTowerColor(Tower.GREY);

@@ -1,11 +1,8 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.controller.VirtualView;
 import it.polimi.ingsw.model.schoolboard.Entrance;
 import it.polimi.ingsw.model.schoolboard.ProfessorTable;
 
-import java.lang.reflect.Array;
-import java.net.CacheResponse;
 import java.util.ArrayList;
 
 /**
@@ -39,7 +36,7 @@ public class Match {
     /**
      * This attribute is the coin reserve/vault containing all the coins that no player owns
      */
-    private int coinReserve;
+    private int coinsReserve;
     /**
      * This attribute memorizes the professors that are not already controlled by any of the players
      */
@@ -56,7 +53,7 @@ public class Match {
         this.bagOfTheMatch = new Bag();
         this.realmOfTheMatch = new Realm(numberOfPlayers, bagOfTheMatch);
         this.players = new ArrayList<Player>();
-        this.coinReserve = 20;
+        this.coinsReserve = 20;
 
         this.notControlledProfessors = new ArrayList<Creature>();
         for(Creature c: Creature.values()){
@@ -72,9 +69,9 @@ public class Match {
      * @param nickname name of the player
      */
     public void addPlayer(String nickname){
-        Player p = new Player(players.size(), nickname, numberOfPlayers, realmOfTheMatch);
+        Player p = new Player(this, players.size(), nickname, numberOfPlayers, realmOfTheMatch);
         players.add(p);
-        this.coinReserve = this.coinReserve - 1;
+        this.coinsReserve = this.coinsReserve - 1;
     }
 
     public int getNumberOfPlayers() {
@@ -345,15 +342,26 @@ public class Match {
     /**
      * This method put a certain amount of coins in the coin reserve
      * @param quantity number of coins to deposit in the  coin reserve
-     * @return number of coins actually in the coin reserve
      */
-    public int depositInCoinReserve(int quantity){
-        coinReserve += quantity;
-
-        return coinReserve;
+    public void depositInCoinReserve(int quantity){
+        coinsReserve += quantity;
     }
 
-    public int getCoinReserve() {
-        return coinReserve;
+    /**
+     * This method takes the desired quantity of coin from the public reserve
+     * @param qt number of coins to take
+     */
+    public void takeCoinsFromReserve(int qt){
+        if(coinsReserve >= qt){
+            coinsReserve -= qt;
+        }
+    }
+
+    public int getCoinsReserve() {
+        return coinsReserve;
+    }
+
+    public int getID() {
+        return ID;
     }
 }

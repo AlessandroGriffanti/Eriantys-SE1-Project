@@ -31,8 +31,9 @@ class DiningRoomTest {
      */
     @Test
     void adding3DragonToGetACoin() {
-        Player p = new Player(1, "player", 3, new Realm(3, new Bag()));
-        DiningRoom diningroom = new DiningRoom(p);
+        Match match = new Match(0, 2, false);
+        Player p = new Player(match, 1, "player", 3, match.getRealmOfTheMatch());
+        DiningRoom diningroom = new DiningRoom(match, p);
 
         diningroom.getOccupiedSeats().replace(Creature.DRAGON,2);
         diningroom.addStudent(Creature.DRAGON);
@@ -84,10 +85,10 @@ class DiningRoomTest {
      * @return reference to the dining room created
      */
     private DiningRoom createDiningRoom(){
-        Bag bag = new Bag();
-        Realm realm = new Realm(2, bag);
-        Player player = new Player(0, "mario", 2, realm);
+        Match match = new Match(0, 2, false);
+        Realm realm = match.getRealmOfTheMatch();
+        Player player = new Player(match, 0, "mario", 2, realm);
 
-        return new DiningRoom(player);
+        return new DiningRoom(new Match(0, 2, true), player);
     }
 }

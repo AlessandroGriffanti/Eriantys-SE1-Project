@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.model.Match;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 
 /**
  * This class represents the character card called 'ambassador' (third in the rules file)
@@ -60,7 +59,7 @@ public class Ambassador extends Character {
         int island_ID = request.getIsland_ID();
         Archipelago archipelago = match.getRealmOfTheMatch().getArchipelagos().get(island_ID);
 
-        int coinReserve = match.getCoinReserve();
+        int coinReserve = match.getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "ambassador_influence", coinReserve);
 
         // in the case there are no towers yet...
@@ -127,7 +126,7 @@ public class Ambassador extends Character {
         int previousIsland_ID = match.getRealmOfTheMatch().previousIsland(currentIsland);
         int nextIsland_ID = match.getRealmOfTheMatch().nextIsland(currentIsland);
 
-        int coinReserve = match.getCoinReserve();
+        int coinReserve = match.getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "ambassador_union", coinReserve);
 
         switch (unificationControl){
