@@ -172,7 +172,7 @@ public class NetworkHandler {
 
             case "start":
                 cli.startAlert();
-                modelView = new ModelView();
+                modelView = new ModelView(playerID);
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
 
@@ -261,10 +261,10 @@ public class NetworkHandler {
 
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
-                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));          //rimuovo la carta scelta dal giocatore dalla modelview
-                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){                                                                     //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
+                            modelView.getAssistantCardsValuesPlayer().remove(assistantChosen);          //rimuovo la carta scelta dal giocatore dalla modelview, in realtà andrebbe rimosso dopo che il giocatore ha scelto di quanto muovere madre natura, perchè se tolgo qui non ho più la riga nell'hashmap. lo metto qui per controllare funzioni la rimozione
+                            /*for(Integer i : modelView.getAssistantCardsValuesPlayer().keySet()){                    //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
                                 System.out.print(i + " ");
-                            }
+                            } */
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                             break;
@@ -276,8 +276,8 @@ public class NetworkHandler {
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
                             ArrayList<Integer> assistantAlreadyUsedInThisRound = ackMessageMapped.getAssistantAlreadyUsedInThisRound();
                             int assistantChosen = cli.assistantChoiceNext(modelView.getAssistantCardsValuesPlayer(), assistantAlreadyUsedInThisRound );
-                            modelView.getAssistantCardsValuesPlayer().remove(modelView.getAssistantCardsValuesPlayer().indexOf(assistantChosen));   //lo rimuovo dalla modelview
-                            for(Integer i : modelView.getAssistantCardsValuesPlayer()){                                                             //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
+                            modelView.getAssistantCardsValuesPlayer().remove(assistantChosen);                                                  //lo rimuovo dalla modelview, vale lo stesso ragionamento fatto sopra
+                            for(Integer i : modelView.getAssistantCardsValuesPlayer().keySet()){                                                //questo for è inserito solo per controllare che la carta venga effettivamente tolta nella modelview
                                 System.out.print(i + " ");
                             }
                             assistantChoiceFlag = true;
