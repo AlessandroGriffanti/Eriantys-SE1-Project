@@ -146,4 +146,7 @@ public class CharacterDataMessage extends Message {
 
         10. "bard":
             - studentsFromPlayerDiningRoom
-            - studentsFromPlayerEntrance*/
+            - studentsFromPlayerEntrance
+
+        11. "princess":
+            - student_ID: the ID of the student chosen from the character card*/

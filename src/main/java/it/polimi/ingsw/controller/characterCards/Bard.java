@@ -59,7 +59,7 @@ public class Bard extends Character {
         ArrayList<Integer> studentsFromEntrance = request.getStudentsFromPlayerEntrance();
         ArrayList<Creature> studentsFromDiningRoom = request.getStudentsFromPlayerDiningRoom();
 
-        // find who is currently controlling each professor
+        // find who are the professors' masters before using the card
         HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<Creature, Integer>();
         for(Creature c: Creature.values()){
             previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
@@ -77,7 +77,7 @@ public class Bard extends Character {
             entrance.addStudent(studentsFromDiningRoom.get(i));
         }
 
-        // find who is currently controlling the professors
+        // find who are the professors' masters after the card has been used
         HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<Creature, Integer>();
         for(Creature c: Creature.values()){
             currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
@@ -100,7 +100,7 @@ public class Bard extends Character {
             }
         }
 
-        // create and send message
+        // create and send the ack message
         int coinReserve = controller.getMatch().getCoinReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "bard", coinReserve);
 

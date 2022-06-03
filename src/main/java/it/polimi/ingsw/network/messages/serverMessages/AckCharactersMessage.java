@@ -65,7 +65,7 @@ public class AckCharactersMessage extends Message {
     /**
      * This attribute tells if some islands have been unified
      * - none: current island unified with no other island
-     * - previous: current island unified woth the previous one
+     * - previous: current island unified with the previous one
      * - next: current island unified with the next one
      * - both: current island unified with both the next and the previous
      */
@@ -280,4 +280,9 @@ public class AckCharactersMessage extends Message {
         10. bard:
            - entranceOfPlayer: the new entrance of the player that used the character
            - playerDiningRoom: the new dining room of the player that used the character
+           - allPlayersProfessors: for each player his professors table as array of Creature
+
+        11. princess:
+           - studentsOnCard: students on the princess character card
+           - playerDiningRoom: the new diningRoomOfThePlayer
            - allPlayersProfessors: for each player his professors table as array of Creature*/
