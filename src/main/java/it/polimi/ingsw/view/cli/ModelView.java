@@ -1,10 +1,11 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.schoolboard.SchoolBoard;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class ModelView {
     /**
@@ -17,14 +18,20 @@ public class ModelView {
      * Key: player ID, value: number of coins.
      */
     private HashMap<Integer, Integer> coinPlayer;
+    /**
+     * This attribute represents the total number of player in the game.
+     */
     private int numberOfPlayersGame;
+    /**
+     * This attributes tells if the game is played in expert mode or not.
+     */
     private boolean expertModeGame;
-    private HashMap<Integer, Assistant> deckPlayer; //integer rappresenta l'order-value, Assistant contiene lo stesso order value e mothernature value, magari possiamo toglierla visto cjhe ha già scelto il mago
+
+    //private HashMap<Integer, Assistant> deckPlayer; //integer rappresenta l'order-value, Assistant contiene lo stesso order value e mothernature value, magari possiamo toglierla visto cjhe ha già scelto il mago
 
     /**
      * This arraylist gathers all the archipelagos in the game.
      */
-
     private ArrayList <ArchipelagoView> islandGame = new ArrayList<>();
     /**
      * This HashMap gathers the SchoolBoard (a miniature) of all players.
@@ -32,21 +39,38 @@ public class ModelView {
      */
     private HashMap<Integer, SchoolBoardView> schoolBoardPlayers;
 
-    //private ArrayList<Archipelago> islandsGame = new ArrayList<>();
+    /**
+     * This hashmap gathers all the assistant cards of the player.
+     * The key is the order value, the value is the mother nature value.
+     */
+    private HashMap <Integer, Integer> assistantCardsValuesPlayer;
 
-    private ArrayList <Integer> assistantCardsValuesPlayer;
-
-
+    /**
+     * This attribute gathers all the 3 character cards available in the game, if played in expert mode.
+     */
     private ArrayList<String> characterCardsInTheGame;
+
     /**
      * This constructor creates a new instance of the modelView.
      */
-    public ModelView(){
+    public ModelView(int playerID){
         coinPlayer = new HashMap<>();
-        assistantCardsValuesPlayer = new ArrayList<>();
+        assistantCardsValuesPlayer = new HashMap<>();
         characterCardsInTheGame = new ArrayList<>();
-        for(int i = 1; i<= 10; i++){                        //creo le carte assistente
-            assistantCardsValuesPlayer.add(i);
+
+        for(int i = 1; i<= 10; i++){                        //creo le carte assistente con il relativo valore di madre natura
+            if(i == 1 || i == 2) {
+                assistantCardsValuesPlayer.put(i, 1);
+            }else if( i == 3 || i == 4){
+                assistantCardsValuesPlayer.put(i, 2);
+            }else if(i == 5 || i == 6){
+                assistantCardsValuesPlayer.put(i, 3);
+            }else if(i == 7 || i == 8) {
+                assistantCardsValuesPlayer.put(i, 4);
+            }else if(i == 9 || i == 10) {
+                assistantCardsValuesPlayer.put(i, 5);
+            }
+
         }
 
         for(int i = 0; i<12; i++){                         //creo le isole e le aggiungo all'arraylist
@@ -56,6 +80,10 @@ public class ModelView {
         schoolBoardPlayers = new HashMap<>();
 
 
+    }
+
+    public synchronized HashMap<Integer, Integer> getAssistantCardsValuesPlayer() {
+        return assistantCardsValuesPlayer;
     }
 
 
@@ -82,13 +110,7 @@ public class ModelView {
     public synchronized void setNumberOfPlayersGame(int numberOfPlayersGame) {
         this.numberOfPlayersGame = numberOfPlayersGame;
     }
-    public synchronized ArrayList<Integer> getAssistantCardsValuesPlayer() {
-        return assistantCardsValuesPlayer;
-    }
 
-    public synchronized void setAssistantCardsValuesPlayer(ArrayList<Integer> assistantCardValuePlayer) {
-        this.assistantCardsValuesPlayer = assistantCardValuePlayer;
-    }
 
     public synchronized HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
         return schoolBoardPlayers;

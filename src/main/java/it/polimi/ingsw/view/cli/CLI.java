@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -312,16 +313,16 @@ public class CLI {
      * @param availableAssistantCard is the list of assistant cards the player has not used yet in the game.
      * @return the assistant card chosen.
      */
-    public int assistantChoice(ArrayList<Integer> availableAssistantCard){
+    public int assistantChoice(HashMap <Integer, Integer> availableAssistantCard){
         println("Which assistant do you want to play?");
-        for(Integer i : availableAssistantCard){
+        for(Integer i : availableAssistantCard.keySet()){
             print(i + " ");
         }
         print("\n");
         int assistantChosen = scannerCLI.nextInt();
-        while(!(availableAssistantCard.contains(assistantChosen))){
+        while(!(availableAssistantCard.keySet().contains(assistantChosen))){
             println("You can't use this assistant, please select another one from this list: ");
-            for(Integer i : availableAssistantCard){
+            for(Integer i : availableAssistantCard.keySet()){
                 print(i + " ");
             }
             assistantChosen = scannerCLI.nextInt();
@@ -335,15 +336,15 @@ public class CLI {
      * @param assistantCardsAlreadyUsedThisRound is the list of the assistant cards already used in this round which can't be used by the other players.
      * @return the assistant card chosen.
      */
-    public int assistantChoiceNext(ArrayList<Integer> availableAssistantCard, ArrayList<Integer> assistantCardsAlreadyUsedThisRound){
+    public int assistantChoiceNext(HashMap <Integer, Integer> availableAssistantCard, ArrayList<Integer> assistantCardsAlreadyUsedThisRound){
         println("Which assistant do you want to play?");
-        for(Integer i : availableAssistantCard){
+        for(Integer i : availableAssistantCard.keySet()){
             print(i + " ");
         }
         print("\n");
         int assistantChosen = scannerCLI.nextInt();
         while(assistantCardsAlreadyUsedThisRound.contains(assistantChosen)){
-            println("You can't use this assistant, it has already been used this round. Please select another one");
+            println("You can't use this assistant, it has already been used this round by another player. Please select another one");
             assistantChosen = scannerCLI.nextInt();
         }
         return  assistantChosen;
