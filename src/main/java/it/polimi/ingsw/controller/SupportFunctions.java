@@ -292,4 +292,31 @@ public class SupportFunctions {
             return playerWithMaxInfluence;
         }
     }
+
+    /**
+     * This method change the status of the professors' table of each player if necessary,
+     * checking the previous situation and the current one after some action occurred,
+     * for example when a character card is used (bard, princess or trafficker)
+     * @param controller reference to the controller of th match
+     * @param previousProfessorsMaster for each type of professor (creature) the ID of
+     *                                 the previous master of the professor
+     * @param currentProfessorsMaster for each type of professor (creature) the ID of
+     *      *                         the current master of the professor
+     */
+    static public void checkProfessorsControl(Controller controller, HashMap<Creature, Integer> previousProfessorsMaster , HashMap<Creature, Integer> currentProfessorsMaster){
+        int previousMaster_ID;
+        int currenMaster_ID;
+        for(Creature c: Creature.values()){
+            previousMaster_ID = previousProfessorsMaster.get(c);
+            currenMaster_ID = currentProfessorsMaster.get(c);
+
+            if(previousMaster_ID != currenMaster_ID){
+                // remove professor from the previous controller
+                controller.getMatch().getPlayerByID(previousMaster_ID).getSchoolBoard().getProfessorTable().removeProfessor(c);
+                // give professor to the current controller
+                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
+            }
+        }
+    }
+
 }

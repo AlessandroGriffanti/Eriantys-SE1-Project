@@ -70,7 +70,7 @@ public class Bard extends Character {
         for(int i = 0; i < studentsFromEntrance.size(); i++){
              entrance_ID = studentsFromEntrance.get(i);
 
-            diningRoom.removeStudent(studentsFromDiningRoom.get(i));
+            diningRoom.removeStudents(1, studentsFromDiningRoom.get(i));
             diningRoom.addStudent(entrance.getStudentsInTheEntrance().get(entrance_ID));
 
             entrance.removeStudent(entrance_ID);
@@ -83,26 +83,12 @@ public class Bard extends Character {
             currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
         }
 
-        // CHECK PROFESSOR CONTROL
-
-        //if the master has changed then we move the professor from a school-board to another
-        int previousMaster_ID;
-        int currenMaster_ID;
-        for(Creature c: Creature.values()){
-            previousMaster_ID = previousProfessorsMaster.get(c);
-            currenMaster_ID = currentProfessorsMaster.get(c);
-
-            if(previousMaster_ID != currenMaster_ID){
-                // remove professor from the previous controller
-                controller.getMatch().getPlayerByID(previousMaster_ID).getSchoolBoard().getProfessorTable().removeProfessor(c);
-                // give professor to the current controller
-                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
-            }
-        }
+        // CHECK PROFESSORS' CONTROL
+        SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
 
         // create and send the ack message
-        int coinReserve = controller.getMatch().getCoinReserve();
-        AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "bard", coinReserve);
+        int coinsReserve = controller.getMatch().getCoinReserve();
+        AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "bard", coinsReserve);
 
         ack.setEntranceOfPlayer(player.getSchoolBoard().getEntrance().getStudentsInTheEntrance());
         ack.setPlayerDiningRoom(player.getSchoolBoard().getDiningRoom().getOccupiedSeats());

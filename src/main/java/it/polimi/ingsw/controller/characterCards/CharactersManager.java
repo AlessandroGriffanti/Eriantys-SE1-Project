@@ -110,7 +110,7 @@ public class CharactersManager {
                         cards.put("princess", new Princess(controller));
                         break;
                     case 12:
-                        cards.put("trafficker", new Trafficker());
+                        cards.put("trafficker", new Trafficker(controller));
                         break;
                 }
             }

@@ -89,6 +89,12 @@ public class AckCharactersMessage extends Message {
      * value: array of Creature corresponding to the professors controlled by the player
      */
     private HashMap<Integer, ArrayList<Creature>> allPlayersProfessors = new HashMap<Integer, ArrayList<Creature>>();
+    /**
+     * This attribute represents the dining room of each player
+     * key: ID of the player
+     * value: hashMap representing the dining room of the player
+     */
+    private HashMap<Integer, HashMap<Creature, Integer>> allPlayersDiningRoom;
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -232,6 +238,15 @@ public class AckCharactersMessage extends Message {
     public HashMap<Integer, ArrayList<Creature>> getAllPlayersProfessors() {
         return allPlayersProfessors;
     }
+
+    // ADDER AND GETTER FOR allPlayersDiningRoom
+    public HashMap<Integer, HashMap<Creature, Integer>> getAllPlayersDiningRoom() {
+        return allPlayersDiningRoom;
+    }
+
+    public void addPlayerDiningRoom(int player_ID, HashMap<Creature, Integer> playerDiningRoom){
+        allPlayersDiningRoom.put(player_ID, playerDiningRoom);
+    }
 }
 
 /*THE CLIENTS NEED TO READ DIFFERENT ATTRIBUTES BASED ON THE VALUE OF 'card':
@@ -285,4 +300,8 @@ public class AckCharactersMessage extends Message {
         11. princess:
            - studentsOnCard: students on the princess character card
            - playerDiningRoom: the new diningRoomOfThePlayer
+           - allPlayersProfessors: for each player his professors table as array of Creature
+
+        12. trafficker:
+           - creature: type of students chosen by the user of the character
            - allPlayersProfessors: for each player his professors table as array of Creature*/

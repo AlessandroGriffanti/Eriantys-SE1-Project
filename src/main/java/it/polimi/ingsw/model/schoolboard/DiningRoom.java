@@ -34,22 +34,30 @@ public class DiningRoom {
     }
 
     /**
-     * This method removes the last student of a specified type that was the last to seat
-     * at the table (the most right one on the board's table)
-     * @param s the type of student we want to remove
+     * This method removes a certain quantity of students from one table of the
+     * dining room
+     * @param qt number of students to remove
+     * @param s type of students to remove
+     * @return number of students removed
      */
-    public void removeStudent(Creature s){
-        if ((occupiedSeats.get(s) >= 1)) {
-            occupiedSeats.replace(s, occupiedSeats.get(s) - 1);
-        }
-    }
+    public int removeStudents(int qt, Creature s){
+        int numberStudentsRemoved = 0;
 
-    /*
-    //set the reference to the coinmanagerobserver
-    public void setCoinObserver(CoinManagerObserver c){
-        this.coinObserver = c;
+        if(occupiedSeats.get(s) >= 3){
+            numberStudentsRemoved = 3;
+        }else {
+            numberStudentsRemoved = occupiedSeats.get(s);
+        }
+
+        occupiedSeats.replace(s, occupiedSeats.get(s) - qt);
+        /* if there weren't enough students we set the number of students on
+        that table to 0 */
+        if(occupiedSeats.get(s) < 0){
+            occupiedSeats.replace(s, 0);
+        }
+
+        return numberStudentsRemoved;
     }
-    */
 
     public void setEntrance(Entrance d){
         this.entrance = d;

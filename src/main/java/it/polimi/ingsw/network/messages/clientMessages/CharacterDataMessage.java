@@ -149,4 +149,7 @@ public class CharacterDataMessage extends Message {
             - studentsFromPlayerEntrance
 
         11. "princess":
-            - student_ID: the ID of the student chosen from the character card*/
+            - student_ID: the ID of the student chosen from the character card
+
+        12. "trafficker":
+            - creature: the type of students chosen by the player*/

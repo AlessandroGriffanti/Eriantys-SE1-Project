@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.controller.Action_1;
 import it.polimi.ingsw.controller.Action_2;
 import it.polimi.ingsw.controller.ChooseAssistantCard;
 import it.polimi.ingsw.controller.Controller;
@@ -148,7 +147,7 @@ public class CharactersTest {
         // use character jester
         CharacterDataMessage dataMessage = new CharacterDataMessage(0, "jester");
         ArrayList<Integer> students = new ArrayList<Integer>(List.of(1, 2, 3));
-        dataMessage.setElementsOfPlayer(students);
+        dataMessage.setStudentsFromPlayerEntrance(students);
         students = new ArrayList<Integer>(List.of(5, 4, 3));
         dataMessage.setElementsFromCard(students);
 

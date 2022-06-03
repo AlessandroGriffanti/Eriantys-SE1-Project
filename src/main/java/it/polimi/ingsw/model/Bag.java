@@ -6,15 +6,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Bag {
+    /**
+     * This attribute is the list of students from where we'll draw for
+     * the setup of the islands
+     */
     private ArrayList<Creature> studentsIslandSetUp;
+    /**
+     * This attribute is the list of students in the bag used during the match after
+     * the setup of the islands
+     */
     private ArrayList<Creature> remainingStudents;
-    protected boolean bagCreated = false;
 
     public Bag() {
         int i;
-        boolean flag_x, flag_y;
-        flag_x = false;
-        flag_y = false;
 
         this.studentsIslandSetUp = new ArrayList<Creature>(10);
         for(i = 0; i < 2; i++) {
@@ -23,11 +27,7 @@ public class Bag {
             studentsIslandSetUp.add(Creature.UNICORN);
             studentsIslandSetUp.add(Creature.GNOME);
             studentsIslandSetUp.add(Creature.FROG);
-            if(i == 1){
-                flag_x = true;
-            }
         }
-        //System.out.println(studentsIslandSetUp);
 
         this.remainingStudents = new ArrayList<>(120);
         for(i = 0; i < 24; i++) {
@@ -36,22 +36,7 @@ public class Bag {
             remainingStudents.add(Creature.UNICORN);
             remainingStudents.add(Creature.GNOME);
             remainingStudents.add(Creature.FROG);
-            if(i == 23){
-                flag_y = true;
-            }
         }
-        //System.out.println(remainingStudents);
-
-        if (flag_y){
-            if (flag_x) {
-                this.bagCreated = true;
-            }
-        }
-
-    }
-
-    public boolean isBagCreated() {
-        return bagCreated;
     }
 
     public ArrayList<Creature> getStudentsIslandSetUp() {
@@ -70,6 +55,10 @@ public class Bag {
         return returnArray;
     }
 
+    /**
+     * This method computes the total number of students remaining in the bag
+     * @return number of students in the bag
+     */
     public int getNumberOfRemainingStudents() {
         int numberRemainingStudents;
         numberRemainingStudents = getRemainingStudents().size();
@@ -77,18 +66,21 @@ public class Bag {
     }
 
     /**
-     * This method adds only one student in the "remainingStudents" ArrayList, whose size is increased by 1.
-     * @param studentToPutInTheBag the kind of student that must be added to the bag
+     * This method adds a certain quantity of students of the same kind in the bag
+     * @param qt number of students to add
+     * @param typeOfStudents type of students to add
      */
-    public void addOneStudentToBag (Creature studentToPutInTheBag){
-        this.remainingStudents.add(studentToPutInTheBag);
+    public void addStudentsOfType(int qt, Creature typeOfStudents){
+        for(int i = 0; i < qt; i++){
+            remainingStudents.add(typeOfStudents);
+        }
     }
 
     /**
      * This method adds an Array of students to the bag (to the array "remainingStudents")
      * @param studentsToAdd the array of students' type that must be added
      */
-    public void addStudentsToBag(ArrayList<Creature> studentsToAdd){
+    public void addStudents(ArrayList<Creature> studentsToAdd){
         for(Creature c: studentsToAdd){
             remainingStudents.add(c);
         }

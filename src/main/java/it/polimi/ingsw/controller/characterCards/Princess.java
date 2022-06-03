@@ -11,9 +11,16 @@ import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This class represents the character card called "princess".
+ * It allows players to choose one student from the character card and put it in their
+ * dining room.
+ */
 public class Princess extends Character {
 
-    /** this attribute handles the students on the card */
+    /**
+     * This attribute is the list of students on the character
+     */
     private ArrayList<Creature> studentsOnPrincess;
 
     public Princess(Controller controller){
@@ -38,7 +45,7 @@ public class Princess extends Character {
      * This method takes one student  from the character card and put it in the player's
      * dining room, the draws another student from the bag and put it on the character card
      * in order to replace the one previously taken
-     * @param request message containing the ID of the student chosen by the player from
+     * @param request message sent by the client containing the ID of the student chosen by the player from
      *                the character
      */
     @Override
@@ -67,20 +74,8 @@ public class Princess extends Character {
             currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
         }
 
-        //if the master has changed then we move the professor from a school-board to another
-        int previousMaster_ID;
-        int currenMaster_ID;
-        for(Creature c: Creature.values()){
-            previousMaster_ID = previousProfessorsMaster.get(c);
-            currenMaster_ID = currentProfessorsMaster.get(c);
-
-            if(previousMaster_ID != currenMaster_ID){
-                // remove professor from the previous controller
-                controller.getMatch().getPlayerByID(previousMaster_ID).getSchoolBoard().getProfessorTable().removeProfessor(c);
-                // give professor to the current controller
-                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
-            }
-        }
+        // CHECK PROFESSORS' CONTROL
+        SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
 
         // create and send the ack message
         int coinReserve = controller.getMatch().getCoinReserve();

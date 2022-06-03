@@ -21,13 +21,13 @@ public class BagTest {
         Bag bag = new Bag();
         ArrayList<Creature> setUpStudentsReceived = bag.drawSetUpStudents();
 
-        assertTrue(setUpStudentsReceived.size() == 10);
+        assertEquals(10, setUpStudentsReceived.size());
 
-        assertTrue(getNumberOfStudentsType(setUpStudentsReceived, Creature.DRAGON) == 2);
-        assertTrue(getNumberOfStudentsType(setUpStudentsReceived, Creature.FAIRY) == 2);
-        assertTrue(getNumberOfStudentsType(setUpStudentsReceived, Creature.FROG) == 2);
-        assertTrue(getNumberOfStudentsType(setUpStudentsReceived, Creature.UNICORN) == 2);
-        assertTrue(getNumberOfStudentsType(setUpStudentsReceived, Creature.GNOME) == 2);
+        assertEquals(2, getNumberOfStudentsType(setUpStudentsReceived, Creature.DRAGON));
+        assertEquals(2, getNumberOfStudentsType(setUpStudentsReceived, Creature.FAIRY));
+        assertEquals(2, getNumberOfStudentsType(setUpStudentsReceived, Creature.FROG));
+        assertEquals(2, getNumberOfStudentsType(setUpStudentsReceived, Creature.UNICORN));
+        assertEquals(2, getNumberOfStudentsType(setUpStudentsReceived, Creature.GNOME));
     }
 
     /**
@@ -40,11 +40,11 @@ public class BagTest {
 
         Bag bag = new Bag();
 
-        assertTrue(bag.getStudentsIslandSetUp().size() == 10);
+        assertEquals(10, bag.getStudentsIslandSetUp().size());
 
         //draw 0 students
         bag.drawStudents(0);
-        assertTrue(bag.getRemainingStudents().size() == 120);
+        assertEquals(120, bag.getRemainingStudents().size());
     }
 
     /**
@@ -58,7 +58,7 @@ public class BagTest {
         int numberOfStudents = random.nextInt(121);
 
         ArrayList<Creature> drawnStudents = bag.drawStudents(numberOfStudents);
-        assertTrue(bag.getRemainingStudents().size() == 120 - numberOfStudents);
+        assertEquals(bag.getRemainingStudents().size(), 120 - numberOfStudents);
     }
 
     /**
@@ -79,7 +79,7 @@ public class BagTest {
         ArrayList<Creature> studentsDrawn = bag.drawStudents(tooManyStudents);
         /* we expect the number of students drawn to be less than the number of students required
            and in particular equals to the number of students left in the bag*/
-        assertTrue(studentsDrawn.size() == 5);
+        assertEquals(5, studentsDrawn.size());
     }
 
 
@@ -112,6 +112,38 @@ public class BagTest {
             case FROG:
                 assert(getNumberOfStudentsType(actualBag, drawn) == initialNumberOfFrogs-1);
         }
+    }
+
+    /**
+     * This method controls if the adding of students is done correctly through the two methods
+     * defined in the Bag class, that are 'addStudentsOfType' and 'addStudents'
+     */
+    @Test
+    public void addStudentsTest(){
+        ArrayList<Creature> studentsToAdd = new ArrayList<Creature>();
+        studentsToAdd.add(Creature.FROG);
+        studentsToAdd.add(Creature.UNICORN);
+        studentsToAdd.add(Creature.UNICORN);
+        studentsToAdd.add(Creature.GNOME);
+
+        Bag bag = new Bag();
+        bag.drawStudents(120);
+        assertEquals(0, bag.getNumberOfRemainingStudents());
+
+        // control method addStudentsOfType
+        bag.addStudentsOfType(3, Creature.FAIRY);
+
+        assertEquals(3, bag.getNumberOfRemainingStudents());
+        assertEquals(3, getNumberOfStudentsType(bag.getRemainingStudents(), Creature.FAIRY));
+
+        // control method addStudents
+        bag.addStudents(studentsToAdd);
+        assertEquals(7, bag.getNumberOfRemainingStudents());
+        assertEquals(1, getNumberOfStudentsType(bag.getRemainingStudents(), Creature.FROG));
+        assertEquals(1, getNumberOfStudentsType(bag.getRemainingStudents(), Creature.GNOME));
+        assertEquals(2, getNumberOfStudentsType(bag.getRemainingStudents(), Creature.UNICORN));
+        assertEquals(3, getNumberOfStudentsType(bag.getRemainingStudents(), Creature.FAIRY));
+
     }
 
     /**
