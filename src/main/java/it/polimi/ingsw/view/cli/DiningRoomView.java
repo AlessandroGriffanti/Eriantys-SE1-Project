@@ -16,6 +16,11 @@ public class DiningRoomView {
      */
     public DiningRoomView (){
         occupiedSeatsPlayer = new HashMap<>();
+        occupiedSeatsPlayer.put(Creature.DRAGON, 0);
+        occupiedSeatsPlayer.put(Creature.FAIRY, 0);
+        occupiedSeatsPlayer.put(Creature.FROG, 0);
+        occupiedSeatsPlayer.put(Creature.GNOME, 0);
+        occupiedSeatsPlayer.put(Creature.UNICORN, 0);
     }
 
     public synchronized HashMap<Creature, Integer> getOccupiedSeatsPlayer() {

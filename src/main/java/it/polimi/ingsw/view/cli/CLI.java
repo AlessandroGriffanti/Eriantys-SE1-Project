@@ -248,13 +248,18 @@ public class CLI {
         println("Choose your tower color: BLACK, WHITE, GREY ");
         String strTowerColorChosen = scannerCLI.nextLine();
 
-        while(!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY"))){
-            println("Please insert a valid color tower: ");
-            strTowerColorChosen = scannerCLI.nextLine();
-        }
-        while(notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen))){
-            println("This color has already been selected, please choose another one: ");
-            strTowerColorChosen = scannerCLI.nextLine();
+        boolean rightTowerChoice = false;
+
+        while(!rightTowerChoice){
+            if(! (strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY")) ){
+                println("Please insert a valid color tower: ");
+                strTowerColorChosen = scannerCLI.nextLine();
+            }else if( notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen)) ){
+                println("This color has already been selected, please choose another one: ");
+                strTowerColorChosen = scannerCLI.nextLine();
+            }else {
+                rightTowerChoice = true;
+            }
         }
 
         return Tower.valueOf(strTowerColorChosen);
@@ -290,14 +295,20 @@ public class CLI {
 
         String strDeckChosen = scannerCLI.nextLine();
 
-        while(!(strDeckChosen.equals("FORESTWIZARD") || strDeckChosen.equals("DESERTWIZARD") || strDeckChosen.equals("CLOUDWITCH") || strDeckChosen.equals("LIGHTNINGWIZARD"))){
-            println("Please, insert a correct deck: ");
-            strDeckChosen = scannerCLI.nextLine();
+        boolean rightDeckChoice = false;
+
+        while(!rightDeckChoice){
+            if(!(strDeckChosen.equals("FORESTWIZARD") || strDeckChosen.equals("DESERTWIZARD") || strDeckChosen.equals("CLOUDWITCH") || strDeckChosen.equals("LIGHTNINGWIZARD"))){
+                println("Please, insert a correct deck: ");
+                strDeckChosen = scannerCLI.nextLine();
+            } else if(notAvailableDecks.contains(Wizard.valueOf(strDeckChosen))) {
+                println("This deck has already been chosen, plase select another one: ");
+                strDeckChosen = scannerCLI.nextLine();
+            }else{
+                rightDeckChoice = true;
+            }
         }
-        while(notAvailableDecks.contains(Wizard.valueOf(strDeckChosen))){
-            println("This deck has already been chosen, plase select another one: ");
-            strDeckChosen = scannerCLI.nextLine();
-        }
+
         return Wizard.valueOf(strDeckChosen);
     }
 
@@ -325,6 +336,7 @@ public class CLI {
             for(Integer i : availableAssistantCard.keySet()){
                 print(i + " ");
             }
+            println(" ");
             assistantChosen = scannerCLI.nextInt();
         }
         return assistantChosen;
@@ -341,28 +353,39 @@ public class CLI {
         for(Integer i : availableAssistantCard.keySet()){
             print(i + " ");
         }
-        print("\n");
+        println(" ");
+
         int assistantChosen = scannerCLI.nextInt();
-        while(assistantCardsAlreadyUsedThisRound.contains(assistantChosen)){
-            println("You can't use this assistant, it has already been used this round by another player. Please select another one");
-            assistantChosen = scannerCLI.nextInt();
+
+        boolean rightAssistantChoice = false;
+
+        while(!rightAssistantChoice) {
+            if (assistantCardsAlreadyUsedThisRound.contains(assistantChosen)) {
+                println("You can't use this assistant, it has already been used this round by another player. Please select another one");
+                assistantChosen = scannerCLI.nextInt();
+            }else if(!(availableAssistantCard.containsKey(assistantChosen)) ){
+                println("You can't use this assistant, it doesn't exist. Please select another one");
+                assistantChosen = scannerCLI.nextInt();
+            }else {
+                rightAssistantChoice = true;
+            }
         }
         return  assistantChosen;
     }
 
+    /*
+    public synchronized void controlStatusGame(int playerID, ModelView modelView){
+        println("Numero di giocatori totali della partita: " + modelView.getNumberOfPlayersGame());
+        println("Partita in expertmode? " + String.valueOf(modelView.isExpertModeGame()));
+    }
+    */
+
     /**
-     * This method is used to show to the player his students at the beginning of the match, after receiving the MatchStartMessage.
-     * and the character cards available for the game, if the game is in expert mode.
-     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * This method is used to show the three characters cards available in the game.
+     * It controls if the game is in Expert Mode before showing them.
      * @param modelView is the reference to the modelView.
      */
-    public synchronized void showStudentsInEntrancePlayer(int playerID, ModelView modelView){
-        println("Your students in the entrance at the beginning of the game are: ");
-        for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
-            print(c + " ");
-        }
-        print("\n");
-
+    public void showCharacterCardsInTheGame(ModelView modelView){
         if(modelView.isExpertModeGame() == true){
             println("The character cards in this game are: ");
             for(String s : modelView.getCharacterCardsInTheGame()){
@@ -370,9 +393,70 @@ public class CLI {
             }
             print("\n");
         }
-        println("Numero di giocatori totali della partita: " + modelView.getNumberOfPlayersGame());
-        println("Partita in expertmode? " + String.valueOf(modelView.isExpertModeGame()));
     }
+
+    /**
+     * This method is used to show the player's SchoolBoard.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showSchoolboard(int playerID, ModelView modelView){
+        println("YOUR SCHOOLBOARD: ");
+        showStudentsInEntrancePlayer(playerID, modelView);
+        showStudentsInDiningRoomPlayer(playerID, modelView);
+        showProfessorTablePlayer(playerID, modelView);
+        showNumberOfTowers(playerID, modelView);
+    }
+
+    /**
+     * This method is used to show to the player his students in the Entrance of his board.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showStudentsInEntrancePlayer(int playerID, ModelView modelView){
+        println("Your students in the entrance: ");
+        for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
+            print(c + " ");
+        }
+        print("\n");
+    }
+
+    /**
+     * This method is used to show to the player his students in the Dining Room of his board.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showStudentsInDiningRoomPlayer(int playerID, ModelView modelView){
+        println("Your Dining Room: ");
+        for(Creature c : Creature.values() ) {
+            println("Number of " + c + ": " + modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(c));
+        }
+        println(" ");
+    }
+
+    /**
+     * This method is used to show to the player the presence of the professor in the Professor Table of his board.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showProfessorTablePlayer(int playerID, ModelView modelView){
+        println("Your Professor Table: ");
+        for(Creature c : Creature.values() ) {
+            println("Number of " + c + ": " + modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(c) );
+        }
+        println(" ");
+    }
+
+    /**
+     * This method is used to show to the player the number of his remainig towers in the Tower area of his schoolboard.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showNumberOfTowers(int playerID, ModelView modelView) {
+        println("Your number of remaining Towers is: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer() );
+        println(" ");
+    }
+
 
     /**
      * This method is used to ask the player which students he wants to move from the entrance.
@@ -381,26 +465,37 @@ public class CLI {
     public synchronized int choiceOfStudentsToMove(int playerID, ModelView modelView ){
         println("Which student do you want to move from the entrance? ");
         int studentChosen = scannerCLI.nextInt();                         //lo studente è rappresentato da un intero come si vede nel messaggio di MovedStudentsFromEntrance
-        while(studentChosen < 0 || studentChosen >= modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()){
-            println("Plase insert a valid student: ");
-            studentChosen = scannerCLI.nextInt();
+
+        boolean rightStudentChoice = false;
+
+        while(!rightStudentChoice) {
+            if (studentChosen < 0 || studentChosen >= modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()) {
+                println("Please insert a valid student: ");
+                studentChosen = scannerCLI.nextInt();
+            }else if (modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null  ){
+                println("Please insert a valid student: ");
+                studentChosen = scannerCLI.nextInt();
+            }else{
+                rightStudentChoice = true;
+            }
         }
         return studentChosen;
     }
 
     /**
      * This method is used to ask the player where he wants to move the student he chose.
-     * @param modelView is the reference to the modelView.
      * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
      */
-    public synchronized int choiceLocationToMove(ModelView modelView){
-        println("Where do you want to move the student you chose? diningroom/island");
+    public synchronized int choiceLocationToMove(){
+        println("Where do you want to move the student you chose? (diningroom/island)");
         String locationChosen = scannerCLI.nextLine();
         while(!(locationChosen.equals("diningroom") || (locationChosen.equals("island")))){
             println("Please insert 'diningroom' or 'island': ");
             locationChosen = scannerCLI.nextLine();
         }
+
         int islandChosen;
+
         if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
             for(int i = 0; i < 12; i++){

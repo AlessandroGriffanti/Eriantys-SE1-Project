@@ -1,7 +1,8 @@
 package it.polimi.ingsw.view.cli;
 
-import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Tower;
 
 import java.util.HashMap;
 
@@ -18,7 +19,18 @@ public class ArchipelagoView {
     /**
      * This attribute tells if mother nature is on a certain island or not.
      */
-    private boolean motherNaturePresence; //false se non c'è, true se c'è
+    private boolean motherNaturePresence;   //false se non c'è, true se c'è
+
+    /**
+     * This attribute is the color of the Towers currently on the archipelago, or 'null' if there is no
+     * tower built on it
+     */
+    private Tower towerColor;
+    /**
+     * This attribute is the player that currently has the higher influence
+     * over the archipelago
+     */
+    private Player masterOfArchipelago;
 
     /**
      * This attribute is the population of students of each kind currently on the island.
@@ -81,6 +93,7 @@ public class ArchipelagoView {
         this.archipelagoID = archipelagoID;
     }
 
+
     public synchronized int getNumberOfIsland() {
         return numberOfIsland;
     }
@@ -89,6 +102,7 @@ public class ArchipelagoView {
         this.numberOfIsland = numberOfIsland;
     }
 
+
     public synchronized boolean isMotherNaturePresence() {
         return motherNaturePresence;
     }
@@ -96,4 +110,15 @@ public class ArchipelagoView {
     public synchronized void setMotherNaturePresence(boolean motherNaturePresence) {
         this.motherNaturePresence = motherNaturePresence;
     }
+
+
+    public Tower getTowerColor() {
+        return towerColor;
+    }
+
+    private void setTowerColor(Tower towerColorPassed){
+        this.towerColor = towerColorPassed ;
+    }
+
+
 }

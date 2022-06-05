@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.messages.clientMessages;
 
-import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.network.messages.Message;
 
 /**
@@ -8,7 +7,7 @@ import it.polimi.ingsw.network.messages.Message;
  * movement of students from the entrance to the dining room or the islands.
  * A message is sent for every student moved.
  */
-public class MovedStudentsFromEntrance extends Message {
+public class MovedStudentsFromEntranceMessage extends Message {
 
     /**
      * This attribute is the ID used to identify the student, that has just been moved,
@@ -25,7 +24,7 @@ public class MovedStudentsFromEntrance extends Message {
     /**
      * This constructor can be used by the controller to deserialize the message received
      */
-    public MovedStudentsFromEntrance(){
+    public MovedStudentsFromEntranceMessage(){
         this.object = "action_1";
     }
 
@@ -34,7 +33,7 @@ public class MovedStudentsFromEntrance extends Message {
      * to the server
      * @param sender_ID ID of the player that send the message
      */
-    public MovedStudentsFromEntrance(int sender_ID){
+    public MovedStudentsFromEntranceMessage(int sender_ID){
         this.object = "action_1";
     }
 

@@ -15,6 +15,11 @@ public class ProfessorTableView {
      */
     public ProfessorTableView(){
         occupiedSeatsPlayer = new HashMap<>();
+        occupiedSeatsPlayer.put(Creature.DRAGON, false);
+        occupiedSeatsPlayer.put(Creature.FAIRY, false);
+        occupiedSeatsPlayer.put(Creature.FROG, false);
+        occupiedSeatsPlayer.put(Creature.GNOME, false);
+        occupiedSeatsPlayer.put(Creature.UNICORN, false);
     }
 
 

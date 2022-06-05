@@ -33,9 +33,11 @@ public class NetworkHandler {
     private PrintWriter outputPrintClient = null;
     private String ip;
     private int port;
+    private ModelView modelView;
+
+    //questi potrebbero essere spostati in mv
     private Tower towerColor;
     private Wizard wizard;
-    private ModelView modelView;
     /**
      * We use this flag to understand if the player has already used the assistant card.
      */
@@ -73,7 +75,7 @@ public class NetworkHandler {
         loginFromClient();
 
         while(true){            // TODO: controllo connessione
-            System.out.println("Still connected");
+            //System.out.println("Still connected");
             String msgFromServer = inputBufferClient.readLine();
             System.out.println("messaggio dal server: " + msgFromServer);
             analysisOfReceivedMessageServer(msgFromServer);
@@ -256,7 +258,8 @@ public class NetworkHandler {
                             break;
                         }
                     case "refillClouds":
-                        cli.showStudentsInEntrancePlayer(playerID, modelView);                         //A questo punto della partita ad esempio, cioè prima della scelta dell'assistente, possiamo mostrare al giocatore i suoi studenti nell'entrance.
+                        cli.showSchoolboard(playerID, modelView);
+                        cli.showCharacterCardsInTheGame(modelView);
                         cli.showStudentsOnIslands(modelView);                                           //e sempre qui possiamo mettere la stampa della la situazione iniziale delle isole (con uno studente su ciascuna tranne dove c'è MN e nell'isola opposta) quando viene messa nel messaggio di start match
 
                         if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == false){
@@ -289,34 +292,39 @@ public class NetworkHandler {
                         }else if(ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) { //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
 
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
-                            int locationChosen = cli.choiceLocationToMove(modelView);                           //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
-                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
-                            //updateModelViewAfterFirstStudent(ackMessageMappaed);                              ////dopo questo ++ potrebbe esserci un update della modelview, oppure possiamo farlo dopo la scelta del 3° studente.
+                            int locationChosen = cli.choiceLocationToMove();                           //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
+                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
                             assistantChoiceFlag = false;                                                        //qui cambia la flag il primo giocatore
                             break;
                         }
                     case "action_1_dining_room":
+                        //updateModelView(ackMessageMapped);
+                        cli.showStudentsInEntrancePlayer(playerID, modelView);
+
                         if(ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < 3){            //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su diningroom
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            int locationChosen = cli.choiceLocationToMove(modelView);
-                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
-                            numberOfChosenStudent++;
-                        }else if(ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <3){
-                            cli.turnWaiting();
-                        }
-                        break;
-                    case "action_1_island":
-                        if(ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < 3){          //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su isola
-                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            int locationChosen = cli.choiceLocationToMove(modelView);
-                            sendMovedStudentsFromEntranceMessage(studentChosen, locationChosen);
+                            int locationChosen = cli.choiceLocationToMove();
+                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
                         }else if(ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <3){
                             cli.turnWaiting();
                         }
                         break;
 
+                    case "action_1_island":
+                        //updateModelView(ackMessageMapped);
+                        if(ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < 3){          //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su isola
+                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            int locationChosen = cli.choiceLocationToMove();
+                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
+                            numberOfChosenStudent++;
+                        }else if(ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <3){
+                            cli.turnWaiting();
+                        }
+                        break;
+
+                        //ricordarsi updateModelView(ackMessageMapped);
                 }
                 break;
 
@@ -382,12 +390,13 @@ public class NetworkHandler {
      * @param studentChosen is the student chosen.
      * @param locationChosen is the location, island or dining room, chosen.
      */
-    public void sendMovedStudentsFromEntranceMessage(int studentChosen, int locationChosen){
-        MovedStudentsFromEntrance movedStudentsFromEntrance = new MovedStudentsFromEntrance();
-        movedStudentsFromEntrance.setStudent_ID(studentChosen);
-        movedStudentsFromEntrance.setLocation(locationChosen);
-        movedStudentsFromEntrance.setSender_ID(playerID);
-        sendMessage(movedStudentsFromEntrance);
+    public void sendMovedStudentsFromEntrance(int studentChosen, int locationChosen){
+        MovedStudentsFromEntranceMessage movedStudentsFromEntranceMessage = new MovedStudentsFromEntranceMessage();
+        movedStudentsFromEntranceMessage.setStudent_ID(studentChosen);
+        movedStudentsFromEntranceMessage.setLocation(locationChosen);
+        movedStudentsFromEntranceMessage.setSender_ID(playerID);
+
+        sendMessage(movedStudentsFromEntranceMessage);
     }
 
     /**
@@ -395,7 +404,7 @@ public class NetworkHandler {
      * @param matchStartMessage is the matchStartMatchMessage received.
      */
     public void updateStartModelView(MatchStartMessage matchStartMessage){
-        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                     //setto il numero di giocatori totali della partita
+        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                      //setto il numero di giocatori totali della partita
         modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
         if(modelView.isExpertModeGame() == true){                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
             modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
@@ -446,6 +455,42 @@ public class NetworkHandler {
         //System.out.println("numero torri: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());     //stampa di controllo
 
     }
+
+    /*
+    FARE UN UPDATE PER SUBOBJECT
+    public void updateModelView(AckMessage ackMessageMapped){
+        //update di cose del giocatore:
+        if(ackMessageMapped.getRecipient() == playerID){
+            if(ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
+                modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
+                int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) ;
+                modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);
+                modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());
+
+            }else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
+                modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
+                modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
+            }
+
+            }else if(){
+                //spostamento da nuvole
+            }
+
+        }
+
+        //update di cose globali:
+        modelView.setStudentsOnTheClouds(ackMessageMapped.getStudents());
+        if(ackMessageMapped.getIslandsUnified().equals("previous")){
+            modelView.getIslandGame().
+        }else if(){
+
+        }else if(){
+
+        }
+
+    }
+
+     */
 
 
 

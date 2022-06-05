@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
-import it.polimi.ingsw.network.messages.clientMessages.MovedStudentsFromEntrance;
+import it.polimi.ingsw.network.messages.clientMessages.MovedStudentsFromEntranceMessage;
 
 public class Action_1 implements ControllerState{
 
@@ -60,7 +60,7 @@ public class Action_1 implements ControllerState{
         Match match = controller.getMatch();
 
         String json = controller.getMsg();
-        MovedStudentsFromEntrance request = gson.fromJson(json, MovedStudentsFromEntrance.class);
+        MovedStudentsFromEntranceMessage request = gson.fromJson(json, MovedStudentsFromEntranceMessage.class);
         match.setCurrentPlayer(request.getSender_ID());
 
         // take and remove the chosen student from the entrance

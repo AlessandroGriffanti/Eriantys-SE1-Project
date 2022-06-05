@@ -50,6 +50,11 @@ public class ModelView {
      */
     private ArrayList<String> characterCardsInTheGame;
 
+    //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
+    private ArrayList<Creature> StudentsOnTheClouds;
+
+
+
     /**
      * This constructor creates a new instance of the modelView.
      */
@@ -139,4 +144,11 @@ public class ModelView {
         this.coinPlayer = coinPlayer;
     }
 
+    public ArrayList<Creature> getStudentsOnTheClouds() {
+        return StudentsOnTheClouds;
+    }
+
+    public void setStudentsOnTheClouds(ArrayList<Creature> studentsOnTheClouds) {
+        StudentsOnTheClouds = studentsOnTheClouds;
+    }
 }

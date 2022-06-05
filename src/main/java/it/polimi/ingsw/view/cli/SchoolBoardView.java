@@ -24,6 +24,7 @@ public class SchoolBoardView {
         this.towerAreaPlayer = new TowerAreaView(numberOfTotalPlayers);
         this.diningRoomPlayer = new DiningRoomView();
         this.entrancePlayer = new EntranceView(diningRoomPlayer);
+        this.professorTablePlayer = new ProfessorTableView();
     }
 
     public synchronized ModelView getModelview() {
