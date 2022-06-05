@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.Creature;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
@@ -162,18 +163,38 @@ public class CLI {
             }
         }
         int lobbyIDchosenByPlayer = scannerCLI.nextInt();
-        while(arrayLobby.get(lobbyIDchosenByPlayer) == true){
-            println("You can't join this lobby, match selected already started. Select another one. \n");
 
-            println("ERIANTYS LOBBIES: ");
-            for (int i = 0; i < arrayLobby.size(); i++) {
-                if(arrayLobby.get(i) == true){
-                    println("Lobby " + i + " full. :( ");
-                }else {
-                    println("Lobby " + i + " available! :) ");
+        boolean rightLobbyChoice = false;
+
+        while(!rightLobbyChoice) {
+            if( lobbyIDchosenByPlayer < arrayLobby.size() ) {
+                if (arrayLobby.get(lobbyIDchosenByPlayer) == true) {
+                    println("You can't join this lobby, match selected already started. Select another one. \n");
+
+                    println("ERIANTYS LOBBIES: ");
+                    for (int i = 0; i < arrayLobby.size(); i++) {
+                        if (arrayLobby.get(i) == true) {
+                            println("Lobby " + i + " full. :( ");
+                        } else {
+                            println("Lobby " + i + " available! :) ");
+                        }
+                    }
+                    lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                } else {
+                    rightLobbyChoice = true;
                 }
+            }else {
+                println("Lobby not existing, insert a right number. ");
+                println("ERIANTYS LOBBIES: ");
+                for (int i = 0; i < arrayLobby.size(); i++) {
+                    if (arrayLobby.get(i) == true) {
+                        println("Lobby " + i + " full. :( ");
+                    } else {
+                        println("Lobby " + i + " available! :) ");
+                    }
+                }
+                lobbyIDchosenByPlayer = scannerCLI.nextInt();
             }
-            lobbyIDchosenByPlayer = scannerCLI.nextInt();
         }
         return lobbyIDchosenByPlayer;
     }
@@ -329,16 +350,15 @@ public class CLI {
         for(Integer i : availableAssistantCard.keySet()){
             print(i + " ");
         }
-        print("\n");
+        println(" ");
+
         int assistantChosen = scannerCLI.nextInt();
-        while(!(availableAssistantCard.keySet().contains(assistantChosen))){
-            println("You can't use this assistant, please select another one from this list: ");
-            for(Integer i : availableAssistantCard.keySet()){
-                print(i + " ");
-            }
-            println(" ");
+
+        while(!(availableAssistantCard.containsKey(assistantChosen)) ) {
+            println("Please select a right assistant number.");
             assistantChosen = scannerCLI.nextInt();
         }
+
         return assistantChosen;
     }
 
@@ -391,7 +411,7 @@ public class CLI {
             for(String s : modelView.getCharacterCardsInTheGame()){
                 print(s + " ");
             }
-            print("\n");
+            println(" ");
         }
     }
 
@@ -402,6 +422,7 @@ public class CLI {
      */
     public void showSchoolboard(int playerID, ModelView modelView){
         println("YOUR SCHOOLBOARD: ");
+        println(" ");
         showStudentsInEntrancePlayer(playerID, modelView);
         showStudentsInDiningRoomPlayer(playerID, modelView);
         showProfessorTablePlayer(playerID, modelView);
@@ -415,10 +436,17 @@ public class CLI {
      */
     public void showStudentsInEntrancePlayer(int playerID, ModelView modelView){
         println("Your students in the entrance: ");
+        int i = 0;
         for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
-            print(c + " ");
+            if(modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer() == null){
+                println(i + ": --- ");
+                i++;
+            }else {
+                println(i + ": " + c);
+                i++;
+            }
         }
-        print("\n");
+        println(" ");
     }
 
     /**
@@ -464,6 +492,7 @@ public class CLI {
      */
     public synchronized int choiceOfStudentsToMove(int playerID, ModelView modelView ){
         println("Which student do you want to move from the entrance? ");
+        showStudentsInEntrancePlayer(playerID, modelView);
         int studentChosen = scannerCLI.nextInt();                         //lo studente è rappresentato da un intero come si vede nel messaggio di MovedStudentsFromEntrance
 
         boolean rightStudentChoice = false;
@@ -486,7 +515,7 @@ public class CLI {
      * This method is used to ask the player where he wants to move the student he chose.
      * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
      */
-    public synchronized int choiceLocationToMove(){
+    public synchronized int choiceLocationToMove(ModelView modelView){
         println("Where do you want to move the student you chose? (diningroom/island)");
         String locationChosen = scannerCLI.nextLine();
         while(!(locationChosen.equals("diningroom") || (locationChosen.equals("island")))){
@@ -498,10 +527,11 @@ public class CLI {
 
         if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
+            showStudentsOnIslands(modelView);
             for(int i = 0; i < 12; i++){
                 print(i + " ");
             }
-            print("\n");
+            println(" ");
             islandChosen = scannerCLI.nextInt();
             while(islandChosen < 0 || islandChosen >= 12){
                 println("Please insert a valid island ID: ");
@@ -514,11 +544,30 @@ public class CLI {
 
     }
 
+    public int choiceMotherNatureMovement(int motherNatureIslandID, ModelView modelView){
+        println("Mother Nature is on Island " + motherNatureIslandID);
+        println("You can move Mother Nature by " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " movement(s)");
+        print("Insert your choice (island number):  ");
+        int chosenIslandID = scannerCLI.nextInt();
+
+        return chosenIslandID;
+    }
+
+    public void invalidMotherNatureMovement(){
+        println("Invalid Mother Nature Value. ");
+    }
+
+    public void newMaster(ModelView modelView, int playerID){
+        println("You are the new Master on the Island selected! ");
+        println("New number of Tower in the Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer() );
+    }
+
     /**
      * This method is used to show the initial situation on the islands, including mother nature position.
      * @param modelView is the reference to the modelView.
      */
     public void showStudentsOnIslands(ModelView modelView){
+        println("ISLAND SITUATION:");
         for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0){           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
                 if(modelView.getIslandGame().get(i).isMotherNaturePresence()){
@@ -532,8 +581,36 @@ public class CLI {
                     print("Studenti sull'isola " + i + " : " + c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c));
                 }
             }
-            print("\n");
+            println(" ");
         }
+    }
+
+    public void showIslandsSituation(ModelView modelView) {
+        showStudentsOnIslands(modelView);
+        showMotherNaturePosition(modelView);
+    }
+
+    public void showNewStudentOnIsland(ModelView modelView){
+
+        for (int k = 0; k < 12; k++) {
+            println("Island " + k + ": ");
+            for (Creature c : Creature.values()) {
+                println("Student " + c + " " + modelView.getIslandGame().get(k).getStudentsOfType(c));
+            }
+        }
+    }
+
+    /**
+     * This method is used to show the mother nature position.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showMotherNaturePosition(ModelView modelView){
+        for(int i = 0; i < 12; i++) {
+            if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
+                System.out.println("MADRE NATURA è SULL'ISOLA: " + i);
+            }
+        }
+
     }
 
     public void print(String strToPrint){

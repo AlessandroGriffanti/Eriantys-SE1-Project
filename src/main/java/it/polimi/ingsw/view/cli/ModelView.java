@@ -53,13 +53,16 @@ public class ModelView {
     //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
     private ArrayList<Creature> StudentsOnTheClouds;
 
+    /**
+     * This integer is the ordervalue (1-10) of the last assistant card choosen by the player.
+     */
+    private int lastAssistantChosen;
 
 
     /**
      * This constructor creates a new instance of the modelView.
      */
     public ModelView(int playerID){
-        coinPlayer = new HashMap<>();
         assistantCardsValuesPlayer = new HashMap<>();
         characterCardsInTheGame = new ArrayList<>();
 
@@ -83,6 +86,7 @@ public class ModelView {
         }
 
         schoolBoardPlayers = new HashMap<>();
+        coinPlayer = new HashMap<>();
 
 
     }
@@ -151,4 +155,13 @@ public class ModelView {
     public void setStudentsOnTheClouds(ArrayList<Creature> studentsOnTheClouds) {
         StudentsOnTheClouds = studentsOnTheClouds;
     }
+
+    public int getLastAssistantChosen() {
+        return lastAssistantChosen;
+    }
+
+    public void setLastAssistantChosen(int lastAssistantChosen) {
+        this.lastAssistantChosen = lastAssistantChosen;
+    }
+
 }

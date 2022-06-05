@@ -38,6 +38,11 @@ public class ArchipelagoView {
     private HashMap<Creature, Integer> studentsPopulation;
 
     /**
+     * This attribute is the number of no-entry-tiles currently on the archipelago
+     */
+    private int noEntryTiles;
+
+    /**
      * This constructor creates a new archipelago (as a single island).
      * @param archipelagoID is the ID of the archipelago.
      */
@@ -61,6 +66,34 @@ public class ArchipelagoView {
     public void addStudent(Creature c){
         int previousValue = studentsPopulation.get(c);
         studentsPopulation.put(c, previousValue + 1);
+    }
+
+    public int getNoEntryTiles() {
+        return noEntryTiles;
+    }
+
+    /**
+     * Adds only one no-entry-tile to the archipelago, and increases noEntryTiles by 1
+     */
+    public void addNoEntryTile(){
+        noEntryTiles ++;
+    }
+
+    /**
+     * Adds more than one no-entry-tile to the archipelago and increases noEntryTile accordingly
+     * @param quantityToAdd number of no-entry-tile to add
+     */
+    public void addNoEntryTiles(int quantityToAdd){
+        noEntryTiles += quantityToAdd;
+    }
+
+    /**
+     * Removes one single no-entry-tile from the archipelago and decreases noEntryTile by 1
+     */
+    public void removeNoEntryTile(){
+        if(noEntryTiles > 0){
+            noEntryTiles --;
+        }
     }
 
     /**
@@ -116,7 +149,7 @@ public class ArchipelagoView {
         return towerColor;
     }
 
-    private void setTowerColor(Tower towerColorPassed){
+    public void setTowerColor(Tower towerColorPassed){
         this.towerColor = towerColorPassed ;
     }
 
