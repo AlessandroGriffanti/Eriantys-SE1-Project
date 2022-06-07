@@ -15,6 +15,7 @@ public class ArchipelagoTest {
         Archipelago a = new Archipelago(1);
         a.addStudent(Creature.DRAGON);
 
+        Assertions.assertEquals(1, a.getTotalNumberOfStudents());
         Assertions.assertEquals(1, a.getStudentsOfType(Creature.DRAGON));
     }
 
@@ -36,13 +37,12 @@ public class ArchipelagoTest {
     public void setMasterOfArchipelago_changeMaster(){
         Match match = new Match(0, 2, true);
         Realm r = match.getRealmOfTheMatch();
-        Player p1 = new Player(match, 1, "Jack", 2, r);
-        Player p2 = new Player(match, 2, "Sonia", 2, r);
+        Player p1 = new Player(match, 0, "Jack", 2, r);
+        Player p2 = new Player(match, 1, "Sonia", 2, r);
 
         Assertions.assertEquals(8, p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
         Assertions.assertEquals(8, p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
 
-        System.out.println("Initial position of mother nature is:" + r.getPositionOfMotherNature());
         r.moveMotherNatureWithSteps(2);
         int currentArchipelago = r.getPositionOfMotherNature();
 
@@ -57,5 +57,25 @@ public class ArchipelagoTest {
         //One tower is taken from Sonia (p2)
         Assertions.assertEquals(7, p2.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
 
+    }
+
+    /**
+     * If the player is set twice as master of the archipelago then his towers
+     * must not be taken again
+     */
+    @Test
+    public void setMasterOfArchipelago_masterNotChanged(){
+        Match match = new Match(0, 2, true);
+        Realm r = match.getRealmOfTheMatch();
+        Player p1 = new Player(match, 0, "Jack", 2, r);
+        Player p2 = new Player(match, 1, "Sonia", 2, r);
+
+        r.moveMotherNatureWithSteps(2);
+        int currentArchipelago = r.getPositionOfMotherNature();
+
+        r.setMasterOfCurrentArchipelago(p1);
+        r.setMasterOfCurrentArchipelago(p1);
+
+        Assertions.assertEquals(7, p1.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers());
     }
 }

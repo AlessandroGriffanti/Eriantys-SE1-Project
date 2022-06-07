@@ -52,10 +52,10 @@ public class Match {
         this.numberOfPlayers = numberOfPlayers;
         this.bagOfTheMatch = new Bag();
         this.realmOfTheMatch = new Realm(numberOfPlayers, bagOfTheMatch);
-        this.players = new ArrayList<Player>();
+        this.players = new ArrayList<>();
         this.coinsReserve = 20;
 
-        this.notControlledProfessors = new ArrayList<Creature>();
+        this.notControlledProfessors = new ArrayList<>();
         for(Creature c: Creature.values()){
             notControlledProfessors.add(c);
         }
@@ -65,7 +65,8 @@ public class Match {
 
 
     /**
-     *This method add one player to the match
+     *This method adds one player to the match and inserts it in the players list attribute
+     * at the index that corresponds with his ID
      * @param nickname name of the player
      */
     public void addPlayer(String nickname){
@@ -117,7 +118,7 @@ public class Match {
     }
 
     /**
-     * This method finds the type of a particular student in the entrance of the specified player
+     * This method finds the type of the particular student in the entrance of the specified player
      * @param player_ID ID of the player
      * @param student_ID ID of the student we are interested in
      * @return type of student [Creature]
@@ -131,7 +132,7 @@ public class Match {
      * @return list of students on each island
      */
     public ArrayList<Creature> getInitialStudentsOnEachIsland(){
-        ArrayList<Creature> studentsOnEachIsland = new ArrayList<Creature>();
+        ArrayList<Creature> studentsOnEachIsland = new ArrayList<>();
         Archipelago archipelago;
 
         int island_ID = getPositionOfMotherNature();
@@ -159,6 +160,12 @@ public class Match {
         return getRealmOfTheMatch().moveStudentsToClouds();
     }
 
+    /**
+     * This method moves the students on a particular cloud to the entrance of the current
+     * player
+     * @param cloud_ID ID of the cloud chosen by the player, from which the students will be taken
+     * @return list of students currently in the entrance, after the addition
+     */
     public ArrayList<Creature> moveStudentsFromCloudToEntrance(int cloud_ID){
         Entrance entrance = players.get(currentPlayer).getSchoolBoard().getEntrance();
 
@@ -166,8 +173,7 @@ public class Match {
         ArrayList<Creature> takenStudents = this.realmOfTheMatch.takeStudentsFromCloud(cloud_ID);
 
         //adds the students to the current player's entrance
-        ArrayList<Creature> newEntrance = entrance.addMultipleStudents(takenStudents);
-        return newEntrance;
+        return entrance.addMultipleStudents(takenStudents);
     }
 
     /**
@@ -220,7 +226,7 @@ public class Match {
     }
 
     /**
-     * This method searches for towers on a particular island belonging to the player
+     * This method looks for towers, on a particular island, that belong to the player
      * specified
      * @param player_ID ID of the player whose towers we are looking for
      * @param island_ID ID of the island on which we are looking for the towers
@@ -292,9 +298,7 @@ public class Match {
      * @param professor the kind of professor the current player will take control on
      */
     public void acquireControlOnProfessor(Creature professor){
-        if(notControlledProfessors.contains(professor)){
-            notControlledProfessors.remove(professor);
-        }
+        notControlledProfessors.remove(professor);
         players.get(currentPlayer).getSchoolBoard().getProfessorTable().addProfessor(professor);
     }
 
@@ -310,9 +314,8 @@ public class Match {
         // take the current island
         Archipelago currentIsland = realmOfTheMatch.getArchipelagos().get(getPositionOfMotherNature());
         // set new master
-        boolean endOfMatch = currentIsland.setMasterOfArchipelago(newMaster);
 
-        return endOfMatch;
+        return currentIsland.setMasterOfArchipelago(newMaster);
     }
 
     public int getPositionOfMotherNature(){

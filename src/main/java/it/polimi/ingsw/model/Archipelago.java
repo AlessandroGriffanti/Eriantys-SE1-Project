@@ -153,15 +153,19 @@ public class Archipelago {
      *         false if the match can continue
      */
     public boolean setMasterOfArchipelago(Player p){
+        boolean endOfMatch = false;
 
         if(masterOfArchipelago == null){
             masterOfArchipelago = p;
+            // take towers from the player's tower-area
+            endOfMatch = masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
+
         }else if (!masterOfArchipelago.equals(p)){
             masterOfArchipelago.getSchoolBoard().putTowers(this.numberOfIslands);
             masterOfArchipelago = p;
+            // take towers from the player's tower-area
+            endOfMatch = masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         }
-        // take towers from the player's tower-area
-        boolean endOfMatch = masterOfArchipelago.getSchoolBoard().takeTowers(this.numberOfIslands);
         // update tower(s)' color
         setTowerColor();
 

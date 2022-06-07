@@ -27,7 +27,9 @@ public class CoinManagerObserverTest {
         mario.getSchoolBoard().getDiningRoom().addStudent(Creature.FROG);
         mario.getSchoolBoard().getDiningRoom().addStudent(Creature.FROG);
 
+        // mario earned one coin
         assertEquals(2, mario.getCoinsOwned());
+        // one coin was taken from the public reserve
         assertEquals(18, match.getCoinsReserve());
     }
 }

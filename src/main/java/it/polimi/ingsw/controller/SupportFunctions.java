@@ -145,7 +145,7 @@ public class SupportFunctions {
     }
 
     /**
-     * This method finds who is the winner of the specified match
+     * This method finds which player is the winner of the specified match
      * @param match reference to the match that must end
      * @return ID of the winner or -1 if there is a tie
      */
