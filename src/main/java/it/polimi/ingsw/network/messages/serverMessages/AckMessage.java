@@ -54,7 +54,7 @@ public class AckMessage extends Message {
      */
     private boolean professorTaken = false;
     /**
-     * This attribute is the ID of the previouse player who had the control over the professor
+     * This attribute is the ID of the previous player who had the control over the professor
      * taken by the current player (recipient of this message)
      */
     private int previousOwnerOfProfessor;
@@ -67,7 +67,7 @@ public class AckMessage extends Message {
     /**
      * This attribute tells if some islands have been unified
      * - none: current island unified with no other island
-     * - previous: current island unified woth the previous one
+     * - previous: current island unified with the previous one
      * - next: current island unified with the next one
      * - both: current island unified with both the next and the previous
      */
@@ -92,7 +92,7 @@ public class AckMessage extends Message {
      */
     private int previousMaster_ID = -1;
     /**
-     * This attribute tells who is the new master of the island where mother nature arrived, only if
+     * This attribute tells which player is the new master of the island where mother nature arrived, only if
      * the master changed
      */
     private int newMaster_ID = -1;
