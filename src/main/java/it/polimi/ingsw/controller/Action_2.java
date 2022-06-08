@@ -186,6 +186,7 @@ public class Action_2 implements ControllerState{
 
                 ack.setMasterChanged(true);
                 ack.setNewMaster_ID(newMaster);
+                ack.setTowerColor(match.getPlayerByID(newMaster).getTowerColor());
             }
         }
         // in the case there is already an island-master...
@@ -205,6 +206,7 @@ public class Action_2 implements ControllerState{
                     ack.setMasterChanged(true);
                     ack.setPreviousMaster_ID(previousMaster);
                     ack.setNewMaster_ID(newMaster);
+                    ack.setTowerColor(match.getPlayerByID(newMaster).getTowerColor());
                 }
             }
         }

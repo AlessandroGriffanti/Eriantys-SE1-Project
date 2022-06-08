@@ -114,6 +114,10 @@ public class AckMessage extends Message {
      * players that must play their action phase yet
      */
     private boolean nextPlanningPhase = false;
+    /**
+     * This attribute is the color of the tower of a player or on an island
+     */
+    private Tower towerColor;
 
     public AckMessage(){
         this.object = "ack";
@@ -321,6 +325,15 @@ public class AckMessage extends Message {
     public boolean isNextPlanningPhase() {
         return nextPlanningPhase;
     }
+
+    // SETTER AND GETTER FOR towerColor
+    public void setTowerColor(Tower towerColor) {
+        this.towerColor = towerColor;
+    }
+
+    public Tower getTowerColor() {
+        return towerColor;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -379,11 +392,13 @@ public class AckMessage extends Message {
    7.2. action_2_influence:
         it means that the influence has been computed and all changes needed were made
         - 'nextPlayer': it doesn't change
-        - 'masterChanged' true if the master has changed, false otherwise
-        - 'previousMaster_ID' the ID of the previous player master of the island or
+        - 'masterChanged': true if the master has changed, false otherwise
+        - 'previousMaster_ID': the ID of the previous player master of the island or
                               -1 if the master did not change
-        - 'newMaster_ID' the ID of the new master on the island reached by mother nature or
+        - 'newMaster_ID': the ID of the new master on the island reached by mother nature or
                          -1 if the master did not change
+        - 'towerColor': the color of the tower currently on the island (where there is mother nature)
+                        , that is the tower color of the new Master
         - 'endOfMatch'
 
    7.3 action_2_union:

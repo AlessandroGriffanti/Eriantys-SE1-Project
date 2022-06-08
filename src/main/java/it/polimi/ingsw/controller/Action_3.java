@@ -112,6 +112,8 @@ public class Action_3 implements ControllerState{
                 ack.setEndOfMatch(true);
                 controller.sendMessageAsBroadcast(ack);
                 SupportFunctions.endMatch(controller, "empty_bag");
+            }else {
+                controller.sendMessageAsBroadcast(ack);
             }
 
             controller.getCharactersManager().resetCharacterAttributes();
