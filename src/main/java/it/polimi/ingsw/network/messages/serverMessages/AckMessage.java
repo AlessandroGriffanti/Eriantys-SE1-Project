@@ -57,7 +57,7 @@ public class AckMessage extends Message {
      * This attribute is the ID of the previous player who had the control over the professor
      * taken by the current player (recipient of this message)
      */
-    private int previousOwnerOfProfessor;
+    private int previousOwnerOfProfessor = -1;
     /**
      * This attribute is the ID of the island where the student has been moved, in case the player chose to move
      * the student on an island;
@@ -367,6 +367,7 @@ public class AckMessage extends Message {
         - 'typeOfStudentMoved' contains the kind of student moved [Creature]  <-- maybe useless
         - 'professorTaken' tell us if the player has now control over the professor
         - 'previousOwnerOfProfessor' contains the ID of the previous owner of the professor
+                                     (-1 if the professors was not already controlled by any player)
 
    6. action_1_island:
       it means that the student has been moved to the island and

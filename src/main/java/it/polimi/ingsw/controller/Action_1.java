@@ -113,6 +113,10 @@ public class Action_1 implements ControllerState{
                     }
                 }
             }else if(previousOwnerOfProfessor == -1){
+                /* set professorTaken attribute to true but not the previousOwnerOfProfessor because
+                   the professor was not controlled
+                 */
+                ack.setProfessorTaken(true);
                 match.acquireControlOnProfessor(creature);
             }
         }
