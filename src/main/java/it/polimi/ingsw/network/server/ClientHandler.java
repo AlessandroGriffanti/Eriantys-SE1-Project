@@ -76,16 +76,6 @@ public class ClientHandler extends Thread {
         }
     }
 
-    /**
-     * this method checks if a new lobby must be created:
-     * it loops over the lobbies in the collection of lobbies (server.getLobbies().keySet()) and it controls if the corresponding
-     * controller's boolean attribute "playing" is true or false. If it is false, it means the lobby is not full, so we pass
-     * the clientHandler just created, with the nickname of the player, to the controller of the corresponding lobby
-     * through the addPlayerHandler method. If it is true, then we add a new lobby to lobbies and we create the new corresponding
-     * controller to which we pass the lobby ID
-     */
-    //    public synchronized boolean checkNewLobbyCreation(String nicknameOfNewPlayer)
-
 
 
     /**

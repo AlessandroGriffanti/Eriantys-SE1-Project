@@ -1,14 +1,11 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
-import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -27,7 +24,7 @@ public class CLI {
      * @param ip is the server ip
      * @param port is the server port
      */
-    public CLI(String ip, int port) throws IOException {
+    public CLI(String ip, int port) throws IOException, InterruptedException {
         NetworkHandler networkHandler = new NetworkHandler(ip, port, this);
         networkHandler.startClient();
     }
@@ -63,8 +60,9 @@ public class CLI {
             System.exit(0);
         } catch (IOException e) {
             System.out.println("Server no longer available :(  " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
 
 
     }
@@ -90,7 +88,7 @@ public class CLI {
         String newMatchStr = scannerCLI.nextLine();
 
         while ( !( (newMatchStr.equals("y")) || (newMatchStr.equals("n")))){
-            println("please insert y if you want to create a new match: (y/n) ");
+            println("please insert 'y' if you want to create a new match or 'n' if you don't: ");
             newMatchStr = scannerCLI.nextLine();
         }
         println("ok");
@@ -247,7 +245,7 @@ public class CLI {
      * This method is used to ask the first player which color he wants his towers to be.
      * @return the color chosen in Tower type.
      */
-    public Tower towerChoice () {
+    public  Tower towerChoice () {
         println("Choose the COLOR of your tower: ");
         println("BLACK , WHITE, GREY");
         String strTowerColorChosen = scannerCLI.nextLine();
@@ -519,7 +517,7 @@ public class CLI {
         println("Now you have to move the student you chose to the diningroom or on an island: do you want to see the diningroom or the island situation before choosing? (diningroom/islands/both/no)");
         String str = scannerCLI.nextLine();
         while(!(str.equals("diningroom") || str.equals("islands") || str.equals("no") || str.equals("both"))){
-            println("Plase insert 'diningroom', 'islands', 'no' or 'both'");
+            println("Please insert 'diningroom', 'islands', 'no' or 'both'");
             str = scannerCLI.nextLine();
         }
         if(str.equals("islands")){                                          //mostro le isole se sceglie di vedere isole
@@ -657,7 +655,9 @@ public class CLI {
                 }
             }
             println(" ");
+
         }
+        println(" ");
     }
 
     /**
@@ -690,7 +690,7 @@ public class CLI {
                 println("Mother Nature is on the island: " + i);
             }
         }
-
+        println(" ");
     }
 
     /**
@@ -758,10 +758,12 @@ public class CLI {
 
     /**
      * This method is used to show to the player that he chose an invalid Cloud ID to take the students from.
+     * @return
      */
-    public void invalidCloudSelection(ModelView modelView){
+    public int invalidCloudSelection(ModelView modelView){
         println("Invalid Cloud ID: this cloud has already been chosen. Please select a new one: ");
-        chooseCloud(modelView);
+        int chosenCloud = chooseCloud(modelView);
+        return chosenCloud;
     }
 
     /**
