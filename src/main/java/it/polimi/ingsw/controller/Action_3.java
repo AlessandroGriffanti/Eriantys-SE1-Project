@@ -89,12 +89,13 @@ public class Action_3 implements ControllerState{
                 // find who is the first player of the next round
                 nextPlayer = SupportFunctions.findFirstPlayerOfNewRound(controller);
                 assert nextPlayer != -1 : "There are no more players connected";
+
                 ack.setNextPlayer(nextPlayer);
                 ack.setNextPlanningPhase(true);
-
-                controller.setActionPhase(false);
             }else{
                 nextPlayer = controller.nextPlayer(controller.getActionPhaseCurrentPlayer());
+                // update current player of action phase
+                controller.setActionPhaseCurrentPlayer(nextPlayer);
 
                 ack.setNextPlayer(nextPlayer);
                 ack.setNextPlanningPhase(false);

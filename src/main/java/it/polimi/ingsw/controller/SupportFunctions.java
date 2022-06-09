@@ -17,11 +17,13 @@ public class SupportFunctions {
     static int findFirstPlayerOfNewRound(Controller controller){
 
         int tempFirstPlayer = -1;
-        int index = 0;
+        int index;
 
-        while (controller.getPlayersDisconnected().get(tempFirstPlayer) && index < controller.getNumberOfPlayers()){
-            tempFirstPlayer = controller.getActionPhaseOrder().get(index);
-            index++;
+        for(index = 0; index < controller.getNumberOfPlayers(); index++){
+            if(!controller.getPlayersDisconnected().get(index)){
+                tempFirstPlayer = controller.getActionPhaseOrder().get(index);
+                break;
+            }
         }
 
         return tempFirstPlayer;

@@ -62,7 +62,7 @@ public class ChooseAssistantCard implements ControllerState{
             //get the number of cards left
             int numberOfRemainingCards = controller.getMatch().numberOfRemainingCardsOfPlayer(request.getSender_ID());
 
-            //if the player has more cards than the that already chosen then he can choose another assistant
+            //if the player has more cards than that already chosen then he can choose another assistant
             if(numberOfRemainingCards > usedCards.size()){
                 cardLegit = false;
                 NackMessage nack = new NackMessage("assistant");
