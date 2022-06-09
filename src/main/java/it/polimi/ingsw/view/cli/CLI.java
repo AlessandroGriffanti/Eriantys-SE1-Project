@@ -421,7 +421,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showSchoolboard(int playerID, ModelView modelView){
-        println("YOUR SCHOOLBOARD: ");
+        println("Your schoolboard currently is: ");
         println(" ");
         showStudentsInEntrancePlayer(playerID, modelView);
         showStudentsInDiningRoomPlayer(playerID, modelView);
@@ -435,10 +435,10 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showStudentsInEntrancePlayer(int playerID, ModelView modelView){
-        println("Your students in the entrance: ");
+        println("Your students in the entrance are: ");
         int i = 0;
         for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
-            if(modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer() == null){
+            if(c == null){
                 println(i + ": --- ");
                 i++;
             }else {
@@ -455,7 +455,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showStudentsInDiningRoomPlayer(int playerID, ModelView modelView){
-        println("Your Dining Room: ");
+        println("This is the diningroom of the player " + playerID);
         for(Creature c : Creature.values() ) {
             println("Number of " + c + ": " + modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(c));
         }
@@ -516,6 +516,24 @@ public class CLI {
      * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
      */
     public synchronized int choiceLocationToMove(ModelView modelView){
+        println("Now you have to move the student you chose to the diningroom or on an island: do you want to see the diningroom or the island situation before choosing? (diningroom/islands/both/no)");
+        String str = scannerCLI.nextLine();
+        while(!(str.equals("diningroom") || str.equals("islands") || str.equals("no") || str.equals("both"))){
+            println("Plase insert 'diningroom', 'islands', 'no' or 'both'");
+            str = scannerCLI.nextLine();
+        }
+        if(str.equals("islands")){                                          //mostro le isole se sceglie di vedere isole
+            showIslandsSituation(modelView);
+        }else if(str.equals("diningroom")){                                 //mostro diningroom se sceglie di vedere diningroom di tutti i giocatori
+            for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
+                showStudentsInDiningRoomPlayer(i, modelView);
+            }
+        }else if(str.equals("both")){                                       //mostro entrambi se sceglie both
+            showIslandsSituation(modelView);
+            for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++) {
+                showStudentsInDiningRoomPlayer(i, modelView);
+            }
+        }
         println("Where do you want to move the student you chose? (diningroom/island)");
         String locationChosen = scannerCLI.nextLine();
         while(!(locationChosen.equals("diningroom") || (locationChosen.equals("island")))){
@@ -526,8 +544,10 @@ public class CLI {
         int islandChosen;
 
         if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
+
+            println(" ");
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
-            showStudentsOnIslands(modelView);
+
             for(int i = 0; i < 12; i++){
                 print(i + " ");
             }
@@ -538,57 +558,117 @@ public class CLI {
                 islandChosen = scannerCLI.nextInt();
             }
         }else{
+
             return -1;
         }
         return islandChosen;
 
     }
 
+    /**
+     * This method is used to ask the player on which island he wants to move mother nature.
+     * @param motherNatureIslandID is the ID of the island where mother nature currently stands.
+     * @param modelView is the reference to the modelView.
+     * @return
+     */
     public int choiceMotherNatureMovement(int motherNatureIslandID, ModelView modelView){
-        println("Mother Nature is on Island " + motherNatureIslandID);
-        println("You can move Mother Nature by " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " movement(s)");
-        print("Insert your choice (island number):  ");
+        println("Now you have to move mother nature, which currently is on Island " + motherNatureIslandID);
+        println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s)");
+        println("Insert the island ID where you want to move her:  ");
         int chosenIslandID = scannerCLI.nextInt();
 
+        while( chosenIslandID < 0 || chosenIslandID > 11){
+            println("Invalid island ID where to move mother nature. Please insert a correct island ID: (0-11)");
+            chosenIslandID = scannerCLI.nextInt();
+        }
         return chosenIslandID;
     }
 
+    /**
+     * This method is used to show to the player that he chose an invalid island ID for mother nature movement.
+     */
     public void invalidMotherNatureMovement(){
-        println("Invalid Mother Nature Value. ");
+        println("Invalid Mother Nature movement. ");
     }
 
+    /**
+     * This method is used to notify the player that he is the new master on the island where he moved mother nature.
+     * @param modelView is the reference to the modelView.
+     * @param playerID is the player ID.
+     */
     public void newMaster(ModelView modelView, int playerID){
         println("You are the new Master on the Island selected! ");
-        println("New number of Tower in the Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer() );
+        println("New number of Tower in your Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer() );
     }
+
+    /**
+     * This method is used to notify the player that he is the new master on the island where he moved mother nature.
+     * @param modelView is the reference to the modelView.
+     * @param motherNatureIslandID is the island ID where the player is the master on (it corresponds to the island ID where mother nature stands).
+     * @param playerID is the player ID.
+     */
+    public void oldMaster(ModelView modelView, int motherNatureIslandID, int playerID){
+        println("You are no more the master on island " + motherNatureIslandID +"!");
+        println("New number of Tower in your Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());
+    }
+
+
+    /**
+     * This method is used to notify the player that 2, or more, islands have been unified.
+     * @param modelView is the reference to the modelView.
+     * @param islandLanding is the island ID where mother nature lands after action_2, so it is the island to which the other one(s) unify.
+     * @param islandToUnifyFlag is the flag to understand which island have been unified (the previous (-1), the following (+1) or both (0).
+     */
+    public void showUnion(ModelView modelView, int islandLanding, int islandToUnifyFlag){
+        int otherIsland = islandLanding;
+        if(islandToUnifyFlag == -1) {
+            otherIsland -= 1;
+            println("The chosen island ("+ islandLanding +") has been unified with the previous island (" + otherIsland +").");
+        }else if(islandToUnifyFlag == 1){
+            otherIsland += 1;
+            println("The chosen island ("+ islandLanding +") has been unified with the following island (" + otherIsland +").");
+        }else if(islandToUnifyFlag == 0){
+            otherIsland -= 1;
+            int secondIsland = islandLanding + 1;
+            println("The chosen island ("+ islandLanding +") has been unified with the previous and the following islands (" + otherIsland + ", " + secondIsland +").");
+        }
+    }
+
 
     /**
      * This method is used to show the initial situation on the islands, including mother nature position.
      * @param modelView is the reference to the modelView.
      */
     public void showStudentsOnIslands(ModelView modelView){
-        println("ISLAND SITUATION:");
+        println("The ISLAND SITUATION is:");
         for(int i = 0; i < 12; i++){
-            if(modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0){           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
+            print("Students on the island " + i + ": ");
+            if(modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
                 if(modelView.getIslandGame().get(i).isMotherNaturePresence()){
-                    print("Studenti sull'isola " + i +": nessuno, qui c'è madre natura.");
-                }else {
-                    print("Studenti sull'isola " + i + ": nessuno");
+                    print("nobody, here stands mother nature.");
+                }else{
+                    print("nobody");
                 }
+
             }
             for(Creature c : Creature.values()) {
                 if(modelView.getIslandGame().get(i).getStudentsOfType(c) != 0){
-                    print("Studenti sull'isola " + i + " : " + c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c));
+                    print(c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c) + "; ");
                 }
             }
             println(" ");
         }
     }
 
+    /**
+     * This method is used to invoke the real methods showing the islands situation, which means the number of student on each one.
+     * @param modelView is the reference to the modelView.
+     */
     public void showIslandsSituation(ModelView modelView) {
         showStudentsOnIslands(modelView);
         showMotherNaturePosition(modelView);
     }
+
 
     public void showNewStudentOnIsland(ModelView modelView){
 
@@ -607,10 +687,103 @@ public class CLI {
     public void showMotherNaturePosition(ModelView modelView){
         for(int i = 0; i < 12; i++) {
             if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
-                System.out.println("MADRE NATURA è SULL'ISOLA: " + i);
+                println("Mother Nature is on the island: " + i);
             }
         }
 
+    }
+
+    /**
+     * This method is used to show the new mother nature position after action_2 movement.
+     * @param motherNatureIslandPosition is the new ID of the island where mother nature stands.
+     */
+    public void newMotherNaturePosition(int motherNatureIslandPosition){
+        println("Mother Nature is now on the island: " + motherNatureIslandPosition);
+        println(" ");
+    }
+
+    /**
+     * This method is used to show to the player the clouds situation.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showClouds(ModelView modelView){
+        println("The Clouds situation is: ");
+        if(modelView.getNumberOfPlayersGame() == 2){
+            print("Cloud 0: ");
+            for (int i = 0; i < 3; i++) {
+                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+            }
+            println(" ");
+            print("Cloud 1: ");
+            for (int i = 3; i < 6; i++) {
+                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+            }
+            println(" ");
+        }else if(modelView.getNumberOfPlayersGame() == 3) {
+            print("Cloud 0: ");
+            for (int i = 0; i < 4; i++) {
+                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+            }
+            println(" ");
+            print("Cloud 1: ");
+            for (int i = 4; i < 8; i++) {
+                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+            }
+            println(" ");
+            print("Cloud 2: ");
+            for (int i = 8; i < 12; i++) {
+                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+            }
+            println(" ");
+        }
+
+    }
+
+    /**
+     * This method is used to ask the player which cloud he wants to take the student from.
+     * @param modelView is the reference to the modelView.
+     * @return the cloud ID chosen.
+     */
+    public int chooseCloud(ModelView modelView){
+        showClouds(modelView);
+        println("Which cloud do you want to take the students from? They will be moved to your entrance ");
+        int cloudChosen = scannerCLI.nextInt();
+        int cloudNumber = (modelView.getStudentsOnClouds().size() / 3)-1;
+        while( cloudChosen <0 || cloudChosen > cloudNumber){
+            println("Invalid cloud selection. Please select a valid cloud ID: ");
+            cloudChosen = scannerCLI.nextInt();
+        }
+        return  cloudChosen;
+    }
+
+    /**
+     * This method is used to show to the player that he chose an invalid Cloud ID to take the students from.
+     */
+    public void invalidCloudSelection(ModelView modelView){
+        println("Invalid Cloud ID: this cloud has already been chosen. Please select a new one: ");
+        chooseCloud(modelView);
+    }
+
+    /**
+     * This method is used to show the winner of the match.
+     * @param winnerNickname is the nickname of the winner.
+     * @param winnerReason is the reason why a player wins.
+     * @param playerIDwinner is the id of the winner.
+     */
+    public void matchEnd(String winnerNickname, String winnerReason, int playerIDwinner){
+        println(" ");
+        println("THE MATCH IS ENDED, reason: " + winnerReason);
+        println("The winner is " + playerIDwinner +": " + winnerNickname);
+        println(" ");
+    }
+
+    /**
+     *
+     */
+    public void newRoundBeginning(){
+        println(" ");
+        println(" ");
+        println("The round is over, a new one is beginning! ");
     }
 
     public void print(String strToPrint){

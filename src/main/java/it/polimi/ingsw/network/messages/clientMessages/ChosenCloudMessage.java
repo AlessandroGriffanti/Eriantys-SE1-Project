@@ -9,6 +9,13 @@ public class ChosenCloudMessage extends Message {
         this.object = "action_3";
     }
 
+    public ChosenCloudMessage(int chosenCloudID){
+        this.object = "action_3";
+        this.cloud_ID = chosenCloudID;
+
+    }
+
+
     public void setCloud_ID(int cloud_ID) {
         this.cloud_ID = cloud_ID;
     }

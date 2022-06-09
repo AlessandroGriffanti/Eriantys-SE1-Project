@@ -59,12 +59,15 @@ public class ModelView {
     private int lastAssistantChosen;
 
 
+    private ArrayList <Creature> studentsOnClouds;
+
     /**
      * This constructor creates a new instance of the modelView.
      */
     public ModelView(int playerID){
         assistantCardsValuesPlayer = new HashMap<>();
         characterCardsInTheGame = new ArrayList<>();
+        studentsOnClouds = new ArrayList<>();
 
         for(int i = 1; i<= 10; i++){                        //creo le carte assistente con il relativo valore di madre natura
             if(i == 1 || i == 2) {
@@ -164,4 +167,46 @@ public class ModelView {
         this.lastAssistantChosen = lastAssistantChosen;
     }
 
+    public ArrayList<Creature> getStudentsOnClouds() {
+        return studentsOnClouds;
+    }
+
+    /**
+     * This method returns the student on the selected cloud.
+     * @param cloudIDSelected is the ID of the cloud selected.
+     * @return the student on the selected cloud.
+     */
+    public ArrayList<Creature> getStudentsOnSelectedCloud(int cloudIDSelected) {
+        ArrayList<Creature> studentsOnTheSelectedCloud = new ArrayList<>();
+        if(numberOfPlayersGame == 2) {
+            if(cloudIDSelected == 1) {
+                for (int i = 0; i < 3; i++) {
+                    studentsOnTheSelectedCloud.add(this.studentsOnClouds.get(i));
+                }
+            }else if(cloudIDSelected == 2) {
+                for (int i = 3; i < 6; i++) {
+                    studentsOnTheSelectedCloud.add(this.studentsOnClouds.get(i));
+                }
+            }
+        }else if(numberOfPlayersGame == 3) {
+            if (cloudIDSelected == 1) {
+                for (int i = 0; i < 4; i++) {
+                    studentsOnTheSelectedCloud.add(this.studentsOnClouds.get(i));
+                }
+            } else if (cloudIDSelected == 2) {
+                for (int i = 4; i < 8; i++) {
+                    studentsOnTheSelectedCloud.add(this.studentsOnClouds.get(i));
+                }
+            } else if (cloudIDSelected == 3) {
+                for (int i = 8; i < 12; i++) {
+                    studentsOnTheSelectedCloud.add(this.studentsOnClouds.get(i));
+                }
+            }
+        }
+        return studentsOnTheSelectedCloud;
+    }
+
+    public void setStudentsOnClouds(ArrayList<Creature> studentsOnClouds) {
+        this.studentsOnClouds = studentsOnClouds;
+    }
 }

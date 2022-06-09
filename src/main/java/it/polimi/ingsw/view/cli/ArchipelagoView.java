@@ -26,11 +26,18 @@ public class ArchipelagoView {
      * tower built on it
      */
     private Tower towerColor;
+
+    /**
+     * This attribute is the number of towers on an island.
+     */
+    private int numberOfTower;
+
     /**
      * This attribute is the player that currently has the higher influence
      * over the archipelago
      */
     private Player masterOfArchipelago;
+
 
     /**
      * This attribute is the population of students of each kind currently on the island.
@@ -41,6 +48,7 @@ public class ArchipelagoView {
      * This attribute is the number of no-entry-tiles currently on the archipelago
      */
     private int noEntryTiles;
+
 
     /**
      * This constructor creates a new archipelago (as a single island).
@@ -57,6 +65,7 @@ public class ArchipelagoView {
         this.studentsPopulation.put(Creature.FROG, 0);
         this.studentsPopulation.put(Creature.UNICORN, 0);
         this.studentsPopulation.put(Creature.GNOME, 0);
+        this.numberOfTower = 0;
     }
 
     /**
@@ -144,6 +153,10 @@ public class ArchipelagoView {
         this.motherNaturePresence = motherNaturePresence;
     }
 
+    public void setStudentsPopulation(HashMap<Creature, Integer> studentsPopulation) {
+        this.studentsPopulation = studentsPopulation;
+    }
+
 
     public Tower getTowerColor() {
         return towerColor;
@@ -153,5 +166,16 @@ public class ArchipelagoView {
         this.towerColor = towerColorPassed ;
     }
 
+    public HashMap<Creature, Integer> getStudentsPopulation() {
+        return studentsPopulation;
+    }
+
+    public int getNumberOfTower() {
+        return numberOfTower;
+    }
+
+    public void setNumberOfTower(int numberOfTower) {
+        this.numberOfTower = numberOfTower;
+    }
 
 }

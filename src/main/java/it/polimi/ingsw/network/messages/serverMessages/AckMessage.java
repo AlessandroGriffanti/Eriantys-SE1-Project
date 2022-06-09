@@ -340,7 +340,7 @@ public class AckMessage extends Message {
    0. waiting:
       it means that the match has been just created and is waiting to start; no more data required.
 
-   1. fillClouds:
+   1. refillClouds:
       it means that all the clouds have been refilled and
       - 'students' contains all te students added on each cloud
       [ex. 2 players => 2 clouds with 3 students each => in the attribute there will be 6 objects Creature, the first 3 belong to the cloud0 the last 3 to the cloud1]
