@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -225,28 +226,36 @@ public class ClientHandler extends Thread {
 
 
     /** This method checks the status of each lobby (which is the controller associated in the hashmap lobbies).
-     * If the status is false, it means the match is waiting for other players to join, so it is available and we add the boolean 'false' and we increase the counter
-     * of lobbies that are waiting. If the status is true, it means the match has already started, so it's not available and we add the boolean 'true'.
-     * After that, if the counter is 0, it means all the lobbies are full, so a new one is required and we
+     * If the status is false, it means the match is waiting for other players to join, so it is available, and we add the boolean 'true' and we increase the counter
+     * of lobbies that are waiting. If the status is true, it means the match has already started, so it's not available, and we add the boolean 'false'.
+     * After that, if the counter is 0, it means all the lobbies are full, so a new one is required, and we
      * send a NoLobbyAvailable Message, otherwise we send a AskMatchToJoinMessage. In the end, we set the player ID
      */
     public void askMatchToJoin() {
-        ArrayList<Boolean> listAvailableLobbies = new ArrayList<>();
+        ArrayList<Boolean> availableLobbies = new ArrayList<>();
+        ArrayList<Integer> lobbiesNumberOfPlayers = new ArrayList<>();
+        ArrayList<Boolean> lobbiesExpertMode = new ArrayList<>();
+
         int numberOfLobbiesInWaiting = 0;
         for(String lobby : server.getLobbies().keySet()) {
-            if(server.getLobbies().get(lobby).getPlayingStatus() == true) {
-                listAvailableLobbies.add(true);
+            if(server.getLobbies().get(lobby).getPlayingStatus()) {
+                availableLobbies.add(false);
             }else {
-                listAvailableLobbies.add(false);
+                availableLobbies.add(true);
                 numberOfLobbiesInWaiting ++;
             }
+
+            // add number of players of the lobby
+            lobbiesNumberOfPlayers.add(server.getLobbies().get(lobby).getNumberOfPlayers());
+            // add expertMode of the lobby
+            lobbiesExpertMode.add(server.getLobbies().get(lobby).isExpertMode());
         }
         if(numberOfLobbiesInWaiting == 0){
             playerID = 0;
             NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             sendMessageFromServer(noLobbyAvailableMessage);
         }else {
-            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(listAvailableLobbies); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(availableLobbies, lobbiesNumberOfPlayers, lobbiesExpertMode); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             sendMessageFromServer(askMatchToJoinMessage);
             System.out.println("sent AskMatchToJoinMessage");
         }
