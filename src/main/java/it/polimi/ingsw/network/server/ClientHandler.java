@@ -200,8 +200,8 @@ public class ClientHandler extends Thread {
 
     /** this methood checks if the player wants to create a new match or not.
      * @param requestValue is the boolean 'createNewMatch' in the LoginMessage, true if he wants to create a new match, false otherwise. If
-     * @param requestValue is false, we first check if the number of total lobbies is 0, which means there is no lobby to join.
-     * If so, we send a NoLobbyAvailableMessage, otherwise we call the method askMatchToJoin.
+     *                     requestValue is false, we first check if the number of total lobbies is 0, which means there is no lobby to join;
+     *                     if so, we send a NoLobbyAvailableMessage, otherwise we call the method askMatchToJoin.
      * @param nicknameOfPlayer is the nickname of the player who wants to create, or not, the new match
      */
     public void checkNewMatchRequest(boolean requestValue, String nicknameOfPlayer){

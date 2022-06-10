@@ -45,7 +45,7 @@ public class Server {
 
 
 
-    //posso aggiungere un hashmap di string(o int) che indica il numeero della partita, della lobby, e di boolean
+    //posso aggiungere un hashmap di string(o int) che indica il numero della partita, della lobby, e di boolean
     //in cui true mi indica ad esempio se la partita è in attesa e false se è completa
 
     /**
@@ -160,7 +160,7 @@ public class Server {
      * this method launches the server.
      */
     public void start() throws IOException {
-        serverSocket = new ServerSocket(4444);
+        serverSocket = new ServerSocket(numberOfPort);
         Socket clientSocket = null;
         while(true){
             try{
