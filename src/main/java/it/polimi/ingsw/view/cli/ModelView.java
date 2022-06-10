@@ -54,11 +54,13 @@ public class ModelView {
     private ArrayList<Creature> StudentsOnTheClouds;
 
     /**
-     * This integer is the ordervalue (1-10) of the last assistant card choosen by the player.
+     * This integer is the ordervalue (1-10) of the last assistant card chosen by the player.
      */
     private int lastAssistantChosen;
 
-
+    /**
+     * This attribute gathers the students on the different clouds in the game.
+     */
     private ArrayList <Creature> studentsOnClouds;
 
     /**
