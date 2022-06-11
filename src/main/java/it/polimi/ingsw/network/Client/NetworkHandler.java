@@ -14,6 +14,7 @@ import it.polimi.ingsw.view.cli.ModelView;
 import it.polimi.ingsw.view.cli.SchoolBoardView;
 
 
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,6 +41,7 @@ public class NetworkHandler {
      * update method, after receiving the match start message.
      */
     private ModelView modelView;
+
     private boolean matchEnd = false;
 
     //questi potrebbero essere spostati in mv
@@ -94,6 +96,8 @@ public class NetworkHandler {
             System.out.println("messaggio dal server: " + msgFromServer);
             analysisOfReceivedMessageServer(msgFromServer);
         }
+
+        TimeUnit.MILLISECONDS.sleep(5000);
 
 
         inputBufferClient.close();
@@ -170,7 +174,7 @@ public class NetworkHandler {
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
                 //System.out.println("player id" + playerID);
 
-                int lobbyIDchosenByPlayer = cli.lobbyToChoose(askMatchToJoinMessage.getLobbiesTmp());
+                int lobbyIDchosenByPlayer = cli.lobbyToChoose(askMatchToJoinMessage.getLobbiesTmp(), askMatchToJoinMessage.getLobbiesExpertMode(), askMatchToJoinMessage.getLobbiesNumberOfPlayers(), askMatchToJoinMessage.getLobbiesEnd());
 
                 ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = new ReplyChosenLobbyToJoinMessage(lobbyIDchosenByPlayer);
                 sendMessage(replyChosenLobbyToJoinMessage);
@@ -222,7 +226,7 @@ public class NetworkHandler {
                 break;
             case "end":
                 EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
-                cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner());
+                cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner(), playerID);
 
                 matchEnd = true;
                 break;
@@ -317,6 +321,9 @@ public class NetworkHandler {
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) {   //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                    //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
+                            if(studentChosen == -1){
+                                break;
+                            }
                             int locationChosen = cli.choiceLocationToMove(modelView);                               //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
@@ -330,6 +337,9 @@ public class NetworkHandler {
 
                         if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {            //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su diningroom
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            if(studentChosen == -1){
+                                break;
+                            }
                             int locationChosen = cli.choiceLocationToMove(modelView);
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
@@ -561,7 +571,13 @@ public class NetworkHandler {
         sendMessage(chosenCloudMessage);
     }
 
-
+    /**
+     * This method is used to create and send the Chosen Character Message to the server.
+     */
+    public void sendRequestCharacterMessage(String characterChosen){
+        CharacterRequestMessage characterRequestMessage = new CharacterRequestMessage(playerID, characterChosen);
+        sendMessage(characterRequestMessage);
+    }
 
     /**
      * This method is used to update the modelView after receiving the matchStartMessage.

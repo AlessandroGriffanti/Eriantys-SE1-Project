@@ -21,16 +21,21 @@ public class AskMatchToJoinMessage extends Message {
      * This attribute tells if the lobby was created as expert mode or not
      */
     ArrayList<Boolean> lobbiesExpertMode = new ArrayList<>();
+    /**
+     * This attribute tells the status of the match in the lobbies (true if ended).
+     */
+    ArrayList<Boolean> lobbiesEnd = new ArrayList<>();
 
     public AskMatchToJoinMessage(){
         this.object = "join match";
     }
 
-    public AskMatchToJoinMessage (ArrayList<Boolean> listAvailableLobbies, ArrayList<Integer> lobbiesNumberOfPlayers, ArrayList<Boolean> lobbiesExpertMode){
+    public AskMatchToJoinMessage (ArrayList<Boolean> listAvailableLobbies, ArrayList<Integer> lobbiesNumberOfPlayers, ArrayList<Boolean> lobbiesExpertMode, ArrayList<Boolean> listLobbiesEnd){
         this.object = "join match";
         this.availableLobbiesTmp = listAvailableLobbies;
         this.lobbiesNumberOfPlayers = lobbiesNumberOfPlayers;
         this.lobbiesExpertMode = lobbiesExpertMode;
+        this.lobbiesEnd = listLobbiesEnd;
     }
 
     public ArrayList<Boolean> getLobbiesTmp() {
@@ -43,5 +48,9 @@ public class AskMatchToJoinMessage extends Message {
 
     public ArrayList<Integer> getLobbiesNumberOfPlayers() {
         return lobbiesNumberOfPlayers;
+    }
+
+    public ArrayList<Boolean> getLobbiesEnd() {
+        return lobbiesEnd;
     }
 }

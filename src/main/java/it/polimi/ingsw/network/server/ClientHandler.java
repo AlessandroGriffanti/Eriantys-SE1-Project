@@ -7,9 +7,9 @@ import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
  * it should deserialize the json received and pass the information to the controller.
@@ -52,22 +52,26 @@ public class ClientHandler extends Thread {
             }*/
             System.out.println("pippo while");
             while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ){
+                //System.out.println("is match ended: " + server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded());
                 String msg = inputHandler.readLine();
                 System.out.println("messaggio ricevuto dal client: " + msg);
-                server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);
+                if(server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded()){
+                    server.getLobbiesEnd().set(lobbyID, true);
+                }else {
+                    server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);
+                }
                 //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
-
             }
 
+            TimeUnit.MILLISECONDS.sleep(5000);
 
-            //System.out.println("end");
+            System.out.println("end");
 
-            /*
             outputHandler.close();
             inputHandler.close();
             clientSocket.close();
             System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
-             */
+
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -235,6 +239,7 @@ public class ClientHandler extends Thread {
         ArrayList<Boolean> availableLobbies = new ArrayList<>();
         ArrayList<Integer> lobbiesNumberOfPlayers = new ArrayList<>();
         ArrayList<Boolean> lobbiesExpertMode = new ArrayList<>();
+        ArrayList<Boolean> lobbiesEnd = server.getLobbiesEnd();
 
         int numberOfLobbiesInWaiting = 0;
         for(String lobby : server.getLobbies().keySet()) {
@@ -255,7 +260,7 @@ public class ClientHandler extends Thread {
             NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             sendMessageFromServer(noLobbyAvailableMessage);
         }else {
-            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(availableLobbies, lobbiesNumberOfPlayers, lobbiesExpertMode); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
+            AskMatchToJoinMessage askMatchToJoinMessage = new AskMatchToJoinMessage(availableLobbies, lobbiesNumberOfPlayers, lobbiesExpertMode, lobbiesEnd); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
             sendMessageFromServer(askMatchToJoinMessage);
             System.out.println("sent AskMatchToJoinMessage");
         }
@@ -272,6 +277,7 @@ public class ClientHandler extends Thread {
         int numberOfTotalLobbies = server.getLobbies().keySet().size();
         lobbyID = numberOfTotalLobbies;
         server.getLobbies().put((String.valueOf(lobbyID)), new Controller(lobbyID));
+        server.getLobbiesEnd().add(false);
         server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknameOfNewPlayer);
     }
 

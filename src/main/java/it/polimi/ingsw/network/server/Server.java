@@ -36,6 +36,7 @@ public class Server {
 
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
     private HashMap <String, Controller> lobbies;
+    private ArrayList<Boolean> lobbiesEnd;      //index of array list corresponds to the string id of lobbies, false if match not ended
 
     /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
@@ -57,6 +58,7 @@ public class Server {
         //this.playerInTheLobby = new HashMap<>();
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
+        this.lobbiesEnd = new ArrayList<>();
     }
 
 
@@ -94,6 +96,10 @@ public class Server {
 
     public HashMap<String, Controller> getLobbies() {
         return lobbies;
+    }
+
+    public ArrayList<Boolean> getLobbiesEnd() {
+        return lobbiesEnd;
     }
 
 
