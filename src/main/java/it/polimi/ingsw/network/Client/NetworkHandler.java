@@ -516,7 +516,7 @@ public class NetworkHandler {
                         break;
 
                     case "princess":
-                        int chosenStudentID = cli.choicePrincess(ackMessageMapped.getStudentsOnCards() );
+                        int chosenStudentID = cli.choicePrincess(modelView.getCharactersDataView().getPrincessStudents());
 
                         sendCharacterPrincess(chosenStudentID);
                         break;
@@ -764,6 +764,13 @@ public class NetworkHandler {
             modelView.setCoinGame(20);
             for (String s : matchStartMessage.getCharacters()) {
                 modelView.getCharacterCardsInTheGame().add(s);
+                if(s.equals("monk")){
+                    modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
+                }else if(s.equals("jester")){
+                    modelView.getCharactersDataView().setJesterStudents(matchStartMessage.getJesterStudents());
+                }else if(s.equals("princess")){
+                    modelView.getCharactersDataView().setPrincessStudents(matchStartMessage.getPrincessStudents());
+                }
             }
         }
         //System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
