@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.characterCards.CharactersManager;
+import it.polimi.ingsw.controller.characterCards.*;
+import it.polimi.ingsw.controller.characterCards.Character;
 import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.ClientHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
@@ -158,6 +160,19 @@ public class Controller {
             this.charactersManager = new CharactersManager(this);
             Set<String> characters = charactersManager.chooseCharacter();
             startMessage.setCharacters(characters);
+
+            HashMap<String, Character> cards = charactersManager.getCards();
+
+            if(cards.containsKey("monk")){
+                Monk ch = (Monk)cards.get("monk");
+                startMessage.setMonkStudents(ch.getStudents());
+            }else if(cards.containsKey("jester")){
+                Jester ch = (Jester) cards.get("jester");
+                startMessage.setJesterStudents(ch.getStudentsOnCard());
+            }else if(cards.containsKey("princess")){
+                Princess ch = (Princess) cards.get("princess");
+                startMessage.setPrincessStudents(ch.getStudentsOnPrincess());
+            }
         }
         // add the students in the entrance of each player
         for(int i = 0; i < clientHandlers.size(); i++){

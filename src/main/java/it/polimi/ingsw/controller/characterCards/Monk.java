@@ -90,4 +90,8 @@ public class Monk  extends Character {
             }
         }
     }
+
+    public ArrayList<Creature> getStudents() {
+        return students;
+    }
 }

@@ -45,6 +45,24 @@ public class MatchStartMessage extends Message {
      * This attribute contains the character randomly chosen for this match
      */
     private Set<String> characters;
+    /**
+     * This attribute is the list of students on the character monk;
+     * it's NULL if the character monk was not chosen or if the match is not in
+     * expert mode
+     */
+    private ArrayList<Creature> monkStudents = null;
+    /**
+     * This attribute is the list of students on the character jester;
+     * it's NULL if the character monk was not chosen or if the match is not in
+     * expert mode
+     */
+    private ArrayList<Creature> jesterStudents = null;
+    /**
+     * This attribute is the list of students on the character princess;
+     * it's NULL if the character monk was not chosen or if the match is not in
+     * expert mode
+     */
+    private ArrayList<Creature> princessStudents = null;
 
     public MatchStartMessage(){
         this.object = "start";
@@ -101,8 +119,31 @@ public class MatchStartMessage extends Message {
     public void setStudentsOnIslands(ArrayList<Creature> studentsOnIslands) {
         this.studentsOnIslands = studentsOnIslands;
     }
-
     public ArrayList<Creature> getStudentsOnIslands() {
         return studentsOnIslands;
+    }
+
+    public void setMonkStudents(ArrayList<Creature> monkStudents) {
+        this.monkStudents = monkStudents;
+    }
+
+    public ArrayList<Creature> getMonkStudents() {
+        return monkStudents;
+    }
+
+    public void setJesterStudents(ArrayList<Creature> jesterStudents) {
+        this.jesterStudents = jesterStudents;
+    }
+
+    public ArrayList<Creature> getJesterStudents() {
+        return jesterStudents;
+    }
+
+    public void setPrincessStudents(ArrayList<Creature> princessStudents) {
+        this.princessStudents = princessStudents;
+    }
+
+    public ArrayList<Creature> getPrincessStudents() {
+        return princessStudents;
     }
 }
