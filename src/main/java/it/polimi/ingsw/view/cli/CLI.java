@@ -6,10 +6,7 @@ import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * This class represents the CLI: it manages the game through the command line interface.
@@ -663,12 +660,13 @@ public class CLI {
             println(" ");
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
 
-            for(int i = 0; i < 12; i++){
+            for(int i = 0; i < 12; i++){        //TODO da fare con modelview
                 print(i + " ");
             }
             println(" ");
             islandChosen = scannerCLI.nextInt();
-            while(islandChosen < 0 || islandChosen >= 12){
+
+            while(islandChosen < 0 || islandChosen >= 12){ //TODO da fare con modelview
                 println("Please insert a valid island ID: ");
                 islandChosen = scannerCLI.nextInt();
             }
@@ -692,7 +690,7 @@ public class CLI {
         println("Insert the island ID where you want to move her:  ");
         int chosenIslandID = scannerCLI.nextInt();
 
-        while( chosenIslandID < 0 || chosenIslandID > 11){
+        while( chosenIslandID < 0 || chosenIslandID > 11){ //TODO da fare con modelview
             println("Invalid island ID where to move mother nature. Please insert a correct island ID: (0-11)");
             chosenIslandID = scannerCLI.nextInt();
         }
@@ -756,7 +754,7 @@ public class CLI {
      */
     public void showStudentsOnIslands(ModelView modelView){
         println("The ISLAND SITUATION is:");
-        for(int i = 0; i < 12; i++){
+        for(int i = 0; i < 12; i++){        //TODO da fare con modelview
             print("Students on the island " + i + ": ");
             if(modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
                 if(modelView.getIslandGame().get(i).isMotherNaturePresence()){
@@ -789,7 +787,7 @@ public class CLI {
 
     public void showNewStudentOnIsland(ModelView modelView){
 
-        for (int k = 0; k < 12; k++) {
+        for (int k = 0; k < 12; k++) {      //TODO da fare con modelview
             println("Island " + k + ": ");
             for (Creature c : Creature.values()) {
                 println("Student " + c + " " + modelView.getIslandGame().get(k).getStudentsOfType(c));
@@ -802,7 +800,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showMotherNaturePosition(ModelView modelView){
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 12; i++) {           //TODO da fare con modelview
             if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
                 println("Mother Nature is on the island: " + i);
             }
@@ -928,14 +926,113 @@ public class CLI {
             for(String s : modelView.getCharacterCardsInTheGame()){
                 print(s + " ");
             }
+            println(" ");
             characterChosen = scannerCLI.next();
         }
         println(" ");
         println("You choose to use: " + characterChosen);
 
-        networkHandler.sendRequestCharacterMessage(characterChosen);
+        networkHandler.sendRequestCharacterMessage(characterChosen, callFrom);
 
     }
+
+    /**
+     * This method is used by the client when he uses the Herbalist character.
+     * @param modelView is the reference to the modelView.
+     * @return the id of the chosen island.
+     */
+    public int choiceHerbalist(ModelView modelView){
+        println("On which island do you want to put a No Entry Tile? ");
+        showIslandsSituation(modelView);
+        int islandIDChosenByClient = scannerCLI.nextInt();
+
+        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11){
+            println("Not a valid island ID, please insert a valid number: ");
+            showIslandsSituation(modelView);
+            islandIDChosenByClient = scannerCLI.nextInt();
+        }
+
+        return islandIDChosenByClient;
+    }
+
+    /**
+     * This method is used by the client when he uses the Ambassador character.
+     * @param modelView is the reference to the modelView.
+     * @return the id of the chosen island.
+     */
+    public int choiceAmbassador(ModelView modelView){
+        println("On which island do you want to compute the influence? ");
+        showIslandsSituation(modelView);
+        int islandIDChosenByClient = scannerCLI.nextInt();
+
+        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11){
+            println("Not a valid island ID, please insert a valid number: ");
+            showIslandsSituation(modelView);
+            islandIDChosenByClient = scannerCLI.nextInt();
+        }
+
+        return islandIDChosenByClient;
+    }
+
+    /**
+     * This method is used by the client when he uses the MushroomsMerchant character card.
+     * @return the Creature chosen.
+     */
+    public Creature choiceMushroomsMerchant(){
+        ArrayList <String> availableStudents = new ArrayList<>();
+        println("Which student do you want to keep out from the influence computation? ");
+        for(Creature c : Creature.values()){
+            print(c.toString());
+            availableStudents.add(c.toString());
+        }
+        println(" ");
+        String chosenStudentByClientStr = scannerCLI.next();
+        while(!availableStudents.contains(chosenStudentByClientStr)){
+            println("Not a valid student, please insert a valid one: ");
+            chosenStudentByClientStr = scannerCLI.next();
+        }
+
+        Creature chosenStudentByClient = Creature.valueOf(chosenStudentByClientStr);
+        return chosenStudentByClient;
+    }
+
+    /**
+     * This method is used by the client when he uses the Trafficker character card.
+     * @return the Creature chosen.
+     */
+    public Creature choiceTrafficker(){
+        ArrayList <String> availableStudents = new ArrayList<>();
+        println("Which student do you choose? ");
+        for(Creature c : Creature.values()){
+            print(c.toString());
+            availableStudents.add(c.toString());
+        }
+        println(" ");
+        String chosenStudentByClientStr = scannerCLI.next();
+        while(!availableStudents.contains(chosenStudentByClientStr)){
+            println("Not a valid student, please choose a valid one: ");
+            chosenStudentByClientStr = scannerCLI.next();
+        }
+
+        Creature chosenStudentByClient = Creature.valueOf(chosenStudentByClientStr);
+        return chosenStudentByClient;
+    }
+
+    public int choicePrincess(ArrayList<Creature> studentsOnCard){
+        println("Which student do you choose? You will move it from the card to your Dining Room");
+
+        // TODO print STUDENTI DISPONIBILI ALLA SCELTA tramite un arraylist ??;
+
+        int chosenStudentIDByClient = scannerCLI.nextInt();
+        while ( !(chosenStudentIDByClient >= 0 && chosenStudentIDByClient <3 )){
+            println("Not a valid student ID, please choose a valid one: ");
+            chosenStudentIDByClient = scannerCLI.nextInt();
+        }
+
+        return chosenStudentIDByClient;
+    }
+
+
 
     /**
      * This methods is used by the client to view what he desires.

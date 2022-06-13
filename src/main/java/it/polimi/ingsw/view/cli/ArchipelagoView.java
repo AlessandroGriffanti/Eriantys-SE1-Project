@@ -13,6 +13,11 @@ public class ArchipelagoView {
     private int archipelagoID;
 
     /**
+     * This attribute identifies if an island has been unified.
+     */
+    //private boolean unifiedIsland = false;
+
+    /**
      * This attribute is the number of single island-tiles that belong to the archipelago.
      */
     private int numberOfIsland;
@@ -177,5 +182,15 @@ public class ArchipelagoView {
     public void setNumberOfTower(int numberOfTower) {
         this.numberOfTower = numberOfTower;
     }
+
+    /*
+    public boolean isUnifiedIsland() {
+        return unifiedIsland;
+    }
+
+    public void setUnifiedIsland(boolean unifiedIsland) {
+        this.unifiedIsland = unifiedIsland;
+    }
+     */
 
 }

@@ -122,37 +122,40 @@ public class CharacterDataMessage extends Message {
 *       1. "monk":
 *           - student_ID: ID of the student on the card
 *           - island_ID: ID of the island where the student will be put
-        2. "cook":
+
+     OK 2. "cook":
             - no further attributes
 
-        3. "ambassador":
+     OK 3. "ambassador":
             - island_ID: the island chosen by the player where to compute the influence
 
-        4. "messenger":
+     OK 4. "messenger":
             - no further attributes
 
-        5. "herbalist":
+     OK 5. "herbalist":
             - island_ID: the ID of the island where to put the noEntryTile
 
-        6. "centaur":
+     OK 6. "centaur":
             - no further attributes
 
         7. "jester":
             - studentsFromPlayerEntrance: the list of IDs of the students in the entrance of the player
             - elementsFromCard: the list of IDs of the students on the character card
 
-        8. "knight":
+     OK 8. "knight":
             - no more attributes
 
-        9. "mushroomsMerchant":
+     OK 9. "mushroomsMerchant":
             - creature: type of student chosen by the player
 
         10. "bard":
             - studentsFromPlayerDiningRoom
             - studentsFromPlayerEntrance
 
-        11. "princess":
+     OK 11. "princess":
             - student_ID: the ID of the student chosen from the character card
 
-        12. "trafficker":
-            - creature: the type of students chosen by the player*/
+     OK 12. "trafficker":
+            - creature: the type of students chosen by the player
+
+      */

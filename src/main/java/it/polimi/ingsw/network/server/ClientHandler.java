@@ -22,6 +22,8 @@ public class ClientHandler extends Thread {
     private int playerID;
     private int lobbyID;
 
+    private boolean matchStarted = false;
+
     /**
      * Gson object "gsonObj" to deserialize the json message received
      */
@@ -75,9 +77,11 @@ public class ClientHandler extends Thread {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);               //errore se player si disconnette prima di essersi unito ad una partita
+            if(matchStarted) {
+                server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);   //TODO : quando partita già creata, errore se non è iniziata (setTrueMatchStart ma problema tre giocatori).
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -145,6 +149,7 @@ public class ClientHandler extends Thread {
                     IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
                     sendMessageFromServer(idSetAfterLobbyChoice);
 
+                    //matchStarted = true;
                     server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
                     //System.out.println("nuovo numero di giocatori nella lobby: " + server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter());
 
@@ -278,6 +283,8 @@ public class ClientHandler extends Thread {
         lobbyID = numberOfTotalLobbies;
         server.getLobbies().put((String.valueOf(lobbyID)), new Controller(lobbyID));
         server.getLobbiesEnd().add(false);
+
+        //matchStarted = true;
         server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknameOfNewPlayer);
     }
 
@@ -301,6 +308,10 @@ public class ClientHandler extends Thread {
         outputHandler.println(gsonObj.toJson(msgToSerialize));
         outputHandler.flush();
         //System.out.println("sent ok");
+    }
+
+    public void setTrueMatchStart(){
+        this.matchStarted = true;
     }
 
     public void sendMessageFromServer(Message msgToSend){

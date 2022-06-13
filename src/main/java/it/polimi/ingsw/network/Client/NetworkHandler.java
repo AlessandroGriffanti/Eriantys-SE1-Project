@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.Client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.messages.*;
@@ -13,8 +12,6 @@ import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.ModelView;
 import it.polimi.ingsw.view.cli.SchoolBoardView;
 
-
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,6 +33,8 @@ public class NetworkHandler {
     private PrintWriter outputPrintClient = null;
     private String ip;
     private int port;
+    private String lastCallFrom = null;
+
     /**
      * This attribute represents the personal modelView of a player and it is created in the first
      * update method, after receiving the match start message.
@@ -90,7 +89,7 @@ public class NetworkHandler {
         // 1- per prima cosa il client avviato fa un login sul server
         loginFromClient();
 
-        while (!matchEnd) {            // TODO: controllo connessione
+        while (!matchEnd) {
             //System.out.println("Still connected");
             String msgFromServer = inputBufferClient.readLine();
             System.out.println("messaggio dal server: " + msgFromServer);
@@ -165,7 +164,7 @@ public class NetworkHandler {
                 //System.out.println("player id " + playerID);
                 if (newMatchNeeded == true) {
                     creatingNewSpecsFromClient();
-                } else {
+                } else {            //TODO questo else non serve forse, DA VERIFICARE
                     sendAckFromClient();
                 }
                 break;
@@ -233,6 +232,7 @@ public class NetworkHandler {
 
             case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
+                //TimeUnit.MILLISECONDS.sleep(500);
                 switch (ackMessageMapped.getSubObject()) {
                     case "waiting":
                         cli.ackWaiting();
@@ -250,6 +250,7 @@ public class NetworkHandler {
                             System.out.println("sent ok");
 
                             break;
+
                         } else if ((ackMessageMapped.getNextPlayer() == playerID) && (towerColor != null)) {
                             //sendAckFromClient();
                             //cli.turnWaiting();
@@ -260,10 +261,17 @@ public class NetworkHandler {
                             //System.out.println("DECK SCELTO NON NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
                             break;
+
                         } else if ((ackMessageMapped.getNextPlayer() != playerID) && (towerColor != null)) {
                             cli.turnWaiting();
                             break;
+
+                        } else if ((ackMessageMapped.getNextPlayer() != playerID) && (towerColor == null)) {
+                            cli.turnWaiting();
+                            break;
+
                         }
+                        break;
 
                     case "deck":
                         if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard == null)) {
@@ -276,14 +284,22 @@ public class NetworkHandler {
                             //System.out.println("DECK SCELTO NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
                             break;
+
                         } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard != null)) {
                             cli.turnWaiting();
                             break;
+
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard == null)) {
+                            cli.turnWaiting();
+                            break;
+
                         } else if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard != null)) {
                             cli.bagClick();
                             sendBagClickedByFirstClient();
                             break;
                         }
+                        break;
+
                     case "refillClouds":
                         cli.showSchoolboard(playerID, modelView);
                         cli.showCharacterCardsInTheGame(modelView);
@@ -349,8 +365,10 @@ public class NetworkHandler {
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
                             int motherNatureIslandID = 0;
                             for (int i = 0; i < 12; i++) {
-                                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                                    motherNatureIslandID = i;
+                                if(modelView.getIslandGame().get(i) != null) {
+                                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
+                                        motherNatureIslandID = i;
+                                    }
                                 }
                             }
                             int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
@@ -376,8 +394,10 @@ public class NetworkHandler {
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
                             int motherNatureIslandID = 0;
                             for (int i = 0; i < 12; i++) {
-                                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                                    motherNatureIslandID = i;
+                                if(modelView.getIslandGame().get(i) != null) {
+                                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
+                                        motherNatureIslandID = i;
+                                    }
                                 }
                             }
                             int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
@@ -402,8 +422,10 @@ public class NetworkHandler {
                         updateModelViewActionTwo(ackMessageMapped);
                         int motherNatureIslandID = 0;
                         for (int i = 0; i < 12; i++) {
-                            if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                                motherNatureIslandID = i;
+                            if(modelView.getIslandGame().get(i) != null) {
+                                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
+                                    motherNatureIslandID = i;
+                                }
                             }
                         }
                         if (ackMessageMapped.isMasterChanged()) {
@@ -450,7 +472,56 @@ public class NetworkHandler {
                             assistantChoiceFlag = false;
                         }
                         break;
+
+                    case "cook" :
+                        //data message:
+                        sendCharacterDataCook();
+
+                        break;
+
+                    case "centaur" :
+                        sendCharacterDataCentaur();
+                        break;
+
+                    case "knight" :
+                        sendCharacterDataKnight();
+                        break;
+
+                    case "messenger" :
+                        sendCharacterDataMessenger();
+                        break;
+
+                    case "herbalist" :
+                        int islandIDChosenHerbalist = cli.choiceHerbalist(modelView);
+
+                        sendCharacterDataHerbalist(islandIDChosenHerbalist);
+                        break;
+
+                    case "ambassador" :
+                        int islandIDChosenAmbassador = cli.choiceAmbassador(modelView);
+
+                        sendCharacterDataAmbassador(islandIDChosenAmbassador);
+                        break;
+
+                    case "mushroomsMerchant" :
+                        Creature chosenStudentMushroomsMerchant = cli.choiceMushroomsMerchant();
+
+                        sendCharacterDataMushroomsMerchant(chosenStudentMushroomsMerchant);
+                        break;
+
+                    case "trafficker" :
+                        Creature chosenStudentTrafficker = cli.choiceTrafficker();
+
+                        sendCharacterDataTrafficker(chosenStudentTrafficker);
+                        break;
+
+                    case "princess":
+                        int chosenStudentID = cli.choicePrincess(ackMessageMapped.getStudentsOnCards() );
+
+                        sendCharacterPrincess(chosenStudentID);
+                        break;
                 }
+
                 break;
 
             case "nack":
@@ -461,8 +532,10 @@ public class NetworkHandler {
 
                         int motherNatureIslandID = 0;
                         for (int i = 0; i < 12; i++) {
-                            if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                                motherNatureIslandID = i;
+                            if(modelView.getIslandGame().get(i) != null) {
+                                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
+                                    motherNatureIslandID = i;
+                                }
                             }
                         }
                         int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
@@ -482,6 +555,13 @@ public class NetworkHandler {
                 playerID = noLobbyAvailableMessage.getPlayerID();
                 cli.lobbyNotAvailable();
                 creatingNewSpecsFromClient();
+                break;
+
+            case "character_ack":   //TODO CHARACTER_ACK
+                //update:
+
+                //callFrom:
+
                 break;
 
             default:
@@ -574,10 +654,100 @@ public class NetworkHandler {
     /**
      * This method is used to create and send the Chosen Character Message to the server.
      */
-    public void sendRequestCharacterMessage(String characterChosen){
+    public void sendRequestCharacterMessage(String characterChosen, String callFrom){
+        this.lastCallFrom = callFrom;
         CharacterRequestMessage characterRequestMessage = new CharacterRequestMessage(playerID, characterChosen);
         sendMessage(characterRequestMessage);
     }
+
+    /**
+     * This method is used to send character data for Cook character card.
+     */
+    public void sendCharacterDataCook(){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "cook");
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Centaur character card.
+     */
+    public void sendCharacterDataCentaur(){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "centaur");
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Knight character card.
+     */
+    public void sendCharacterDataKnight(){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "knight");
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Messenger character card.
+     */
+    public void sendCharacterDataMessenger(){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "messenger");
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Herbalist character card.
+     * @param islandIDChosenHerbalist is the ID of the chosen island where to put the No Entry Tile.
+     */
+    public void sendCharacterDataHerbalist(int islandIDChosenHerbalist){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "herbalist");
+        characterDataMessage.setIsland_ID(islandIDChosenHerbalist);
+
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for ambassador character card.
+     * @param islandIDChosenAmbassador is the ID of the chosen island where to compute the influence.
+     */
+    public void sendCharacterDataAmbassador(int islandIDChosenAmbassador){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "ambassador");
+        characterDataMessage.setIsland_ID(islandIDChosenAmbassador);
+
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Mushrooms Merchant character card.
+     * @param chosenStudentMushroomsMerchant is the Creature type of the chosen student by the client.
+     */
+    public void sendCharacterDataMushroomsMerchant(Creature chosenStudentMushroomsMerchant){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "mushroomsMerchant");
+        characterDataMessage.setCreature(chosenStudentMushroomsMerchant);
+
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Trafficker character card.
+     * @param chosenStudentTrafficker is the Creature type of the chosen student by the client.
+     */
+    public void sendCharacterDataTrafficker(Creature chosenStudentTrafficker){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "trafficker");
+        characterDataMessage.setCreature(chosenStudentTrafficker);
+
+        sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Princess character card.
+     * @param chosenStudentIDPrincess is the id of the chosen student on the card by the client.
+     */
+    public void sendCharacterPrincess(int chosenStudentIDPrincess){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "princess");
+        characterDataMessage.setStudent_ID(chosenStudentIDPrincess);
+
+        sendMessage(characterDataMessage);
+    }
+
+
 
     /**
      * This method is used to update the modelView after receiving the matchStartMessage.
@@ -618,6 +788,8 @@ public class NetworkHandler {
             modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));             //passo anche il numero di giocatori totali della partita così posso settare il numero di torri in towerAreaView
             modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
         }
+
+        //TODO : UPDATE FROM CHARACTERS CARDS (PRINCESS, JESTER & HERBALIST[4 STARTING ENTRY TILES] )
     }
 
     /**
@@ -672,10 +844,12 @@ public class NetworkHandler {
                 modelView.getAssistantCardsValuesPlayer().remove(modelView.getLastAssistantChosen());   //rimuovo assistente
             }
             for (int i = 0; i < 12; i++) {
-                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {                    //la posizione di MN è cambiata, setto a false il booleano corrispondente nell'isola dove c'era
-                    modelView.getIslandGame().get(i).setMotherNaturePresence(false);
-                } else if (i == ackMessageMapped.getDestinationIsland_ID()) {                       //setto a true l'attributo nella nuova isola dove si trova MN dopo lo spostamento
-                    modelView.getIslandGame().get(i).setMotherNaturePresence(true);
+                if(modelView.getIslandGame().get(i) != null) {
+                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {                    //la posizione di MN è cambiata, setto a false il booleano corrispondente nell'isola dove c'era
+                        modelView.getIslandGame().get(i).setMotherNaturePresence(false);
+                    } else if (i == ackMessageMapped.getDestinationIsland_ID()) {                       //setto a true l'attributo nella nuova isola dove si trova MN dopo lo spostamento
+                        modelView.getIslandGame().get(i).setMotherNaturePresence(true);
+                    }
                 }
             }
             if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {           //rimozione di no entry tile
@@ -687,8 +861,10 @@ public class NetworkHandler {
             if (ackMessageMapped.isMasterChanged()) {
                 int motherNatureIsland = 0;                                                                  //id dell'isola dove c'è madre natura.
                 for (int i = 0; i < 12; i++) {
-                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                        motherNatureIsland = i;
+                    if(modelView.getIslandGame().get(i) != null) {
+                        if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
+                            motherNatureIsland = i;
+                        }
                     }
                 }
                 if (ackMessageMapped.getNewMaster_ID() == playerID && ackMessageMapped.getPreviousMaster_ID() != playerID) {
@@ -720,79 +896,144 @@ public class NetworkHandler {
                         matchEnd = true;
                     }*/
 
-                //update islands
-
-
             }
         } else if (ackMessageMapped.getSubObject().equals("action_2_union")) {
             if (ackMessageMapped.getIslandsUnified().equals("previous")) {               //copio le creature dall'isola previous a quella nuova dove arriva madre natura
-                for (Creature c : Creature.values()) {
-                    int numberPrevious = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() - 1).getStudentsPopulation().get(c).intValue();
-                    int numberCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().replace(c, numberPrevious + numberCurrent);
-                }
-                int numberTowerPrevious = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() - 1).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
 
+                //setting current and previous
+                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
+                int previousIslandID;
+                if(ackMessageMapped.getDestinationIsland_ID() == 0) {
+                    previousIslandID = 11;
+                }else{
+                    previousIslandID = ackMessageMapped.getDestinationIsland_ID() - 1;
+                }
+                while(modelView.getIslandGame().get(previousIslandID) == null) {
+                    previousIslandID -= 1;
+                }
+
+                //students
+                for (Creature c : Creature.values()) {
+                    int numberPreviousStudents = modelView.getIslandGame().get(previousIslandID).getStudentsPopulation().get(c).intValue();
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
+                    modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberPreviousStudents + numberCurrentStudents);
+                }
+
+                //towers
+                int numberTowerPrevious = modelView.getIslandGame().get(previousIslandID).getNumberOfTower();
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
                 if (numberTowerPrevious == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
                     numberTowerPrevious++;
                 }
                 if (numberTowerCurrent == 0) {
                     numberTowerCurrent++;
                 }
-                if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {           //rimozione di no entry tile
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).removeNoEntryTile();
-                }
-                modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).setNumberOfTower(numberTowerCurrent + numberTowerPrevious);
-            } else if (ackMessageMapped.getIslandsUnified().equals("next")) {
-                for (Creature c : Creature.values()) {
-                    int numberNext = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() + 1).getStudentsPopulation().get(c).intValue();
-                    int numberCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().replace(c, numberNext + numberCurrent);
-                }
-                int numberTowerNext = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() + 1).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
+                modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerPrevious);
 
+                //no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                    modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
+                }
+
+                //removing island
+                modelView.getIslandGame().set(previousIslandID, null);
+
+            } else if (ackMessageMapped.getIslandsUnified().equals("next")) {
+                //setting current and next
+                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
+                int nextIslandID;
+                if(ackMessageMapped.getDestinationIsland_ID() == 11) {
+                    nextIslandID = 0;
+                }else{
+                    nextIslandID = ackMessageMapped.getDestinationIsland_ID() + 1;
+                }
+                while(modelView.getIslandGame().get(nextIslandID) == null) {
+                    nextIslandID += 1;
+                }
+
+                //students
+                for (Creature c : Creature.values()) {
+                    int numberNextStudents = modelView.getIslandGame().get(nextIslandID).getStudentsPopulation().get(c).intValue();
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
+                    modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberNextStudents + numberCurrentStudents);
+                }
+
+                //towers
+                int numberTowerNext = modelView.getIslandGame().get(nextIslandID).getNumberOfTower();
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
                 if (numberTowerNext == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
                     numberTowerNext++;
                 }
                 if (numberTowerCurrent == 0) {
                     numberTowerCurrent++;
                 }
-                if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {           //rimozione di no entry tile
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).removeNoEntryTile();
+                modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerNext);
+
+                //no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                    modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
                 }
-                modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).setNumberOfTower(numberTowerCurrent + numberTowerNext);
+
+                //removing island
+                modelView.getIslandGame().set(nextIslandID, null);
 
             } else if (ackMessageMapped.getIslandsUnified().equals("both")) {
-                for (Creature c : Creature.values()) {
-                    int numberPrevious = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() - 1).getStudentsPopulation().get(c).intValue();
-                    int numberNext = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() + 1).getStudentsPopulation().get(c).intValue();
-                    int numberCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getStudentsPopulation().replace(c, numberPrevious + numberCurrent + numberNext);
-                }
-                int numberTowerPrevious = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() - 1).getNumberOfTower();
-                int numberTowerNext = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID() + 1).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
+                //setting current, next and previous
+                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
+                int previousIslandID;
+                int nextIslandID;
 
+                if(ackMessageMapped.getDestinationIsland_ID() == 0) {
+                    previousIslandID = 11;
+                }else{
+                    previousIslandID = ackMessageMapped.getDestinationIsland_ID() - 1;
+                }
+                while(modelView.getIslandGame().get(previousIslandID) == null) {
+                    previousIslandID -= 1;
+                }
+
+                if(ackMessageMapped.getDestinationIsland_ID() == 11) {
+                    nextIslandID = 0;
+                }else{
+                    nextIslandID = ackMessageMapped.getDestinationIsland_ID() + 1;
+                }
+                while(modelView.getIslandGame().get(nextIslandID) == null) {
+                    nextIslandID += 1;
+                }
+
+                //students
+                for (Creature c : Creature.values()) {
+                    int numberPreviousStudents = modelView.getIslandGame().get(previousIslandID).getStudentsPopulation().get(c).intValue();
+                    int numberNextStudents = modelView.getIslandGame().get(nextIslandID).getStudentsPopulation().get(c).intValue();
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c).intValue();            //cambiamo il numero di studenti sull'isola rimasta
+                    modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberPreviousStudents + numberNextStudents + numberCurrentStudents);
+                }
+
+                //towers
+                int numberTowerPrevious = modelView.getIslandGame().get(previousIslandID).getNumberOfTower();
+                int numberTowerNext = modelView.getIslandGame().get(nextIslandID).getNumberOfTower();
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
                 if (numberTowerPrevious == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
                     numberTowerPrevious++;
                 }
-                if (numberTowerNext == 0) {
+                if (numberTowerNext == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
                     numberTowerNext++;
                 }
                 if (numberTowerCurrent == 0) {
                     numberTowerCurrent++;
                 }
-                if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {           //rimozione di no entry tile
-                    modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).removeNoEntryTile();
+                modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerNext + numberTowerPrevious);
+
+                //no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                    modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
                 }
-                modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).setNumberOfTower(numberTowerCurrent + numberTowerPrevious + numberTowerNext);
+
+                //removing island
+                modelView.getIslandGame().set(previousIslandID, null);
+                modelView.getIslandGame().set(nextIslandID, null);
 
             }
-                /*if (ackMessageMapped.isEndOfMatch()) {
-                    matchEnd = true;
-                } */
         }
 
 
