@@ -15,7 +15,12 @@ public class MatchStartMessage extends Message {
      * This attribute is the ID of the first player of the match
      */
     private int firstPlayer;
-
+    /**
+     * This attribute is the list of nicknames of all the players;
+     * the index where the nickname is stores inside this ArrayList corresponds to
+     * the player's ID
+     */
+    private ArrayList<String> nicknames;
     /**
      * This attribute is the number of players of the match
      */
@@ -145,5 +150,9 @@ public class MatchStartMessage extends Message {
 
     public ArrayList<Creature> getPrincessStudents() {
         return princessStudents;
+    }
+
+    public void setNicknames(ArrayList<String> nicknames) {
+        this.nicknames = nicknames;
     }
 }

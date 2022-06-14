@@ -155,6 +155,8 @@ public class Controller {
 
         // create the startOfMatch message
         MatchStartMessage startMessage = new MatchStartMessage(firstPlayer_ID, motherNatureInitialPosition, numberOfPlayers, expertMode);
+        startMessage.setNicknames(this.playersNickname);
+
         // add characters if the match will be played in expert mode
         if(expertMode){
             this.charactersManager = new CharactersManager(this);
