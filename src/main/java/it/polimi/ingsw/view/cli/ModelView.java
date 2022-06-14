@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ModelView {
     /**
@@ -49,6 +50,7 @@ public class ModelView {
      * This attribute gathers all the 3 character cards available in the game, if played in expert mode.
      */
     private ArrayList<String> characterCardsInTheGame;
+    //private Set<String> characterCardsInTheGame;  //TODO NEL MESSAGGIO è UN SET, non array
 
     //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
     private ArrayList<Creature> StudentsOnTheClouds;
@@ -62,6 +64,11 @@ public class ModelView {
      * This attribute gathers the students on the different clouds in the game.
      */
     private ArrayList <Creature> studentsOnClouds;
+
+    /**
+     * This attributes keep saved some useful data of some characters for the match.
+     */
+    private CharactersDataView charactersDataView;
 
     /**
      * This constructor creates a new instance of the modelView.
@@ -210,5 +217,13 @@ public class ModelView {
 
     public void setStudentsOnClouds(ArrayList<Creature> studentsOnClouds) {
         this.studentsOnClouds = studentsOnClouds;
+    }
+
+    public CharactersDataView getCharactersDataView() {
+        return charactersDataView;
+    }
+
+    public void setCharactersDataView(CharactersDataView charactersDataView) {
+        this.charactersDataView = charactersDataView;
     }
 }
