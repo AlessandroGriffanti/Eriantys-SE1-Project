@@ -77,6 +77,7 @@ public class ModelView {
         assistantCardsValuesPlayer = new HashMap<>();
         characterCardsInTheGame = new ArrayList<>();
         studentsOnClouds = new ArrayList<>();
+        charactersDataView = new CharactersDataView();
 
         for(int i = 1; i<= 10; i++){                        //creo le carte assistente con il relativo valore di madre natura
             if(i == 1 || i == 2) {

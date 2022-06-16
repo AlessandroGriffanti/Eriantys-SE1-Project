@@ -204,7 +204,7 @@ public class NetworkHandler {
                 System.out.println("first id: " + matchStartMessage.getFirstPlayer());
 
                 updateStartModelView(matchStartMessage);                                            //primo update della cli, gli passo il messaggio ricevuto dal server così posso inizializzare
-                TimeUnit.MILLISECONDS.sleep(1000);
+
 
                 if (matchStartMessage.getFirstPlayer() == playerID) {
                     cli.isYourTurn();
@@ -232,7 +232,6 @@ public class NetworkHandler {
 
             case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
                 AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
-                //TimeUnit.MILLISECONDS.sleep(500);
                 switch (ackMessageMapped.getSubObject()) {
                     case "waiting":
                         cli.ackWaiting();
@@ -258,7 +257,6 @@ public class NetworkHandler {
                             ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
                             chosenDeckMessage.setDeck(wizard);
                             chosenDeckMessage.setSender_ID(playerID);
-                            //System.out.println("DECK SCELTO NON NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
                             break;
 
@@ -281,7 +279,6 @@ public class NetworkHandler {
                             ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
                             chosenDeckMessage.setDeck(wizard);
                             chosenDeckMessage.setSender_ID(playerID);
-                            //System.out.println("DECK SCELTO NELL'ACK: " + chosenDeckMessage.getDeck());
                             sendMessage(chosenDeckMessage);
                             break;
 
@@ -303,7 +300,7 @@ public class NetworkHandler {
                     case "refillClouds":
                         cli.showSchoolboard(playerID, modelView);
                         cli.showCharacterCardsInTheGame(modelView);
-                        cli.showIslandsSituation(modelView);                                           //e sempre qui possiamo mettere la stampa della la situazione iniziale delle isole (con uno studente su ciascuna tranne dove c'è MN e nell'isola opposta) quando viene messa nel messaggio di start match
+                        cli.showIslandsSituation(modelView);
 
                         modelView.setStudentsOnClouds(ackMessageMapped.getStudents());                  //riempiamo le nuvole
 
@@ -337,8 +334,8 @@ public class NetworkHandler {
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) {   //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                    //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
-                            if(studentChosen == -1){
-                                break;
+                            while(studentChosen == -1){
+                                studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                             }
                             int locationChosen = cli.choiceLocationToMove(modelView);                               //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
@@ -472,53 +469,113 @@ public class NetworkHandler {
                             assistantChoiceFlag = false;
                         }
                         break;
-
+                    case "monk":
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            int studentChosen = cli.choiceStudentMonk(modelView);
+                            int islandChosen = cli.choiceIslandMonk(modelView);
+                            sendCharacterDataMonk(studentChosen, islandChosen);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
+                        break;
                     case "cook" :
-                        //data message:
-                        sendCharacterDataCook();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            sendCharacterDataCook();
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
 
                         break;
 
                     case "centaur" :
-                        sendCharacterDataCentaur();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            sendCharacterDataCentaur();
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
-
+                    case "jester":
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            ArrayList<Integer> studentsFromEntranceJester = cli.choiceStudentEntranceJester(playerID, modelView);
+                            ArrayList<Integer> studentsFromCardJester = cli.choiceStudentCardJester(modelView);
+                            sendCharacterDataJester(studentsFromEntranceJester, studentsFromCardJester);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
+                        break;
                     case "knight" :
-                        sendCharacterDataKnight();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            sendCharacterDataKnight();
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
 
                     case "messenger" :
-                        sendCharacterDataMessenger();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            sendCharacterDataMessenger();
+                        } else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
 
                     case "herbalist" :
-                        int islandIDChosenHerbalist = cli.choiceHerbalist(modelView);
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            int islandIDChosenHerbalist = cli.choiceHerbalist(modelView);
 
-                        sendCharacterDataHerbalist(islandIDChosenHerbalist);
+                            sendCharacterDataHerbalist(islandIDChosenHerbalist);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
 
                     case "ambassador" :
-                        int islandIDChosenAmbassador = cli.choiceAmbassador(modelView);
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            int islandIDChosenAmbassador = cli.choiceAmbassador(modelView);
 
-                        sendCharacterDataAmbassador(islandIDChosenAmbassador);
+                            sendCharacterDataAmbassador(islandIDChosenAmbassador);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
 
                     case "mushroomsMerchant" :
-                        Creature chosenStudentMushroomsMerchant = cli.choiceMushroomsMerchant();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            Creature chosenStudentMushroomsMerchant = cli.choiceMushroomsMerchant();
 
-                        sendCharacterDataMushroomsMerchant(chosenStudentMushroomsMerchant);
+                            sendCharacterDataMushroomsMerchant(chosenStudentMushroomsMerchant);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
+                    case "bard":
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            ArrayList<Integer> studentsFromEntranceBard = cli.choiceStudentEntranceBard(playerID, modelView);
+                            ArrayList<Creature> studentsFromDiningRoomBard = cli.choiceStudentDiningRoomBard(playerID, modelView);
+                            sendCharacterDataBard(studentsFromEntranceBard, studentsFromDiningRoomBard);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
 
+                        break;
                     case "trafficker" :
-                        Creature chosenStudentTrafficker = cli.choiceTrafficker();
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            Creature chosenStudentTrafficker = cli.choiceTrafficker();
 
-                        sendCharacterDataTrafficker(chosenStudentTrafficker);
+                            sendCharacterDataTrafficker(chosenStudentTrafficker);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();                                      //TODO CAPIRE COME VIENE MANDATO IN BROADCAST QUESTO
+                        }
                         break;
 
                     case "princess":
-                        int chosenStudentID = cli.choicePrincess(modelView.getCharactersDataView().getPrincessStudents());
+                        if (ackMessageMapped.getNextPlayer() == playerID) {
+                            int chosenStudentID = cli.choicePrincess(modelView.getCharactersDataView().getPrincessStudents());
 
-                        sendCharacterPrincess(chosenStudentID);
+                            sendCharacterDataPrincess(chosenStudentID);
+                        }else if (ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting();
+                        }
                         break;
                 }
 
@@ -543,9 +600,20 @@ public class NetworkHandler {
                         sendMovedMotherNature(chosenIslandID);
 
                         break;
+
                     case "invalid_cloud":
                         int cloudChosenID = cli.invalidCloudSelection(modelView);
                         sendChosenCloudMessage(cloudChosenID);
+                        break;
+
+                    case "herbalist":
+                        cli.invalidHerbalistChoice(nackMessageMapped.getExplanationMessage());
+                        cli.choiceAnotherCharacter(modelView);
+                        break;
+
+                    case "character":
+                        cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
+                        cli.choiceAnotherCharacter(modelView);
                         break;
                 }
                 break;
@@ -558,8 +626,9 @@ public class NetworkHandler {
                 break;
 
             case "character_ack":   //TODO CHARACTER_ACK
+                AckCharactersMessage ackCharactersMessage = gsonObj.fromJson(receivedMessageInJson, AckCharactersMessage.class);
                 //update:
-
+                updateCharacterCard(ackCharactersMessage);
                 //callFrom:
 
                 break;
@@ -661,6 +730,15 @@ public class NetworkHandler {
     }
 
     /**
+     * This method is used to send character data for Monk character card.
+     */
+    public void sendCharacterDataMonk(int studentChosen, int islandChosen){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "monk");
+        characterDataMessage.setStudent_ID(studentChosen);
+        characterDataMessage.setIsland_ID(islandChosen);
+        sendMessage(characterDataMessage);
+    }
+    /**
      * This method is used to send character data for Cook character card.
      */
     public void sendCharacterDataCook(){
@@ -674,6 +752,17 @@ public class NetworkHandler {
     public void sendCharacterDataCentaur(){
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "centaur");
         sendMessage(characterDataMessage);
+    }
+
+    /**
+     * This method is used to send character data for Jester character card.
+     * @param studentsFromEntranceJester is the arraylist of students to move the entrance.
+     * @param studentsFromCardJester is the arraylist of students to move the Jester card.
+     */
+    public void sendCharacterDataJester(ArrayList<Integer> studentsFromEntranceJester, ArrayList <Integer> studentsFromCardJester){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "jester");
+        characterDataMessage.setStudentsFromPlayerEntrance(studentsFromEntranceJester);
+        characterDataMessage.setElementsFromCard(studentsFromCardJester);
     }
 
     /**
@@ -726,6 +815,18 @@ public class NetworkHandler {
     }
 
     /**
+     * This method is used to send character data for Bard character card.
+     * @param studentsFromEntranceBard is the arraylist of students to move the entrance.
+     * @param studentsFromDiningRoomBard is the arraylist of students to move the Jester card.
+     */
+    public void sendCharacterDataBard(ArrayList<Integer> studentsFromEntranceBard, ArrayList <Creature> studentsFromDiningRoomBard ){
+        CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "bard");
+        characterDataMessage.setStudentsFromPlayerEntrance(studentsFromEntranceBard);
+        characterDataMessage.setStudentsFromPlayerDiningRoom(studentsFromDiningRoomBard);
+        sendMessage(characterDataMessage);
+    }
+
+    /**
      * This method is used to send character data for Trafficker character card.
      * @param chosenStudentTrafficker is the Creature type of the chosen student by the client.
      */
@@ -740,12 +841,14 @@ public class NetworkHandler {
      * This method is used to send character data for Princess character card.
      * @param chosenStudentIDPrincess is the id of the chosen student on the card by the client.
      */
-    public void sendCharacterPrincess(int chosenStudentIDPrincess){
+    public void sendCharacterDataPrincess(int chosenStudentIDPrincess){
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "princess");
         characterDataMessage.setStudent_ID(chosenStudentIDPrincess);
 
         sendMessage(characterDataMessage);
     }
+
+
 
 
 
@@ -762,8 +865,8 @@ public class NetworkHandler {
         if (modelView.isExpertModeGame() == true) {                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
             modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
             modelView.setCoinGame(20);
-            for (String s : matchStartMessage.getCharacters()) {
-                modelView.getCharacterCardsInTheGame().add(s);
+            modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters()); //TODO CORREGGERE IL FATTO CHE NE MOSTRI SOLO 2 E NON 3
+            for (String s : modelView.getCharacterCardsInTheGame()) {
                 if(s.equals("monk")){
                     modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
                 }else if(s.equals("jester")){
@@ -1084,6 +1187,24 @@ public class NetworkHandler {
             ArrayList<Creature> creatureInEntranceAfterClouds = ackMessageMapped.getStudents();                                                 //update dell'entrance dopo scelta nuvola
             modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAfterClouds);
         }
+
+    }
+
+    /**
+     *
+     * @param ackCharactersMessage
+     */
+    public void updateCharacterCard(AckCharactersMessage ackCharactersMessage){
+        String characterUsed = ackCharactersMessage.getCharacter();
+        cli.characterConfirm(characterUsed);
+        //update locale
+        if(ackCharactersMessage.getRecipient() == playerID){
+            int newCoinPlayer =  ackCharactersMessage.getCoinReserve() - modelView.getCoinGame();
+            modelView.getCoinPlayer().replace(playerID, newCoinPlayer);
+        }
+        modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
+
+
 
     }
 }

@@ -11,9 +11,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-/** this class is the one really dealing with the client connected, it communicates with the client-slide socket.
- * it should deserialize the json received and pass the information to the controller.
- * @server is a reference to the main server
+/**
+ * This class is the one really dealing with the client connected, it communicates with the client-slide socket.
+ * It deserializes the json message received and passes it to the controller.
  */
 public class ClientHandler extends Thread {
     private Socket clientSocket;
@@ -33,12 +33,20 @@ public class ClientHandler extends Thread {
     private PrintWriter outputHandler = null;
     private BufferedReader inputHandler = null;
 
-
+    /**
+     * Constructor of the ClientHandler
+     * @param socket is the client socket returned from the serverSocket.accept() method.
+     * @param server is a reference to the server.
+     */
     public ClientHandler(Socket socket, Server server) {
         this.clientSocket = socket;
         this.server = server;
     }
 
+    /**
+     * Main method of the ClientHandler. Since it is a thread, it executes the run method and, through it,
+     * it starts listening for messages from the client (NetworkHandler).
+     */
     public void run() {
 
         try {
@@ -53,14 +61,14 @@ public class ClientHandler extends Thread {
                 System.out.println("pippo while");
             }*/
             System.out.println("pippo while");
-            while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ){
+            while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ){                                      //
                 //System.out.println("is match ended: " + server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded());
-                String msg = inputHandler.readLine();
+                String msg = inputHandler.readLine();                                                                                   //leggiamo il mex in input dal client
                 System.out.println("messaggio ricevuto dal client: " + msg);
                 if(server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded()){
                     server.getLobbiesEnd().set(lobbyID, true);
                 }else {
-                    server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);
+                    server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);                                //mandiamo al controller il messaggio ricevuto dal client
                 }
                 //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
             }
@@ -118,7 +126,7 @@ public class ClientHandler extends Thread {
                 System.out.println("player ok");
 
                 checkNewMatchRequest(receivedMessageFromJson.isCreateNewMatch(), nicknamePlayer);   //controlliamo se vuole creare un nuovo match. se sì mandiamo un loginSuccess
-                //se no, mandiamo un nolobbyavailable (se non ce ne sono) o un askmatchtojoin
+                                                                                                //se no, mandiamo un nolobbyavailable (se non ce ne sono) o un askmatchtojoin
 
                 //nuova rilettura
                 String messageReceivedInJson = inputHandler.readLine();                             //qui riceve il nuovo mex dal client

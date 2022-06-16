@@ -36,6 +36,10 @@ public class Server {
 
     /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
     private HashMap <String, Controller> lobbies;
+
+    /**
+     * This arraylist is used to track the matches that have ended.
+     */
     private ArrayList<Boolean> lobbiesEnd;      //index of array list corresponds to the string id of lobbies, false if match not ended
 
     /**
@@ -89,23 +93,6 @@ public class Server {
     }
 
      */
-
-    public ArrayList<String> getPlayersNicknames() {
-        return this.playersNicknames;
-    }
-
-    public HashMap<String, Controller> getLobbies() {
-        return lobbies;
-    }
-
-    public ArrayList<Boolean> getLobbiesEnd() {
-        return lobbiesEnd;
-    }
-
-
-    public void setPlayersNicknames(ArrayList<String> playersNicknames) {
-        this.playersNicknames = playersNicknames;
-    }
 
 
 
@@ -181,5 +168,23 @@ public class Server {
 
         }
     }
+
+    public ArrayList<String> getPlayersNicknames() {
+        return this.playersNicknames;
+    }
+
+    public HashMap<String, Controller> getLobbies() {
+        return lobbies;
+    }
+
+    public ArrayList<Boolean> getLobbiesEnd() {
+        return lobbiesEnd;
+    }
+
+
+    public void setPlayersNicknames(ArrayList<String> playersNicknames) {
+        this.playersNicknames = playersNicknames;
+    }
+
 
 }

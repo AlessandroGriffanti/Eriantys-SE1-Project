@@ -119,7 +119,7 @@ public class CharacterDataMessage extends Message {
         For every message must be set:
         - sender_ID
 
-*       1. "monk":
+*    OK  1. "monk":
 *           - student_ID: ID of the student on the card
 *           - island_ID: ID of the island where the student will be put
 
@@ -138,7 +138,7 @@ public class CharacterDataMessage extends Message {
      OK 6. "centaur":
             - no further attributes
 
-        7. "jester":
+     OK   7. "jester":
             - studentsFromPlayerEntrance: the list of IDs of the students in the entrance of the player
             - elementsFromCard: the list of IDs of the students on the character card
 
@@ -148,7 +148,7 @@ public class CharacterDataMessage extends Message {
      OK 9. "mushroomsMerchant":
             - creature: type of student chosen by the player
 
-        10. "bard":
+     OK   10. "bard":
             - studentsFromPlayerDiningRoom
             - studentsFromPlayerEntrance
 

@@ -27,8 +27,8 @@ public class MatchCreating implements ControllerState{
         }else{
             System.out.println("MATCH_CREATING: \nexpected message with object [creation]" +
                                "\nreceived message with object["+ message.getObjectOfMessage() + "]");
+            }
         }
-    }
 
     /**
      *  This method initializes the specifics of the match inside the model

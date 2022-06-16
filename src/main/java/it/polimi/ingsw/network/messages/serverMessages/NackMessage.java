@@ -52,7 +52,7 @@ public class NackMessage extends Message {
                         "used somewhere else right now.\nErgo you can't use a no-entry-tile!";
                 break;
             case "monk":
-                this.explanationMessage = "The monk has no more students, so he can't give you one student anymore." +
+                this.explanationMessage = "The monk has no more students, so he can't give you one student anymore." + //TODO non possono finire gli studenti, ne viene pescato sempre uno
                         "Sorry for the inconvenience.";
         }
     }
