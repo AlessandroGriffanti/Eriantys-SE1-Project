@@ -155,7 +155,7 @@ public class CLI {
     public int lobbyToChoose(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
         println("Choose a Lobby: \n");
 
-        //STAMPA DELLE LOBBIES
+        //STAMPA DELLE LOBBIES          //todo metodo stampa
         println("ERIANTYS LOBBIES: ");
         for (int i = 0; i < arrayLobby.size(); i++) {
             if(arrayEnd.get(i) == false) {

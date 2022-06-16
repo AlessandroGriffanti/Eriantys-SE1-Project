@@ -43,6 +43,16 @@ public class Server {
     private ArrayList<Boolean> lobbiesEnd;      //index of array list corresponds to the string id of lobbies, false if match not ended
 
     /**
+     * This double arraylist is used to check the players connections.
+     * index of the main arraylist is the lobby id;
+     * indexes of secondary arraylist are the players ID;
+     * boolean values are the connection status: true if connected, false if not.
+     */
+    private ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection;
+
+
+
+    /**
      * This Hashmap links the lobby ID with the maximum number of players for that lobby.
      */
     //private HashMap<String, Integer> lobbyMaxNumPlayers;       //neanche questa serve
@@ -63,6 +73,7 @@ public class Server {
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
         this.lobbiesEnd = new ArrayList<>();
+        this.lobbiesPlayersConnection = new ArrayList<ArrayList<Boolean>>();
     }
 
 
@@ -186,5 +197,48 @@ public class Server {
         this.playersNicknames = playersNicknames;
     }
 
+    public ArrayList<ArrayList<Boolean>> getLobbiesPlayersConnection() {
+        return lobbiesPlayersConnection;
+    }
+
+    public void setLobbiesPlayersConnection(ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection) {
+        this.lobbiesPlayersConnection = lobbiesPlayersConnection;
+    }
+
+    public void checkPlayersConnectionOnStart(int lobbyIDpassed, int playerIDpassed, int numberOfPlayerInTheLobby) {
+        System.out.println("num player" + numberOfPlayerInTheLobby);
+        if (playerIDpassed == 0) {
+            if (lobbiesPlayersConnection.get(lobbyIDpassed).get(0)) {
+                System.out.println("Check 0");
+                for (int i = 0; i < numberOfPlayerInTheLobby; i++) {
+                    if (!(lobbiesPlayersConnection.get(lobbyIDpassed).get(i).booleanValue())) {
+                        lobbies.get(String.valueOf(lobbyIDpassed)).onePlayerDisconnected(i);
+                    }
+                }
+            }
+        } else if (playerIDpassed == 1) {
+            if (!lobbiesPlayersConnection.get(lobbyIDpassed).get(0)) {
+                System.out.println("Check 0");
+                for (int i = 0; i < numberOfPlayerInTheLobby; i++) {
+                    if (!(lobbiesPlayersConnection.get(lobbyIDpassed).get(i).booleanValue())) {
+                        lobbies.get(String.valueOf(lobbyIDpassed)).onePlayerDisconnected(i);
+                    }
+                }
+            }
+        } else if (playerIDpassed == 2) {
+            if (!lobbiesPlayersConnection.get(lobbyIDpassed).get(0)) {
+                if (!lobbiesPlayersConnection.get(lobbyIDpassed).get(1)) {
+                    System.out.println("Check 0");
+                    for (int i = 0; i < numberOfPlayerInTheLobby; i++) {
+                        if (!(lobbiesPlayersConnection.get(lobbyIDpassed).get(i).booleanValue())) {
+                            lobbies.get(String.valueOf(lobbyIDpassed)).onePlayerDisconnected(i);
+                        }
+                    }
+
+                }
+            }
+
+        }
+    }
 
 }

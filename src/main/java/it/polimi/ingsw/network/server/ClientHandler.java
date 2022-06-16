@@ -21,8 +21,10 @@ public class ClientHandler extends Thread {
     private String nicknamePlayer;
     private int playerID;
     private int lobbyID;
+    private int numberPlayerLobby;
 
     private boolean matchStarted = false;
+    private boolean lobbyAccessed = false;
 
     /**
      * Gson object "gsonObj" to deserialize the json message received
@@ -85,9 +87,18 @@ public class ClientHandler extends Thread {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+
             if(matchStarted) {
+                System.out.println("OUT1");
                 server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);   //TODO : quando partita già creata, errore se non è iniziata (setTrueMatchStart ma problema tre giocatori).
+                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
+            }else if(lobbyAccessed){
+                System.out.println("OUT2");
+                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
+            }else{
+                System.out.println("OUT3");
             }
+
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
@@ -134,7 +145,9 @@ public class ClientHandler extends Thread {
 
                 if(messageReceivedFromJson.getObjectOfMessage().equals("creation")){                //se riceve il messaggio di MatchSpecs
                     System.out.println("I received a new match specs message");
-                    lobbyCreation(nicknamePlayer);                                                  // --> allora crea la lobby
+                    MatchSpecsMessage matchSpecsMessage = gsonObj.fromJson(messageReceivedInJson, MatchSpecsMessage.class);
+                    numberPlayerLobby = matchSpecsMessage.getNumOfPlayers();
+                    lobbyCreation(nicknamePlayer, numberPlayerLobby);                                                  // --> allora crea la lobby
 
                     System.out.println("Lobby created");
                     System.out.println("lobby id: " + lobbyID);
@@ -152,6 +165,9 @@ public class ClientHandler extends Thread {
                     System.out.println("lobbyID: " + lobbyID);
 
                     playerID = server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter();
+                    server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, true);
+                    numberPlayerLobby = server.getLobbies().get(String.valueOf(lobbyID)).getNumberOfPlayers();
+                    lobbyAccessed = true;
                     System.out.println("player id: " + playerID + " lobby id: " + lobbyID);
 
                     IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
@@ -286,10 +302,20 @@ public class ClientHandler extends Thread {
      * @numberOfTotalLobbies is the number of lobbies we have reached, so it is the size of the keyset of the hashmap lobbies, which is in the main server
      * @addPlayerHandler is the method through which we add the player to its game in the controller
      */
-    public synchronized void lobbyCreation(String nicknameOfNewPlayer) {
+    public synchronized void lobbyCreation(String nicknameOfNewPlayer, int numberOfPlayer) {
         int numberOfTotalLobbies = server.getLobbies().keySet().size();
         lobbyID = numberOfTotalLobbies;
+
+        ArrayList<Boolean> tempPlayers = new ArrayList<>();          //creiamo arraylist temporaneo
+        tempPlayers.add(true);                          //aggiunta del primo (indice zero, per forza collegato -> true)
+        for(int i = 1; i < numberOfPlayer; i++){
+            tempPlayers.add(false);
+        }
+        server.getLobbiesPlayersConnection().add(tempPlayers);
+        lobbyAccessed = true;
         server.getLobbies().put((String.valueOf(lobbyID)), new Controller(lobbyID));
+        //server.getLobbiesStarted().add(false);
+        matchStarted = false;
         server.getLobbiesEnd().add(false);
 
         //matchStarted = true;
@@ -313,13 +339,14 @@ public class ClientHandler extends Thread {
      * @param msgToSerialize is the message passed by the controller and sent to the client.
      */
     public void messageToSerialize(Message msgToSerialize){
+        if(msgToSerialize.getObjectOfMessage().equals("start")){
+            matchStarted = true;
+            server.checkPlayersConnectionOnStart(lobbyID, playerID, numberPlayerLobby);
+        }
+
         outputHandler.println(gsonObj.toJson(msgToSerialize));
         outputHandler.flush();
         //System.out.println("sent ok");
-    }
-
-    public void setTrueMatchStart(){
-        this.matchStarted = true;
     }
 
     public void sendMessageFromServer(Message msgToSend){
