@@ -25,6 +25,15 @@ public class CharactersDataView {
     private ArrayList<Creature> princessStudents = null;
 
 
+    /**
+     * This attributes indicates the number of no entry tile on the Herbalist character card.
+     */
+    private int herbalistNumberOfNoEntryTile;
+
+    public void incrementHerbalistNoEntryTile(){
+        herbalistNumberOfNoEntryTile ++;
+    }
+
     public void setMonkStudents(ArrayList<Creature> monkStudents) {
         this.monkStudents = monkStudents;
     }
@@ -48,4 +57,13 @@ public class CharactersDataView {
     public ArrayList<Creature> getPrincessStudents() {
         return princessStudents;
     }
+
+    public int getHerbalistNumberOfNoEntryTile() {
+        return herbalistNumberOfNoEntryTile;
+    }
+
+    public void setHerbalistNumberOfNoEntryTile(int herbalistNumberOfNoEntryTile) {
+        this.herbalistNumberOfNoEntryTile = herbalistNumberOfNoEntryTile;
+    }
+
 }

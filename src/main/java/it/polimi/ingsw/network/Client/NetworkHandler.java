@@ -873,6 +873,8 @@ public class NetworkHandler {
                     modelView.getCharactersDataView().setJesterStudents(matchStartMessage.getJesterStudents());
                 }else if(s.equals("princess")){
                     modelView.getCharactersDataView().setPrincessStudents(matchStartMessage.getPrincessStudents());
+                }else if(s.equals("herbalist")){
+                    modelView.getCharactersDataView().setHerbalistNumberOfNoEntryTile(4);
                 }
             }
         }
@@ -899,7 +901,7 @@ public class NetworkHandler {
             modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
         }
 
-        //TODO : UPDATE FROM CHARACTERS CARDS (PRINCESS, JESTER & HERBALIST[4 STARTING ENTRY TILES] )
+
     }
 
     /**
@@ -1043,6 +1045,8 @@ public class NetworkHandler {
                 //no entry tile
                 if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
+                    modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
+
                 }
 
                 //removing island
@@ -1082,6 +1086,7 @@ public class NetworkHandler {
                 //no entry tile
                 if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
+                    modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
                 }
 
                 //removing island
@@ -1137,6 +1142,8 @@ public class NetworkHandler {
                 //no entry tile
                 if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
+                    modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
+
                 }
 
                 //removing island
@@ -1191,8 +1198,8 @@ public class NetworkHandler {
     }
 
     /**
-     *
-     * @param ackCharactersMessage
+     *This method is used to update the modelView after using a character card.
+     * @param ackCharactersMessage is the ack received after a character card effect is resolved.
      */
     public void updateCharacterCard(AckCharactersMessage ackCharactersMessage){
         String characterUsed = ackCharactersMessage.getCharacter();
@@ -1202,10 +1209,65 @@ public class NetworkHandler {
             int newCoinPlayer =  ackCharactersMessage.getCoinReserve() - modelView.getCoinGame();
             modelView.getCoinPlayer().replace(playerID, newCoinPlayer);
         }
+
+        //update globale
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
+        if(characterUsed.equals("monk")){                               //TODO isola monk errore nack da controllare
+            modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addStudent(ackCharactersMessage.getStudent());
+        }else if(characterUsed.equals("bard")){
+            modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
+            modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().setOccupiedSeatsPlayer(ackCharactersMessage.getPlayerDiningRoom());
+            for(Integer player : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
+                for (Creature c : Creature.values()) {
+                    if (ackCharactersMessage.getAllPlayersProfessors().get(player).contains(c)) {
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, true);
+                    } else {
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
 
+                    }
+                }
+            }
+        }else if(characterUsed.equals("jester")){
+            modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
+            modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
+        }else if(characterUsed.equals("ambassador_influence")){       //TODO towercolor
+            matchEnd = ackCharactersMessage.isEndOfMatch();
+            updateModelViewActionTwo(ackCharactersMessage);
 
+        }else if (characterUsed.equals("ambassador_union")){
+            matchEnd = ackCharactersMessage.isEndOfMatch();
+            updateModelViewActionTwo(ackCharactersMessage);
+
+        }else if (characterUsed.equals("herbalist")){
+            modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addNoEntryTile();
+            modelView.getCharactersDataView().setHerbalistNumberOfNoEntryTile(ackCharactersMessage.getNumberOfElementsOnTheCard());
+
+        }else if (characterUsed.equals("princess")){
+            modelView.getCharactersDataView().setPrincessStudents(ackCharactersMessage.getStudentsOnCard());
+            modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().setOccupiedSeatsPlayer(ackCharactersMessage.getPlayerDiningRoom());
+            for(Integer player : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
+                for (Creature c : Creature.values()) {
+                    if (ackCharactersMessage.getAllPlayersProfessors().get(player).contains(c)) {
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, true);
+                    }else{
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
+                    }
+                }
+            }
+        }else if (characterUsed.equals("trafficker")){
+            for(Integer player : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
+                for (Creature c : Creature.values()) {
+                    if (ackCharactersMessage.getAllPlayersProfessors().get(player).contains(c)) {
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, true);
+                    }else{
+                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
+                    }
+                }
+            }
+        }
 
     }
+
+
 }
 

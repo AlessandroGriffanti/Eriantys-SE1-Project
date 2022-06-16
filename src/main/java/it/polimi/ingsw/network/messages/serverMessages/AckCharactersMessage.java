@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.messages.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AckCharactersMessage extends Message {
+public class AckCharactersMessage extends AckMessage {
 
 
     /**
