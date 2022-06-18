@@ -561,11 +561,11 @@ public class NetworkHandler {
                     case "trafficker" :
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             Creature chosenStudentTrafficker = cli.choiceTrafficker();
-
                             sendCharacterDataTrafficker(chosenStudentTrafficker);
-                        }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();                                      //TODO CAPIRE COME VIENE MANDATO IN BROADCAST QUESTO
+                        }else if (ackMessageMapped.getNextPlayer() != playerID) {
+                            cli.turnWaiting();
                         }
+
                         break;
 
                     case "princess":
@@ -625,7 +625,7 @@ public class NetworkHandler {
                 creatingNewSpecsFromClient();
                 break;
 
-            case "character_ack":   //TODO CHARACTER_ACK
+            case "character_ack":
                 AckCharactersMessage ackCharactersMessage = gsonObj.fromJson(receivedMessageInJson, AckCharactersMessage.class);
                 //update:
                 updateCharacterCard(ackCharactersMessage);
@@ -865,7 +865,7 @@ public class NetworkHandler {
         if (modelView.isExpertModeGame() == true) {                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
             modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
             modelView.setCoinGame(20);
-            modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters()); //TODO CORREGGERE IL FATTO CHE NE MOSTRI SOLO 2 E NON 3
+            modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters());
             for (String s : modelView.getCharacterCardsInTheGame()) {
                 if(s.equals("monk")){
                     modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
@@ -1212,7 +1212,7 @@ public class NetworkHandler {
 
         //update globale
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
-        if(characterUsed.equals("monk")){                               //TODO isola monk errore nack da controllare
+        if(characterUsed.equals("monk")){   //TODO isola monk errore nack da controllare
             modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addStudent(ackCharactersMessage.getStudent());
         }else if(characterUsed.equals("bard")){
             modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
@@ -1230,8 +1230,8 @@ public class NetworkHandler {
         }else if(characterUsed.equals("jester")){
             modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
             modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
-        }else if(characterUsed.equals("ambassador_influence")){       //TODO towercolor
-            matchEnd = ackCharactersMessage.isEndOfMatch();
+        }else if(characterUsed.equals("ambassador_influence")){       //TODO towercolor da ackCharactersMessage
+            matchEnd = ackCharactersMessage.isEndOfMatch();           //TODO controllo se ackCharactersMessage è accettato
             updateModelViewActionTwo(ackCharactersMessage);
 
         }else if (characterUsed.equals("ambassador_union")){
@@ -1262,7 +1262,7 @@ public class NetworkHandler {
                     }else{
                         modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
                     }
-                }
+                }       //TODO togliere i tre studenti usati
             }
         }
 
