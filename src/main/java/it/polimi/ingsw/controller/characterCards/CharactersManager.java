@@ -52,7 +52,7 @@ public class CharactersManager {
 
     public CharactersManager(Controller controller) {
         this.controller = controller;
-        this.cards = new HashMap<String, Character>();
+        this.cards = new HashMap<>();
     }
 
     /**
@@ -64,12 +64,11 @@ public class CharactersManager {
         Random random = new Random();
         int randomNumber;
 
-        ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<Integer>();
+        ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<>();
 
         int i = 0;
-        //for(int i = 0; i < 3; i++) {
         while(i < 3){
-            randomNumber = random.nextInt(13);
+            randomNumber = random.nextInt(12);
 
             if(!alreadyDrawnNumbers.contains(randomNumber)){
                 /* add the number just drawn to the array so that we can choose a different card the
@@ -78,40 +77,40 @@ public class CharactersManager {
 
                 // control to which one of the characters the number corresponds
                 switch (randomNumber) {
-                    case 1:
+                    case 0:
                         cards.put("monk", new Monk(controller));
                         break;
-                    case 2:
+                    case 1:
                         cards.put("cook", new Cook(controller));
                         break;
-                    case 3:
+                    case 2:
                         cards.put("ambassador", new Ambassador(controller));
                         break;
-                    case 4:
+                    case 3:
                         cards.put("messenger", new Messenger(controller));
                         break;
-                    case 5:
+                    case 4:
                         cards.put("herbalist", new Herbalist(controller));
                         break;
-                    case 6:
+                    case 5:
                         cards.put("centaur", new Centaur(controller));
                         break;
-                    case 7:
+                    case 6:
                         cards.put("jester", new Jester(controller));
                         break;
-                    case 8:
+                    case 7:
                         cards.put("knight", new Knight(controller));
                         break;
-                    case 9:
+                    case 8:
                         cards.put("mushroomMerchant", new MushroomsMerchant(controller));
                         break;
-                    case 10:
+                    case 9:
                         cards.put("bard", new Bard(controller));
                         break;
-                    case 11:
+                    case 10:
                         cards.put("princess", new Princess(controller));
                         break;
-                    case 12:
+                    case 11:
                         cards.put("trafficker", new Trafficker(controller));
                         break;
                 }
