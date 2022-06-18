@@ -66,7 +66,9 @@ public class CharactersManager {
 
         ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<Integer>();
 
-        for(int i = 0; i < 3; i++) {
+        int i = 0;
+        //for(int i = 0; i < 3; i++) {
+        while(i < 3){
             randomNumber = random.nextInt(13);
 
             if(!alreadyDrawnNumbers.contains(randomNumber)){
@@ -113,6 +115,7 @@ public class CharactersManager {
                         cards.put("trafficker", new Trafficker(controller));
                         break;
                 }
+                i++;
             }
         }
 

@@ -155,7 +155,71 @@ public class CLI {
     public int lobbyToChoose(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
         println("Choose a Lobby: \n");
 
-        //STAMPA DELLE LOBBIES          //todo metodo stampa
+        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+        //SCANNER DELLE LOBBY
+        int lobbyIDchosenByPlayer = scannerCLI.nextInt();
+
+        boolean rightLobbyChoice = false;
+
+        /*
+        println("array lobby: ");
+        for(int i = 0; i < arrayLobby.size(); i++){
+            println(i + " " + arrayLobby.get(i) );
+        }
+         */
+
+        while(!rightLobbyChoice) {
+            if( lobbyIDchosenByPlayer < arrayLobby.size() && lobbyIDchosenByPlayer >= 0) {
+                if (arrayLobby.get(lobbyIDchosenByPlayer) == false) {
+
+                    if (arrayEnd.get(lobbyIDchosenByPlayer) == true) {
+                        println("Lobby " + lobbyIDchosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
+                        println(" ");
+
+                        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                        rightLobbyChoice = false;
+
+                    } else {
+
+
+                        println("You can't join this lobby, match selected already started. Select another one from the list below. ");
+                        println(" ");
+
+                        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                        rightLobbyChoice = false;
+                    }
+                } else if (arrayLobby.get(lobbyIDchosenByPlayer) == true) {
+                    rightLobbyChoice = true;
+                }
+
+            }else {
+                println("Lobby not existing, insert a right number from the list of Lobbies: ");
+                println(" ");
+
+                printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                rightLobbyChoice = false;
+            }
+        }
+
+        return lobbyIDchosenByPlayer;
+    }
+
+    /**
+     * This method is used to print the lobbies in the game, their expert mode option, their maximum number of players and their availability.
+     * @param arrayLobby contains booleans which represent if a lobby is available to join or not (f.e. if the match is already started -> false).
+     * @param arrayExpert contains booleans which represents the expert mode option (index is the id of the lobby).
+     * @param arrayNumPlayer contains the maximum number of players in the lobbies (index is the id of the lobby).
+     * @param arrayEnd contains a booleans which represent if the game is ended (index is the id of the lobby).
+     */
+    public void printLobbies(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
+        //STAMPA DELLE LOBBIES
         println("ERIANTYS LOBBIES: ");
         for (int i = 0; i < arrayLobby.size(); i++) {
             if(arrayEnd.get(i) == false) {
@@ -182,120 +246,6 @@ public class CLI {
                 println(" ");
             }
         }
-
-        //SCANNER DELLE LOBBY
-        int lobbyIDchosenByPlayer = scannerCLI.nextInt();
-
-        boolean rightLobbyChoice = false;
-
-        while(!rightLobbyChoice) {
-            if( lobbyIDchosenByPlayer < arrayLobby.size() ) {
-                if (arrayLobby.get(lobbyIDchosenByPlayer) == false) {
-                    if(arrayEnd.get(lobbyIDchosenByPlayer) == true){
-                        println("Lobby " + lobbyIDchosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
-                        println(" ");
-
-                        //STAMPA DELLE LOBBIES
-                        println("ERIANTYS LOBBIES: ");
-                        for (int i = 0; i < arrayLobby.size(); i++) {
-                            if (arrayEnd.get(i) == false) {
-                                if (arrayLobby.get(i) == false) {
-                                    print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-
-                                } else if (arrayLobby.get(i) == true) {
-                                    print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-                                }
-                            } else if (arrayEnd.get(i) == true) {
-                                print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                                println(" ");
-                            }
-                        }
-
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                    }else {
-                        println("You can't join this lobby, match selected already started. Select another one from the list below. ");
-                        println(" ");
-
-                        //STAMPA DELLE LOBBIES
-                        println("ERIANTYS LOBBIES: ");
-                        for (int i = 0; i < arrayLobby.size(); i++) {
-                            if (arrayEnd.get(i) == false) {
-                                if (arrayLobby.get(i) == false) {
-                                    print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-
-                                } else if (arrayLobby.get(i) == true) {
-                                    print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-                                }
-                            } else if (arrayEnd.get(i) == true) {
-                                print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                                println(" ");
-                            }
-                        }
-
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                    }
-                } else {
-                    rightLobbyChoice = true;
-                }
-            }else {
-                println("Lobby not existing, insert a right number from the list of Lobbies: ");
-                println(" ");
-
-                //STAMPA DELLE LOBBIES
-                println("ERIANTYS LOBBIES: ");
-                for (int i = 0; i < arrayLobby.size(); i++) {
-                    if(arrayEnd.get(i) == false) {
-                        if (arrayLobby.get(i) == false) {
-                            print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                            if (arrayExpert.get(i) == true) {
-                                print(" - This match is in Expert Mode - ");
-                            } else if (arrayExpert.get(i) == false) {
-                                print(" - This match is NOT in Expert Mode - ");
-                            }
-                            println(" ");
-
-                        } else if (arrayLobby.get(i) == true) {
-                            print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                            if (arrayExpert.get(i) == true) {
-                                print(" - This match is in Expert Mode - ");
-                            } else if (arrayExpert.get(i) == false) {
-                                print(" - This match is NOT in Expert Mode - ");
-                            }
-                            println(" ");
-                        }
-                    }else if(arrayEnd.get(i) == true){
-                        print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                        println(" ");
-                    }
-                }
-                lobbyIDchosenByPlayer = scannerCLI.nextInt();
-            }
-        }
-        return lobbyIDchosenByPlayer;
     }
 
     /**
@@ -658,8 +608,13 @@ public class CLI {
                                 print(i + " ");
                             }
                         }
+
                         println(" ");
                         islandChosen = scannerCLI.nextInt();
+                        while(islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null){
+                            println("Please insert a valid island ID: ");
+                            islandChosen = scannerCLI.nextInt();
+                        }
                         rightLocationChoice = true;
 
                     }else if (str.equals("diningroom")) {
@@ -707,13 +662,13 @@ public class CLI {
             println(" ");
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
 
-            for(int i = 0; i < 12; i++){        //TODO da fare con modelview
+            for(int i = 0; i < 12; i++){
                 print(i + " ");
             }
             println(" ");
             islandChosen = scannerCLI.nextInt();
 
-            while(islandChosen < 0 || islandChosen >= 12){ //TODO da fare con modelview
+            while(islandChosen < 0 || islandChosen >= 12){
                 println("Please insert a valid island ID: ");
                 islandChosen = scannerCLI.nextInt();
             }

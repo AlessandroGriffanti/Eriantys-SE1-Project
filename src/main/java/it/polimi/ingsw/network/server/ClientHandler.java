@@ -90,11 +90,13 @@ public class ClientHandler extends Thread {
 
             if(matchStarted) {
                 System.out.println("OUT1");
-                server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);   //TODO : quando partita già creata, errore se non è iniziata (setTrueMatchStart ma problema tre giocatori).
+                server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
                 server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
             }else if(lobbyAccessed){
                 System.out.println("OUT2");
                 server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
+                server.getLobbiesEnd().set(lobbyID, true);
+                server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
             }else{
                 System.out.println("OUT3");
             }
@@ -233,7 +235,17 @@ public class ClientHandler extends Thread {
             playerID = 0;
             sendingLoginSuccess(playerID, true);  //server.getPlayersNicknames().indexOf(nicknameOfPlayer
         }else{
-            if(server.getLobbies().keySet().size() == 0){
+            boolean availableLobby = false;
+
+            for(int i = 0; i < server.getLobbies().size(); i++){
+                if(!server.getLobbiesEnd().get(i)) {
+                    if (!server.getLobbies().get(String.valueOf(i)).getPlayingStatus()) {
+                        availableLobby = true;
+                    }
+                }
+            }
+
+            if(server.getLobbies().keySet().size() == 0 || !availableLobby){
                 playerID = 0;
                 NoLobbyAvailableMessage noLobbyAvailableMessage = new NoLobbyAvailableMessage(playerID); //server.getPlayersNicknames().indexOf(nicknameOfPlayer)
                 sendMessageFromServer(noLobbyAvailableMessage);
@@ -273,9 +285,13 @@ public class ClientHandler extends Thread {
         int numberOfLobbiesInWaiting = 0;
         for(String lobby : server.getLobbies().keySet()) {
             if(server.getLobbies().get(lobby).getPlayingStatus()) {
-                availableLobbies.add(false);
+                availableLobbies.add(Integer.parseInt(lobby), false);
             }else {
-                availableLobbies.add(true);
+                if (server.getLobbiesEnd().get(Integer.parseInt(lobby))) {
+                    availableLobbies.add(Integer.parseInt(lobby), false);
+                }else{
+                    availableLobbies.add(Integer.parseInt(lobby), true);
+                }
                 numberOfLobbiesInWaiting ++;
             }
 
