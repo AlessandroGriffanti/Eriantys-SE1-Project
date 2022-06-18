@@ -52,7 +52,7 @@ public class CharactersManager {
 
     public CharactersManager(Controller controller) {
         this.controller = controller;
-        this.cards = new HashMap<String, Character>();
+        this.cards = new HashMap<>();
     }
 
     /**
@@ -64,7 +64,7 @@ public class CharactersManager {
         Random random = new Random();
         int randomNumber;
 
-        ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<Integer>();
+        ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<>();
 
         int i = 0;
         while(i < 3){
