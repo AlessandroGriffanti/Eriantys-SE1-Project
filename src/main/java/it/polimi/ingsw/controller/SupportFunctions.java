@@ -132,7 +132,7 @@ public class SupportFunctions {
      * @param reason reason why the match ended
      */
     static public void endMatch(Controller controller, String reason){
-        int winner = computeWinner(controller.getMatch());
+        int winner = computeWinner(controller);
         String winnerNickname = controller.getPlayersNickname().get(winner);
 
         EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
@@ -148,10 +148,12 @@ public class SupportFunctions {
 
     /**
      * This method finds which player is the winner of the specified match
-     * @param match reference to the match that must end
+     * @param controller reference to the controller of the match
      * @return ID of the winner or -1 if there is a tie
      */
-    static int computeWinner(Match match){
+    static int computeWinner(Controller controller){
+
+        Match match = controller.getMatch();
 
         Player tempWinner = null;
         int winnerTowers = 100;
@@ -162,24 +164,27 @@ public class SupportFunctions {
         boolean tie = false;
 
         for(Player p: match.getPlayers()){
-            tempTowersOfPlayer = p.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers();
+            // we consider the player as possible winner only if he's still connected
+            if(!controller.getPlayersDisconnected().get(p.getID())){
+                tempTowersOfPlayer = p.getSchoolBoard().getTowerArea().getCurrentNumberOfTowers();
 
-            if(tempTowersOfPlayer < winnerTowers || tempWinner == null){
-                winnerTowers = tempTowersOfPlayer;
-                tempWinner = p;
-                tie = false;
-            }else if(tempTowersOfPlayer == winnerTowers){
-
-                winnerProfessors = tempWinner.getMyProfessors().size();
-                tempPlayerProfessors = p.getMyProfessors().size();
-
-                if(tempPlayerProfessors > winnerProfessors){
-                    /* N.B. We don't need to assign tempTowersOfPlayer to winnerTowers
-                    * because they are already the same value (in fact we are inside the else if(...)) */
+                if(tempTowersOfPlayer < winnerTowers || tempWinner == null){
+                    winnerTowers = tempTowersOfPlayer;
                     tempWinner = p;
                     tie = false;
-                }else if(tempPlayerProfessors == winnerProfessors){
-                    tie = true;
+                }else if(tempTowersOfPlayer == winnerTowers){
+
+                    winnerProfessors = tempWinner.getMyProfessors().size();
+                    tempPlayerProfessors = p.getMyProfessors().size();
+
+                    if(tempPlayerProfessors > winnerProfessors){
+                        /* N.B. We don't need to assign tempTowersOfPlayer to winnerTowers
+                         * because they are already the same value (in fact we are inside the else if(...)) */
+                        tempWinner = p;
+                        tie = false;
+                    }else if(tempPlayerProfessors == winnerProfessors){
+                        tie = true;
+                    }
                 }
             }
         }
