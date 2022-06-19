@@ -165,6 +165,7 @@ public class CharactersManager {
             if(cards.get(cardChosen).checkCharacterAvailability()){
                 AckMessage ack = new AckMessage();
                 ack.setSubObject(cardChosen);
+                ack.setNextPlayer(request.getSender_ID());
 
                 controller.sendMessageToPlayer(request.getSender_ID(), ack);
             }else{

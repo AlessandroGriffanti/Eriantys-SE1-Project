@@ -78,6 +78,7 @@ public class Ambassador extends Character {
 
                 ack.setMasterChanged(true);
                 ack.setNewMaster_ID(newMaster);
+                ack.setTowerColor(controller.getMatch().getPlayerByID(newMaster).getTowerColor());
             }
         }
         // in the case there is already an island-master...
@@ -97,16 +98,17 @@ public class Ambassador extends Character {
                     ack.setMasterChanged(true);
                     ack.setPreviousMaster_ID(previousMaster);
                     ack.setNewMaster_ID(newMaster);
+                    ack.setTowerColor(controller.getMatch().getPlayerByID(newMaster).getTowerColor());
                 }
             }
         }
 
+        // send the ack message
+        controller.sendMessageAsBroadcast(ack);
+
         // send end-of-match message if needed
         if(ack.isEndOfMatch()){
             SupportFunctions.endMatch(controller, "towers_finished", request.getSender_ID());
-        }else{
-            // send the ack message
-            controller.sendMessageAsBroadcast(ack);
         }
     }
 

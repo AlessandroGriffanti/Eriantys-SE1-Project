@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.messages.serverMessages;
 
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.model.Tower;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +43,11 @@ public class AckCharactersMessage extends AckMessage {
      * (for example in the entrance of his school-board)
      */
     private ArrayList<Creature> entranceOfPlayer;
+    /**
+     * This attribute is the color of the tower of the new master on the island
+     * chosen with the ambassador character card
+     */
+    private Tower towerColor = null;
     /**
      * This attribute is true if the match has come to its end or false otherwise
      */
@@ -246,6 +251,16 @@ public class AckCharactersMessage extends AckMessage {
 
     public void addPlayerDiningRoom(int player_ID, HashMap<Creature, Integer> playerDiningRoom){
         allPlayersDiningRoom.put(player_ID, playerDiningRoom);
+    }
+
+    @Override
+    public void setTowerColor(Tower towerColor) {
+        this.towerColor = towerColor;
+    }
+
+    @Override
+    public Tower getTowerColor() {
+        return towerColor;
     }
 }
 
