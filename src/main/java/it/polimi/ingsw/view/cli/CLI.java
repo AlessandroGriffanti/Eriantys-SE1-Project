@@ -721,7 +721,7 @@ public class CLI {
         println("Insert the island ID where you want to move her:  ");
         int chosenIslandID = scannerCLI.nextInt();
 
-        while( chosenIslandID < 0 || chosenIslandID > 11){ //TODO da fare con modelview
+        while( chosenIslandID < 0 || chosenIslandID > 11 || modelView.getIslandGame().get(chosenIslandID) == null){
             println("Invalid island ID where to move mother nature. Please insert a correct island ID: (0-11)");
             chosenIslandID = scannerCLI.nextInt();
         }
@@ -785,7 +785,7 @@ public class CLI {
      */
     public void showStudentsOnIslands(ModelView modelView){
         println("The ISLAND SITUATION is:");
-        for(int i = 0; i < 12; i++){                                                    //TODO da fare con modelview
+        for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i) != null) {
                 print("Students on the island " + i + ": ");
                 if (modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
@@ -819,7 +819,7 @@ public class CLI {
     /*
     public void showNewStudentOnIsland(ModelView modelView){
 
-        for (int k = 0; k < 12; k++) {      //TODO da fare con modelview
+        for (int k = 0; k < 12; k++) {      //TODO da fare con modelview (|| modelView.getIslandGame().get(islandChosen) == null)
             println("Island " + k + ": ");
             for (Creature c : Creature.values()) {
                 println("Student " + c + " " + modelView.getIslandGame().get(k).getStudentsOfType(c));
@@ -832,7 +832,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showMotherNaturePosition(ModelView modelView){
-        for(int i = 0; i < 12; i++) {           //TODO da fare con modelview
+        for(int i = 0; i < 12; i++) {
             if (modelView.getIslandGame().get(i) != null) {
                 if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
                     println("Mother Nature is on the island: " + i);
@@ -1100,7 +1100,7 @@ public class CLI {
         showIslandsSituation(modelView);
         int islandIDChosenByClient = scannerCLI.nextInt();
 
-        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11){
+        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11 || modelView.getIslandGame().get(islandIDChosenByClient) == null){
             println("Not a valid island ID, please insert a valid number: ");
             showIslandsSituation(modelView);
             islandIDChosenByClient = scannerCLI.nextInt();
