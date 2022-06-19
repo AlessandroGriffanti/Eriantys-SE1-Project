@@ -233,6 +233,7 @@ public class AckCharactersMessage extends AckMessage {
         1. monk:
            - student: the type of student taken from the card and put on the island
            - studentsOnCard
+           -island_ID: ID of the island where the student was put
 
         2. cook: the card will be taken into account during action_1, movement to dining room
            - no more attributes set

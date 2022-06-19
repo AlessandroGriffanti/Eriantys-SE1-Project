@@ -72,6 +72,7 @@ public class Monk  extends Character {
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "monk", coinsInReserve);
         ack.setStudent(chosenStudent);
         ack.setStudentsOnCard(this.students);
+        ack.setIsland_ID(island_ID);
 
         controller.sendMessageAsBroadcast(ack);
 
