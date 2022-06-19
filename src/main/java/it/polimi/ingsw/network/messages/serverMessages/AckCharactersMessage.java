@@ -8,11 +8,6 @@ import java.util.HashMap;
 
 public class AckCharactersMessage extends AckMessage {
 
-
-    /**
-     * This attribute is the ID of the player after whose action this message is sent
-     */
-    private int recipient;
     /**
      * This attribute is the name of the character card used
      */
@@ -109,11 +104,6 @@ public class AckCharactersMessage extends AckMessage {
         this.recipient = recipient_ID;
         this.character = card;
         this.coinReserve = coinReserve;
-    }
-
-    // GETTER FOR recipient
-    public int getRecipient() {
-        return recipient;
     }
 
     // GETTER FOR card

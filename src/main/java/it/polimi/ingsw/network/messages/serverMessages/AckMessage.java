@@ -19,7 +19,7 @@ public class AckMessage extends Message {
      * This attribute is the ID of the Client to whom this ack message is addressed;
      * if NULL there is no recipient
      */
-    private int recipient;
+    protected int recipient;
     /**
      * This attribute indicates who is the next player to make his move
      */
