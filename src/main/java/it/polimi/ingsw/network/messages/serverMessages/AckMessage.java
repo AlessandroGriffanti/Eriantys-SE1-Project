@@ -71,7 +71,7 @@ public class AckMessage extends Message {
      * - next: current island unified with the next one
      * - both: current island unified with both the next and the previous
      */
-    private String islandsUnified = "none";
+    protected String islandsUnified = "none";
     /**
      * This attribute tells if a noEntryTile was removed from an island
      * (specified by the attribute)
@@ -84,18 +84,18 @@ public class AckMessage extends Message {
     /**
      * This attribute tells if the master on the island reached by mother nature changed
      */
-    private boolean masterChanged = false;
+    protected boolean masterChanged = false;
     /**
      * This attribute tells, if the master changed, who was the previous one;
      * the current master could anyone of the players not necessarily the one who moved mother nature or
      * could be no one if there wasn't any tower yet
      */
-    private int previousMaster_ID = -1;
+    protected int previousMaster_ID = -1;
     /**
      * This attribute tells which player is the new master of the island where mother nature arrived, only if
      * the master changed
      */
-    private int newMaster_ID = -1;
+    protected int newMaster_ID = -1;
     /**
      * This attribute is true if there were enough students for refilling the clouds
      *                   false if there weren't enough students for refilling the clouds -> action_3 not played
@@ -108,7 +108,7 @@ public class AckMessage extends Message {
     /**
      * This attribute is true if the match has come to its end or false otherwise
      */
-    private boolean endOfMatch = false;
+    protected boolean endOfMatch = false;
     /**
      * This attribute is true if after action_3 there's a new round to play, false if there are other
      * players that must play their action phase yet
@@ -117,16 +117,16 @@ public class AckMessage extends Message {
     /**
      * This attribute is the color of the tower of a player or on an island
      */
-    private Tower towerColor;
+    protected Tower towerColor;
 
     public AckMessage(){
         this.object = "ack";
         this.recipient = -1;
         this.nextPlayer = -1;
 
-        notAvailableDecks = new ArrayList<Wizard>();
-        students = new ArrayList<Creature>();
-        assistantAlreadyUsedInThisRound = new ArrayList<Integer>();
+        notAvailableDecks = new ArrayList<>();
+        students = new ArrayList<>();
+        assistantAlreadyUsedInThisRound = new ArrayList<>();
     }
 
     public void setSubObject(String subObject){

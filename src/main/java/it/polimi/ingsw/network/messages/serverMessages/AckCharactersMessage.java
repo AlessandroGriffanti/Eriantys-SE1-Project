@@ -39,38 +39,6 @@ public class AckCharactersMessage extends AckMessage {
      */
     private ArrayList<Creature> entranceOfPlayer;
     /**
-     * This attribute is the color of the tower of the new master on the island
-     * chosen with the ambassador character card
-     */
-    private Tower towerColor = null;
-    /**
-     * This attribute is true if the match has come to its end or false otherwise
-     */
-    private boolean endOfMatch = false;
-    /**
-     * This attribute tells if the master on the island reached by mother nature changed
-     */
-    private boolean masterChanged = false;
-    /**
-     * This attribute tells, if the master changed, who was the previous one;
-     * the current master could anyone of the players not necessarily the one who moved mother nature or
-     * could be no one if there wasn't any tower yet
-     */
-    private int previousMaster_ID = -1;
-    /**
-     * This attribute tells who the new master of the island where mother nature arrived is, only if
-     * the master changed
-     */
-    private int newMaster_ID = -1;
-    /**
-     * This attribute tells if some islands have been unified
-     * - none: current island unified with no other island
-     * - previous: current island unified with the previous one
-     * - next: current island unified with the next one
-     * - both: current island unified with both the next and the previous
-     */
-    private String islandsUnified = "none";
-    /**
      * This attribute is the kind of student chosen by the player or used during the
      * effect of a character
      */
@@ -88,13 +56,13 @@ public class AckCharactersMessage extends AckMessage {
      * key: player's ID
      * value: array of Creature corresponding to the professors controlled by the player
      */
-    private HashMap<Integer, ArrayList<Creature>> allPlayersProfessors = new HashMap<Integer, ArrayList<Creature>>();
+    private HashMap<Integer, ArrayList<Creature>> allPlayersProfessors = new HashMap<>();
     /**
      * This attribute represents the dining room of each player
      * key: ID of the player
      * value: hashMap representing the dining room of the player
      */
-    private HashMap<Integer, HashMap<Creature, Integer>> allPlayersDiningRoom;
+    private HashMap<Integer, HashMap<Creature, Integer>> allPlayersDiningRoom = new HashMap<>();
 
 
     public AckCharactersMessage(){this.object = "character_ack";}
@@ -104,6 +72,11 @@ public class AckCharactersMessage extends AckMessage {
         this.recipient = recipient_ID;
         this.character = card;
         this.coinReserve = coinReserve;
+    }
+
+    //GETTER FOR recipient
+    public int getRecipient() {
+        return recipient;
     }
 
     // GETTER FOR card
@@ -243,12 +216,10 @@ public class AckCharactersMessage extends AckMessage {
         allPlayersDiningRoom.put(player_ID, playerDiningRoom);
     }
 
-    @Override
     public void setTowerColor(Tower towerColor) {
         this.towerColor = towerColor;
     }
 
-    @Override
     public Tower getTowerColor() {
         return towerColor;
     }
@@ -300,13 +271,13 @@ public class AckCharactersMessage extends AckMessage {
         10. bard:
            - entranceOfPlayer: the new entrance of the player that used the character
            - playerDiningRoom: the new dining room of the player that used the character
-           - allPlayersProfessors: for each player his professors table as array of Creature
+           - allPlayersProfessors: for each player his professors' table as array of Creature
 
         11. princess:
            - studentsOnCard: students on the princess character card
            - playerDiningRoom: the new diningRoomOfThePlayer
-           - allPlayersProfessors: for each player his professors table as array of Creature
+           - allPlayersProfessors: for each player his professors' table as array of Creature
 
         12. trafficker:
            - creature: type of students chosen by the user of the character
-           - allPlayersProfessors: for each player his professors table as array of Creature*/
+           - allPlayersProfessors: for each player his professors' table as array of Creature*/
