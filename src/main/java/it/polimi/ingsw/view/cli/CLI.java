@@ -14,7 +14,6 @@ import java.util.*;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
-    ArrayList<String> keyword = new ArrayList<>();
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
@@ -23,9 +22,6 @@ public class CLI {
      */
     public CLI(String ip, int port) throws IOException, InterruptedException {
         this.networkHandler = new NetworkHandler(ip, port, this);
-
-        this.keyword.add("character");
-        this.keyword.add("show");
 
         this.networkHandler.startClient();
     }
@@ -155,7 +151,62 @@ public class CLI {
     public int lobbyToChoose(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
         println("Choose a Lobby: \n");
 
-        //STAMPA DELLE LOBBIES          //todo metodo stampa
+        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+        //SCANNER DELLE LOBBY
+        int lobbyIDchosenByPlayer = scannerCLI.nextInt();
+
+        boolean rightLobbyChoice = false;
+
+        while(!rightLobbyChoice) {
+            if( lobbyIDchosenByPlayer < arrayLobby.size() && lobbyIDchosenByPlayer >= 0) {
+                if (arrayLobby.get(lobbyIDchosenByPlayer) == false) {
+
+                    if (arrayEnd.get(lobbyIDchosenByPlayer) == true) {
+                        println("Lobby " + lobbyIDchosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
+                        println(" ");
+
+                        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                        rightLobbyChoice = false;
+
+                    } else {
+                        println("You can't join this lobby, match selected already started. Select another one from the list below. ");
+                        println(" ");
+
+                        printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                        rightLobbyChoice = false;
+                    }
+                } else if (arrayLobby.get(lobbyIDchosenByPlayer) == true) {
+                    rightLobbyChoice = true;
+                }
+
+            }else {
+                println("Lobby not existing, insert a right number from the list of Lobbies: ");
+                println(" ");
+
+                printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
+
+                lobbyIDchosenByPlayer = scannerCLI.nextInt();
+                rightLobbyChoice = false;
+            }
+        }
+
+        return lobbyIDchosenByPlayer;
+    }
+
+    /**
+     * This method is used to print the lobbies in the game, their expert mode option, their maximum number of players and their availability.
+     * @param arrayLobby contains booleans which represent if a lobby is available to join or not (f.e. if the match is already started -> false).
+     * @param arrayExpert contains booleans which represents the expert mode option (index is the id of the lobby).
+     * @param arrayNumPlayer contains the maximum number of players in the lobbies (index is the id of the lobby).
+     * @param arrayEnd contains a booleans which represent if the game is ended (index is the id of the lobby).
+     */
+    public void printLobbies(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
+        //STAMPA DELLE LOBBIES
         println("ERIANTYS LOBBIES: ");
         for (int i = 0; i < arrayLobby.size(); i++) {
             if(arrayEnd.get(i) == false) {
@@ -182,120 +233,6 @@ public class CLI {
                 println(" ");
             }
         }
-
-        //SCANNER DELLE LOBBY
-        int lobbyIDchosenByPlayer = scannerCLI.nextInt();
-
-        boolean rightLobbyChoice = false;
-
-        while(!rightLobbyChoice) {
-            if( lobbyIDchosenByPlayer < arrayLobby.size() ) {
-                if (arrayLobby.get(lobbyIDchosenByPlayer) == false) {
-                    if(arrayEnd.get(lobbyIDchosenByPlayer) == true){
-                        println("Lobby " + lobbyIDchosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
-                        println(" ");
-
-                        //STAMPA DELLE LOBBIES
-                        println("ERIANTYS LOBBIES: ");
-                        for (int i = 0; i < arrayLobby.size(); i++) {
-                            if (arrayEnd.get(i) == false) {
-                                if (arrayLobby.get(i) == false) {
-                                    print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-
-                                } else if (arrayLobby.get(i) == true) {
-                                    print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-                                }
-                            } else if (arrayEnd.get(i) == true) {
-                                print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                                println(" ");
-                            }
-                        }
-
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                    }else {
-                        println("You can't join this lobby, match selected already started. Select another one from the list below. ");
-                        println(" ");
-
-                        //STAMPA DELLE LOBBIES
-                        println("ERIANTYS LOBBIES: ");
-                        for (int i = 0; i < arrayLobby.size(); i++) {
-                            if (arrayEnd.get(i) == false) {
-                                if (arrayLobby.get(i) == false) {
-                                    print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-
-                                } else if (arrayLobby.get(i) == true) {
-                                    print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                                    if (arrayExpert.get(i) == true) {
-                                        print(" - This match is in Expert Mode - ");
-                                    } else if (arrayExpert.get(i) == false) {
-                                        print(" - This match is NOT in Expert Mode - ");
-                                    }
-                                    println(" ");
-                                }
-                            } else if (arrayEnd.get(i) == true) {
-                                print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                                println(" ");
-                            }
-                        }
-
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                    }
-                } else {
-                    rightLobbyChoice = true;
-                }
-            }else {
-                println("Lobby not existing, insert a right number from the list of Lobbies: ");
-                println(" ");
-
-                //STAMPA DELLE LOBBIES
-                println("ERIANTYS LOBBIES: ");
-                for (int i = 0; i < arrayLobby.size(); i++) {
-                    if(arrayEnd.get(i) == false) {
-                        if (arrayLobby.get(i) == false) {
-                            print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                            if (arrayExpert.get(i) == true) {
-                                print(" - This match is in Expert Mode - ");
-                            } else if (arrayExpert.get(i) == false) {
-                                print(" - This match is NOT in Expert Mode - ");
-                            }
-                            println(" ");
-
-                        } else if (arrayLobby.get(i) == true) {
-                            print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                            if (arrayExpert.get(i) == true) {
-                                print(" - This match is in Expert Mode - ");
-                            } else if (arrayExpert.get(i) == false) {
-                                print(" - This match is NOT in Expert Mode - ");
-                            }
-                            println(" ");
-                        }
-                    }else if(arrayEnd.get(i) == true){
-                        print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
-                        println(" ");
-                    }
-                }
-                lobbyIDchosenByPlayer = scannerCLI.nextInt();
-            }
-        }
-        return lobbyIDchosenByPlayer;
     }
 
     /**
@@ -312,6 +249,9 @@ public class CLI {
         println("No lobby available, creating a new one...");
     }
 
+    /**
+     * This method is used to notify the player that he received a wrong message.
+     */
     public void errorObject () {
         println("Error with the object of the message. ");
     }
@@ -333,6 +273,13 @@ public class CLI {
      */
     public void turnWaiting () {
         println("Wait for your turn!");
+    }
+
+    /**
+     * This method is used when another player has used a character, so the client is notified and has to wait.
+     */
+    public void characterUsed (String characterUsed, int playerID) {
+        println("Player " + playerID + " has used the " + characterUsed + " character card!");
     }
 
     /**
@@ -453,7 +400,9 @@ public class CLI {
             print(i + " ");
         }
         println(" ");
+
         request = scannerCLI.next();
+
         while(rightAssistantChosen == false){
             try {
                 assistantChosen = Integer.parseInt(request);
@@ -487,7 +436,9 @@ public class CLI {
             print(i + " ");
         }
         println(" ");
+
         request = scannerCLI.next();
+
         while(rightAssistantChosen == false) {
             try {
                 assistantChosen = Integer.parseInt(request);
@@ -507,13 +458,6 @@ public class CLI {
         }
         return  assistantChosen;
     }
-
-    /*
-    public synchronized void controlStatusGame(int playerID, ModelView modelView){
-        println("Numero di giocatori totali della partita: " + modelView.getNumberOfPlayersGame());
-        println("Partita in expertmode? " + String.valueOf(modelView.isExpertModeGame()));
-    }
-    */
 
     /**
      * This method is used to show the three characters cards available in the game.
@@ -583,7 +527,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showProfessorTablePlayer(int playerID, ModelView modelView){
-        println("Professor table of player: " + playerID);
+        println("Professor table of player: (you are player " + playerID + ") ");
         for(Creature c : Creature.values() ) {
             println("Professor of " + c + " " + modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(c));
         }
@@ -605,7 +549,7 @@ public class CLI {
      * This method is used to ask the player which students he wants to move from the entrance.
      * @param modelView is the reference to the modelView.
      */
-    public synchronized int choiceOfStudentsToMove(int playerID, ModelView modelView ) {
+    public int choiceOfStudentsToMove(int playerID, ModelView modelView ) {
         String request;
         int studentChosen = - 1;                                                  //settato a -1 a causa del try catch, ma non verrà mai restituito -1
         boolean rightStudentChosen = false;                                       //viene settata a true solo se inserisco "character" oppure se inserisco uno studente valido
@@ -642,8 +586,6 @@ public class CLI {
             }
 
         }
-
-
         return studentChosen;
     }
 
@@ -652,15 +594,11 @@ public class CLI {
      * This method is used to ask the player where he wants to move the student he chose.
      * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
      */
-    public synchronized int choiceLocationToMove(int playerID, ModelView modelView) {
+    public int choiceLocationToMove(int playerID, ModelView modelView) {
         println("Now you have to move the student you chose to the diningroom or on an island: where do you want to move him? ");
         int islandChosen;
         String request = scannerCLI.next();
-        //String locationChosen = null;
 
-        /*if (keyword.contains(str)) {
-            additionalFunction(str, playerID, modelView, "choiceLocationToMove");
-        }*/
         while(!(request.equals("diningroom") || request.equals("island") || request.equals("show") || request.equals("character"))){    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
             println("Please insert a valid request: (diningroom/island/show/character");
             request = scannerCLI.next();
@@ -694,60 +632,11 @@ public class CLI {
         return islandChosen;
     }
 
-        /*while(!(str.equals("diningroom") || str.equals("islands") || str.equals("no") || str.equals("both"))){
-            println("Please insert 'diningroom', 'islands', 'no' or 'both'");
-            str = scannerCLI.nextLine();
-        }
-        if(str.equals("islands")){                                          //mostro le isole se sceglie di vedere isole
-            showIslandsSituation(modelView);
-        }else if(str.equals("diningroom")){                                 //mostro diningroom se sceglie di vedere diningroom di tutti i giocatori
-            for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
-                showStudentsInDiningRoomPlayer(i, modelView);
-            }
-        }else if(str.equals("both")){                                       //mostro entrambi se sceglie both
-            showIslandsSituation(modelView);
-            for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++) {
-                showStudentsInDiningRoomPlayer(i, modelView);
-            }
-        }*/
-        /*println("Where do you want to move the student you chose? (diningroom/island)");
-        String locationChosen = scannerCLI.nextLine();
-        while(!(locationChosen.equals("diningroom") || (locationChosen.equals("island")))){
-            println("Please insert 'diningroom' or 'island': ");
-            locationChosen = scannerCLI.nextLine();
-        }
-
-        int islandChosen;
-
-        if(locationChosen.equals("island")){                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
-
-            println(" ");
-            println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
-
-            for(int i = 0; i < 12; i++){        //TODO da fare con modelview
-                print(i + " ");
-            }
-            println(" ");
-            islandChosen = scannerCLI.nextInt();
-
-            while(islandChosen < 0 || islandChosen >= 12){ //TODO da fare con modelview
-                println("Please insert a valid island ID: ");
-                islandChosen = scannerCLI.nextInt();
-            }
-        }else{
-
-            return -1;
-        }
-        return islandChosen;
-
-    } */
     /**
      * This methods is used by the client to view what he desires.
      * @param modelView is the reference to the modelView.
      */
     public void show(int playerID, ModelView modelView){
-
-        ///INSERIRE TUTTE LE COSE E GLI IF DEI CASI VARI choiceOfStudentsToMove, ECC
 
         println("What do you want to view? Insert diningroom/islands/both/professortable/characters/clouds/nothing");  //TODO EVENTUALMENTE STAMPARE ANCHE LE MONETE E LE NUVOLE
         String str = scannerCLI.next();
@@ -783,14 +672,6 @@ public class CLI {
         }
 
     }
-    /*
-    public void callFromCheck(int playerID, ModelView modelView, String callFrom){
-        if(callFrom.equals("choiceOfStudentsToMove")){
-            choiceOfStudentsToMove(playerID, modelView);
-        }else if(callFrom.equals("choiceLocationToMove")){
-            choiceLocationToMove(playerID, modelView);
-        }
-    } */
 
     /**
      * This method is used to ask the player on which island he wants to move mother nature.
@@ -890,7 +771,7 @@ public class CLI {
      */
     public void showStudentsOnIslands(ModelView modelView){
         println("The ISLAND SITUATION is:");
-        for(int i = 0; i < 12; i++){                                                    //TODO da fare con modelview
+        for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i) != null) {
                 print("Students on the island " + i + ": ");
                 if (modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
@@ -921,23 +802,12 @@ public class CLI {
         showMotherNaturePosition(modelView);
     }
 
-    /*
-    public void showNewStudentOnIsland(ModelView modelView){
-
-        for (int k = 0; k < 12; k++) {      //TODO da fare con modelview
-            println("Island " + k + ": ");
-            for (Creature c : Creature.values()) {
-                println("Student " + c + " " + modelView.getIslandGame().get(k).getStudentsOfType(c));
-            }
-        }
-    } */
-
     /**
      * This method is used to show the mother nature position.
      * @param modelView is the reference to the modelView.
      */
     public void showMotherNaturePosition(ModelView modelView){
-        for(int i = 0; i < 12; i++) {           //TODO da fare con modelview
+        for(int i = 0; i < 12; i++) {
             if (modelView.getIslandGame().get(i) != null) {
                 if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
                     println("Mother Nature is on the island: " + i);
@@ -1031,8 +901,6 @@ public class CLI {
                 }
             }
         }
-
-
         return  cloudChosen;
     }
 
@@ -1074,23 +942,11 @@ public class CLI {
         println("The round is over, a new one is beginning! ");
     }
 
-    public void additionalFunction(String strTmp, int playerID, ModelView modelView, String callFrom){
-        if(strTmp.equals("character")){
-            if(modelView.isExpertModeGame()) {
-                characterChoice(modelView);
-            }else{
-                println("You are not playing in expert mode, you can't use a character. ");
-            }
-        }else if(strTmp.equals("show") ){
-            show(playerID, modelView);
-        }
-    }
-
     /**
      * This method is used by the client when he wants to use one of the character of his match.
      * @param modelView is the reference to the modelView.
      */
-    public String characterChoice(ModelView modelView){ //, String callFrom
+    public String characterChoice(ModelView modelView){
         println("Which character do you want to use? ");
         for(String s : modelView.getCharacterCardsInTheGame()){
             print(s + " ");
@@ -1111,7 +967,6 @@ public class CLI {
         println("You choose to use: " + characterChosen);
 
         return  characterChosen;
-        //networkHandler.sendRequestCharacterMessage(characterChosen, callFrom);
 
     }
 
@@ -1201,7 +1056,6 @@ public class CLI {
             }
             studentsFromCardJester.add(studentChosen);
             maxNumberOfStudents ++;
-
         }
         return studentsFromCardJester;
     }
@@ -1235,7 +1089,7 @@ public class CLI {
         showIslandsSituation(modelView);
         int islandIDChosenByClient = scannerCLI.nextInt();
 
-        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11){
+        while(islandIDChosenByClient < 0 || islandIDChosenByClient > 11 || modelView.getIslandGame().get(islandIDChosenByClient) == null){
             println("Not a valid island ID, please insert a valid number: ");
             showIslandsSituation(modelView);
             islandIDChosenByClient = scannerCLI.nextInt();
@@ -1425,23 +1279,6 @@ public class CLI {
      */
     public void invalidCharacter(String invalidCharacterNackExplanation){
         println(invalidCharacterNackExplanation);
-    }
-
-    /**
-     * This method is used to ask the player if he wants to use another character card.
-     * @param modelView is the reference to the modelView.
-     */
-    public void choiceAnotherCharacter(ModelView modelView){
-        String str;
-        println("Do you want to choose another character? y/n ");
-        str = scannerCLI.next();
-        while(!(str.equals("y") || str.equals("n"))){
-            println("Please insert 'y' or 'n'");
-            str = scannerCLI.next();
-        }
-        if(str.equals("y")){
-            //characterChoice(modelView, "anotherChoice");
-        }
     }
 
     /**

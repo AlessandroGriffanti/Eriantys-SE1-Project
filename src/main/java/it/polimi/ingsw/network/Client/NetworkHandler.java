@@ -687,12 +687,11 @@ public class NetworkHandler {
 
                     case "herbalist":
                         cli.invalidHerbalistChoice(nackMessageMapped.getExplanationMessage());
-                        cli.choiceAnotherCharacter(modelView);
+                        followingChoiceToMake(lastCallFrom);
                         break;
 
                     case "character_price":
                         cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
-                        //cli.choiceAnotherCharacter(modelView);
                         followingChoiceToMake(lastCallFrom);
                         break;
                 }
@@ -713,6 +712,7 @@ public class NetworkHandler {
                 if(ackCharactersMessage.getRecipient() == playerID) {                              //faccio queste cose se il mio player id corrisponde, per l'altro giocatore non esiterà ancora nessuna callfrom, mi darebbe null
                     followingChoiceToMake(lastCallFrom);
                 }else{
+                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
                     cli.turnWaiting();
                 }
                 break;
@@ -1342,7 +1342,7 @@ public class NetworkHandler {
             modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
         }else if(characterUsed.equals("ambassador_influence")){       //TODO towercolor da ackCharactersMessage
             matchEnd = ackCharactersMessage.isEndOfMatch();           //TODO controllo se ackCharactersMessage è accettato
-            updateModelViewActionTwo(ackCharactersMessage);
+            updateModelViewActionTwo(ackCharactersMessage);            //TODO controllare se update model view venga chiamato correttamente
 
         }else if (characterUsed.equals("ambassador_union")){
             matchEnd = ackCharactersMessage.isEndOfMatch();
