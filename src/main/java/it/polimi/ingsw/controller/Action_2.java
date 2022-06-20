@@ -112,8 +112,8 @@ public class Action_2 implements ControllerState{
                 ack.setIslandThatLostNoEntryTile(destinationIsland);
 
                 // control if the action_3 can be performed, if not the match should end
-                ack.setAction3Valid(controlAction3Allowed(match));
                 action3Allowed = controlAction3Allowed(match);
+                ack.setAction3Valid(action3Allowed);
 
                 if(!action3Allowed){
                     assert SupportFunctions.noMoreStudentsToDraw(match);
@@ -143,7 +143,9 @@ public class Action_2 implements ControllerState{
             }
 
             // send the ack message for the movement
-            ack.setNextPlayer(request.getSender_ID());
+            if(ack.getNextPlayer() == -1){
+                ack.setNextPlayer(request.getSender_ID());
+            }
             controller.sendMessageAsBroadcast(ack);
 
             // send the endOfMatch message if needed
@@ -216,6 +218,7 @@ public class Action_2 implements ControllerState{
             SupportFunctions.endMatch(controller, "towers_finished", request.getSender_ID());
         }else{
             // send the ack message
+            ack.setNextPlayer(request.getSender_ID());
             controller.sendMessageAsBroadcast(ack);
 
             executeAction_2_union(controller, request);

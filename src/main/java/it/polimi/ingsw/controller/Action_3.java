@@ -83,8 +83,6 @@ public class Action_3 implements ControllerState{
             int nextPlayer;
 
             if(controller.getActionPhaseCurrentPlayer() == lastPlayerOfAction_ID){
-                // the action phase must end
-                controller.setActionPhase(false);
 
                 // find who is the first player of the next round
                 nextPlayer = SupportFunctions.findFirstPlayerOfNewRound(controller);
@@ -92,6 +90,9 @@ public class Action_3 implements ControllerState{
 
                 ack.setNextPlayer(nextPlayer);
                 ack.setNextPlanningPhase(true);
+
+                // the action phase must end
+                controller.setActionPhase(false);
             }else{
                 nextPlayer = controller.nextPlayer(controller.getActionPhaseCurrentPlayer());
                 // update current player of action phase

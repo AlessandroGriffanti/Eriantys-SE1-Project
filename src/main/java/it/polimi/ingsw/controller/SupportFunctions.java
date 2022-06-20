@@ -226,7 +226,8 @@ public class SupportFunctions {
      * master of the island
      * @param controller reference to the controller of the match
      * @param island_ID the ID of the island whose influence we are interested in
-     * @return ID of the player or if the there are two players with the same influence value, which is the maximum
+     * @return ID of the player that has the higher influence on the island (also if the master did not change)
+     *         or if the there are two players with the same influence value, which is the maximum
      *         value, then -1 is returned
      */
     static public int influenceComputation(Controller controller, int island_ID){
@@ -267,7 +268,7 @@ public class SupportFunctions {
             // if the player is using the knight character two points are added to the influence
             if(controller.getCharactersManager().getKnightUser() == player_ID){
                 allPlayersInfluence.put(player_ID, playerInfluence + 2);
-                // reset knightUser
+                // RESET knightUser
                 controller.getCharactersManager().setKnightUser(-1);
             }else{
                 allPlayersInfluence.put(player_ID, playerInfluence);
@@ -279,21 +280,21 @@ public class SupportFunctions {
         // control who has the higher influence
         int maxInfluence = 0;
         int playerWithMaxInfluence = -1;
-        int repetitions = 0;
+        int equalInfluenceCounter = 0;
 
         for(int i = 0; i < match.getPlayers().size(); i++){
             if(allPlayersInfluence.get(i) > maxInfluence){
-                repetitions = 1;
+                equalInfluenceCounter = 1;
                 playerWithMaxInfluence = i;
                 maxInfluence = allPlayersInfluence.get(i);
             }else if(allPlayersInfluence.get(i) == maxInfluence){
-                repetitions++;
+                equalInfluenceCounter++;
             }
         }
 
         /* if we found a max value more than once then the influence is not valid, meaning no one is getting the
         control over the island */
-        if(repetitions > 1){
+        if(equalInfluenceCounter > 1){
             return -1;
         }else {
             return playerWithMaxInfluence;
