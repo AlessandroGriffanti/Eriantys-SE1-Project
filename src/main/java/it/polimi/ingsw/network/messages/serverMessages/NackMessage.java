@@ -44,7 +44,7 @@ public class NackMessage extends Message {
             case "invalid_cloud":
                 this.explanationMessage = "Another player already took the students from this cloud, please choose another cloud!";
                 break;
-            case "character":
+            case "character_price":
                 this.explanationMessage = "I see yuo are not rich enough to buy the character, come back when you have more coins!";
                 break;
             case "herbalist":
