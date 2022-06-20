@@ -33,6 +33,9 @@ public class NetworkHandler {
     private PrintWriter outputPrintClient = null;
     private String ip;
     private int port;
+
+
+
     private String lastCallFrom = null;
 
     /**
@@ -55,7 +58,17 @@ public class NetworkHandler {
     /**
      * We use this attribute to track the number of student the player has moved from the entrance.
      */
-    private int numberOfChosenStudent ;
+    private int numberOfChosenStudent = 0;
+
+    /**
+     * This attribute indicates the student the player decided to move from the entrance in the action_1.
+     */
+    private int studentChosen;
+
+    /**
+     * This attribute tracks the position of mother nature in the game.
+     */
+    int motherNatureIslandID;
 
     /**
      * We use this attribute to know the maximum number of students that can be moved from the entrance.
@@ -333,14 +346,24 @@ public class NetworkHandler {
                             cli.turnWaiting();
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) {   //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
-                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                    //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
-                            while(studentChosen == -1){
-                                studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            assistantChoiceFlag = false;
+                            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                    //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
+                            if(studentChosen == -2){                                                            //se qui torna -2 significa che ha deciso di usare un character
+                                lastCallFrom = "choiceOfStudentsToMove";
+                                String characterChosen = cli.characterChoice(modelView);                        //chiamiamo l'oppurtuno metodo della cli per la scelta del character
+                                sendRequestCharacterMessage(characterChosen);                                   //mandiamo il messaggio al server
+                                break;                                                                          //qui faccio break altrimenti continuo nell'esecuzione e non voglio
                             }
-                            int locationChosen = cli.choiceLocationToMove(modelView);                               //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
-                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
-                            numberOfChosenStudent++;
-                            assistantChoiceFlag = false;                                                        //qui cambia la flag il primo giocatore
+                            int locationChosen = cli.choiceLocationToMove(playerID, modelView); //facciamo scegliere dove voglia muovere lo studente, isola o diningroom;
+                            if(locationChosen == -2){                                                           //se l'int ritornato è -2 significa che ha scelto di usare una character card
+                                lastCallFrom = "choiceLocationToMove";
+                                String characterChosen = cli.characterChoice(modelView);                        //chiamo opportuno metodo della cli
+                                sendRequestCharacterMessage(characterChosen);                                   //mando messaggio al server
+                                break;
+                            }
+                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);                       // qui ci arrivo solo se non ha scelto di usare un character (infatti negli if precedenti ho un break)
+                            numberOfChosenStudent ++;
+
                         }
 
                         break;
@@ -349,18 +372,26 @@ public class NetworkHandler {
                         updateModelViewActionOne(ackMessageMapped);
 
                         if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {            //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su diningroom
-                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            if(studentChosen == -1){
+                            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            if(studentChosen == -2){
+                                lastCallFrom = "choiceOfStudentsToMove";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
                                 break;
                             }
-                            int locationChosen = cli.choiceLocationToMove(modelView);
+                            int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+                            if(locationChosen == -2){
+                                lastCallFrom = "choiceLocationToMove";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
-
                         } else if (ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <= numberOfStudentToMoveAction1 ) {
                             cli.turnWaiting();
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
-                            int motherNatureIslandID = 0;
+                            motherNatureIslandID = 0;
                             for (int i = 0; i < 12; i++) {
                                 if(modelView.getIslandGame().get(i) != null) {
                                     if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
@@ -368,8 +399,13 @@ public class NetworkHandler {
                                     }
                                 }
                             }
-                            int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
-
+                            int chosenIslandID = cli.choiceMotherNatureMovement(playerID, motherNatureIslandID, modelView);
+                            if(chosenIslandID == -2){
+                                lastCallFrom = "choiceMotherNatureMovement";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
                             sendMovedMotherNature(chosenIslandID);
                         }
 
@@ -378,18 +414,27 @@ public class NetworkHandler {
                     case "action_1_island":
                         updateModelViewActionOne(ackMessageMapped);
                         if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {          //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su isola
-                            int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            int i = 0;
-                            cli.showStudentsInEntrancePlayer(playerID, modelView);
-                            int locationChosen = cli.choiceLocationToMove(modelView);
+                            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                            if(studentChosen == -2){
+                                lastCallFrom = "choiceOfStudentsToMove";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
+                            int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+                            if(locationChosen == -2){
+                                lastCallFrom = "choiceLocationToMove";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
-
                         } else if (ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <= numberOfStudentToMoveAction1) {
                             cli.turnWaiting();
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
-                            int motherNatureIslandID = 0;
+                            motherNatureIslandID = 0;
                             for (int i = 0; i < 12; i++) {
                                 if(modelView.getIslandGame().get(i) != null) {
                                     if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
@@ -397,8 +442,13 @@ public class NetworkHandler {
                                     }
                                 }
                             }
-                            int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
-
+                            int chosenIslandID = cli.choiceMotherNatureMovement(playerID, motherNatureIslandID, modelView);
+                            if(chosenIslandID == -2){
+                                lastCallFrom = "choiceMotherNatureMovement";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
                             sendMovedMotherNature(chosenIslandID);
                         }
                         break;
@@ -407,7 +457,13 @@ public class NetworkHandler {
                         updateModelViewActionTwo(ackMessageMapped);
                         cli.newMotherNaturePosition(ackMessageMapped.getDestinationIsland_ID());
                         if(ackMessageMapped.getNextPlayer() == playerID) {
-                            int cloudChosenID = cli.chooseCloud(modelView);
+                            int cloudChosenID = cli.chooseCloud(playerID, modelView);
+                            if(cloudChosenID == -2){
+                                lastCallFrom = "chooseCloud";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
                             sendChosenCloudMessage(cloudChosenID);
                         }else if(ackMessageMapped.getNextPlayer() != playerID){
                             cli.turnWaiting();
@@ -463,7 +519,19 @@ public class NetworkHandler {
                             cli.turnWaiting();
                         }else if(ackMessageMapped.getNextPlayer() == playerID && !ackMessageMapped.isNextPlanningPhase()){  //significa che la fase di azione non è finita, tocca al secondo, o terzo, giocatore che deve muovere gli studenti dall'entrance
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            int locationChosen = cli.choiceLocationToMove(modelView);
+                            if(studentChosen == -2){                                                            //se qui torna -2 significa che ha deciso di usare un character
+                                lastCallFrom = "choiceOfStudentsToMove";
+                                String characterChosen = cli.characterChoice(modelView);                        //chiamiamo l'oppurtuno metodo della cli per la scelta del character
+                                sendRequestCharacterMessage(characterChosen);                                   //mandiamo il messaggio al server
+                                break;                                                                          //qui faccio break altrimenti continuo nell'esecuzione e non voglio
+                            }
+                            int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+                            if(locationChosen == -2){                                                           //se l'int ritornato è -2 significa che ha scelto di usare una character card
+                                lastCallFrom = "choiceLocationToMove";
+                                String characterChosen = cli.characterChoice(modelView);                        //chiamo opportuno metodo della cli
+                                sendRequestCharacterMessage(characterChosen);                                   //mando messaggio al server
+                                break;
+                            }
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
                             assistantChoiceFlag = false;
@@ -587,7 +655,7 @@ public class NetworkHandler {
                     case "invalid_mother_nature_movement":
                         cli.invalidMotherNatureMovement();
 
-                        int motherNatureIslandID = 0;
+
                         for (int i = 0; i < 12; i++) {
                             if(modelView.getIslandGame().get(i) != null) {
                                 if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
@@ -595,14 +663,25 @@ public class NetworkHandler {
                                 }
                             }
                         }
-                        int chosenIslandID = cli.choiceMotherNatureMovement(motherNatureIslandID, modelView);
-
+                        int chosenIslandID = cli.choiceMotherNatureMovement(playerID, motherNatureIslandID, modelView);
+                        if(chosenIslandID == -2){
+                            lastCallFrom = "choiceMotherNatureMovement";
+                            String characterChosen = cli.characterChoice(modelView);
+                            sendRequestCharacterMessage(characterChosen);
+                            break;
+                        }
                         sendMovedMotherNature(chosenIslandID);
 
                         break;
 
                     case "invalid_cloud":
-                        int cloudChosenID = cli.invalidCloudSelection(modelView);
+                        int cloudChosenID = cli.invalidCloudSelection(playerID, modelView);
+                        if(cloudChosenID == -2){
+                            lastCallFrom = "chooseCloud";
+                            String characterChosen = cli.characterChoice(modelView);
+                            sendRequestCharacterMessage(characterChosen);
+                            break;
+                        }
                         sendChosenCloudMessage(cloudChosenID);
                         break;
 
@@ -611,9 +690,10 @@ public class NetworkHandler {
                         cli.choiceAnotherCharacter(modelView);
                         break;
 
-                    case "character":
+                    case "character_price":
                         cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
-                        cli.choiceAnotherCharacter(modelView);
+                        //cli.choiceAnotherCharacter(modelView);
+                        followingChoiceToMake(lastCallFrom);
                         break;
                 }
                 break;
@@ -630,7 +710,11 @@ public class NetworkHandler {
                 //update:
                 updateCharacterCard(ackCharactersMessage);
                 //callFrom:
-
+                if(ackCharactersMessage.getRecipient() == playerID) {                              //faccio queste cose se il mio player id corrisponde, per l'altro giocatore non esiterà ancora nessuna callfrom, mi darebbe null
+                    followingChoiceToMake(lastCallFrom);
+                }else{
+                    cli.turnWaiting();
+                }
                 break;
 
             default:
@@ -638,6 +722,30 @@ public class NetworkHandler {
         }
     }
 
+    /**
+     * This method is used to let the player make the following choice regarding
+     * the moment when he chose to use the character card.
+     * @param lastCallFrom is the moment when the player uses the character card.
+     */
+    public void followingChoiceToMake(String lastCallFrom){
+        if (lastCallFrom.equals("choiceOfStudentsToMove")) {
+            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+            int locationChosen = cli.choiceLocationToMove(playerID, modelView);          //qui non c'è bisogno di ricontrollare perchè si può usare un character per turno, non può succedere che ne giochi un altro
+            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
+            numberOfChosenStudent++;                                                    //aumentiamo il numero di studenti mossi dall'entrance.
+        } else if (lastCallFrom.equals("choiceLocationToMove")) {
+            int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
+            numberOfChosenStudent++;
+        } else if (lastCallFrom.equals("choiceMotherNatureMovement")) {
+            int chosenIslandID = cli.choiceMotherNatureMovement(playerID, motherNatureIslandID, modelView);
+            sendMovedMotherNature(chosenIslandID);
+        }else if(lastCallFrom.equals("chooseCloud")){
+            int cloudChosenID = cli.chooseCloud(playerID, modelView);
+            sendChosenCloudMessage(cloudChosenID);
+        }
+
+    }
     /**
      * This method creates an Ack message and sends it to the server.
      */
@@ -723,8 +831,8 @@ public class NetworkHandler {
     /**
      * This method is used to create and send the Chosen Character Message to the server.
      */
-    public void sendRequestCharacterMessage(String characterChosen, String callFrom){
-        this.lastCallFrom = callFrom;
+    public void sendRequestCharacterMessage(String characterChosen){ //, String callFrom
+        //this.lastCallFrom = callFrom;
         CharacterRequestMessage characterRequestMessage = new CharacterRequestMessage(playerID, characterChosen);
         sendMessage(characterRequestMessage);
     }
@@ -878,6 +986,7 @@ public class NetworkHandler {
                 }
             }
         }
+
         //System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
         //System.out.println("partita in expert mode??? " + modelView.isExpertModeGame());
         modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
@@ -954,6 +1063,7 @@ public class NetworkHandler {
         if (ackMessageMapped.getSubObject().equals("action_2_movement")) {
             if (ackMessageMapped.getRecipient() == playerID) {
                 modelView.getAssistantCardsValuesPlayer().remove(modelView.getLastAssistantChosen());   //rimuovo assistente
+                numberOfChosenStudent = 0;
             }
             for (int i = 0; i < 12; i++) {
                 if(modelView.getIslandGame().get(i) != null) {
@@ -1203,7 +1313,7 @@ public class NetworkHandler {
      */
     public void updateCharacterCard(AckCharactersMessage ackCharactersMessage){
         String characterUsed = ackCharactersMessage.getCharacter();
-        cli.characterConfirm(characterUsed);
+        //cli.characterConfirm(characterUsed);
         //update locale
         if(ackCharactersMessage.getRecipient() == playerID){
             int newCoinPlayer =  ackCharactersMessage.getCoinReserve() - modelView.getCoinGame();
@@ -1266,6 +1376,14 @@ public class NetworkHandler {
             }
         }
 
+    }
+
+    public String getLastCallFrom() {
+        return lastCallFrom;
+    }
+
+    public void setLastCallFrom(String lastCallFrom) {
+        this.lastCallFrom = lastCallFrom;
     }
 
 
