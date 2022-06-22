@@ -507,7 +507,35 @@ public class CLI {
         }
         println(" ");
     }
+    /**
+     * This method is used to show to the player the students in the Entrance of all players.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showStudentsInEntranceOfAllPlayer(int playerID, ModelView modelView){
+        println("The students in the entrance of the player " + playerID +" are: ");
+        int i = 0;
+        for(Creature c : modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer()){
+            if(c == null){
+                println(i + ": --- ");
+                i++;
+            }else {
+                println(i + ": " + c);
+                i++;
+            }
+        }
+        println(" ");
+    }
 
+    /**
+     * This method is used to show the number of towers of all players.
+     * @param playerID is the player id, used to get the corresponding SchoolBoardView.
+     * @param modelView is the reference to the modelView.
+     */
+    public void showTowersPlayer(int playerID, ModelView modelView){
+        print("This is the number of towers of player " + playerID +": " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());
+        println(" ");
+    }
     /**
      * This method is used to show to the player his students in the Dining Room of his board.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
@@ -527,13 +555,16 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showProfessorTablePlayer(int playerID, ModelView modelView){
-        println("Professor table of player: (you are player " + playerID + ") ");
+        println("Professor table of player: " + playerID);
         for(Creature c : Creature.values() ) {
-            println("Professor of " + c + " " + modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(c));
+            println("Professor of " + c + ": " + modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(c));
         }
         println(" ");
     }
 
+    public void showCoinsPlayer(int playerID, ModelView modelView){
+        println("Number of coins of player " + playerID +": " + modelView.getCoinPlayer().get(playerID));
+    }
     /**
      * This method is used to show to the player the number of his remainig towers in the Tower area of his schoolboard.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
@@ -638,10 +669,10 @@ public class CLI {
      */
     public void show(int playerID, ModelView modelView){
 
-        println("What do you want to view? Insert diningroom/islands/both/professortable/characters/clouds/nothing");  //TODO EVENTUALMENTE STAMPARE ANCHE LE MONETE E LE NUVOLE
+        println("What do you want to view? Insert entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");  //TODO EVENTUALMENTE STAMPARE ANCHE LE MONETE E LE NUVOLE
         String str = scannerCLI.next();
 
-        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds"))){   //possono essere viste queste cose
+        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
             println("Please insert one of the following: diningroom/islands/both/professortable/characters/nothing");
             str = scannerCLI.nextLine();
         }
@@ -669,6 +700,22 @@ public class CLI {
         }else if(str.equals("clouds")){
             showClouds(modelView);
             println(" ");
+        }else if(str.equals("coins")){
+            if(modelView.isExpertModeGame() == true){
+                for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
+                    showCoinsPlayer(i, modelView);
+                }
+            }else{
+                println("There are no coins in the game since you are not playing in expert mode!");
+            }
+        }else if(str.equals("entrance")){
+            for(int i = 0; i <= modelView.getNumberOfPlayersGame()-1; i++) {
+                showStudentsInEntranceOfAllPlayer(i,modelView);
+            }
+        }else if(str.equals("towers")){
+            for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
+                showTowersPlayer(i, modelView);
+            }
         }
 
     }

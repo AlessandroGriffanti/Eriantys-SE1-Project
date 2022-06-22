@@ -101,6 +101,9 @@ public class ModelView {
         schoolBoardPlayers = new HashMap<>();
         coinPlayer = new HashMap<>();
 
+        coinPlayer.put(0,1);
+        coinPlayer.put(1,1);
+
 
     }
 

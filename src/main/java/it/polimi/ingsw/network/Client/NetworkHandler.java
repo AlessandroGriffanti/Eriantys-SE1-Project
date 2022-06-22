@@ -871,6 +871,7 @@ public class NetworkHandler {
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "jester");
         characterDataMessage.setStudentsFromPlayerEntrance(studentsFromEntranceJester);
         characterDataMessage.setElementsFromCard(studentsFromCardJester);
+        sendMessage(characterDataMessage);
     }
 
     /**
@@ -970,9 +971,22 @@ public class NetworkHandler {
 
         modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                      //setto il numero di giocatori totali della partita
         modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
-        if (modelView.isExpertModeGame() == true) {                                                                //se la partita è in expert mode, setto il numero di coin della partita a 20
-            modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
-            modelView.setCoinGame(20);
+        if (modelView.isExpertModeGame() == true) {
+            //modelView.getCoinPlayer().put(playerID, 1);                                                          //se la partita è in expert mode, setto il numero di coin di ciascun giocatore a 1
+            /*for(int i = 0; i < matchStartMessage.getNumPlayer()-1; i++){
+                modelView.getCoinPlayer().put(i, 1);
+            }*/
+            /*System.out.println("keyset" + modelView.getCoinPlayer().keySet());
+            System.out.println(modelView.getCoinPlayer().get(playerID));
+            for(Integer i : modelView.getCoinPlayer().keySet()){
+                System.out.println(playerID +": " + modelView.getCoinPlayer().get(i));
+            }*/
+
+            if(matchStartMessage.getNumPlayer() == 2){
+                modelView.setCoinGame(18);
+            }else if(matchStartMessage.getNumPlayer() == 3){
+                modelView.setCoinGame(17);
+            }
             modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters());
             for (String s : modelView.getCharacterCardsInTheGame()) {
                 if(s.equals("monk")){
@@ -987,7 +1001,7 @@ public class NetworkHandler {
             }
         }
 
-        //System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
+        System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
         //System.out.println("partita in expert mode??? " + modelView.isExpertModeGame());
         modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
 
@@ -1022,9 +1036,11 @@ public class NetworkHandler {
         if (ackMessageMapped.getRecipient() == playerID) {
             if (ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
-                int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());
-                modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);            //updato la diningroom del giocatore
-                modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());
+                int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());           //prendo il numero di studenti attualmente nella diningroom del tipo di stud mosso dal giocatore
+                modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);            //updato la diningroom del giocatore aumentando di 1 il numero del relativo stud
+                if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) == false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
+                    modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
+                }
                 if (modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
                     int newPlayerCoin = modelView.getCoinPlayer().get(playerID) + 1;
                     modelView.getCoinPlayer().replace(playerID, newPlayerCoin);
@@ -1040,12 +1056,18 @@ public class NetworkHandler {
                 modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
                 int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());
                 modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);            //updato la diningroom del giocatore
-                modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());
-                /*if (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
+
+                if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())== false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
+                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
+                }
+                if(ackMessageMapped.getPreviousOwnerOfProfessor() == playerID && ackMessageMapped.isProfessorTaken() == true){
+                    modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se io ero il precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
+                }
+                if (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
                     int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
                     modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
-                    modelView.setCoinGame(modelView.getCoinGame() - 1);
-                } */
+                    //modelView.setCoinGame(modelView.getCoinGame() - 1);
+                }
 
             }else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
                 modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
@@ -1300,10 +1322,9 @@ public class NetworkHandler {
                 }
             }
         }
-        if(ackMessageMapped.getRecipient() == playerID) {
-            ArrayList<Creature> creatureInEntranceAfterClouds = ackMessageMapped.getStudents();                                                 //update dell'entrance dopo scelta nuvola
-            modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAfterClouds);
-        }
+        ArrayList<Creature> creatureInEntranceAfterClouds = ackMessageMapped.getStudents();                                                 //update dell'entrance dopo scelta nuvola, lo facciamo per tutte le modelview visto che tutti possono vedere l'entrance di tutti
+        modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAfterClouds);
+
 
     }
 
@@ -1315,13 +1336,12 @@ public class NetworkHandler {
         String characterUsed = ackCharactersMessage.getCharacter();
         //cli.characterConfirm(characterUsed);
         //update locale
-        if(ackCharactersMessage.getRecipient() == playerID){
-            int newCoinPlayer =  ackCharactersMessage.getCoinReserve() - modelView.getCoinGame();
-            modelView.getCoinPlayer().replace(playerID, newCoinPlayer);
-        }
 
         //update globale
-        modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
+        int newCoinPlayer = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) -(ackCharactersMessage.getCoinReserve() - modelView.getCoinGame()); //lo lasciamo come update globale visto che tutti possono vedere i soldi di tutti
+        modelView.getCoinPlayer().replace(playerID, newCoinPlayer);
+        modelView.setCoinGame(ackCharactersMessage.getCoinReserve());           //update della riserva di coin
+
         if(characterUsed.equals("monk")){   //TODO isola monk errore nack da controllare
             modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addStudent(ackCharactersMessage.getStudent());
         }else if(characterUsed.equals("bard")){
