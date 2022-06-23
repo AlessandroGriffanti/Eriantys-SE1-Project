@@ -66,7 +66,7 @@ public class CloudTile {
      */
     public ArrayList<Creature> takeStudents(){
 
-        ArrayList<Creature> takenStudents = new ArrayList<Creature>(this.students);
+        ArrayList<Creature> takenStudents = new ArrayList<>(this.students);
         this.students.clear();
 
         return takenStudents;

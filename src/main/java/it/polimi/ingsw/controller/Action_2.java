@@ -371,14 +371,12 @@ public class Action_2 implements ControllerState{
         // if the steps are more than the number allowed the movement is not legit
         Assistant lastPlayedCard = match.getPlayers().get(player_ID).getAssistantsDeck().getLastUsedCard();
 
-        int maxSteps;
-        // the return value depends on weather the messenger character has been used or not
-        if(controller.getCharactersManager().isMessengerActive()){
+        int maxSteps = lastPlayedCard.getMotherNatureMovementValue();
+
+        if(controller.isExpertMode() && controller.getCharactersManager().isMessengerActive()){
             // if messenger is active we can move mother nature two islands farther than usual
             maxSteps = lastPlayedCard.getMotherNatureMovementValue() + 2;
             controller.getCharactersManager().setMessengerActive(false);
-        }else{
-            maxSteps = lastPlayedCard.getMotherNatureMovementValue();
         }
 
         return steps <= maxSteps;

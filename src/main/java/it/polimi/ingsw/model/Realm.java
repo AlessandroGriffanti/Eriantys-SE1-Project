@@ -160,7 +160,7 @@ public class Realm{
      */
     public ArrayList<Creature> takeStudentsFromCloud(int cloudID){
 
-        ArrayList<Creature> temp = new ArrayList<Creature>();
+        ArrayList<Creature> temp;
         CloudTile currentCloud = cloudRegion.get(cloudID);
         temp = currentCloud.takeStudents();
 
