@@ -143,6 +143,13 @@ public class CharactersManager {
         cards.get(cardChosen).effect(request);
     }
 
+    /**
+     * This method checks if the character card can be used or not:
+     * - if the player has enough coins to use the card chosen
+     * - if the character itself can be used, maybe there are not enough students on the card
+     *   if that it's the case
+     * @param request message received from the client asking to use the character
+     */
     public void checkCard(CharacterRequestMessage request){
         int player_ID = request.getSender_ID();
         Player player = controller.getMatch().getPlayerByID(player_ID);

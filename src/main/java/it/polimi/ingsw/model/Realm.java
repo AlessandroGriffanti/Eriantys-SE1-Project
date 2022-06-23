@@ -184,9 +184,10 @@ public class Realm{
     /**
      * Tells to the current Archipelago (where motherNature stands) to add a student to its population
      * @param c the kind of student that will be added to the current Archipelago
+     * @param island_ID ID of the island where the student must be put
      */
-    public void addStudentToIsland(Creature c, int islandID){
-        archipelagos.get(islandID).addStudent(c);
+    public void addStudentToIsland(Creature c, int island_ID){
+        archipelagos.get(island_ID).addStudent(c);
     }
 
     /**

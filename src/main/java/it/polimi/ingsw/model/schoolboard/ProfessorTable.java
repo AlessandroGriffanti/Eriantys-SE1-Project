@@ -6,7 +6,8 @@ import java.util.HashMap;
 
 public class ProfessorTable {
     /**
-     * This attribute contains, for each table of the dining room, the number of seats occupied
+     * This attribute contains information about the table of the professors, if a seat is
+     * occupied or not
      */
     private HashMap<Creature, Boolean> occupiedSeats;
 

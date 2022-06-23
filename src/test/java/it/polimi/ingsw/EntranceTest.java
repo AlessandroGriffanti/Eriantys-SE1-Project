@@ -94,18 +94,18 @@ class EntranceTest {
         entrance.addStudent(Creature.DRAGON);
         entrance.addStudent(Creature.FAIRY);
 
-        int motherNaturePosition = entrance.getRealmInEntrance().getPositionOfMotherNature();
+        int motherNaturePosition = entrance.getRealm().getPositionOfMotherNature();
         entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.DRAGON), motherNaturePosition);
-        assertEquals(1, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition).getTotalNumberOfStudents());
-        assertEquals(0, entrance.getRealmInEntrance().getArchipelagos().get((motherNaturePosition+6)%12).getTotalNumberOfStudents());
+        assertEquals(1, entrance.getRealm().getArchipelagos().get(motherNaturePosition).getTotalNumberOfStudents());
+        assertEquals(0, entrance.getRealm().getArchipelagos().get((motherNaturePosition+6)%12).getTotalNumberOfStudents());
 
         if(motherNaturePosition == 11) {
             entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), 1);
-            assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(1).getTotalNumberOfStudents());
+            assertEquals(2, entrance.getRealm().getArchipelagos().get(1).getTotalNumberOfStudents());
 
         }else {
             entrance.moveStudentToIsland(entrance.getStudentsInTheEntrance().indexOf(Creature.FAIRY), motherNaturePosition + 1);
-            assertEquals(2, entrance.getRealmInEntrance().getArchipelagos().get(motherNaturePosition + 1).getTotalNumberOfStudents());
+            assertEquals(2, entrance.getRealm().getArchipelagos().get(motherNaturePosition + 1).getTotalNumberOfStudents());
         }
 
 

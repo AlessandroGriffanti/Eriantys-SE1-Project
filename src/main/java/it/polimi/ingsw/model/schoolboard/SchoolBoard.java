@@ -4,23 +4,44 @@ import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the board used by each player, divided into four
+ * sections:
+ * - tower area
+ * - dining room
+ * - entrance
+ * - professors' table
+ */
 public class SchoolBoard {
+    /**
+     * This attribute is the reference to the tower area of the board
+     */
     private TowerArea towerArea;
+    /**
+     * This attribute is the reference to the diningRoom of the board
+     */
     private DiningRoom diningRoom;
+    /**
+     * This attribute is the reference to the entrance of the board
+     */
     private Entrance entrance;
+    /**
+     * This attribute is the reference to the professors' table of the board
+     */
     private ProfessorTable professorTable;
-    private Bag bagForInitialSetUp;
-    private int numOfPlayers;
 
+    /**
+     * This constructor creates all the four section of the board
+     * @param match reference to the Match
+     * @param numPlayers number of players in the match
+     * @param r reference to the realm
+     * @param p reference to the player to whom this board belongs
+     */
     public SchoolBoard(Match match, int numPlayers, Realm r, Player p){
         this.towerArea = new TowerArea(numPlayers);
         this.diningRoom = new DiningRoom(match, p);
-        this.numOfPlayers = numPlayers;
-        this.bagForInitialSetUp = r.getBag();
-
-        this.entrance = new Entrance(diningRoom, r, numPlayers);
-
         this.professorTable = new ProfessorTable();
+        this.entrance = new Entrance(diningRoom, r, numPlayers);
     }
 
 
@@ -41,7 +62,7 @@ public class SchoolBoard {
     /**
      * This method controls if there are enough towers and remove theme from the tower-area;
      * if there are not enough towers then the match must end, so the return value will be false
-     * @param numberOfTowers
+     * @param numberOfTowers number of towers to take from the tower area
      * @return true if there were enough towers to be taken from the tower-area
      *         false if taking the towers requested the players remains with 0 towers
      */
@@ -52,11 +73,11 @@ public class SchoolBoard {
         if(numberOfTowers > towerArea.getCurrentNumberOfTowers()){
             endOfMatch = true;
             // remove all the towers left
-            towerArea.removeTower(towerArea.getCurrentNumberOfTowers());
+            towerArea.takeTowers(towerArea.getCurrentNumberOfTowers());
         }
         // if there are enough towers left
         else{
-            towerArea.removeTower(numberOfTowers);
+            towerArea.takeTowers(numberOfTowers);
         }
 
         return endOfMatch;
@@ -67,7 +88,7 @@ public class SchoolBoard {
      * @param numberOfTowers number of towers to add
      */
     public void putTowers(int numberOfTowers){
-        towerArea.addTower(numberOfTowers);
+        towerArea.addTowers(numberOfTowers);
 
         // there should never be more towers than the area can keep
         assert towerArea.getCurrentNumberOfTowers() <= towerArea.getCapacity();

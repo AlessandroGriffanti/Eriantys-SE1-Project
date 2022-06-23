@@ -4,7 +4,15 @@ package it.polimi.ingsw.model.schoolboard;
 
 public class TowerArea {
 
+    /**
+     * This attribute is the number of towers currently inside
+     * the tower area
+     */
     private int currentNumberOfTowers;
+    /**
+     * This attribute is the maximum number of towers that the tower area
+     * can contain
+     */
     private int capacity;
 
     public TowerArea(int numPlayers){
@@ -18,19 +26,19 @@ public class TowerArea {
     }
 
     /**
-     * This method adds a tower to the area
-     * @param numberOfTowers
+     * This method adds towers to the area
+     * @param numberOfTowers number of towers to add to the area
      */
-    public void addTower(int numberOfTowers){
+    public void addTowers(int numberOfTowers){
         currentNumberOfTowers += numberOfTowers;
 
     }
 
     /**
-     * This method removes a tower from the area
-     * @param numberOfTowers
+     * This method removes towers from the area
+     * @param numberOfTowers number of towers to take from the area
      */
-    public void removeTower(int numberOfTowers){
+    public void takeTowers(int numberOfTowers){
         currentNumberOfTowers -= numberOfTowers;
     }
 

@@ -66,7 +66,7 @@ public class Ambassador extends Character {
         if(archipelago.getMasterOfArchipelago() == null){
 
             // compute influence
-            int newMaster = SupportFunctions.influenceComputation(controller, archipelago.getArchipelagoID());
+            int newMaster = SupportFunctions.influenceComputation(controller, archipelago.getID());
 
             // if there is a valid new master then we apply the modification
             if(newMaster != -1){
@@ -84,7 +84,7 @@ public class Ambassador extends Character {
         // in the case there is already an island-master...
         else{
             int previousMaster = archipelago.getMasterOfArchipelago().getID();
-            int newMaster = SupportFunctions.influenceComputation(controller, archipelago.getArchipelagoID());
+            int newMaster = SupportFunctions.influenceComputation(controller, archipelago.getID());
 
             if(newMaster != -1){
 

@@ -17,11 +17,19 @@ public class Entrance {
     /**
      * This attribute is the reference to the Realm of the match (where there are the clouds and the islands)
      */
-    private Realm realmInEntrance;
+    private Realm realm;
 
+
+    /**
+     * This constructor initializes the entrance and puts the first set of students in it,
+     * drawn from the bag
+     * @param d reference to the dining room of the school board
+     * @param r reference to the realm of the match
+     * @param numOfPlayers number of players in the match
+     */
     public Entrance(DiningRoom d, Realm r, int numOfPlayers){
         this.doorToTheDiningRoom = d;
-        this.realmInEntrance = r;
+        this.realm = r;
         studentsInTheEntrance = new ArrayList<Creature>();
 
         ArrayList<Creature> initialStudents = initialSetUpStudentsInTheEntrance(numOfPlayers);
@@ -40,9 +48,9 @@ public class Entrance {
         ArrayList<Creature> studentsSetUpEntrance = new ArrayList<Creature>();
 
         if(numOfPlayers == 3){
-            studentsSetUpEntrance = realmInEntrance.getBag().drawStudents(9);
+            studentsSetUpEntrance = realm.getBag().drawStudents(9);
         }else if(numOfPlayers == 2 || numOfPlayers == 4){
-            studentsSetUpEntrance = realmInEntrance.getBag().drawStudents(7);
+            studentsSetUpEntrance = realm.getBag().drawStudents(7);
         }
 
         return studentsSetUpEntrance;
@@ -104,10 +112,10 @@ public class Entrance {
     /**
      * This method moves a student to an island and removes it from the entrance (set the positions to null)
      * @param student_ID index of the student
-     * @param islandID index of the island
+     * @param island_ID index of the island
      */
-    public void moveStudentToIsland(int student_ID, int islandID){
-        realmInEntrance.addStudentToIsland(studentsInTheEntrance.get(student_ID), islandID);
+    public void moveStudentToIsland(int student_ID, int island_ID){
+        realm.addStudentToIsland(studentsInTheEntrance.get(student_ID), island_ID);
         studentsInTheEntrance.set(student_ID, null);
     }
 
@@ -121,7 +129,7 @@ public class Entrance {
         return doorToTheDiningRoom;
     }
 
-    public Realm getRealmInEntrance() {
-        return realmInEntrance;
+    public Realm getRealm() {
+        return realm;
     }
 }

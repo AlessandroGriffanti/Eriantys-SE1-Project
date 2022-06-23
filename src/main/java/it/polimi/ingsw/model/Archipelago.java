@@ -9,7 +9,7 @@ public class Archipelago {
     /**
      * This attribute is the identifier of the archipelago
      */
-    private int archipelagoID;
+    private int ID;
     /**
      * This attribute is the number of single island-tiles that belong to the archipelago
      */
@@ -35,7 +35,7 @@ public class Archipelago {
     private HashMap<Creature, Integer> studentsPopulation;
 
     public Archipelago(int ID){
-        this.archipelagoID = ID;
+        this.ID = ID;
         this.numberOfIslands = 1;
         this.noEntryTiles = 0;
         this.masterOfArchipelago = null;
@@ -52,12 +52,16 @@ public class Archipelago {
         return towerColor;
     }
 
+    private void setTowerColor(){
+        towerColor = masterOfArchipelago.getTowerColor();
+    }
+
     public int getNumberOfIslands() {
         return numberOfIslands;
     }
 
-    public int getArchipelagoID() {
-        return archipelagoID;
+    public int getID() {
+        return ID;
     }
 
     public int getNoEntryTiles() {
@@ -170,13 +174,6 @@ public class Archipelago {
         setTowerColor();
 
         return endOfMatch;
-    }
-
-    /**
-     * Sets the color of the towers given the player that is the master of the Archipelago
-     */
-    private void setTowerColor(){
-        towerColor = masterOfArchipelago.getTowerColor();
     }
 
 }

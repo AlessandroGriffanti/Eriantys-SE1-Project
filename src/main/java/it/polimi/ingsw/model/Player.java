@@ -5,17 +5,40 @@ import it.polimi.ingsw.model.schoolboard.SchoolBoard;
 import java.util.ArrayList;
 
 public class Player {
-    private String nickName;
+    /**
+     * This attribute is the name chosen by the player, unique inside the server
+     */
+    private String nickname;
+    /**
+     * This attribute is the ID that identifies the player inside the match
+     */
     private int ID;
+    /**
+     * This attribute is the reference to the schoolBoard of the player
+     */
     private SchoolBoard schoolBoard;
+    /**
+     * This attribute is the reference to the deck ok assistant of the player
+     */
     private AssistantsDeck assistantsDeck;
+    /**
+     * This attribute is the amount of coins owned by the player
+     */
     private int coinsOwned;
+    /**
+     * This attribute is the color of the towers of the player, chosen by the player
+     * at the beginning of the match
+     */
     private Tower towerColor;
+    /**
+     * This attribute is the reference to the Realm of the match
+     */
     private Realm realm;
 
-    public Player(Match match, int id, String nickName, int numPlayers, Realm r){
-        this.nickName = nickName;
-        this.ID = id;
+
+    public Player(Match match, int ID, String nickname, int numPlayers, Realm r){
+        this.nickname = nickname;
+        this.ID = ID;
         this.realm = r;
 
         this.coinsOwned = 1;
@@ -30,21 +53,12 @@ public class Player {
         this.coinsOwned ++;
     }
 
-
-    public void setTowerColor(Tower t){
-        this.towerColor = t;
-    }
-
     /**
      * This method decreases the amount of coins owned by the player by the value specified
      * @param price number of coins taken
      */
     public void spendCoins(int price){
         coinsOwned -= price;
-    }
-
-    public int getCoinsOwned() {
-        return coinsOwned;
     }
 
     /**
@@ -79,13 +93,30 @@ public class Player {
         return this.assistantsDeck.getNumberOfRemainingCards();
     }
 
-    // through this method we move the tower from and to island
+    /**
+     * This method checks if two players are the same one, it can be so only if they
+     * have the same nickname
+     * @param p reference to the player to compare
+     * @return true if the two player are the same, false otherwise
+     */
+    public boolean equals(Player p){
+        return this.nickname.equals(p.nickname);
+    }
+
+    public int getCoinsOwned() {
+        return coinsOwned;
+    }
+
+    public void setTowerColor(Tower t){
+        this.towerColor = t;
+    }
+
     public SchoolBoard getSchoolBoard() {
         return schoolBoard;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
     public int getID() {
@@ -102,9 +133,5 @@ public class Player {
 
     public Realm getRealm() {
         return realm;
-    }
-
-    public boolean equals(Player p){
-        return this.nickName.equals(p.nickName);
     }
 }

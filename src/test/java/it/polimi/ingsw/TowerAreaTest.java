@@ -17,25 +17,25 @@ class TowerAreaTest {
     @Test
     void removeTowerWith2Players() {
         TowerArea towerArea = new TowerArea(2);
-        towerArea.removeTower(1);
+        towerArea.takeTowers(1);
         assertEquals(7, towerArea.getCurrentNumberOfTowers());
-        towerArea.addTower(1);
+        towerArea.addTowers(1);
         assertEquals(8, towerArea.getCurrentNumberOfTowers());
     }
     @Test
     void removeTowerWith3Players() {
         TowerArea towerArea = new TowerArea(3);
-        towerArea.removeTower(1);
+        towerArea.takeTowers(1);
         assertEquals(5, towerArea.getCurrentNumberOfTowers());
-        towerArea.addTower(1);
+        towerArea.addTowers(1);
         assertEquals(6, towerArea.getCurrentNumberOfTowers());
     }
     @Test
     void removeTowerWith4Players() {
         TowerArea towerArea = new TowerArea(4);
-        towerArea.removeTower(1);
+        towerArea.takeTowers(1);
         assertEquals(7, towerArea.getCurrentNumberOfTowers());
-        towerArea.addTower(1);
+        towerArea.addTowers(1);
         assertEquals(8, towerArea.getCurrentNumberOfTowers());
     }
 }

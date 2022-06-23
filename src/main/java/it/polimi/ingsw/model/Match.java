@@ -75,28 +75,14 @@ public class Match {
         this.coinsReserve = this.coinsReserve - 1;
     }
 
-    public int getNumberOfPlayers() {
-        //this.numberOfPlayers = getPlayers().size();
-        return numberOfPlayers;
-    }
-
     /**
-     * This method sets the current Player to the one identified by the ID passed as argument
-     * @param ID_currentPlayer ID of the 'new' current player
+     * This method searches the player by his nickname in the list of players
+     * @param nickname the nickname of the player
+     * @return Player - it's the searched player. If null, there is no player with that nickname
      */
-    public void setCurrentPlayer(int ID_currentPlayer) {
-        this.currentPlayer = ID_currentPlayer;
-    }
-
-
-    /**
-     * This method searches the player by his nickName in the list of players
-     * @param nickName the nickName of the player
-     * @return Player - it's the searched player. If null, there is no player with that nickName
-     */
-    public Player getPlayerByNickname(String nickName){
+    public Player getPlayerByNickname(String nickname){
         for(Player player : players){
-            if(player.getNickName().equalsIgnoreCase(nickName)){
+            if(player.getNickname().equalsIgnoreCase(nickname)){
                 return player;
             }
         }
@@ -106,7 +92,7 @@ public class Match {
     /**
      * This method searches the player by his ID in the list of players
      * @param ID the ID of the player
-     * @return Player. If null, there is no player with that nickName
+     * @return Player. If null, there is no player with that nickname
      */
     public Player getPlayerByID(int ID){
         for(Player player : players){
@@ -128,7 +114,7 @@ public class Match {
     }
 
     /**
-     * This method search all the students on each island beginning from the one where mother nature is
+     * This method search all the students on each island starting from the one where mother nature is
      * @return list of students on each island
      */
     public ArrayList<Creature> getInitialStudentsOnEachIsland(){
@@ -155,6 +141,7 @@ public class Match {
 
     /**
      *This method fills the clouds with new students taken from the bag of the match
+     * @return list of students put on all the clouds in order of clouds' ID
      */
     public ArrayList<Creature> moveStudentsFromBagToCloudsEveryRound(){
         return getRealmOfTheMatch().moveStudentsToClouds();
@@ -211,18 +198,20 @@ public class Match {
 
     /**
      * This method calls the Player instance to use the assistant card chosen by the player
+     * @param orderValue the number written in the top left corner of the assistant card that identifies it inside
+     *                            the deck
      */
-    public void useCard(int orderValueOfTheCard){
-        this.players.get(currentPlayer).useAssistantCard(orderValueOfTheCard);
+    public void useCard(int orderValue){
+        this.players.get(currentPlayer).useAssistantCard(orderValue);
     }
 
     /**
-     * This method asks the player identified by the playerID how many assistant cards are left in its deck
-     * @param playerID ID of the player
+     * This method asks the player identified by the player_ID how many assistant cards are left in its deck
+     * @param player_ID ID of the player
      * @return number of remaining cards
      */
-    public int numberOfRemainingCardsOfPlayer(int playerID){
-        return players.get(playerID).numberOfRemainingAssistantCards();
+    public int numberOfRemainingCardsOfPlayer(int player_ID){
+        return players.get(player_ID).numberOfRemainingAssistantCards();
     }
 
     /**
@@ -304,18 +293,44 @@ public class Match {
 
     /**
      * This method set a new master on the current island where mother nature is
-     * @param playerMaster_ID ID of the new master
+     * @param master_ID ID of the new master
      * @return true if the match must end because the player has no more towers left
      *         false if the match can continue
      */
-    public boolean newMasterOnIsland(int playerMaster_ID){
+    public boolean newMasterOnIsland(int master_ID){
         // who is the new master ?
-        Player newMaster = players.get(playerMaster_ID);
+        Player newMaster = players.get(master_ID);
         // take the current island
         Archipelago currentIsland = realmOfTheMatch.getArchipelagos().get(getPositionOfMotherNature());
         // set new master
 
         return currentIsland.setMasterOfArchipelago(newMaster);
+    }
+
+    /**
+     * This method put a certain amount of coins in the coin reserve
+     * @param quantity number of coins to deposit in the  coin reserve
+     */
+    public void depositInCoinReserve(int quantity){
+        coinsReserve += quantity;
+    }
+
+    /**
+     * This method takes the desired quantity of coin from the public reserve
+     * @param quantity number of coins to take
+     */
+    public void takeCoinsFromReserve(int quantity){
+        if(coinsReserve >= quantity){
+            coinsReserve -= quantity;
+        }
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public void setCurrentPlayer(int ID_currentPlayer) {
+        this.currentPlayer = ID_currentPlayer;
     }
 
     public int getPositionOfMotherNature(){
@@ -340,24 +355,6 @@ public class Match {
 
     public ArrayList<Creature> getNotControlledProfessors() {
         return notControlledProfessors;
-    }
-
-    /**
-     * This method put a certain amount of coins in the coin reserve
-     * @param quantity number of coins to deposit in the  coin reserve
-     */
-    public void depositInCoinReserve(int quantity){
-        coinsReserve += quantity;
-    }
-
-    /**
-     * This method takes the desired quantity of coin from the public reserve
-     * @param qt number of coins to take
-     */
-    public void takeCoinsFromReserve(int qt){
-        if(coinsReserve >= qt){
-            coinsReserve -= qt;
-        }
     }
 
     public int getCoinsReserve() {

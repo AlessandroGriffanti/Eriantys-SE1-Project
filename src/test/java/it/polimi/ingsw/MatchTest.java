@@ -1,10 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.schoolboard.Entrance;
 import org.junit.Test;
 
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
@@ -27,9 +25,9 @@ public class MatchTest {
         Player mario = match.getPlayerByID(0);
         Player luigi = match.getPlayerByID(1);
 
-        assertEquals("mario", mario.getNickName());
+        assertEquals("mario", mario.getNickname());
         assertEquals(0, mario.getID());
-        assertEquals("luigi", luigi.getNickName());
+        assertEquals("luigi", luigi.getNickname());
         assertEquals(1, luigi.getID());
 
         assertEquals(1, mario.getCoinsOwned());
@@ -49,9 +47,9 @@ public class MatchTest {
         Player luigi = match.getPlayerByNickname("luigi");
 
         assertEquals(0, mario.getID());
-        assertEquals("mario", mario.getNickName());
+        assertEquals("mario", mario.getNickname());
         assertEquals(1, luigi.getID());
-        assertEquals("luigi", luigi.getNickName());
+        assertEquals("luigi", luigi.getNickname());
     }
 
     /**

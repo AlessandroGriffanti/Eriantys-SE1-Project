@@ -17,6 +17,10 @@ public class Bag {
      */
     private ArrayList<Creature> remainingStudents;
 
+    /**
+     * This constructor builds the two attributes: add two students of each type in the
+     * studentsIslandSetUp array and the remaining students are added to the remainingStudents array
+     */
     public Bag() {
         int i;
 

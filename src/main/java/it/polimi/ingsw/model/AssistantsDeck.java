@@ -49,19 +49,6 @@ public class AssistantsDeck {
         }catch (IOException e){
             e.printStackTrace();
         }
-
-    }
-
-    public HashMap<Integer, Assistant> getDeck(){
-        return deck;
-    }
-
-    public int getNumberOfRemainingCards() {
-        return numberOfRemainingCards;
-    }
-
-    public Assistant getLastUsedCard() {
-        return lastUsedCard;
     }
 
     /**
@@ -85,6 +72,18 @@ public class AssistantsDeck {
         this.numberOfRemainingCards--;
 
         return card;
+    }
+
+    public HashMap<Integer, Assistant> getDeck(){
+        return deck;
+    }
+
+    public int getNumberOfRemainingCards() {
+        return numberOfRemainingCards;
+    }
+
+    public Assistant getLastUsedCard() {
+        return lastUsedCard;
     }
 
     public Wizard getWizard() {

@@ -2,9 +2,6 @@ package it.polimi.ingsw;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.*;
-import it.polimi.ingsw.controller.characterCards.CharactersManager;
-import it.polimi.ingsw.controller.characterCards.Herbalist;
-import it.polimi.ingsw.controller.characterCards.Messenger;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.model.schoolboard.Entrance;
@@ -107,8 +104,8 @@ public class ControllerTest {
         assertTrue(controller.getMatch().getNumberOfPlayers() == 2);
         assertTrue(controller.getMatch().isExpertMode() == true);
 
-        assertEquals("mario", controller.getMatch().getPlayerByID(0).getNickName());
-        assertEquals("luigi", controller.getMatch().getPlayerByID(1).getNickName());
+        assertEquals("mario", controller.getMatch().getPlayerByID(0).getNickname());
+        assertEquals("luigi", controller.getMatch().getPlayerByID(1).getNickname());
 
     }
 
@@ -131,8 +128,8 @@ public class ControllerTest {
         assertTrue(controller.getMatch().getNumberOfPlayers() == 2);
         assertTrue(controller.getMatch().isExpertMode() == true);
 
-        assertEquals("mario", controller.getMatch().getPlayerByID(0).getNickName());
-        assertEquals("luigi", controller.getMatch().getPlayerByID(1).getNickName());
+        assertEquals("mario", controller.getMatch().getPlayerByID(0).getNickname());
+        assertEquals("luigi", controller.getMatch().getPlayerByID(1).getNickname());
     }
 
     // TESTS ON ACTION_1 STATE

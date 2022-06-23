@@ -8,8 +8,20 @@ import it.polimi.ingsw.model.Player;
 import java.util.HashMap;
 
 public class DiningRoom {
+    /**
+     * This attribute contains information about the seats in the dining room, for each type of
+     * student the number of student on that particular table is associated
+     */
     private HashMap<Creature, Integer> occupiedSeats;
+    /**
+     * This attribute is the reference to the entrance of the school board
+     */
     private Entrance entrance;
+    /**
+     * This attribute is the reference to the coin observer whose task is to
+     * give a coin to the player every time a student is positioned on a
+     * seat containing a coin picture
+     */
     private CoinManagerObserver coinObserver;
 
     public DiningRoom(Match match, Player p){
@@ -60,15 +72,6 @@ public class DiningRoom {
         return numberStudentsRemoved;
     }
 
-    public void setEntrance(Entrance d){
-        this.entrance = d;
-    }
-
-    /** returns the hashmap in the diningRoom attribute: useful for tests */
-    public HashMap<Creature, Integer> getOccupiedSeats() {
-        return occupiedSeats;
-    }
-
     /**
      * This method computes the number of students seated at a specified table
      * @param table the table we are interested int
@@ -89,6 +92,14 @@ public class DiningRoom {
             tot += occupiedSeats.get(c);
         }
         return  tot;
+    }
+
+    public void setEntrance(Entrance d){
+        this.entrance = d;
+    }
+
+    public HashMap<Creature, Integer> getOccupiedSeats() {
+        return occupiedSeats;
     }
 
     public Entrance getEntrance() {
