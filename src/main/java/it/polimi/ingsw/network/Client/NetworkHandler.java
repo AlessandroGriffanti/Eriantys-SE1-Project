@@ -222,7 +222,7 @@ public class NetworkHandler {
                 if (matchStartMessage.getFirstPlayer() == playerID) {
                     cli.isYourTurn();
 
-                    towerColor = cli.towerChoice();
+                    towerColor = cli.towerChoice(modelView);
 
                     ChosenTowerColorMessage chosenTowerColorMessage = new ChosenTowerColorMessage();
                     chosenTowerColorMessage.setColor(towerColor);
@@ -253,7 +253,7 @@ public class NetworkHandler {
                     case "tower_color":
                         if ((ackMessageMapped.getNextPlayer() == playerID) && (towerColor == null)) {
                             ArrayList<Tower> notAvailableTowerColors = ackMessageMapped.getNotAvailableTowerColors();
-                            towerColor = cli.towerChoiceNext(notAvailableTowerColors);
+                            towerColor = cli.towerChoiceNext(notAvailableTowerColors, modelView);
 
                             ChosenTowerColorMessage chosenTowerColorMessage = new ChosenTowerColorMessage();
                             chosenTowerColorMessage.setColor(towerColor);

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -293,14 +294,42 @@ public class CLI {
      * This method is used to ask the first player which color he wants his towers to be.
      * @return the color chosen in Tower type.
      */
-    public  Tower towerChoice () {
-        println("Choose the COLOR of your tower: ");
-        println("BLACK , WHITE, GREY");
-        String strTowerColorChosen = scannerCLI.next();
+    public  Tower towerChoice (ModelView modelView) {
+        /*
+        println("                                                |>>>\n" +
+                "                                                |\n" +
+                "                                            _  _|_  _\n" +
+                "                                           |;|_|;|_|;|\n" +
+                " MAKE YOUR CHOICE!                       \\\\.    .  /\n" +
+                "                                          \\\\:  .  /\n" +
+                "                                             ||:   |\n" +
+                "                                             ||:.  |\n" +
+                "                                             ||:  .|\n" +
+                "                                             ||:   |\n" +
+                "                                             ||: , |\n" +
+                "     ____--`~    '--~~__            __ ----~    ~`---,              ___\n" +
+                "-~--~                   ~---__ ,--~'                  ~~----_____-~'   `~----~~\n");
+         */
 
-        while( !( strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY") ) ){
-            println("Please, insert the right color: ");
+        String strTowerColorChosen = null;
+        println("Choose the COLOR of your tower: ");
+        if(modelView.getNumberOfPlayersGame() == 3) {
+            println("BLACK , WHITE or GREY");
             strTowerColorChosen = scannerCLI.next();
+
+            while (!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY"))) {
+                println("Please, insert the right color: ");
+                strTowerColorChosen = scannerCLI.next();
+            }
+
+        }else if(modelView.getNumberOfPlayersGame() == 2){
+            println("BLACK or WHITE");
+            strTowerColorChosen = scannerCLI.next();
+
+            while (!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE"))) {
+                println("Please, insert the right color: ");
+                strTowerColorChosen = scannerCLI.next();
+            }
         }
 
         return Tower.valueOf(strTowerColorChosen);
@@ -311,21 +340,97 @@ public class CLI {
      * @param notAvailableTowerColors is the list of  colors that have already been chosen.
      * @return the color chosen.
      */
-    public Tower towerChoiceNext (ArrayList<Tower> notAvailableTowerColors) {
-        println("Choose your tower color: BLACK, WHITE, GREY ");
+    public Tower towerChoiceNext (ArrayList<Tower> notAvailableTowerColors, ModelView modelView) {
+
+        ArrayList<String> availableTowerColors = new ArrayList<>();
+
+        if(modelView.getNumberOfPlayersGame() == 3) {
+            if(notAvailableTowerColors.size() == 2) {
+                if (String.valueOf(notAvailableTowerColors.get(0)).equals("BLACK")) {
+                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
+                        availableTowerColors.add("GREY");
+                    } else {
+                        availableTowerColors.add("WHITE");
+                    }
+                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("WHITE")) {
+                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("BLACK")) {
+                        availableTowerColors.add("GREY");
+                    } else {
+                        availableTowerColors.add("BLACK");
+                    }
+                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("GREY")) {
+                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
+                        availableTowerColors.add("BLACK");
+                    } else {
+                        availableTowerColors.add("WHITE");
+                    }
+                }
+            }else {
+                if (String.valueOf(notAvailableTowerColors.get(0)).equals("BLACK")) {
+                    availableTowerColors.add("GREY");
+                    availableTowerColors.add("WHITE");
+
+                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("WHITE")) {
+                    availableTowerColors.add("GREY");
+                    availableTowerColors.add("BLACK");
+                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("GREY")) {
+                    availableTowerColors.add("BLACK");
+                    availableTowerColors.add("WHITE");
+                }
+            }
+        }else if(modelView.getNumberOfPlayersGame() == 2){
+            if(String.valueOf(notAvailableTowerColors.get(0)).equals("BLACK")){
+                availableTowerColors.add("WHITE");
+            }else if(String.valueOf(notAvailableTowerColors.get(0)).equals("WHITE")){
+                availableTowerColors.add("BLACK");
+            }
+        }
+
+        println("Choose your tower color:");
+        print("Available tower colors: ");
+        for(int i = 0; i < availableTowerColors.size(); i++){
+            print(availableTowerColors.get(i));
+            if(i+1 != availableTowerColors.size()){
+                print(", ");
+            }
+        }
+        println(" ");
+        print("(Already chosen: ");
+        for (int i = 0; i < notAvailableTowerColors.size(); i++){
+            print(String.valueOf(notAvailableTowerColors.get(i)));
+            if(i+1 != notAvailableTowerColors.size()){
+                print(", ");
+            }
+        }
+        println(").");
+        
         String strTowerColorChosen = scannerCLI.next();
 
         boolean rightTowerChoice = false;
 
-        while(!rightTowerChoice){
-            if(! (strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY")) ){
-                println("Please insert a valid color tower: ");
-                strTowerColorChosen = scannerCLI.next();
-            }else if( notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen)) ){
-                println("This color has already been selected, please choose another one: ");
-                strTowerColorChosen = scannerCLI.next();
-            }else {
-                rightTowerChoice = true;
+        if(modelView.getNumberOfPlayersGame() == 3) {
+            while (!rightTowerChoice) {
+                if (!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") || strTowerColorChosen.equals("GREY"))) {
+                    println("Please insert a valid color tower: ");
+                    strTowerColorChosen = scannerCLI.next();
+                } else if (notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen))) {
+                    println("This color has already been selected, please choose another one: ");
+                    strTowerColorChosen = scannerCLI.next();
+                } else {
+                    rightTowerChoice = true;
+                }
+            }
+        }else if(modelView.getNumberOfPlayersGame() == 2) {
+            while (!rightTowerChoice) {
+                if (!(strTowerColorChosen.equals("BLACK") || strTowerColorChosen.equals("WHITE") )) {
+                    println("Please insert a valid color tower: ");
+                    strTowerColorChosen = scannerCLI.next();
+                } else if (notAvailableTowerColors.contains(Tower.valueOf(strTowerColorChosen))) {
+                    println("This color has already been selected, please choose another one: ");
+                    strTowerColorChosen = scannerCLI.next();
+                } else {
+                    rightTowerChoice = true;
+                }
             }
         }
 
@@ -337,7 +442,7 @@ public class CLI {
      * This method is used to ask the player which deck he wants to play with.
      * @return the deck chosen in Wizard type.
      */
-    public Wizard deckChoice(){
+    public Wizard deckChoice(){                 //TODO fix choice deck like towers
         println("Please choose your deck among the following: ");
         println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
 
@@ -356,7 +461,7 @@ public class CLI {
      * @param notAvailableDecks is the list of decks that have been already chosen.
      * @return the deck chosen.
      */
-    public Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {
+    public Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {         //TODO fix choice deck like towers
         println("Choose your deck among the following: ");
         println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
 
@@ -974,6 +1079,8 @@ public class CLI {
         println(" ");
         if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
+        }else if(playerIDwinner == -1){
+            println("A player disconnected while the game wasn't started yet. For that reason, no one won this match :(  ");
         }else {
             println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }
