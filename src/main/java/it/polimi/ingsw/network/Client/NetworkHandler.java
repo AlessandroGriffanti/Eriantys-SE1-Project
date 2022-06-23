@@ -976,11 +976,6 @@ public class NetworkHandler {
             /*for(int i = 0; i < matchStartMessage.getNumPlayer()-1; i++){
                 modelView.getCoinPlayer().put(i, 1);
             }*/
-            /*System.out.println("keyset" + modelView.getCoinPlayer().keySet());
-            System.out.println(modelView.getCoinPlayer().get(playerID));
-            for(Integer i : modelView.getCoinPlayer().keySet()){
-                System.out.println(playerID +": " + modelView.getCoinPlayer().get(i));
-            }*/
 
             if(matchStartMessage.getNumPlayer() == 2){
                 modelView.setCoinGame(18);
@@ -1033,6 +1028,9 @@ public class NetworkHandler {
      * @param ackMessageMapped is the ack message received.
      */
     public void updateModelViewActionOne(AckMessage ackMessageMapped) {
+        if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken() == true){                    //questo update va fatto indipendentemente da chi è il nextplayer
+            modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se c'era un precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
+        }
         if (ackMessageMapped.getRecipient() == playerID) {
             if (ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
@@ -1060,9 +1058,7 @@ public class NetworkHandler {
                 if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())== false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
                     modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
                 }
-                if(ackMessageMapped.getPreviousOwnerOfProfessor() == playerID && ackMessageMapped.isProfessorTaken() == true){
-                    modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se io ero il precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
-                }
+
                 if (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
                     int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
                     modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
@@ -1296,29 +1292,29 @@ public class NetworkHandler {
         if(modelView.getNumberOfPlayersGame() == 2){
             if(ackMessageMapped.getCloudChosen_ID() == 0){
                 for(int i = 0; i< 3; i++){
-                    modelView.getStudentsOnClouds().set(i, Creature.FROG);
+                    modelView.getStudentsOnClouds().set(i, null);
                 }
 
             }else if(ackMessageMapped.getCloudChosen_ID() == 1){
                 for(int i = 3; i< 6; i++){
-                    modelView.getStudentsOnClouds().set(i, Creature.FROG);
+                    modelView.getStudentsOnClouds().set(i, null);
                 }
 
             }
         }else if(modelView.getNumberOfPlayersGame() == 3){
             if(ackMessageMapped.getCloudChosen_ID() == 0){
                 for(int i = 0; i< 4; i++){
-                    modelView.getStudentsOnClouds().set(i, Creature.FROG);
+                    modelView.getStudentsOnClouds().set(i, null);
                 }
 
             }else if(ackMessageMapped.getCloudChosen_ID() == 1){
                 for(int i = 4; i< 8; i++){
-                    modelView.getStudentsOnClouds().set(i, Creature.FROG);
+                    modelView.getStudentsOnClouds().set(i, null);
                 }
 
             }else if(ackMessageMapped.getCloudChosen_ID() == 2){
                 for(int i = 8; i< 12; i++){
-                    modelView.getStudentsOnClouds().set(i, Creature.FROG);
+                    modelView.getStudentsOnClouds().set(i, null);
                 }
             }
         }
