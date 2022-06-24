@@ -116,10 +116,6 @@ public class SupportFunctions {
         EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
         controller.sendMessageAsBroadcast(finalMessage);
 
-        for(ClientHandler c: controller.getClientHandlers()){
-            // TODO: notify each clientHandler that the connection can be turned off
-        }
-
         // set to true the attribute matchEnded inside the Controller
         controller.setMatchEnded(true);
     }
@@ -133,14 +129,14 @@ public class SupportFunctions {
      */
     static public void endMatch(Controller controller, String reason){
         int winner = computeWinner(controller);
-        String winnerNickname = controller.getPlayersNickname().get(winner);
+        String winnerNickname = null;
+
+        if(!(winner == -1)){
+            winnerNickname = controller.getPlayersNickname().get(winner);
+        }
 
         EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
         controller.sendMessageAsBroadcast(finalMessage);
-
-        for(ClientHandler c: controller.getClientHandlers()){
-            // TODO: notify each clientHandler that the connection can be turned off
-        }
 
         // set to true the attribute matchEnded inside the Controller
         controller.setMatchEnded(true);
