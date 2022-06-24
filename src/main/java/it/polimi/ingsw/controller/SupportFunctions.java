@@ -113,11 +113,11 @@ public class SupportFunctions {
     static public void endMatch(Controller controller, String reason, int winner){
         String winnerNickname = controller.getPlayersNickname().get(winner);
 
-        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
-        controller.sendMessageAsBroadcast(finalMessage);
-
         // set to true the attribute matchEnded inside the Controller
         controller.setMatchEnded(true);
+
+        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
+        controller.sendMessageAsBroadcast(finalMessage);
     }
 
     /**
@@ -135,11 +135,11 @@ public class SupportFunctions {
             winnerNickname = controller.getPlayersNickname().get(winner);
         }
 
-        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
-        controller.sendMessageAsBroadcast(finalMessage);
-
         // set to true the attribute matchEnded inside the Controller
         controller.setMatchEnded(true);
+
+        EndOfMatchMessage finalMessage = new EndOfMatchMessage(winner, winnerNickname, reason);
+        controller.sendMessageAsBroadcast(finalMessage);
     }
 
     /**

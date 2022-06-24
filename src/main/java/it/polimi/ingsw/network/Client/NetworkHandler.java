@@ -103,21 +103,12 @@ public class NetworkHandler {
         // 1- per prima cosa il client avviato fa un login sul server
         loginFromClient();
 
-        while (!matchEnd) {
-            //System.out.println("Still connected");
-            String msgFromServer = inputBufferClient.readLine();
-            System.out.println("messaggio dal server: " + msgFromServer);
-            analysisOfReceivedMessageServer(msgFromServer);
-        }
+        ReceiverTask receiver = new ReceiverTask(inputBufferClient, this);
+        Thread thread = new Thread(receiver);
+        thread.setDaemon(true);
+        thread.start();
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
-
-        inputBufferClient.close();
-        outputPrintClient.close();
-        clientSocket.close();
-
-
+        thread.join();
     }
 
     /**
@@ -1394,23 +1385,46 @@ public class NetworkHandler {
 
     }
 
-    public void matchIsEnded(String receivedMessageInJson){
-        EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
+    public void matchIsEnded(String receivedMessageInJson) {
+        /*
+        * EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
         cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner(), playerID);
 
-        matchEnd = true;
+        try{
+            TimeUnit.MILLISECONDS.sleep(5000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+            return;
+        }
+
+        try{
+            clientSocket.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            return;
+        }
+
+        matchEnd = true;*/
     }
 
     public String getLastCallFrom() {
         return lastCallFrom;
     }
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
     public void setLastCallFrom(String lastCallFrom) {
         this.lastCallFrom = lastCallFrom;
     }
 
-    public boolean isMatchStarted() {
+    public synchronized boolean isMatchStarted() {
         return matchStarted;
+    }
+
+    public int getPlayerID() {
+        return playerID;
     }
 }
 
