@@ -273,9 +273,9 @@ public class CLI {
     /**
      * This method is used to notify the player that it's not his turn, so he has to wait.
      */
-    public void turnWaiting () {
+    public void turnWaiting (int nowPlayingPlayerId) {
         println(" ");
-        println("Wait for your turn!");
+        println("Player " + nowPlayingPlayerId + " is now playing... Wait for your turn!");
         println(" ");
     }
 
@@ -602,6 +602,7 @@ public class CLI {
             counter++;
         }
 
+        println(" ");
         print("(Not available assistants: ");
         for(int i = 0; i< assistantCardsAlreadyUsedThisRound.size(); i++){
             printInt(assistantCardsAlreadyUsedThisRound.get(i));
@@ -1182,11 +1183,14 @@ public class CLI {
         if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
         }else if(playerIDwinner == -1){
+            println("A player disconnected... For that reason, no one won this match :(  ");
+            /*
             if(networkHandler.isMatchStarted()){
                 println("A player disconnected while choosing towers and wizards. For that reason, no one won this match :(  ");
             }else {
                 println("A player disconnected while the game wasn't started yet. For that reason, no one won this match :(  ");
             }
+             */
         }else {
             println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }

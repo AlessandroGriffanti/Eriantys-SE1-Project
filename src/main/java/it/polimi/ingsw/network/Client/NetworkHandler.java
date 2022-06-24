@@ -316,13 +316,13 @@ public class NetworkHandler {
                                 if(ackMessageMapped.getNotAvailableDecks().size() != 3){
                                     cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
                                 }else{
-                                    cli.turnWaiting();
+                                    cli.turnWaiting(ackMessageMapped.getNextPlayer());
                                 }
                             }else{
                                 if(ackMessageMapped.getNotAvailableDecks().size() != 2){
                                     cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
                                 }else{
-                                    cli.turnWaiting();
+                                    cli.turnWaiting(ackMessageMapped.getNextPlayer());
                                 }
                             }
                             break;
@@ -348,7 +348,7 @@ public class NetworkHandler {
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
                         } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {                 //se non tocca a te e non l'hai ancora scelta
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -364,10 +364,10 @@ public class NetworkHandler {
                             sendChosenAssistantCardMessage(assistantChosen);
 
                         } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == true) {
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag == true) {   //tocca a te e hai già scelto, mandi il messaggio movedstudentsfromentrance
                             assistantChoiceFlag = false;
@@ -413,7 +413,7 @@ public class NetworkHandler {
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
                         } else if (ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <= numberOfStudentToMoveAction1 ) {
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
                             motherNatureIslandID = 0;
                             for (int i = 0; i < 12; i++) {
@@ -455,7 +455,7 @@ public class NetworkHandler {
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent++;
                         } else if (ackMessageMapped.getNextPlayer() != playerID && numberOfChosenStudent <= numberOfStudentToMoveAction1) {
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent == numberOfStudentToMoveAction1) {
                             motherNatureIslandID = 0;
@@ -490,7 +490,7 @@ public class NetworkHandler {
                             }
                             sendChosenCloudMessage(cloudChosenID);
                         }else if(ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -538,9 +538,9 @@ public class NetworkHandler {
                             sendBagClickedByFirstClient();
                         }else if(ackMessageMapped.getNextPlayer() != playerID && ackMessageMapped.isNextPlanningPhase()){
                             cli.newRoundBeginning();
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }else if(ackMessageMapped.getNextPlayer() != playerID && !ackMessageMapped.isNextPlanningPhase()){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }else if(ackMessageMapped.getNextPlayer() == playerID && !ackMessageMapped.isNextPlanningPhase()){  //significa che la fase di azione non è finita, tocca al secondo, o terzo, giocatore che deve muovere gli studenti dall'entrance
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                             if(studentChosen == -2){                                                            //se qui torna -2 significa che ha deciso di usare un character
@@ -567,14 +567,14 @@ public class NetworkHandler {
                             int islandChosen = cli.choiceIslandMonk(modelView);
                             sendCharacterDataMonk(studentChosen, islandChosen);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
                     case "cook" :
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             sendCharacterDataCook();
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -583,7 +583,7 @@ public class NetworkHandler {
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             sendCharacterDataCentaur();
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
                     case "jester":
@@ -592,14 +592,14 @@ public class NetworkHandler {
                             ArrayList<Integer> studentsFromCardJester = cli.choiceStudentCardJester(modelView);
                             sendCharacterDataJester(studentsFromEntranceJester, studentsFromCardJester);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
                     case "knight" :
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             sendCharacterDataKnight();
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
 
@@ -607,7 +607,7 @@ public class NetworkHandler {
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             sendCharacterDataMessenger();
                         } else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
 
@@ -617,7 +617,7 @@ public class NetworkHandler {
 
                             sendCharacterDataHerbalist(islandIDChosenHerbalist);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
 
@@ -627,7 +627,7 @@ public class NetworkHandler {
 
                             sendCharacterDataAmbassador(islandIDChosenAmbassador);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
 
@@ -637,7 +637,7 @@ public class NetworkHandler {
 
                             sendCharacterDataMushroomsMerchant(chosenStudentMushroomsMerchant);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
                     case "bard":
@@ -646,7 +646,7 @@ public class NetworkHandler {
                             ArrayList<Creature> studentsFromDiningRoomBard = cli.choiceStudentDiningRoomBard(playerID, modelView);
                             sendCharacterDataBard(studentsFromEntranceBard, studentsFromDiningRoomBard);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -655,7 +655,7 @@ public class NetworkHandler {
                             Creature chosenStudentTrafficker = cli.choiceTrafficker();
                             sendCharacterDataTrafficker(chosenStudentTrafficker);
                         }else if (ackMessageMapped.getNextPlayer() != playerID) {
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -666,7 +666,7 @@ public class NetworkHandler {
 
                             sendCharacterDataPrincess(chosenStudentID);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting();
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         break;
                 }
@@ -737,7 +737,7 @@ public class NetworkHandler {
                     followingChoiceToMake(lastCallFrom);
                 }else{
                     cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
-                    cli.turnWaiting();
+                    cli.turnWaiting(ackCharactersMessage.getNextPlayer());
                 }
                 break;
 
