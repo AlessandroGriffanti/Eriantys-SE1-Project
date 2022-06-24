@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Action_2 implements ControllerState{
 
@@ -139,6 +140,12 @@ public class Action_2 implements ControllerState{
                 }
 
             } else {
+                try{
+                    TimeUnit.MILLISECONDS.sleep(500);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
                 executeAction_2_influence(controller, request);
             }
 
@@ -220,6 +227,13 @@ public class Action_2 implements ControllerState{
             // send the ack message
             ack.setNextPlayer(request.getSender_ID());
             controller.sendMessageAsBroadcast(ack);
+
+            try{
+                TimeUnit.MILLISECONDS.sleep(500);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
 
             executeAction_2_union(controller, request);
         }
