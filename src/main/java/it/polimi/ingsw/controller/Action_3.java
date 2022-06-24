@@ -69,7 +69,7 @@ public class Action_3 implements ControllerState{
             assert cloud.getStudents().size() == cloud.getCapacity();
 
             // take students
-            ArrayList<Creature> newEntrance = match.moveStudentsFromCloudToEntrance(request.getSender_ID());
+            ArrayList<Creature> newEntrance = match.moveStudentsFromCloudToEntrance(request.getCloud_ID());
 
             // create the ack message
             AckMessage ack = new AckMessage();
