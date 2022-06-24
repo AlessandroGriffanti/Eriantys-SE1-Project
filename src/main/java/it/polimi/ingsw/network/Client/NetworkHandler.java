@@ -1131,34 +1131,22 @@ public class NetworkHandler {
                         }
                     }
                 }
-                if (ackMessageMapped.getNewMaster_ID() == playerID && ackMessageMapped.getPreviousMaster_ID() != playerID) {
-                    //update islands
-                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(towerColor);                                //o stampiamo questo nuovo colore o gli altri non lo sanno
-                    //update player's board
-                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();         //prendiamo quante torri sono sull'isola dove arriva MN
+                if (ackMessageMapped.getNewMaster_ID() != -1) { // && ackMessageMapped.getPreviousMaster_ID() != playerID) {
+                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(towerColor);    //o stampiamo questo nuovo colore o gli altri non lo sanno
+                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();    //1     //prendiamo quante torri sono sull'isola dove arriva MN
                     if (numberTowerMotherIsland == 0) {
                         numberTowerMotherIsland++;                                                                             //diventa almeno una che viene tolta dalla schoolboard
                     }
-                    int numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
-                    modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard - numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
+                    modelView.getIslandGame().get(motherNatureIsland).setNumberOfTower(numberTowerMotherIsland);        //rimpiazzo con 1
+                    int numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
+                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard - numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
 
+                    if(ackMessageMapped.getPreviousMaster_ID() != -1 ) {
+                        numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousMaster_ID()).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
+                        modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard + numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
 
-                } else if (ackMessageMapped.getNewMaster_ID() != playerID && ackMessageMapped.getPreviousMaster_ID() == playerID) {  //non sono più il master ma lo ero
-                    //update islands
-                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(ackMessageMapped.getTowerColor());
-
-                    //update player's board
-                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();         //prendiamo quante torri sono sull'isola dove arriva MN
-
-                    int numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
-                    modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard + numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
-
-                } else if (ackMessageMapped.getNewMaster_ID() != playerID && ackMessageMapped.getPreviousMaster_ID() != playerID) {   //non sono il master nuovo e nemmeno vecchio
-                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(ackMessageMapped.getTowerColor());
+                    }
                 }
-                    /*if (ackMessageMapped.isEndOfMatch()) {
-                        matchEnd = true;
-                    }*/
 
             }
         } else if (ackMessageMapped.getSubObject().equals("action_2_union")) {
