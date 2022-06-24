@@ -15,6 +15,7 @@ import java.util.*;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
+    private boolean messengerActive = false;
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
@@ -901,7 +902,11 @@ public class CLI {
      */
     public int choiceMotherNatureMovement(int playerID, int motherNatureIslandID, ModelView modelView){
         println("Now you have to move mother nature, which currently is on Island " + motherNatureIslandID);
-        println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s) clockwise ");
+        if(messengerActive == true) {
+            println("You can move mother nature up to: " + (modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + 2) + " seat(s) clockwise ");
+        }else{
+            println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s) clockwise ");
+        }
         println("Insert the island ID where you want to move her:  ");
         boolean rightIslandChosen = false;                              //viene settato a true solo se inserisce character o un'isola valida
         int chosenIslandID = -1;
@@ -1196,6 +1201,7 @@ public class CLI {
         println(" ");
         println(" ");
         println("The round is over, a new one is beginning! ");
+        messengerActive = false;
     }
 
     /**
@@ -1221,7 +1227,9 @@ public class CLI {
         }
         println(" ");
         println("You choose to use: " + characterChosen);
-
+        if(characterChosen.equals("messenger")){
+            messengerActive = true;
+        }
         return  characterChosen;
 
     }
