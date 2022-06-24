@@ -259,6 +259,7 @@ public class Action_2 implements ControllerState{
                 }
                 // unify islands
                 match.getRealmOfTheMatch().unifyArchipelago(currentIsland, previousIsland_ID);
+                break;
 
             case 2:
                 ack.setIslandsUnified("next");
@@ -273,6 +274,7 @@ public class Action_2 implements ControllerState{
                 }
                 // unify islands
                 match.getRealmOfTheMatch().unifyArchipelago(currentIsland, nextIsland_ID);
+                break;
 
             case 3:
                 ack.setIslandsUnified("both");
@@ -300,6 +302,7 @@ public class Action_2 implements ControllerState{
                 // unify islands
                 match.getRealmOfTheMatch().unifyArchipelago(currentIsland, previousIsland_ID);
                 match.getRealmOfTheMatch().unifyArchipelago(currentIsland, nextIsland_ID);
+                break;
         }
 
         if(SupportFunctions.onlyThreeIslandsLeft(match)){

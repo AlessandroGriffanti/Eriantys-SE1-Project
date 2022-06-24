@@ -52,7 +52,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.33", 4444);
+            CLI cli = new CLI("localhost", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -567,7 +567,7 @@ public class CLI {
             try {
                 assistantChosen = Integer.parseInt(request);
                 if(!(availableAssistantCard.containsKey(assistantChosen))){
-                    println("You can't use this assistant, it doesn't exist. Please select another one: (1-10) ");
+                    println("You can't use this assistant, it has already been used in the previous rounds. Please select another one: ");
                     request = scannerCLI.next();
                 }else {
                     rightAssistantChosen = true;
@@ -603,7 +603,7 @@ public class CLI {
         }
 
         println(" ");
-        print("(Not available assistants: ");
+        print("(Assistants chosen by other players: ");
         for(int i = 0; i< assistantCardsAlreadyUsedThisRound.size(); i++){
             printInt(assistantCardsAlreadyUsedThisRound.get(i));
             if(i+1 != assistantCardsAlreadyUsedThisRound.size()){
@@ -621,7 +621,7 @@ public class CLI {
                     println("You can't use this assistant, it has already been used this round by another player. Please select another one: ");
                     request = scannerCLI.next();
                 }else if (!(availableAssistantCard.containsKey(assistantChosen))) {
-                    println("You can't use this assistant, it doesn't exist. Please select another one: ");
+                    println("You can't use this assistant, it has already been used in the previous rounds. Please select another one: ");
                     request = scannerCLI.next();
                 }else {
                     rightAssistantChosen = true;
@@ -630,7 +630,7 @@ public class CLI {
                 println("Please insert a valid assistant id: (1-10)");
                 request = scannerCLI.next();
             }
-        }
+        }           //TODO controllo che se ne rimangono solo carte già scelte, deve andare bene comunque (confronto i due array)
         return  assistantChosen;
     }
 
@@ -1538,7 +1538,7 @@ public class CLI {
      */
     public void invalidHerbalistChoice(String herbalistNackExplanation){
         println(herbalistNackExplanation);
-
+        println(" ");
     }
 
     /**
@@ -1547,6 +1547,7 @@ public class CLI {
      */
     public void invalidCharacter(String invalidCharacterNackExplanation){
         println(invalidCharacterNackExplanation);
+        println(" ");
     }
 
     /**
