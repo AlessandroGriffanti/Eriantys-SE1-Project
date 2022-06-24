@@ -113,7 +113,7 @@ public class ClientHandler extends Thread {
      *
      * @param receivedMessageInJson is the message received in json format through the socket reader.
      */
-    public synchronized void loginInServer(String receivedMessageInJson) throws IOException, InterruptedException {
+    public void loginInServer(String receivedMessageInJson) throws IOException, InterruptedException {
         System.out.println(receivedMessageInJson);
         LoginMessage receivedMessageFromJson; //= new LoginMessage();
         receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
@@ -318,7 +318,7 @@ public class ClientHandler extends Thread {
      * @numberOfTotalLobbies is the number of lobbies we have reached, so it is the size of the keyset of the hashmap lobbies, which is in the main server
      * @addPlayerHandler is the method through which we add the player to its game in the controller
      */
-    public synchronized void lobbyCreation(String nicknameOfNewPlayer, int numberOfPlayer) {
+    public void lobbyCreation(String nicknameOfNewPlayer, int numberOfPlayer) {
         int numberOfTotalLobbies = server.getLobbies().keySet().size();
         lobbyID = numberOfTotalLobbies;
 

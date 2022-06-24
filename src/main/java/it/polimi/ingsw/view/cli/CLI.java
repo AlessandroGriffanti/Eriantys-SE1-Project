@@ -113,7 +113,7 @@ public class CLI {
         println("Please insert the number of the player you want in the lobby: ");
 
         int numberOfPlayerInTheLobby = scannerCLI.nextInt();
-        printInt(numberOfPlayerInTheLobby);
+        printlnInt(numberOfPlayerInTheLobby);
         while( (numberOfPlayerInTheLobby <= 1) || (numberOfPlayerInTheLobby >= 4) ){
             println("Please, insert a valid number of players");
             numberOfPlayerInTheLobby = scannerCLI.nextInt();
@@ -273,7 +273,29 @@ public class CLI {
      * This method is used to notify the player that it's not his turn, so he has to wait.
      */
     public void turnWaiting () {
+        println(" ");
         println("Wait for your turn!");
+        println(" ");
+    }
+
+    /**
+     * This method is used to notify the player that it's not his turn when choosing towers color, so he has to wait.
+     * @param nowPlayingPlayerId is the int ID of the player who is currently choosing.
+     */
+    public void turnWaitingTowers (int nowPlayingPlayerId) {
+        println(" ");
+        println("Player " + nowPlayingPlayerId + " is now choosing the Color for his Towers... Wait for your turn! ");
+        println(" ");
+    }
+
+    /**
+     * This method is used to notify the player that it's not his turn when choosing wizard for the decks, so he has to wait.
+     * @param nowPlayingPlayerId is the int ID of the player who is currently choosing.
+     */
+    public void turnWaitingDecks (int nowPlayingPlayerId) {
+        println(" ");
+        println("Player " + nowPlayingPlayerId + " is now choosing the Wizard for his Deck... Wait for your turn! ");
+        println(" ");
     }
 
     /**
@@ -442,7 +464,7 @@ public class CLI {
      * This method is used to ask the player which deck he wants to play with.
      * @return the deck chosen in Wizard type.
      */
-    public Wizard deckChoice(){                 //TODO fix choice deck like towers
+    public Wizard deckChoice(){
         println("Please choose your deck among the following: ");
         println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
 
@@ -462,8 +484,35 @@ public class CLI {
      * @return the deck chosen.
      */
     public Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {         //TODO fix choice deck like towers
-        println("Choose your deck among the following: ");
-        println("FORESTWIZARD, DESERTWIZARD, CLOUDWITCH, LIGHTNINGWIZARD");
+
+        ArrayList<String> availableDeckWizard = new ArrayList<>();
+        availableDeckWizard.add("FORESTWIZARD");
+        availableDeckWizard.add("DESERTWIZARD");
+        availableDeckWizard.add("CLOUDWITCH");
+        availableDeckWizard.add("LIGHTNINGWIZARD");
+
+        for(int i = 0 ; i < notAvailableDecks.size(); i++){
+            if(availableDeckWizard.contains(String.valueOf(notAvailableDecks.get(i)))){
+                availableDeckWizard.remove(String.valueOf(notAvailableDecks.get(i)));
+            }
+        }
+
+        println("Please choose your deck among the following: ");
+        for(int i = 0; i < availableDeckWizard.size(); i++){
+            print(availableDeckWizard.get(i));
+            if(i+1 != availableDeckWizard.size()){
+                print(", ");
+            }
+        }
+        println(" ");
+        print("(Already chosen: ");
+        for (int i = 0; i < notAvailableDecks.size(); i++){
+            print(String.valueOf(notAvailableDecks.get(i)));
+            if(i+1 != notAvailableDecks.size()){
+                print(", ");
+            }
+        }
+        println(").");
 
         String strDeckChosen = scannerCLI.nextLine();
 
@@ -501,8 +550,13 @@ public class CLI {
         String request;
         int assistantChosen = -1;
         println("Which assistant do you want to play?");
+        int counter = 0;
         for(Integer i : availableAssistantCard.keySet()){
-            print(i + " ");
+            printInt(i);
+            if(counter +1 != availableAssistantCard.size()){
+                print(", ");
+            }
+            counter++;
         }
         println(" ");
 
@@ -536,11 +590,25 @@ public class CLI {
         boolean rightAssistantChosen = false;
         int assistantChosen = -1;
         String request;
+        int counter = 0;
+
         println("Which assistant do you want to play?");
         for(Integer i : availableAssistantCard.keySet()){
-            print(i + " ");
+            printInt(i);
+            if(counter +1 != availableAssistantCard.size()){
+                print(", ");
+            }
+            counter++;
         }
-        println(" ");
+
+        print("(Not available assistants: ");
+        for(int i = 0; i< assistantCardsAlreadyUsedThisRound.size(); i++){
+            printInt(assistantCardsAlreadyUsedThisRound.get(i));
+            if(i+1 != assistantCardsAlreadyUsedThisRound.size()){
+                print(", ");
+            }
+        }
+        println(") ");
 
         request = scannerCLI.next();
 
@@ -1106,7 +1174,6 @@ public class CLI {
     public void matchEnd(String winnerNickname, String winnerReason, int playerIDwinner, int playerID){
         println(" ");
         println("THE MATCH IS ENDED, reason: " + winnerReason);
-        println(" ");
         if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
         }else if(playerIDwinner == -1){
@@ -1118,6 +1185,7 @@ public class CLI {
         }else {
             println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }
+        println(" ");
         println(" ");
     }
 
@@ -1489,8 +1557,12 @@ public class CLI {
         System.out.println(strToPrint);
     }
 
-    public void printInt(int intToPrint){
+    public void printlnInt(int intToPrint){
         System.out.println(intToPrint);
+    }
+
+    public void printInt(int intToPrint){
+        System.out.print(intToPrint);
     }
 
 

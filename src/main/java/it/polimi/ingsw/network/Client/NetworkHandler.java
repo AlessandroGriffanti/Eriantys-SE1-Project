@@ -107,6 +107,7 @@ public class NetworkHandler {
             //System.out.println("Still connected");
             String msgFromServer = inputBufferClient.readLine();
             System.out.println("messaggio dal server: " + msgFromServer);
+            System.out.println(" ");
             analysisOfReceivedMessageServer(msgFromServer);
         }
 
@@ -148,7 +149,7 @@ public class NetworkHandler {
      *
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
      */
-    public synchronized void analysisOfReceivedMessageServer(String receivedMessageInJson) throws InterruptedException {
+    public void analysisOfReceivedMessageServer(String receivedMessageInJson) throws InterruptedException {
         //System.out.println("Message analysis in progress...");
         //System.out.println("messaggio ricevuto in json: " + receivedMessageInJson);
 
@@ -234,7 +235,7 @@ public class NetworkHandler {
 
 
                 } else if (matchStartMessage.getFirstPlayer() != playerID){
-                    cli.turnWaiting();
+                    cli.turnWaitingTowers(matchStartMessage.getFirstPlayer());
 
                 }
                 break;
@@ -264,8 +265,6 @@ public class NetworkHandler {
                             break;
 
                         } else if ((ackMessageMapped.getNextPlayer() == playerID) && (towerColor != null)) {
-                            //sendAckFromClient();
-                            //cli.turnWaiting();
                             wizard = cli.deckChoice();
                             ChosenDeckMessage chosenDeckMessage = new ChosenDeckMessage();
                             chosenDeckMessage.setDeck(wizard);
@@ -274,11 +273,23 @@ public class NetworkHandler {
                             break;
 
                         } else if ((ackMessageMapped.getNextPlayer() != playerID) && (towerColor != null)) {
-                            cli.turnWaiting();
+                            if(modelView.getNumberOfPlayersGame() == 3){
+                                if(ackMessageMapped.getNotAvailableTowerColors().size() != 3){
+                                    cli.turnWaitingTowers(ackMessageMapped.getNextPlayer());
+                                }else{
+                                    cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
+                                }
+                            }else{
+                                if(ackMessageMapped.getNotAvailableTowerColors().size() != 2){
+                                    cli.turnWaitingTowers(ackMessageMapped.getNextPlayer());
+                                }else{
+                                    cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
+                                }
+                            }
                             break;
 
                         } else if ((ackMessageMapped.getNextPlayer() != playerID) && (towerColor == null)) {
-                            cli.turnWaiting();
+                            cli.turnWaitingTowers(ackMessageMapped.getNextPlayer());
                             break;
 
                         }
@@ -295,19 +306,32 @@ public class NetworkHandler {
                             sendMessage(chosenDeckMessage);
                             break;
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard != null)) {
-                            cli.turnWaiting();
-                            break;
-
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard == null)) {
-                            cli.turnWaiting();
-                            break;
-
                         } else if ((ackMessageMapped.getNextPlayer() == playerID) && (wizard != null)) {
                             cli.bagClick();
                             sendBagClickedByFirstClient();
                             break;
+
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard != null)) {
+                            if(modelView.getNumberOfPlayersGame() == 3){
+                                if(ackMessageMapped.getNotAvailableDecks().size() != 3){
+                                    cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
+                                }else{
+                                    cli.turnWaiting();
+                                }
+                            }else{
+                                if(ackMessageMapped.getNotAvailableDecks().size() != 2){
+                                    cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
+                                }else{
+                                    cli.turnWaiting();
+                                }
+                            }
+                            break;
+
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && (wizard == null)) {
+                            cli.turnWaitingDecks(ackMessageMapped.getNextPlayer());
+                            break;
                         }
+
                         break;
 
                     case "refillClouds":
@@ -966,7 +990,7 @@ public class NetworkHandler {
      *
      * @param matchStartMessage is the matchStartMatchMessage received.
      */
-    public synchronized void updateStartModelView(MatchStartMessage matchStartMessage) {
+    public void updateStartModelView(MatchStartMessage matchStartMessage) {
         numberOfStudentToMoveAction1 = matchStartMessage.getNumPlayer() + 1;                                 //settiamo il numero di studenti massimi che possono essere mossi nell'action 1 in base al numero di giocatori totali
 
         modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                      //setto il numero di giocatori totali della partita
