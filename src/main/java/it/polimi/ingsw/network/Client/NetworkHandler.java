@@ -480,19 +480,6 @@ public class NetworkHandler {
                     case "action_2_movement":
                         updateModelViewActionTwo(ackMessageMapped);
                         cli.newMotherNaturePosition(ackMessageMapped.getDestinationIsland_ID());
-                        if(ackMessageMapped.getNextPlayer() == playerID) {
-                            int cloudChosenID = cli.chooseCloud(playerID, modelView);
-                            if(cloudChosenID == -2){
-                                lastCallFrom = "chooseCloud";
-                                String characterChosen = cli.characterChoice(modelView);
-                                sendRequestCharacterMessage(characterChosen);
-                                break;
-                            }
-                            sendChosenCloudMessage(cloudChosenID);
-                        }else if(ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
-                        }
-
                         break;
 
                     case "action_2_influence":
@@ -527,6 +514,18 @@ public class NetworkHandler {
                                 islandUnifiedFlag = 0;
                             }
                             cli.showUnion(modelView, ackMessageMapped.getDestinationIsland_ID(), islandUnifiedFlag);
+                        }
+                        if(ackMessageMapped.getNextPlayer() == playerID) {
+                            int cloudChosenID = cli.chooseCloud(playerID, modelView);
+                            if(cloudChosenID == -2){
+                                lastCallFrom = "chooseCloud";
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
+                            }
+                            sendChosenCloudMessage(cloudChosenID);
+                        }else if(ackMessageMapped.getNextPlayer() != playerID){
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
                         TimeUnit.MILLISECONDS.sleep(500);
                         break;
@@ -1025,6 +1024,7 @@ public class NetworkHandler {
         modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
 
         int motherNaturePosition = matchStartMessage.getMotherNaturePosition();                 //metto gli studenti iniziali (uno per isola tranne dove c'è MN e isola opposta) sulle giuste isole
+        motherNatureIslandID = matchStartMessage.getMotherNaturePosition();
         int j = 1;
         for (Creature c : matchStartMessage.getStudentsOnIslands()) {
             int islandID = motherNaturePosition + j;
@@ -1113,6 +1113,7 @@ public class NetworkHandler {
                         modelView.getIslandGame().get(i).setMotherNaturePresence(false);
                     } else if (i == ackMessageMapped.getDestinationIsland_ID()) {                       //setto a true l'attributo nella nuova isola dove si trova MN dopo lo spostamento
                         modelView.getIslandGame().get(i).setMotherNaturePresence(true);
+                        motherNatureIslandID = i;
                     }
                 }
             }
