@@ -45,6 +45,7 @@ public class NetworkHandler {
     private ModelView modelView;
 
     private boolean matchEnd = false;
+    private boolean matchStarted = false;
 
     //questi potrebbero essere spostati in mv
     private Tower towerColor;
@@ -205,6 +206,7 @@ public class NetworkHandler {
                 break;
 
             case "start":
+                this.matchStarted = true;
                 cli.startAlert();
                 modelView = new ModelView(playerID);
                 MatchStartMessage matchStartMessage = new MatchStartMessage();
@@ -237,10 +239,8 @@ public class NetworkHandler {
                 }
                 break;
             case "end":
-                EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
-                cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner(), playerID);
+                matchIsEnded(receivedMessageInJson);
 
-                matchEnd = true;
                 break;
 
             case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
@@ -1398,6 +1398,13 @@ public class NetworkHandler {
 
     }
 
+    public void matchIsEnded(String receivedMessageInJson){
+        EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
+        cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner(), playerID);
+
+        matchEnd = true;
+    }
+
     public String getLastCallFrom() {
         return lastCallFrom;
     }
@@ -1406,6 +1413,8 @@ public class NetworkHandler {
         this.lastCallFrom = lastCallFrom;
     }
 
-
+    public boolean isMatchStarted() {
+        return matchStarted;
+    }
 }
 

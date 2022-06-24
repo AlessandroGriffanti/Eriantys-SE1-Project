@@ -51,7 +51,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("localhost", 4444);
+            CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -1080,7 +1080,11 @@ public class CLI {
         if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
         }else if(playerIDwinner == -1){
-            println("A player disconnected while the game wasn't started yet. For that reason, no one won this match :(  ");
+            if(networkHandler.isMatchStarted()){
+                println("A player disconnected while choosing towers and wizards. For that reason, no one won this match :(  ");
+            }else {
+                println("A player disconnected while the game wasn't started yet. For that reason, no one won this match :(  ");
+            }
         }else {
             println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }
