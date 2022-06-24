@@ -53,7 +53,7 @@ public class ModelView {
     //private Set<String> characterCardsInTheGame;  //TODO NEL MESSAGGIO è UN SET, non array
 
     //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
-    private ArrayList<Creature> StudentsOnTheClouds;
+   // private ArrayList<Creature> StudentsOnTheClouds;
 
     /**
      * This integer is the ordervalue (1-10) of the last assistant card chosen by the player.
@@ -101,8 +101,10 @@ public class ModelView {
         schoolBoardPlayers = new HashMap<>();
         coinPlayer = new HashMap<>();
 
-        coinPlayer.put(0,1);
-        coinPlayer.put(1,1);
+
+        for(int i = 0; i<= 2;i++){
+            coinPlayer.put(i,1);
+        }
 
 
     }
@@ -164,13 +166,13 @@ public class ModelView {
         this.coinPlayer = coinPlayer;
     }
 
-    public ArrayList<Creature> getStudentsOnTheClouds() {
+   /* public ArrayList<Creature> getStudentsOnTheClouds() {
         return StudentsOnTheClouds;
     }
 
     public void setStudentsOnTheClouds(ArrayList<Creature> studentsOnTheClouds) {
         StudentsOnTheClouds = studentsOnTheClouds;
-    }
+    }*/
 
     public int getLastAssistantChosen() {
         return lastAssistantChosen;

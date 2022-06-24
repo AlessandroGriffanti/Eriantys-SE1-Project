@@ -987,28 +987,58 @@ public class CLI {
         if(modelView.getNumberOfPlayersGame() == 2){
             print("Cloud 0: ");
             for (int i = 0; i < 3; i++) {
-                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                //print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                Creature student = modelView.getStudentsOnClouds().get(i);
+                if(student == null){
+                    print("---");
+                }else{
+                    print(student + " ");
+                }
             }
             println(" ");
             print("Cloud 1: ");
             for (int i = 3; i < 6; i++) {
-                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                //print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                Creature student = modelView.getStudentsOnClouds().get(i);
+                if(student == null){
+                    print("---");
+                }else{
+                    print(student + " ");
+                }
             }
             println(" ");
         }else if(modelView.getNumberOfPlayersGame() == 3) {
             print("Cloud 0: ");
             for (int i = 0; i < 4; i++) {
-                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                //print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                Creature student = modelView.getStudentsOnClouds().get(i);
+                if(student == null){
+                    print("---");
+                }else{
+                    print(student + " ");
+                }
             }
             println(" ");
             print("Cloud 1: ");
             for (int i = 4; i < 8; i++) {
-                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                //print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                Creature student = modelView.getStudentsOnClouds().get(i);
+                if(student == null){
+                    print("---");
+                }else{
+                    print(student + " ");
+                }
             }
             println(" ");
             print("Cloud 2: ");
             for (int i = 8; i < 12; i++) {
-                print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                //print(modelView.getStudentsOnClouds().get(i).toString() + " ");
+                Creature student = modelView.getStudentsOnClouds().get(i);
+                if(student == null){
+                    print("---");
+                }else{
+                    print(student + " ");
+                }
             }
             println(" ");
         }
