@@ -140,19 +140,13 @@ public class Action_2 implements ControllerState{
                 }
 
             } else {
-                try{
-                    TimeUnit.MILLISECONDS.sleep(500);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                executeAction_2_influence(controller, request);
-            }
-
-            // send the ack message for the movement
-            if(ack.getNextPlayer() == -1){
                 ack.setNextPlayer(request.getSender_ID());
+                controller.sendMessageAsBroadcast(ack);
+                executeAction_2_influence(controller, request);
+                return;
             }
+
+            // this message is sent if we do not go on into influence computation
             controller.sendMessageAsBroadcast(ack);
 
             // send the endOfMatch message if needed
@@ -227,13 +221,6 @@ public class Action_2 implements ControllerState{
             // send the ack message
             ack.setNextPlayer(request.getSender_ID());
             controller.sendMessageAsBroadcast(ack);
-
-            try{
-                TimeUnit.MILLISECONDS.sleep(500);
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-
 
             executeAction_2_union(controller, request);
         }
