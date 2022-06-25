@@ -1067,6 +1067,11 @@ public class NetworkHandler {
         if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken() == true){                    //questo update va fatto indipendentemente da chi è il nextplayer
             modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se c'era un precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
         }
+        if (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
+            int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
+            modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
+            modelView.setCoinGame(modelView.getCoinGame() - 1);
+        }
         if (ackMessageMapped.getRecipient() == playerID) {
             if (ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
@@ -1075,12 +1080,6 @@ public class NetworkHandler {
                 if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) == false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
                     modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
                 }
-                if (modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
-                    int newPlayerCoin = modelView.getCoinPlayer().get(playerID) + 1;
-                    modelView.getCoinPlayer().replace(playerID, newPlayerCoin);
-                    modelView.setCoinGame(modelView.getCoinGame() - 1);
-                }
-
             } else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
@@ -1094,13 +1093,6 @@ public class NetworkHandler {
                 if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())== false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
                     modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
                 }
-
-                if (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) % 3 == 0) {
-                    int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
-                    modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
-                    //modelView.setCoinGame(modelView.getCoinGame() - 1);
-                }
-
             }else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
                 modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
