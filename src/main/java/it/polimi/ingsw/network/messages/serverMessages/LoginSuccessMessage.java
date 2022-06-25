@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.messages.Message;
 public class LoginSuccessMessage extends Message {
     private int playerID;
 
-    private boolean newMatchNeeded; // todo: not needed -> can be removed
+    private boolean newMatchNeeded;
     //TRUE  -> to create
     //FALSE -> already created
 

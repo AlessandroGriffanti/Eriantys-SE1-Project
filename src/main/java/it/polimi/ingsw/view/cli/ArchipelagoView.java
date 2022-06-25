@@ -13,14 +13,10 @@ public class ArchipelagoView {
     private int archipelagoID;
 
     /**
-     * This attribute identifies if an island has been unified.
-     */
-    //private boolean unifiedIsland = false;
-
-    /**
      * This attribute is the number of single island-tiles that belong to the archipelago.
      */
     private int numberOfIsland;
+
     /**
      * This attribute tells if mother nature is on a certain island or not.
      */
@@ -41,8 +37,7 @@ public class ArchipelagoView {
      * This attribute is the player that currently has the higher influence
      * over the archipelago
      */
-    private Player masterOfArchipelago;
-
+    private int masterOfArchipelago;
 
     /**
      * This attribute is the population of students of each kind currently on the island.
@@ -63,6 +58,7 @@ public class ArchipelagoView {
         this.archipelagoID = archipelagoID;
         this.numberOfIsland = 1;
         this.motherNaturePresence = false;
+        this.masterOfArchipelago = -1;
 
         this.studentsPopulation = new HashMap<Creature, Integer>();
         this.studentsPopulation.put(Creature.DRAGON, 0);
@@ -162,7 +158,6 @@ public class ArchipelagoView {
         this.studentsPopulation = studentsPopulation;
     }
 
-
     public Tower getTowerColor() {
         return towerColor;
     }
@@ -183,14 +178,13 @@ public class ArchipelagoView {
         this.numberOfTower = numberOfTower;
     }
 
-    /*
-    public boolean isUnifiedIsland() {
-        return unifiedIsland;
+    public int getMasterOfArchipelago() {
+        return masterOfArchipelago;
     }
 
-    public void setUnifiedIsland(boolean unifiedIsland) {
-        this.unifiedIsland = unifiedIsland;
+    public void setMasterOfArchipelago(int masterOfArchipelago) {
+        this.masterOfArchipelago = masterOfArchipelago;
     }
-     */
+
 
 }

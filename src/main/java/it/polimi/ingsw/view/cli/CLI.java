@@ -15,7 +15,7 @@ import java.util.*;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
-    private boolean messengerActive = false;
+
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
@@ -52,15 +52,15 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("localhost", 4444);
+            CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
             System.exit(0);
-        } catch (IOException e) {
+        } catch (IOException e) {           //TODO no longer available, disconnected, you're offline
             System.out.println("Server no longer available :(  " + e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace();            //TODO is alive socket
         }
 
 
@@ -484,7 +484,7 @@ public class CLI {
      * @param notAvailableDecks is the list of decks that have been already chosen.
      * @return the deck chosen.
      */
-    public Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {         //TODO fix choice deck like towers
+    public Wizard deckChoiceNext(ArrayList<Wizard> notAvailableDecks) {
 
         ArrayList<String> availableDeckWizard = new ArrayList<>();
         availableDeckWizard.add("FORESTWIZARD");
@@ -844,7 +844,7 @@ public class CLI {
      */
     public void show(int playerID, ModelView modelView){
 
-        println("What do you want to view? Insert entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");  //TODO EVENTUALMENTE STAMPARE ANCHE LE MONETE E LE NUVOLE
+        println("What do you want to view? Insert entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
         String str = scannerCLI.next();
 
         while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
@@ -903,7 +903,7 @@ public class CLI {
      */
     public int choiceMotherNatureMovement(int playerID, int motherNatureIslandID, ModelView modelView){
         println("Now you have to move mother nature, which currently is on Island " + motherNatureIslandID);
-        if(messengerActive == true) {
+        if(networkHandler.isMessengerActive() == true) {
             println("You can move mother nature up to: " + (modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + 2) + " seat(s) clockwise ");
         }else{
             println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s) clockwise ");
@@ -975,18 +975,14 @@ public class CLI {
      * @param islandLanding is the island ID where mother nature lands after action_2, so it is the island to which the other one(s) unify.
      * @param islandToUnifyFlag is the flag to understand which island have been unified (the previous (-1), the following (+1) or both (0).
      */
-    public void showUnion(ModelView modelView, int islandLanding, int islandToUnifyFlag){
-        int otherIsland = islandLanding;
+    public void showUnion(ModelView modelView, int islandLanding, int islandToUnifyFlag, ArrayList<Integer> islandConnected){
         if(islandToUnifyFlag == -1) {
-            otherIsland -= 1;
-            println("The chosen island ("+ islandLanding +") has been unified with the previous island (" + otherIsland +").");
+            println("The chosen island ("+ islandLanding +") has been unified with the previous island (" + islandConnected.get(0) +").");
         }else if(islandToUnifyFlag == 1){
-            otherIsland += 1;
-            println("The chosen island ("+ islandLanding +") has been unified with the following island (" + otherIsland +").");
+            println("The chosen island ("+ islandLanding +") has been unified with the following island (" + islandConnected.get(0) +").");
         }else if(islandToUnifyFlag == 0){
-            otherIsland -= 1;
             int secondIsland = islandLanding + 1;
-            println("The chosen island ("+ islandLanding +") has been unified with the previous and the following islands (" + otherIsland + ", " + secondIsland +").");
+            println("The chosen island ("+ islandLanding +") has been unified with the previous and the following islands (" + islandConnected.get(0) + ", " + islandConnected.get(1) +").");
         }
     }
 
@@ -999,7 +995,7 @@ public class CLI {
         println("The ISLAND SITUATION is:");
         for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i) != null) {
-                print("Students on the island " + i + ": ");
+                print("Island " + i + ": ");
                 if (modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
                     if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
                         print("nobody, here stands mother nature.");
@@ -1012,6 +1008,11 @@ public class CLI {
                     if (modelView.getIslandGame().get(i).getStudentsOfType(c) != 0) {
                         print(c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c) + "; ");
                     }
+                }
+                println(" ");
+                //Print of masters of the islands
+                if(modelView.getIslandGame().get(i).getMasterOfArchipelago() != -1){
+                    print("[Master on this island is Player " + modelView.getIslandGame().get(i).getMasterOfArchipelago() + ".] ");
                 }
                 println(" ");
             }
@@ -1205,7 +1206,6 @@ public class CLI {
         println(" ");
         println(" ");
         println("The round is over, a new one is beginning! ");
-        messengerActive = false;
     }
 
     /**
@@ -1231,9 +1231,6 @@ public class CLI {
         }
         println(" ");
         println("You choose to use: " + characterChosen);
-        if(characterChosen.equals("messenger")){
-            messengerActive = true;
-        }
         return  characterChosen;
 
     }

@@ -76,6 +76,9 @@ public class NetworkHandler {
      * It can be 3, if there are 2 players playing, or 4 if there are 3 players playing.
      */
     private int numberOfStudentToMoveAction1;
+
+    private boolean messengerActive = false;
+
     /**
      * NetworkHandler constructor which creates a new instance of the NetworkHandler.
      *
@@ -111,7 +114,7 @@ public class NetworkHandler {
             analysisOfReceivedMessageServer(msgFromServer);
         }
 
-        TimeUnit.MILLISECONDS.sleep(5000);
+        //TimeUnit.MILLISECONDS.sleep(5000);
 
 
         inputBufferClient.close();
@@ -480,6 +483,7 @@ public class NetworkHandler {
                     case "action_2_movement":
                         updateModelViewActionTwo(ackMessageMapped);
                         cli.newMotherNaturePosition(ackMessageMapped.getDestinationIsland_ID());
+                        TimeUnit.MILLISECONDS.sleep(500);
                         break;
 
                     case "action_2_influence":
@@ -493,6 +497,7 @@ public class NetworkHandler {
                             }
                         }
                         if (ackMessageMapped.isMasterChanged()) {
+                            modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).setMasterOfArchipelago(ackMessageMapped.getNewMaster_ID());
                             if (ackMessageMapped.getNewMaster_ID() == playerID && ackMessageMapped.getPreviousMaster_ID() != playerID) {
                                 cli.newMaster(modelView, playerID);
                             }else if(ackMessageMapped.getNewMaster_ID() != playerID && ackMessageMapped.getPreviousMaster_ID() == playerID){
@@ -513,7 +518,7 @@ public class NetworkHandler {
                             }else if(ackMessageMapped.getIslandsUnified().equals("both")){
                                 islandUnifiedFlag = 0;
                             }
-                            cli.showUnion(modelView, ackMessageMapped.getDestinationIsland_ID(), islandUnifiedFlag);
+                            cli.showUnion(modelView, motherNatureIslandID, islandUnifiedFlag, ackMessageMapped.getIslands_ID());
                         }
                         if(ackMessageMapped.getNextPlayer() == playerID) {
                             int cloudChosenID = cli.chooseCloud(playerID, modelView);
@@ -527,15 +532,17 @@ public class NetworkHandler {
                         }else if(ackMessageMapped.getNextPlayer() != playerID){
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
-                        TimeUnit.MILLISECONDS.sleep(500);
                         break;
+
                     case "action_3":
                         updateModelViewActionThree(ackMessageMapped);
                         if(ackMessageMapped.getNextPlayer() == playerID && ackMessageMapped.isNextPlanningPhase()){                 //inizia il nuovo round
+                            messengerActive = false;
                             cli.newRoundBeginning();
                             cli.bagClick();
                             sendBagClickedByFirstClient();
                         }else if(ackMessageMapped.getNextPlayer() != playerID && ackMessageMapped.isNextPlanningPhase()){
+                            messengerActive = false;
                             cli.newRoundBeginning();
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }else if(ackMessageMapped.getNextPlayer() != playerID && !ackMessageMapped.isNextPlanningPhase()){
@@ -560,7 +567,7 @@ public class NetworkHandler {
                             assistantChoiceFlag = false;
                         }
                         break;
-                    case "monk":
+                    case "monk":        //TODO ? help stampiamo cosa fanno i char?
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             int studentChosen = cli.choiceStudentMonk(modelView);
                             int islandChosen = cli.choiceIslandMonk(modelView);
@@ -729,6 +736,9 @@ public class NetworkHandler {
 
             case "character_ack":
                 AckCharactersMessage ackCharactersMessage = gsonObj.fromJson(receivedMessageInJson, AckCharactersMessage.class);
+                if(ackCharactersMessage.getCharacter().equals("messenger")){
+                    messengerActive = true;
+                }
                 //update:
                 updateCharacterCard(ackCharactersMessage);
                 //callFrom:
@@ -1348,7 +1358,7 @@ public class NetworkHandler {
 
         //update globale
         int newCoinPlayer = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) -(ackCharactersMessage.getCoinReserve() - modelView.getCoinGame()); //lo lasciamo come update globale visto che tutti possono vedere i soldi di tutti
-        modelView.getCoinPlayer().replace(playerID, newCoinPlayer);
+        modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newCoinPlayer);
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());           //update della riserva di coin
 
         if(characterUsed.equals("monk")){   //TODO isola monk errore nack da controllare
@@ -1416,6 +1426,10 @@ public class NetworkHandler {
 
     public String getLastCallFrom() {
         return lastCallFrom;
+    }
+
+    public boolean isMessengerActive() {
+        return messengerActive;
     }
 
     public void setLastCallFrom(String lastCallFrom) {

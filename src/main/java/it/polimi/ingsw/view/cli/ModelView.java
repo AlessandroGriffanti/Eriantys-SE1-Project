@@ -50,7 +50,7 @@ public class ModelView {
      * This attribute gathers all the 3 character cards available in the game, if played in expert mode.
      */
     private ArrayList<String> characterCardsInTheGame;
-    //private Set<String> characterCardsInTheGame;  //TODO NEL MESSAGGIO è UN SET, non array
+    //private Set<String> characterCardsInTheGame;
 
     //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
    // private ArrayList<Creature> StudentsOnTheClouds;
