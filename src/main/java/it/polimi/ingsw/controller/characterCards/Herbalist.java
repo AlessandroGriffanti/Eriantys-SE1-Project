@@ -55,6 +55,8 @@ public class Herbalist extends Character {
         ack.setIsland_ID(island_ID);
         ack.setNumberOfElementsOnTheCard(tilesOnTheCard);
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }
 

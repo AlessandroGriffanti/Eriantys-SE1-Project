@@ -97,6 +97,8 @@ public class Trafficker extends Character {
             ack.addPlayerDiningRoom(k, player.getSchoolBoard().getDiningRoom().getOccupiedSeats());
         }
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }
 

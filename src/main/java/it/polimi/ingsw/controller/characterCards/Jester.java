@@ -87,6 +87,8 @@ public class Jester extends Character {
         ack.setStudentsOnCard(this.studentsOnCard);
         ack.setEntranceOfPlayer(entrance.getStudentsInTheEntrance());
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }
 

@@ -1362,7 +1362,7 @@ public class NetworkHandler {
                     }
                 }
             }
-            int module = (modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackCharactersMessage.getTypeOfStudentMoved())) % 3;
+            int module = (modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackCharactersMessage.getCreature())) % 3;
             //System.out.println("occupied seats: " + module);
             if (module == 0) {
                 //System.out.println("old coin reserve chupd: " + modelView.getCoinGame());
