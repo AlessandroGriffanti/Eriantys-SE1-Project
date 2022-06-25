@@ -275,6 +275,7 @@ public class AckCharactersMessage extends AckMessage {
            - allPlayersProfessors: for each player his professors' table as array of Creature
 
         11. princess:
+           - creature: type of student chosen
            - studentsOnCard: students on the princess character card
            - playerDiningRoom: the new diningRoomOfThePlayer
            - allPlayersProfessors: for each player his professors' table as array of Creature
