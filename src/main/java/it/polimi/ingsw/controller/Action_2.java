@@ -240,6 +240,7 @@ public class Action_2 implements ControllerState{
         int unificationControl = match.islandUnifyControl();
         int previousIsland_ID = match.getRealmOfTheMatch().previousIsland(currentIsland);
         int nextIsland_ID = match.getRealmOfTheMatch().nextIsland(currentIsland);
+        ArrayList<Integer> islandsUnified_ID = new ArrayList<>();
 
         AckMessage ack = new AckMessage();
         ack.setSubObject("action_2_union");
@@ -248,6 +249,10 @@ public class Action_2 implements ControllerState{
         switch (unificationControl){
             case 1:
                 ack.setIslandsUnified("previous");
+
+                islandsUnified_ID.add(previousIsland_ID);
+                ack.setIslands_ID(islandsUnified_ID);
+
                 // if the previous island has at least one noEntryTile we remove it
                 if(match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).getNoEntryTiles() > 0){
                     match.getRealmOfTheMatch().getArchipelagos().get(previousIsland_ID).removeNoEntryTile();
@@ -263,6 +268,10 @@ public class Action_2 implements ControllerState{
 
             case 2:
                 ack.setIslandsUnified("next");
+
+                islandsUnified_ID.add(nextIsland_ID);
+                ack.setIslands_ID(islandsUnified_ID);
+
                 // if the next island has at least one noEntryTile we remove it
                 if(match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).getNoEntryTiles() > 0){
                     match.getRealmOfTheMatch().getArchipelagos().get(nextIsland_ID).removeNoEntryTile();
@@ -278,6 +287,11 @@ public class Action_2 implements ControllerState{
 
             case 3:
                 ack.setIslandsUnified("both");
+
+                islandsUnified_ID.add(previousIsland_ID);
+                islandsUnified_ID.add(nextIsland_ID);
+                ack.setIslands_ID(islandsUnified_ID);
+
                 // if the next or the previous island has at least one noEntryTile we remove only one of them
                 boolean alreadyRemovedTile = false;
 

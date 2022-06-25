@@ -73,6 +73,11 @@ public class AckMessage extends Message {
      */
     protected String islandsUnified = "none";
     /**
+     * This attribute is a list of island_IDs used to show which islands have been unified
+     * to the current one (where MN is)
+     */
+    private ArrayList<Integer> islands_ID;
+    /**
      * This attribute tells if a noEntryTile was removed from an island
      * (specified by the attribute)
      */
@@ -334,6 +339,16 @@ public class AckMessage extends Message {
     public Tower getTowerColor() {
         return towerColor;
     }
+
+    // SETTER AND GETTER FOR islands_ID
+
+    public void setIslands_ID(ArrayList<Integer> islands_ID) {
+        this.islands_ID = islands_ID;
+    }
+
+    public ArrayList<Integer> getIslands_ID() {
+        return islands_ID;
+    }
 }
 
 /*POSSIBLE VALUES OF "subObject":
@@ -412,6 +427,7 @@ public class AckMessage extends Message {
                           - previous
                           - next
                           - both
+        - 'islands_ID': IDs of the islands that have been unified to the current one
         - 'removedNoEntryTile' if an island  that was unified with the current one removed a noEntryTile
         - 'islandThatLostNoEntryTile' which one of the islands unified lost the noEntryTile
         - 'action3Valid'
