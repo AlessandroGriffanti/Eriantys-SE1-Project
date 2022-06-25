@@ -879,6 +879,7 @@ public class CLI {
             if(modelView.isExpertModeGame() == true){
                 for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
                     showCoinsPlayer(i, modelView);
+                    println(" ");
                 }
             }else{
                 println("There are no coins in the game since you are not playing in expert mode!");
@@ -1009,10 +1010,10 @@ public class CLI {
                         print(c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c) + "; ");
                     }
                 }
-                println(" ");
+                print(" ");
                 //Print of masters of the islands
                 if(modelView.getIslandGame().get(i).getMasterOfArchipelago() != -1){
-                    print("[Master on this island is Player " + modelView.getIslandGame().get(i).getMasterOfArchipelago() + ".] ");
+                    print("[Master on this island is Player " + modelView.getIslandGame().get(i).getMasterOfArchipelago() + "] ");
                 }
                 println(" ");
             }
@@ -1508,13 +1509,12 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Princess character card.
-     * @param studentsOnCard is the list of students on the Princess character card.
      * @return  the student ID chosen;
      */
-    public int choicePrincess(ArrayList<Creature> studentsOnCard){
+    public int choicePrincess(ModelView modelView){
         println("Which student do you choose? You will move it from the card to your Dining Room");
         int i = 0;
-        for(Creature c : studentsOnCard){
+        for(Creature c : modelView.getCharactersDataView().getPrincessStudents()){
             print(i + ": " + c + " ");
             i++;
         }
