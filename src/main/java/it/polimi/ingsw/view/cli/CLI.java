@@ -641,12 +641,13 @@ public class CLI {
      */
     public void showCharacterCardsInTheGame(ModelView modelView){
         if(modelView.isExpertModeGame() == true){
-            println("The character cards in this game are: ");
+            println("The character cards in this game are: ");      //todo virgole come in assistant choice
             for(String s : modelView.getCharacterCardsInTheGame()){
                 print(s + " ");
             }
             println(" ");
         }
+        println(" ");
     }
 
     /**

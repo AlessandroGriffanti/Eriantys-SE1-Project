@@ -1011,7 +1011,6 @@ public class NetworkHandler {
             }else if(matchStartMessage.getNumPlayer() == 3){
                 modelView.setCoinGame(17);
             }
-            System.out.println("coin reserve start: " + modelView.getCoinGame());
 
             modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters());
             for (String s : modelView.getCharacterCardsInTheGame()) {
@@ -1164,16 +1163,8 @@ public class NetworkHandler {
             if (ackMessageMapped.getIslandsUnified().equals("previous")) {               //copio le creature dall'isola previous a quella nuova dove arriva madre natura
 
                 //setting current and previous
-                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
-                int previousIslandID;
-                if(ackMessageMapped.getDestinationIsland_ID() == 0) {
-                    previousIslandID = 11;
-                }else{
-                    previousIslandID = ackMessageMapped.getDestinationIsland_ID() - 1;
-                }
-                while(modelView.getIslandGame().get(previousIslandID) == null) {
-                    previousIslandID -= 1;
-                }
+                int currentIslandID = motherNatureIslandID;
+                int previousIslandID = ackMessageMapped.getIslands_ID().get(0);
 
                 //students
                 for (Creature c : Creature.values()) {
@@ -1205,16 +1196,8 @@ public class NetworkHandler {
 
             } else if (ackMessageMapped.getIslandsUnified().equals("next")) {
                 //setting current and next
-                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
-                int nextIslandID;
-                if(ackMessageMapped.getDestinationIsland_ID() == 11) {
-                    nextIslandID = 0;
-                }else{
-                    nextIslandID = ackMessageMapped.getDestinationIsland_ID() + 1;
-                }
-                while(modelView.getIslandGame().get(nextIslandID) == null) {
-                    nextIslandID += 1;
-                }
+                int currentIslandID = motherNatureIslandID;
+                int nextIslandID = ackMessageMapped.getIslands_ID().get(0);
 
                 //students
                 for (Creature c : Creature.values()) {
@@ -1245,27 +1228,9 @@ public class NetworkHandler {
 
             } else if (ackMessageMapped.getIslandsUnified().equals("both")) {
                 //setting current, next and previous
-                int currentIslandID = ackMessageMapped.getDestinationIsland_ID();
-                int previousIslandID;
-                int nextIslandID;
-
-                if(ackMessageMapped.getDestinationIsland_ID() == 0) {
-                    previousIslandID = 11;
-                }else{
-                    previousIslandID = ackMessageMapped.getDestinationIsland_ID() - 1;
-                }
-                while(modelView.getIslandGame().get(previousIslandID) == null) {
-                    previousIslandID -= 1;
-                }
-
-                if(ackMessageMapped.getDestinationIsland_ID() == 11) {
-                    nextIslandID = 0;
-                }else{
-                    nextIslandID = ackMessageMapped.getDestinationIsland_ID() + 1;
-                }
-                while(modelView.getIslandGame().get(nextIslandID) == null) {
-                    nextIslandID += 1;
-                }
+                int currentIslandID = motherNatureIslandID;
+                int previousIslandID = ackMessageMapped.getIslands_ID().get(0);
+                int nextIslandID = ackMessageMapped.getIslands_ID().get(1);
 
                 //students
                 for (Creature c : Creature.values()) {
