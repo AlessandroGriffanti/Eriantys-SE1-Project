@@ -274,9 +274,14 @@ public class CLI {
      * This method is used to notify the player that it's not his turn, so he has to wait.
      */
     public void turnWaiting (int nowPlayingPlayerId) {
-        println(" ");
-        println("Player " + nowPlayingPlayerId + " is now playing... Wait for your turn!");
-        println(" ");
+        if(nowPlayingPlayerId == -1){
+            println("He is now playing... Wait for your turn!");
+            println(" ");
+        }else {
+            println(" ");
+            println("Player " + nowPlayingPlayerId + " is now playing... Wait for your turn!");
+            println(" ");
+        }
     }
 
     /**
@@ -642,8 +647,12 @@ public class CLI {
     public void showCharacterCardsInTheGame(ModelView modelView){
         if(modelView.isExpertModeGame() == true){
             println("The character cards in this game are: ");      //todo virgole come in assistant choice
+            int i = 0;
             for(String s : modelView.getCharacterCardsInTheGame()){
-                print(s + " ");
+                print(s);
+                if(i < modelView.getCharacterCardsInTheGame().size()){
+                    print(", ");
+                }
             }
             println(" ");
         }
@@ -811,7 +820,7 @@ public class CLI {
         String request = scannerCLI.next();
 
         while(!(request.equals("diningroom") || request.equals("island") || request.equals("show") || request.equals("character"))){    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
-            println("Please insert a valid request: (diningroom/island/show/character");
+            println("Please insert a valid request: (diningroom/island/show/character)");
             request = scannerCLI.next();
         }
         while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
@@ -833,7 +842,7 @@ public class CLI {
             println(" ");
             islandChosen = scannerCLI.nextInt();
 
-            while (islandChosen < 0 || islandChosen >= 12) {
+            while (islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null) {
                 println("Please insert a valid island ID: ");
                 islandChosen = scannerCLI.nextInt();
             }
@@ -884,8 +893,8 @@ public class CLI {
             if(modelView.isExpertModeGame() == true){
                 for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
                     showCoinsPlayer(i, modelView);
-                    println(" ");
                 }
+                println(" ");
                 showCoinsReserve(modelView);
             }else{
                 println("There are no coins in the game since you are not playing in expert mode!");
