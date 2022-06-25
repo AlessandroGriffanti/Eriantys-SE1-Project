@@ -487,8 +487,7 @@ public class NetworkHandler {
                         break;
 
                     case "action_2_influence":
-                        updateModelViewActionTwo(ackMessageMapped);
-                        int motherNatureIslandID = 0;
+                        updateModelViewActionTwo(ackMessageMapped);;
                         for (int i = 0; i < 12; i++) {
                             if(modelView.getIslandGame().get(i) != null) {
                                 if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
