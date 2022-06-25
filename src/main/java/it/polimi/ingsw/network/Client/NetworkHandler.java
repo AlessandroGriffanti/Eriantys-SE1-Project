@@ -496,7 +496,7 @@ public class NetworkHandler {
                             }
                         }
                         if (ackMessageMapped.isMasterChanged()) {
-                            modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).setMasterOfArchipelago(ackMessageMapped.getNewMaster_ID());
+                            modelView.getIslandGame().get(motherNatureIslandID).setMasterOfArchipelago(ackMessageMapped.getNewMaster_ID());
                             if (ackMessageMapped.getNewMaster_ID() == playerID && ackMessageMapped.getPreviousMaster_ID() != playerID) {
                                 cli.newMaster(modelView, playerID);
                             }else if(ackMessageMapped.getNewMaster_ID() != playerID && ackMessageMapped.getPreviousMaster_ID() == playerID){
