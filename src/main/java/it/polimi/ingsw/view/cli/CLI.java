@@ -737,8 +737,12 @@ public class CLI {
         println(" ");
     }
 
+    public void showCoinsReserve(ModelView modelView){
+        println("Number of coins in reserve: " + modelView.getCoinGame() );
+    }
+
     public void showCoinsPlayer(int playerID, ModelView modelView){
-        println("Number of coins of player " + playerID +": " + modelView.getCoinPlayer().get(playerID));
+        println("Number of coins of player " + playerID + ": " + modelView.getCoinPlayer().get(playerID));
     }
     /**
      * This method is used to show to the player the number of his remainig towers in the Tower area of his schoolboard.
@@ -881,6 +885,7 @@ public class CLI {
                     showCoinsPlayer(i, modelView);
                     println(" ");
                 }
+                showCoinsReserve(modelView);
             }else{
                 println("There are no coins in the game since you are not playing in expert mode!");
             }
@@ -1245,7 +1250,7 @@ public class CLI {
         int studentChosen;
         println("Which student do you want to move from this card? (0-3)");
         for (Creature c : modelView.getCharactersDataView().getMonkStudents()) {
-            print(c + " ");
+            print(c + " ");     //todo id e a capo
         }
         println(" ");
         studentChosen = scannerCLI.nextInt();
@@ -1283,17 +1288,26 @@ public class CLI {
     public ArrayList<Integer> choiceStudentEntranceJester(int playerID, ModelView modelView) {
         ArrayList<Integer> studentsFromEntranceJester = new ArrayList<>();
         int studentChosen;
+        String request;
         int maxNumberOfStudents = 0;
+
         println("Which student do you want to move from the entrance? ");
         showStudentsInEntrancePlayer(playerID, modelView);
+
         while(maxNumberOfStudents < 3) {
-            studentChosen = scannerCLI.nextInt();
-            while (studentChosen < 0 || studentChosen > modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()) {
-                println("Please insert a valid student: ");
-                studentChosen = scannerCLI.nextInt();
+            request = scannerCLI.next();
+            if (!request.equals("stop")) {
+                studentChosen = Integer.parseInt(request);
+               if (studentChosen < 0 || studentChosen > modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size() || modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null) {
+                    println("Please insert a valid student or write 'stop': ");
+                }else{
+                   println("Ok, insert another one or write 'stop':");
+                   studentsFromEntranceJester.add(studentChosen);
+                   maxNumberOfStudents ++;
+               }
+            }else{
+                maxNumberOfStudents = 3;
             }
-            studentsFromEntranceJester.add(studentChosen);
-            maxNumberOfStudents ++;
         }
         return studentsFromEntranceJester;
     }
@@ -1318,7 +1332,7 @@ public class CLI {
             studentChosen = scannerCLI.nextInt();
             while (studentChosen < 0 || studentChosen > modelView.getCharactersDataView().getJesterStudents().size()) {
                 println("Please insert a valid student: ");
-                studentChosen = scannerCLI.nextInt();
+                studentChosen = scannerCLI.nextInt();               //todo al massimo 3, dare la possibilità di scelta
             }
             studentsFromCardJester.add(studentChosen);
             maxNumberOfStudents ++;
