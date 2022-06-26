@@ -125,7 +125,9 @@ public class Action_1 implements ControllerState{
             ack.setSubObject("action_1_island");
             ack.setDestinationIsland_ID(request.getLocation());
 
-            match.moveStudentFromEntranceToIsland(request.getStudent_ID(), request.getLocation());
+            if(match.getRealmOfTheMatch().getArchipelagos().get(request.getLocation()) != null){
+                match.moveStudentFromEntranceToIsland(request.getStudent_ID(), request.getLocation());
+            }
         }
 
         // send the ack message in broadcast

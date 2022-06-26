@@ -90,6 +90,8 @@ public class Princess extends Character {
             ack.setPlayerProfessors(k, player.getMyProfessors());
         }
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }
 

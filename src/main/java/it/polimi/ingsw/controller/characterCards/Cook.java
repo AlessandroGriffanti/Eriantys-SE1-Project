@@ -41,6 +41,8 @@ public class Cook  extends Character {
         int coinsInReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "cook", coinsInReserve);
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }
 }

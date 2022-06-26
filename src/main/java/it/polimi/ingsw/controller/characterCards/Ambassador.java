@@ -184,10 +184,12 @@ public class Ambassador extends Character {
 
             // send the ack message and calls the end of the match because there are only 3 islands left
             ack.setEndOfMatch(true);
+            ack.setPlayerCoins(match.getPlayerByID(request.getSender_ID()).getCoinsOwned());
             controller.sendMessageAsBroadcast(ack);
             SupportFunctions.endMatch(controller, "three_islands");
 
         }else{
+            ack.setPlayerCoins(match.getPlayerByID(request.getSender_ID()).getCoinsOwned());
             controller.sendMessageAsBroadcast(ack);
         }
     }

@@ -74,6 +74,8 @@ public class Monk  extends Character {
         ack.setStudentsOnCard(this.students);
         ack.setIsland_ID(island_ID);
 
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
 
     }

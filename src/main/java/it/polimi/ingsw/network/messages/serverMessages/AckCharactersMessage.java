@@ -18,6 +18,11 @@ public class AckCharactersMessage extends AckMessage {
      */
     private int coinReserve;
     /**
+     * This attribute is the number of coins owned by the player that used the character
+     * card
+     */
+    private int playerCoins;
+    /**
      * This attribute is a single student taken/put because of the effect of some character cards
      */
     private Creature student;
@@ -222,6 +227,14 @@ public class AckCharactersMessage extends AckMessage {
 
     public Tower getTowerColor() {
         return towerColor;
+    }
+
+    public void setPlayerCoins(int playerCoins) {
+        this.playerCoins = playerCoins;
+    }
+
+    public int getPlayerCoins() {
+        return playerCoins;
     }
 }
 
