@@ -168,10 +168,14 @@ public class Controller {
             if(cards.containsKey("monk")){
                 Monk ch = (Monk)cards.get("monk");
                 startMessage.setMonkStudents(ch.getStudents());
-            }else if(cards.containsKey("jester")){
+            }
+
+            if(cards.containsKey("jester")){
                 Jester ch = (Jester) cards.get("jester");
                 startMessage.setJesterStudents(ch.getStudentsOnCard());
-            }else if(cards.containsKey("princess")){
+            }
+
+            if(cards.containsKey("princess")){
                 Princess ch = (Princess) cards.get("princess");
                 startMessage.setPrincessStudents(ch.getStudentsOnPrincess());
             }
