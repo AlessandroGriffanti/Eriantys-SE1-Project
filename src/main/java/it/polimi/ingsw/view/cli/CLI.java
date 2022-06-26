@@ -893,7 +893,15 @@ public class CLI {
             }
         }else if(str.equals("characters")){
             for(String s : modelView.getCharacterCardsInTheGame()){
-                print(s + " ");
+                if(s.equals("monk")){
+                    println("monk: " + modelView.getCharactersDataView().getMonkStudents());
+                }else if(s.equals("princess")){
+                    println("princess: " + modelView.getCharactersDataView().getPrincessStudents());
+                }else if(s.equals("jester")){
+                    println("jester: " + modelView.getCharactersDataView().getJesterStudents());
+                }else{
+                    println(s);
+                }
             }
             println(" ");
         }else if(str.equals("clouds")){
