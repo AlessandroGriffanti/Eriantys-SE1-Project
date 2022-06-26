@@ -784,8 +784,13 @@ public class CLI {
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                studentChosen = -2;                                               //character nel net. handler
-                rightStudentChosen = true;                                        //settiamo a true perchè vogliamo uscire dal while principale e, di fatto, dall'intero metodo
+                if(networkHandler.isCharacterUsed()){
+                    println("You already used a character in this round. Insert another request: ");
+                    request = scannerCLI.next();
+                }else {
+                    studentChosen = -2;                                               //character nel net. handler
+                    rightStudentChosen = true;                                        //settiamo a true perchè vogliamo uscire dal while principale e, di fatto, dall'intero metodo
+                }
             } else {
                 try {
                     studentChosen = Integer.parseInt(request);
@@ -816,7 +821,7 @@ public class CLI {
      */
     public int choiceLocationToMove(int playerID, ModelView modelView) {
         println("Now you have to move the student you chose to the diningroom or on an island: where do you want to move him? ");
-        int islandChosen;
+        int islandChosen = -1;
         String request = scannerCLI.next();
 
         while(!(request.equals("diningroom") || request.equals("island") || request.equals("show") || request.equals("character"))){    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
@@ -829,7 +834,12 @@ public class CLI {
             request = scannerCLI.next();
         }
         if(request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-            islandChosen = -2;
+            if(networkHandler.isCharacterUsed()){
+                println("You already used a character in this round. Insert another request: ");
+                request = scannerCLI.next();
+            }else {
+                islandChosen = -2;
+            }
         }else if (request.equals("island")) {                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
             println(" ");
             println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
@@ -936,8 +946,13 @@ public class CLI {
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                chosenIslandID = -2;                                             //character nel net. handler
-                rightIslandChosen = true;                                       //settiamo a true perchè vogliamo uscire dal while e quindi dal metodo
+                if(networkHandler.isCharacterUsed()){
+                    println("You already used a character in this round. Insert another request: ");
+                    request = scannerCLI.next();
+                }else {
+                    chosenIslandID = -2;                                             //character nel net. handler
+                    rightIslandChosen = true;                                       //settiamo a true perchè vogliamo uscire dal while e quindi dal metodo
+                }
             } else {
                 try {
                     chosenIslandID = Integer.parseInt(request);
@@ -1156,8 +1171,13 @@ public class CLI {
             }
 
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                cloudChosen = -2;                                             //character nel net. handler
-                rightCloudChosen = true;
+                if(networkHandler.isCharacterUsed()){
+                    println("You already used a character in this round. Insert another request: ");
+                    request = scannerCLI.next();
+                }else {
+                    cloudChosen = -2;                                             //character nel net. handler
+                    rightCloudChosen = true;
+                }
             } else {
                 try {
                     cloudChosen = Integer.parseInt(request);
@@ -1373,7 +1393,11 @@ public class CLI {
             }
             studentsFromCardJester.add(studentChosen);
             maxNumberOfStudents ++;
-            println("Ok, insert another one: ");
+            if(maxNumberOfStudents < networkHandler.getJesterNumber()) {
+                println("Ok, insert another one: ");
+            }else{
+                println("Ok!");
+            }
         }
         return studentsFromCardJester;
     }
@@ -1448,7 +1472,7 @@ public class CLI {
         ArrayList<Integer> studentsFromEntranceBard = new ArrayList<>();
         int studentChosen;
         int maxNumberOfStudents = 0;
-        println("Which student do you want to move from the entrance? ");
+        println("Which student do you want to move from the entrance? (bard)");
         showStudentsInEntrancePlayer(playerID, modelView);
         while(maxNumberOfStudents < 2) {
             studentChosen = scannerCLI.nextInt();

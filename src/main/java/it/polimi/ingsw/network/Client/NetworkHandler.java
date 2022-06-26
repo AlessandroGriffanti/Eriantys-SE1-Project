@@ -83,6 +83,8 @@ public class NetworkHandler {
 
     private int jesterNumber = 0;
 
+    private boolean characterUsed = false;
+
     /**
      * NetworkHandler constructor which creates a new instance of the NetworkHandler.
      *
@@ -541,11 +543,13 @@ public class NetworkHandler {
                         updateModelViewActionThree(ackMessageMapped);
                         if(ackMessageMapped.getNextPlayer() == playerID && ackMessageMapped.isNextPlanningPhase()){                 //inizia il nuovo round
                             messengerActive = false;
+                            characterUsed = false;
                             cli.newRoundBeginning();
                             cli.bagClick();
                             sendBagClickedByFirstClient();
                         }else if(ackMessageMapped.getNextPlayer() != playerID && ackMessageMapped.isNextPlanningPhase()){
                             messengerActive = false;
+                            characterUsed = false;
                             cli.newRoundBeginning();
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }else if(ackMessageMapped.getNextPlayer() != playerID && !ackMessageMapped.isNextPlanningPhase()){
@@ -739,6 +743,7 @@ public class NetworkHandler {
                 break;
 
             case "character_ack":
+                characterUsed = true;
                 AckCharactersMessage ackCharactersMessage = gsonObj.fromJson(receivedMessageInJson, AckCharactersMessage.class);
                 if(ackCharactersMessage.getCharacter().equals("messenger")){
                     messengerActive = true;
@@ -1449,6 +1454,14 @@ public class NetworkHandler {
 
     public boolean isMatchStarted() {
         return matchStarted;
+    }
+
+    public boolean isCharacterUsed() {
+        return characterUsed;
+    }
+
+    public void setCharacterUsed(boolean characterUsed) {
+        this.characterUsed = characterUsed;
     }
 }
 
