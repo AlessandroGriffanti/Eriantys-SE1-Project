@@ -400,7 +400,7 @@ public class NetworkHandler {
                     case "action_1_dining_room":
                         updateModelViewActionOne(ackMessageMapped);
 
-                        if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {            //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su diningroom
+                        if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {
                             studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                             if(studentChosen == -2){
                                 lastCallFrom = "choiceOfStudentsToMove";
@@ -1062,17 +1062,32 @@ public class NetworkHandler {
      * @param ackMessageMapped is the ack message received.
      */
     public void updateModelViewActionOne(AckMessage ackMessageMapped) {
-        if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken() == true){                    //questo update va fatto indipendentemente da chi è il nextplayer
+        if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken() == true){
             modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se c'era un precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
         }
         if (ackMessageMapped.getRecipient() == playerID) {
             if (ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
-                modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
-                int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());           //prendo il numero di studenti attualmente nella diningroom del tipo di stud mosso dal giocatore
-                modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);            //updato la diningroom del giocatore aumentando di 1 il numero del relativo stud
-                if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) == false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
-                    modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
+                modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
+                int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());
+                modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), (numberOfStudentOfType + 1) );
+                if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()) == false) {
+                    modelView.getSchoolBoardPlayers().get(playerID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());
                 }
+
+                //UPDATE COINS:
+                //System.out.println("get type student moved: " + modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()));
+                int module = (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) % 3;
+                //System.out.println("occupied seats: " + module);
+                if (module == 0) {
+                    //System.out.println("old coin reserve act1: " + modelView.getCoinGame());
+                    //System.out.println("old coin player act1: " + ackMessageMapped.getRecipient() + modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()));
+                    int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
+                    //System.out.println("new coin player act1: " + newPlayerCoin);
+                    modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
+                    modelView.setCoinGame(modelView.getCoinGame() - 1);
+                    //System.out.println("new coin reserve act1: " + modelView.getCoinGame());
+                }
+
             } else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
@@ -1086,22 +1101,25 @@ public class NetworkHandler {
                 if(ackMessageMapped.isProfessorTaken() && modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())== false) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
                     modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
                 }
+
+                //UPDATE COINS:
+                //System.out.println("get type student moved: " + modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()));
+                int module = (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) % 3;
+                //System.out.println("occupied seats: " + module);
+                if (module == 0) {
+                    //System.out.println("old coin reserve act1: " + modelView.getCoinGame());
+                    //System.out.println("old coin player act1: " + ackMessageMapped.getRecipient() + modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()));
+                    int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
+                    //System.out.println("new coin player act1: " + newPlayerCoin);
+                    modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
+                    modelView.setCoinGame(modelView.getCoinGame() - 1);
+                    //System.out.println("new coin reserve act1: " + modelView.getCoinGame());
+                }
+
             }else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
                 modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
             }
-        }
-        //System.out.println("get type student moved: " + modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()));
-        int module = (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) % 3;
-        //System.out.println("occupied seats: " + module);
-        if (module == 0) {
-            //System.out.println("old coin reserve act1: " + modelView.getCoinGame());
-            //System.out.println("old coin player act1: " + ackMessageMapped.getRecipient() + modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()));
-            int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
-            //System.out.println("new coin player act1: " + newPlayerCoin);
-            modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
-            modelView.setCoinGame(modelView.getCoinGame() - 1);
-            //System.out.println("new coin reserve act1: " + modelView.getCoinGame());
         }
     }
 
