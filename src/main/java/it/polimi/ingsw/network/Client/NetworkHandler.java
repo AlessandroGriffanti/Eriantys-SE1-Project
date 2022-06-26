@@ -81,6 +81,8 @@ public class NetworkHandler {
 
     private boolean messengerActive = false;
 
+    private int jesterNumber = 0;
+
     /**
      * NetworkHandler constructor which creates a new instance of the NetworkHandler.
      *
@@ -598,6 +600,7 @@ public class NetworkHandler {
                             ArrayList<Integer> studentsFromEntranceJester = cli.choiceStudentEntranceJester(playerID, modelView);
                             ArrayList<Integer> studentsFromCardJester = cli.choiceStudentCardJester(modelView);
                             sendCharacterDataJester(studentsFromEntranceJester, studentsFromCardJester);
+
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }
@@ -1003,6 +1006,8 @@ public class NetworkHandler {
     public void updateStartModelView(MatchStartMessage matchStartMessage) {
         numberOfStudentToMoveAction1 = matchStartMessage.getNumPlayer() + 1;                                 //settiamo il numero di studenti massimi che possono essere mossi nell'action 1 in base al numero di giocatori totali
 
+        assistantChoiceFlag = false;
+
         modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                      //setto il numero di giocatori totali della partita
         modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
         if (modelView.isExpertModeGame() == true) {
@@ -1062,6 +1067,7 @@ public class NetworkHandler {
      * @param ackMessageMapped is the ack message received.
      */
     public void updateModelViewActionOne(AckMessage ackMessageMapped) {
+        assistantChoiceFlag = false;
         if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken() == true){
             modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se c'era un precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
         }
@@ -1426,6 +1432,14 @@ public class NetworkHandler {
 
     public boolean isMessengerActive() {
         return messengerActive;
+    }
+
+    public int getJesterNumber() {
+        return jesterNumber;
+    }
+
+    public void setJesterNumber(int jesterNumber) {
+        this.jesterNumber = jesterNumber;
     }
 
     public void setLastCallFrom(String lastCallFrom) {

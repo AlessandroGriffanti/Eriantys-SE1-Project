@@ -1259,8 +1259,16 @@ public class CLI {
     public int choiceStudentMonk(ModelView modelView) {
         int studentChosen;
         println("Which student do you want to move from this card? (0-3)");
+        int i = 0;
         for (Creature c : modelView.getCharactersDataView().getMonkStudents()) {
-            print(c + " ");     //todo id e a capo
+            print(i + ": " + c);
+            i++;
+            if(i < modelView.getCharactersDataView().getMonkStudents().size()){
+                println("; ");
+            }else{
+                println(". ");
+                println(" ");
+            }
         }
         println(" ");
         studentChosen = scannerCLI.nextInt();
@@ -1301,7 +1309,20 @@ public class CLI {
         String request;
         int maxNumberOfStudents = 0;
 
-        println("Which student do you want to move from the entrance? ");
+        println("Student on the Jester Card: ");
+        int i = 0;
+        for(Creature c : modelView.getCharactersDataView().getJesterStudents()){
+            print( i + ": " + c);
+            i++;
+            if(i < modelView.getCharactersDataView().getJesterStudents().size()){
+                println("; ");
+            }else{
+                println(". ");
+                println(" ");
+            }
+        }
+
+        println("Which student do you want to move from the entrance? (Insert the ID)");
         showStudentsInEntrancePlayer(playerID, modelView);
 
         while(maxNumberOfStudents < 3) {
@@ -1311,11 +1332,12 @@ public class CLI {
                if (studentChosen < 0 || studentChosen > modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size() || modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null) {
                     println("Please insert a valid student or write 'stop': ");
                 }else{
-                   println("Ok, insert another one or write 'stop':");
                    studentsFromEntranceJester.add(studentChosen);
                    maxNumberOfStudents ++;
+                   println("Ok, insert another one or write 'stop':");
                }
             }else{
+                networkHandler.setJesterNumber(maxNumberOfStudents);
                 maxNumberOfStudents = 3;
             }
         }
@@ -1336,16 +1358,22 @@ public class CLI {
         for(Creature c : modelView.getCharactersDataView().getJesterStudents()){
             print( i + ": " + c + " ");
             i++;
+            if(i < modelView.getCharactersDataView().getJesterStudents().size()){
+                println("; ");
+            }else{
+                println(" ");
+            }
         }
         println(" ");
-        while(maxNumberOfStudents < 3) {
+        while(maxNumberOfStudents < networkHandler.getJesterNumber()) {
             studentChosen = scannerCLI.nextInt();
             while (studentChosen < 0 || studentChosen > modelView.getCharactersDataView().getJesterStudents().size()) {
                 println("Please insert a valid student: ");
-                studentChosen = scannerCLI.nextInt();               //todo al massimo 3, dare la possibilità di scelta
+                studentChosen = scannerCLI.nextInt();
             }
             studentsFromCardJester.add(studentChosen);
             maxNumberOfStudents ++;
+            println("Ok, insert another one: ");
         }
         return studentsFromCardJester;
     }
@@ -1539,10 +1567,15 @@ public class CLI {
         println("Which student do you choose? You will move it from the card to your Dining Room");
         int i = 0;
         for(Creature c : modelView.getCharactersDataView().getPrincessStudents()){
-            print(i + ": " + c + " ");
+            print(i + ": " + c);
             i++;
+            if(i < modelView.getCharactersDataView().getPrincessStudents().size()){
+                println("; ");
+            }else{
+                println(". ");
+                println(" ");
+            }
         }
-        println(" ");
 
         int chosenStudentIDByClient = scannerCLI.nextInt();
         while ((chosenStudentIDByClient < 0 || chosenStudentIDByClient > 3 )){
@@ -1577,7 +1610,6 @@ public class CLI {
      */
     public void characterConfirm(String characterUsed){
         println(characterUsed + " used correctly!");
-
     }
 
 
