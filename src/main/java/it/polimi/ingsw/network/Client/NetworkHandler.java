@@ -1344,7 +1344,7 @@ public class NetworkHandler {
         String characterUsed = ackCharactersMessage.getCharacter();
         //cli.characterConfirm(characterUsed);
 
-        if(characterUsed.equals("monk")){   //TODO isola monk errore nack da controllare
+        if(characterUsed.equals("monk")){
             modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addStudent(ackCharactersMessage.getStudent());
         }else if(characterUsed.equals("bard")){
             modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
@@ -1359,6 +1359,7 @@ public class NetworkHandler {
                     }
                 }
             }
+            modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
         }else if(characterUsed.equals("jester")){
             modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
             modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
@@ -1409,14 +1410,14 @@ public class NetworkHandler {
             }
         }
 
-        System.out.println("old coin reserve chupd: " + modelView.getCoinGame());
-        System.out.println("old coin player chupd: " + ackCharactersMessage.getRecipient() + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
+        //System.out.println("old coin reserve chupd: " + modelView.getCoinGame());
+        //System.out.println("old coin player chupd: " + ackCharactersMessage.getRecipient() + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
         int newCoinPlayer = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) - (ackCharactersMessage.getCoinReserve() - modelView.getCoinGame());
-        System.out.println("new coin player chupd: " + newCoinPlayer);
+        //System.out.println("new coin player chupd: " + newCoinPlayer);
         modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newCoinPlayer);
-        System.out.println("new coin player after replacing chupd: " + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
+        //System.out.println("new coin player after replacing chupd: " + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
-        System.out.println("new coin reserve chupd: " + modelView.getCoinGame());
+        //System.out.println("new coin reserve chupd: " + modelView.getCoinGame());
     }
 
     public void matchIsEnded(String receivedMessageInJson){
