@@ -252,6 +252,15 @@ public class CLI {
     }
 
     /**
+     * This method is used to notify the player he can't join the chose lobby because is full.
+     * @param explanation is the explanation of the nack message.
+     */
+    public void lobbyChosenNotAvailable(String explanation){
+        println(explanation);
+        println("Try to reconnect to the server!");
+    }
+
+    /**
      * This method is used to notify the player that he received a wrong message.
      */
     public void errorObject () {
@@ -301,6 +310,26 @@ public class CLI {
     public void turnWaitingDecks (int nowPlayingPlayerId) {
         println(" ");
         println("Player " + nowPlayingPlayerId + " is now choosing the Wizard for his Deck... Wait for your turn! ");
+        println(" ");
+    }
+
+    /**
+     * This method is used to notify the player that it's not his turn when choosing the assistant, so he has to wait.
+     * @param nowPlayingPlayerId is the int ID of the player who is currently choosing.
+     */
+    public void turnWaitingAssistant (int nowPlayingPlayerId) {
+        println(" ");
+        println("Player " + nowPlayingPlayerId + " is now choosing the Assistant card for this round... Wait for your turn! ");
+        println(" ");
+    }
+
+    /**
+     * This method is used to notify the player that it's not his turn and another player is choosing the cloud he wants to take the students from, so he has to wait.
+     * @param nowPlayingPlayerId is the int ID of the player who is currently choosing.
+     */
+    public void turnWaitingClouds (int nowPlayingPlayerId) {
+        println(" ");
+        println("Player " + nowPlayingPlayerId + " is now choosing the Cloud he wants to take the students from... Wait for your turn! ");
         println(" ");
     }
 
@@ -597,10 +626,14 @@ public class CLI {
         int assistantChosen = -1;
         String request;
         int counter = 0;
+        boolean checkNoAvailability = false;
 
-        println("Which assistant do you want to play?");
+        ArrayList<Integer> availableAssistantCardArray = new ArrayList<>();
+
+        println("Which assistant do you want to play from your deck?");
         for(Integer i : availableAssistantCard.keySet()){
             printInt(i);
+            availableAssistantCardArray.add(i);
             if(counter +1 != availableAssistantCard.size()){
                 print(", ");
             }
@@ -617,16 +650,24 @@ public class CLI {
         }
         println(") ");
 
+        //check equality:
+        checkNoAvailability = availableAssistantCardArray.equals(assistantCardsAlreadyUsedThisRound);
+
         request = scannerCLI.next();
 
-        while(rightAssistantChosen == false) {
+        while(!rightAssistantChosen) {
             try {
                 assistantChosen = Integer.parseInt(request);
                 if (assistantCardsAlreadyUsedThisRound.contains(assistantChosen)) {
-                    println("You can't use this assistant, it has already been used this round by another player. Please select another one: ");
-                    request = scannerCLI.next();
+                    if(checkNoAvailability){
+                        println("You can use this assistant even though it has already been played in this round by another player (You only have cards already played by other players).");
+                        rightAssistantChosen = true;
+                    }else {
+                        println("You can't use this assistant, it has already been used in this round by another player. Please select another one: ");
+                        request = scannerCLI.next();
+                    }
                 }else if (!(availableAssistantCard.containsKey(assistantChosen))) {
-                    println("You can't use this assistant, it has already been used in the previous rounds. Please select another one: ");
+                    println("You can't use this assistant, you have already used it in the previous rounds. Please select another one: ");
                     request = scannerCLI.next();
                 }else {
                     rightAssistantChosen = true;
@@ -635,7 +676,7 @@ public class CLI {
                 println("Please insert a valid assistant id: (1-10)");
                 request = scannerCLI.next();
             }
-        }           //TODO controllo che se ne rimangono solo carte già scelte, deve andare bene comunque (confronto i due array)
+        }
         return  assistantChosen;
     }
 
@@ -646,7 +687,7 @@ public class CLI {
      */
     public void showCharacterCardsInTheGame(ModelView modelView){
         if(modelView.isExpertModeGame() == true){
-            println("The character cards in this game are: ");      //todo virgole come in assistant choice
+            println("The character cards in this game are: ");
             int i = 0;
             for(String s : modelView.getCharacterCardsInTheGame()){
                 print(s);
@@ -775,7 +816,7 @@ public class CLI {
         boolean rightStudentChosen = false;                                       //viene settata a true solo se inserisco "character" oppure se inserisco uno studente valido
         println("Which student do you want to move from the entrance?");
         showStudentsInEntrancePlayer(playerID, modelView);
-        while(rightStudentChosen == false) {
+        while(!rightStudentChosen) {
             request = scannerCLI.next();
             while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
                 show(playerID, modelView);
@@ -784,7 +825,7 @@ public class CLI {
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(modelView.isExpertModeGame() == true) {
+                if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
@@ -827,7 +868,7 @@ public class CLI {
         String request;
         boolean rightLocationChosen = false;
 
-        while(rightLocationChosen == false) {    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
+        while(!rightLocationChosen) {
             request = scannerCLI.next();
             while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
                 show(playerID, modelView);
@@ -848,7 +889,7 @@ public class CLI {
                 }
             } else if (request.equals("island")) {                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
                 println(" ");
-                println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
+                println("On which island do you want to move your students? ");
 
                 for (int i = 0; i < 12; i++) {
                     if (modelView.getIslandGame().get(i) != null) {
@@ -883,7 +924,7 @@ public class CLI {
         String str = scannerCLI.next();
 
         while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
-            println("Please insert one of the following: diningroom/islands/both/professortable/characters/nothing");
+            println("Please insert one of the following: diningroom/islands/both/professortable/characters/nothing");       //todo correggere tutti gli show
             str = scannerCLI.nextLine();
         }
 
@@ -958,7 +999,16 @@ public class CLI {
         }else{
             println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s) clockwise ");
         }
-        println("Insert the island ID where you want to move her:  ");
+
+        println("On which island do you want to move your mother nature? Insert the island ID where you want to move her: ");
+        println("Islands: ");
+        for (int i = 0; i < 12; i++) {
+            if (modelView.getIslandGame().get(i) != null) {
+                print(i + " ");
+            }
+        }
+        println(" ");
+
         boolean rightIslandChosen = false;                              //viene settato a true solo se inserisce character o un'isola valida
         int chosenIslandID = -1;
         String request;

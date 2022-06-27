@@ -354,8 +354,9 @@ public class NetworkHandler {
 
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {                 //se non tocca a te e non l'hai ancora scelta
-                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
+
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {                 //se non tocca a te e non l'hai ancora scelta
+                            cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
@@ -370,11 +371,11 @@ public class NetworkHandler {
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {
-                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {
+                            cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag) {
-                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == true) {
+                            cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) {   //tocca a te e hai già scelto, mandi il messaggio movedStudentsFromEntrance
                             assistantChoiceFlag = false;
@@ -533,7 +534,7 @@ public class NetworkHandler {
                             }
                             sendChosenCloudMessage(cloudChosenID);
                         }else if(ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
+                            cli.turnWaitingClouds(ackMessageMapped.getNextPlayer());
                         }
                         break;
 
@@ -722,15 +723,18 @@ public class NetworkHandler {
                         break;
 
                     case "herbalist":
-                        characterUsed = false;
                         cli.invalidHerbalistChoice(nackMessageMapped.getExplanationMessage());
                         followingChoiceToMake(lastCallFrom);
                         break;
 
                     case "character_price":
-                        characterUsed = false;
                         cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
                         followingChoiceToMake(lastCallFrom);
+                        break;
+
+                    case "lobby_not_available":
+                        matchEnd = true;
+                        cli.lobbyChosenNotAvailable(nackMessageMapped.getExplanationMessage());
                         break;
                 }
                 break;

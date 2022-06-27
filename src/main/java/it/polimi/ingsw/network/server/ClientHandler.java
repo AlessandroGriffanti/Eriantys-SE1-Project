@@ -75,14 +75,9 @@ public class ClientHandler extends Thread {
                 //Stringget(0).manageMsg(inputHandler.readLine()); // get0 perchè c'è solo questa lobby
             }
 
-            TimeUnit.MILLISECONDS.sleep(5000);
+            //TimeUnit.MILLISECONDS.sleep(5000);
 
-            System.out.println("end");
-
-            outputHandler.close();
-            inputHandler.close();
-            clientSocket.close();
-            System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
+            socketClosing();
 
 
         } catch (IOException e) {
@@ -91,10 +86,11 @@ public class ClientHandler extends Thread {
             if(matchStarted) {
                 System.out.println("OUT1");
                 server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
+                server.getLobbiesEnd().set(lobbyID, true);
                 server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
             }else if(lobbyAccessed){
                 System.out.println("OUT2");
-                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
+                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);     //TODO forse playerConnection non serve più
                 server.getLobbiesEnd().set(lobbyID, true);
                 server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
             }else{
@@ -131,9 +127,6 @@ public class ClientHandler extends Thread {
                 server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());    //aggiungiamo il nickname del giocatore all'arraylist nel server
                 nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();                     //settiamo la variabile nicknamePlayer del clientHandler con il valore del nickname proveniente dal client
 
-                //playerID = server.getPlayersNicknames().size() - 1;
-                //System.out.println("Player id " + playerID);
-
                 System.out.println("checked the nickname, it is ok");
                 System.out.println("Player: " + receivedMessageFromJson.getNicknameOfPlayer());
                 System.out.println("player ok");
@@ -163,21 +156,37 @@ public class ClientHandler extends Thread {
                     System.out.println("I received a new chosen lobby message");
                     ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
 
-                    lobbyID = replyChosenLobbyToJoinMessage.getLobbyIDchosen();
-                    System.out.println("lobbyID: " + lobbyID);
+                    int templobbyID = replyChosenLobbyToJoinMessage.getLobbyIDchosen();
+                    System.out.println("temp lobbyID: " + templobbyID);
 
-                    playerID = server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter();
-                    server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, true);
-                    numberPlayerLobby = server.getLobbies().get(String.valueOf(lobbyID)).getNumberOfPlayers();
-                    lobbyAccessed = true;
-                    System.out.println("player id: " + playerID + " lobby id: " + lobbyID);
+                    //CHECK IF FULL WHILE TRYING TO JOIN
+                    int maxNumOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getNumberOfPlayers();
+                    int numOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getPlayersAddedCounter();
+                    System.out.println("max num nella lobby: " + maxNumOfPlayerInTheLobbyChosen);
+                    System.out.println("num nella lobby: " + numOfPlayerInTheLobbyChosen);
 
-                    IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
-                    sendMessageFromServer(idSetAfterLobbyChoice);
+                    if(maxNumOfPlayerInTheLobbyChosen != numOfPlayerInTheLobbyChosen){                                  //se non è ancora stato raggiunto il numero massimo di giocatori, va bene
+                        lobbyID = templobbyID;
+                        System.out.println("lobbyID checked: " + lobbyID);
+                        playerID = server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter();
+                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, true);
+                        numberPlayerLobby = server.getLobbies().get(String.valueOf(lobbyID)).getNumberOfPlayers();
+                        lobbyAccessed = true;
+                        System.out.println("player id: " + playerID + " lobby id: " + lobbyID);
 
-                    //matchStarted = true;
-                    server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknamePlayer);   //aggiungiamo il player alla lobby (cioè il controller dell'hashmap) corrispondente.
-                    //System.out.println("nuovo numero di giocatori nella lobby: " + server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter());
+                        IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
+                        sendMessageFromServer(idSetAfterLobbyChoice);
+
+                        server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknamePlayer);
+
+                    }else {                                                                                             //altrimenti nack
+                        NackMessage nackMessageForLobby = new NackMessage("lobby_not_available");
+                        sendMessageFromServer(nackMessageForLobby);
+
+                        server.getPlayersNicknames().remove(this.nicknamePlayer);
+
+                        socketClosing();
+                    }
 
                 }else {
                     System.out.println("Error: not right specs message");
@@ -231,7 +240,7 @@ public class ClientHandler extends Thread {
      * @param nicknameOfPlayer is the nickname of the player who wants to create, or not, the new match
      */
     public void checkNewMatchRequest(boolean requestValue, String nicknameOfPlayer){
-        if(requestValue == true){
+        if(requestValue){
             playerID = 0;
             sendingLoginSuccess(playerID, true);  //server.getPlayersNicknames().indexOf(nicknameOfPlayer
         }else{
@@ -368,6 +377,13 @@ public class ClientHandler extends Thread {
     public void sendMessageFromServer(Message msgToSend){
         outputHandler.println(gsonObj.toJson(msgToSend));
         outputHandler.flush();
+    }
+
+    public void socketClosing() throws IOException {
+        outputHandler.close();
+        inputHandler.close();
+        clientSocket.close();
+        System.out.println("Client " + clientSocket.getInetAddress() + "disconnected from server.");
     }
 
 }

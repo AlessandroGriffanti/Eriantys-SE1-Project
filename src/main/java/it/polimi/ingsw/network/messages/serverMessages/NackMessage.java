@@ -54,6 +54,10 @@ public class NackMessage extends Message {
             case "monk":
                 this.explanationMessage = "The monk has no more students, so he can't give you one student anymore." +
                         "Sorry for the inconvenience.";
+                break;
+            case "lobby_not_available":
+                this.explanationMessage = "The lobby you chose became not available while you tried to join it :(";
+                break;
         }
     }
 
@@ -96,4 +100,9 @@ public class NackMessage extends Message {
 *      it means that there wasn't any no-entry-tile on the character, all the cards were already in use
 *
 *   8. monk:
-*      it means that the character card monk has no more students on it*/
+*      it means that the character card monk has no more students on it
+
+    9. lobby_not_available:
+       it means that the chosen lobby is no more available however it was.
+       It happen after choosing it, but meanwhile it became full (or on the edge it ended).
+*/
