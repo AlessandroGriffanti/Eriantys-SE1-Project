@@ -178,9 +178,9 @@ public class NetworkHandler {
                 break;
                 */
 
-            case "LoginSuccess":
+            case "MatchCreation":
                 cli.loginSuccess();
-                LoginSuccessMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, LoginSuccessMessage.class);
+                AckMatchCreationMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, AckMatchCreationMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
                 //System.out.println("player id " + playerID);

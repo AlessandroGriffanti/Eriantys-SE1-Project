@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.Tower;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This class represents the message sent when server receives data about a character request
+ */
 public class AckCharactersMessage extends AckMessage {
 
     /**

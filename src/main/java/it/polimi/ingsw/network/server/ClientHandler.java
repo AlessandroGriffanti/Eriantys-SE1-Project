@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.messages.serverMessages.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class is the one really dealing with the client connected, it communicates with the client-slide socket.
@@ -156,7 +155,7 @@ public class ClientHandler extends Thread {
                     System.out.println("I received a new chosen lobby message");
                     ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
 
-                    int templobbyID = replyChosenLobbyToJoinMessage.getLobbyIDchosen();
+                    int templobbyID = replyChosenLobbyToJoinMessage.getLobbyIDChosen();
                     System.out.println("temp lobbyID: " + templobbyID);
 
                     //CHECK IF FULL WHILE TRYING TO JOIN
@@ -273,7 +272,7 @@ public class ClientHandler extends Thread {
      * @param newMatchNeeded is true if the player wants to create a new game, otherwise is false.
      */
     public void sendingLoginSuccess(int playerID, boolean newMatchNeeded){
-        LoginSuccessMessage loginSuccessMessage = new LoginSuccessMessage(playerID, newMatchNeeded);
+        AckMatchCreationMessage loginSuccessMessage = new AckMatchCreationMessage(playerID, newMatchNeeded);
         sendMessageFromServer(loginSuccessMessage);
         System.out.println("sent LoginSuccessMessage");
     }
