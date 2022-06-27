@@ -2,13 +2,22 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
+
 public class ChosenCloudMessage extends Message {
     private int cloud_ID;
 
+    /**
+     * this attribute is the ID of the cloud chosen by the player, whose students will be added to the entrance.
+     */
     public ChosenCloudMessage(){
         this.object = "action_3";
     }
 
+    /**
+     * This constructor can be used by the client to create the message to send
+     * to the server
+     * @param chosenCloudID is the ID of the cloud chosen by the player.
+     */
     public ChosenCloudMessage(int chosenCloudID){
         this.object = "action_3";
         this.cloud_ID = chosenCloudID;

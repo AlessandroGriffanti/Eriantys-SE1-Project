@@ -2,7 +2,13 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
+/**
+ * This class represents the message sent by the client the player has chosen his assistant card.
+ */
 public class ChosenAssistantCardMessage extends Message {
+    /**
+     * This attribute represents the assistant chosen by the player.
+     */
     private int assistantChosen;
 
     public ChosenAssistantCardMessage(){
