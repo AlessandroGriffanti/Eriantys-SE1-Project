@@ -244,7 +244,7 @@ public class SupportFunctions {
             for(Creature creature: playerProfessors){
 
                 // control if mushroom-merchant has been used
-                if(controller.getCharactersManager().isMushroomsMerchantActive()){
+                if(controller.isExpertMode() && controller.getCharactersManager().isMushroomsMerchantActive()){
                     MushroomsMerchant mushroomsMerchant = (MushroomsMerchant) controller.getCharactersManager().getCards().get("mushroomsMerchant");
                     /* we count the number of students only if they are not of the type
                     to which the effect of the mushrooms-merchant card is applied*/
@@ -256,13 +256,13 @@ public class SupportFunctions {
                 }
             }
 
-            if(!(controller.getCharactersManager().isCentaurActive())){
+            if(!controller.isExpertMode() || !controller.getCharactersManager().isCentaurActive()){
                 // if the players owns the tower(s) then we also count them in the influence
                 playerInfluence += match.numberOfTowersOnTheIsland(player_ID, island_ID);
             }
 
             // if the player is using the knight character two points are added to the influence
-            if(controller.getCharactersManager().getKnightUser() == player_ID){
+            if(controller.isExpertMode() && controller.getCharactersManager().getKnightUser() == player_ID){
                 allPlayersInfluence.put(player_ID, playerInfluence + 2);
                 // RESET knightUser
                 controller.getCharactersManager().setKnightUser(-1);
@@ -271,7 +271,9 @@ public class SupportFunctions {
             }
         }
         // RESET centaur character card
-        controller.getCharactersManager().setCentaurActive(false);
+        if(controller.isExpertMode()){
+            controller.getCharactersManager().setCentaurActive(false);
+        }
 
         // control who has the higher influence
         int maxInfluence = 0;

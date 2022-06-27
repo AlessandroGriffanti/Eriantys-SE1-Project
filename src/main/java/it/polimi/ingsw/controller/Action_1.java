@@ -87,7 +87,7 @@ public class Action_1 implements ControllerState{
                 int previousNumberOfStudents = match.getPlayerByID(previousOwnerOfProfessor).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
                 int currentPlayerStudents = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
 
-                if(controller.getCharactersManager().isCookActive()){
+                if(controller.isExpertMode() && controller.getCharactersManager().isCookActive()){
 
                         /*the current player takes control over the professor even if he has the same number of students
                           as the previousOwnerOfProfessor*/

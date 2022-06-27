@@ -118,7 +118,9 @@ public class Action_3 implements ControllerState{
                 controller.sendMessageAsBroadcast(ack);
             }
 
-            controller.getCharactersManager().resetCharacterAttributes();
+            if(controller.isExpertMode()){
+                controller.getCharactersManager().resetCharacterAttributes();
+            }
             controller.nextState();
         }
     }

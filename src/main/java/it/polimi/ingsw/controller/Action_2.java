@@ -342,7 +342,9 @@ public class Action_2 implements ControllerState{
                     SupportFunctions.endMatch(controller, "empty_bag");
                 }else{
                     // reset the characters' attributes in CharacterManager
-                    controller.getCharactersManager().resetCharacterAttributes();
+                    if(controller.isExpertMode()){
+                        controller.getCharactersManager().resetCharacterAttributes();
+                    }
 
                     // find the first player of a new round
                     int nextPlayer = controller.nextPlayer(request.getSender_ID());
