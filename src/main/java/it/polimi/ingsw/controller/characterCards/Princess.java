@@ -81,7 +81,7 @@ public class Princess extends Character {
         int coinReserve = controller.getMatch().getCoinsReserve();
         AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "princess", coinReserve);
 
-        ack.setCreature(request.getCreature());
+        ack.setCreature(studentTaken);
         ack.setStudentsOnCard(studentsOnPrincess);
         ack.setPlayerDiningRoom(player.getSchoolBoard().getDiningRoom().getOccupiedSeats());
 
