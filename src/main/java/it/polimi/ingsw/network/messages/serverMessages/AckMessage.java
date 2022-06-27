@@ -92,7 +92,7 @@ public class AckMessage extends Message {
     protected boolean masterChanged = false;
     /**
      * This attribute tells, if the master changed, who was the previous one;
-     * the current master could anyone of the players not necessarily the one who moved mother nature or
+     * the current master could be anyone of the players not necessarily the one who moved mother nature or
      * could be no one if there wasn't any tower yet
      */
     protected int previousMaster_ID = -1;
@@ -102,8 +102,8 @@ public class AckMessage extends Message {
      */
     protected int newMaster_ID = -1;
     /**
-     * This attribute is true if there were enough students for refilling the clouds
-     *                   false if there weren't enough students for refilling the clouds -> action_3 not played
+     * This attribute is: - true if there were enough students for refilling the clouds
+     *                    - false if there weren't enough students for refilling the clouds -> action_3 not played
      */
     private boolean action3Valid = true;
     /**
@@ -123,6 +123,7 @@ public class AckMessage extends Message {
      * This attribute is the color of the tower of a player or on an island
      */
     protected Tower towerColor;
+
 
     public AckMessage(){
         this.object = "ack";
