@@ -52,7 +52,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.33", 4444);
+            CLI cli = new CLI("localhost", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -775,8 +775,8 @@ public class CLI {
         boolean rightStudentChosen = false;                                       //viene settata a true solo se inserisco "character" oppure se inserisco uno studente valido
         println("Which student do you want to move from the entrance?");
         showStudentsInEntrancePlayer(playerID, modelView);
-        request = scannerCLI.next();
         while(rightStudentChosen == false) {
+            request = scannerCLI.next();
             while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
                 show(playerID, modelView);
                 println("Which student do you want to move from the entrance?");
@@ -784,29 +784,31 @@ public class CLI {
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(networkHandler.isCharacterUsed()){
-                    println("You already used a character in this round. Insert another request: ");
-                    request = scannerCLI.next();
-                }else {
-                    studentChosen = -2;                                               //character nel net. handler
-                    rightStudentChosen = true;                                        //settiamo a true perchè vogliamo uscire dal while principale e, di fatto, dall'intero metodo
+                if(modelView.isExpertModeGame() == true) {
+                    if (networkHandler.isCharacterUsed()) {
+                        println("You already used a character in this round. Insert another request: ");
+                    } else {
+                        studentChosen = -2;                                               //character nel net. handler
+                        rightStudentChosen = true;                                        //settiamo a true perchè vogliamo uscire dal while principale e, di fatto, dall'intero metodo
+                    }
+                }else{
+                    println("You are not playing in expert mode, so you can't use a character card!");
+                    println("Which student do you want to move from the entrance?");
+                    showStudentsInEntrancePlayer(playerID, modelView);
                 }
             } else {
                 try {
                     studentChosen = Integer.parseInt(request);
                     if (studentChosen < 0 || studentChosen >= modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()) {
                         println("This student id doesn't exist, please insert a valid student: ");
-                        request = scannerCLI.next();
                     } else if (modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null) {
                         println("You already chose this student, please insert a valid one: ");
-                        request = scannerCLI.next();
                     } else {
                         rightStudentChosen = true;                                  //settiamo a true solo se viene inserito uno studente valido
                     }
                 } catch (NumberFormatException e) {                                 //se l'utente inserisce qualcosa che non va bene tipo "pluto", entriamo qui e di nuovo nel while principale
                     println("Wrong insert: please insert show/character or the student you want to move: ");
                     showStudentsInEntrancePlayer(playerID, modelView);
-                    request = scannerCLI.next();
                 }
             }
 
@@ -822,42 +824,51 @@ public class CLI {
     public int choiceLocationToMove(int playerID, ModelView modelView) {
         println("Now you have to move the student you chose to the diningroom or on an island: where do you want to move him? ");
         int islandChosen = -1;
-        String request = scannerCLI.next();
+        String request;
+        boolean rightLocationChosen = false;
 
-        while(!(request.equals("diningroom") || request.equals("island") || request.equals("show") || request.equals("character"))){    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
-            println("Please insert a valid request: (diningroom/island/show/character)");
+        while(rightLocationChosen == false) {    //qui possono essere inserito solo queste stringhe, se non inserisce una di queste richiediamo
             request = scannerCLI.next();
-        }
-        while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
-            show(playerID, modelView);
-            println("Where do you want to move the student you chose?");
-            request = scannerCLI.next();
-        }
-        if(request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-            if(networkHandler.isCharacterUsed()){
-                println("You already used a character in this round. Insert another request: ");
+            while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
+                show(playerID, modelView);
+                println("Where do you want to move the student you chose?");
                 request = scannerCLI.next();
-            }else {
-                islandChosen = -2;
             }
-        }else if (request.equals("island")) {                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
-            println(" ");
-            println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
-
-            for (int i = 0; i < 12; i++) {
-                if (modelView.getIslandGame().get(i) != null) {
-                    print(i + " ");
+            if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+                if (modelView.isExpertModeGame() == true) {
+                    if (networkHandler.isCharacterUsed()) {
+                        println("You already used a character in this round. Insert another request: ");
+                    } else {
+                        islandChosen = -2;
+                        rightLocationChosen = true;
+                    }
+                } else {
+                    println("You are not playing in expert mode, so you can't use a character card!");
+                    println("Where do you want to move the student you chose from the entrance?");
                 }
-            }
-            println(" ");
-            islandChosen = scannerCLI.nextInt();
+            } else if (request.equals("island")) {                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
+                println(" ");
+                println("On which island do you want to move your students? ");     //nel messaggio movedstudentsFromEntrance.
 
-            while (islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null) {
-                println("Please insert a valid island ID: ");
+                for (int i = 0; i < 12; i++) {
+                    if (modelView.getIslandGame().get(i) != null) {
+                        print(i + " ");
+                    }
+                }
+                println(" ");
                 islandChosen = scannerCLI.nextInt();
+
+                while (islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null) {
+                    println("Please insert a valid island ID: ");
+                    islandChosen = scannerCLI.nextInt();
+                }
+                rightLocationChosen = true;
+            } else if(request.equals("diningroom")) {
+                islandChosen = -1;                                           //significa che è stata scelta diningroom
+                rightLocationChosen = true;
+            }else{
+                println("Please insert island/diningroom/show/character");
             }
-        } else {
-           islandChosen = -1;                                           //significa che è stata scelta diningroom
         }
         return islandChosen;
     }
@@ -892,16 +903,21 @@ public class CLI {
                 showProfessorTablePlayer(i, modelView);
             }
         }else if(str.equals("characters")){
-            for(String s : modelView.getCharacterCardsInTheGame()){
-                if(s.equals("monk")){
-                    println("monk: " + modelView.getCharactersDataView().getMonkStudents());
-                }else if(s.equals("princess")){
-                    println("princess: " + modelView.getCharactersDataView().getPrincessStudents());
-                }else if(s.equals("jester")){
-                    println("jester: " + modelView.getCharactersDataView().getJesterStudents());
-                }else{
-                    println(s);
+            if(modelView.isExpertModeGame() == true) {
+                for (String s : modelView.getCharacterCardsInTheGame()) {
+                    if (s.equals("monk")) {
+                        println("monk: " + modelView.getCharactersDataView().getMonkStudents());
+                    } else if (s.equals("princess")) {
+                        println("princess: " + modelView.getCharactersDataView().getPrincessStudents());
+                    } else if (s.equals("jester")) {
+                        println("jester: " + modelView.getCharactersDataView().getJesterStudents());
+                    } else {
+                        println(s);
+                    }
                 }
+            }else{
+                println("There are no characters in this game since you are not playing in expert mode!");
+                println(" ");
             }
             println(" ");
         }else if(str.equals("clouds")){
@@ -946,33 +962,35 @@ public class CLI {
         boolean rightIslandChosen = false;                              //viene settato a true solo se inserisce character o un'isola valida
         int chosenIslandID = -1;
         String request;
-        request = scannerCLI.next();
         while(rightIslandChosen == false) {
+            request = scannerCLI.next();
             while (request.equals("show")) {
                 show(playerID, modelView);
                 println("Insert the island ID where you want to move mother nature: ");
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(networkHandler.isCharacterUsed()){
-                    println("You already used a character in this round. Insert another request: ");
-                    request = scannerCLI.next();
-                }else {
-                    chosenIslandID = -2;                                             //character nel net. handler
-                    rightIslandChosen = true;                                       //settiamo a true perchè vogliamo uscire dal while e quindi dal metodo
+                if(modelView.isExpertModeGame() == true) {
+                    if (networkHandler.isCharacterUsed()) {
+                        println("You already used a character in this round. Insert another request: ");
+                    } else {
+                        chosenIslandID = -2;                                             //character nel net. handler
+                        rightIslandChosen = true;                                       //settiamo a true perchè vogliamo uscire dal while e quindi dal metodo
+                    }
+                }else{
+                    println("You are not playing in expert mode, so you can't use a character card!");
+                    println("Where do you want to move mother nature?");
                 }
             } else {
                 try {
                     chosenIslandID = Integer.parseInt(request);
                     if(chosenIslandID < 0 || chosenIslandID >= 12 || modelView.getIslandGame().get(chosenIslandID) == null){
                         println("This island ID doesn't exist, please insert a valid one: ");
-                        request = scannerCLI.next();
                     }else{
                         rightIslandChosen = true;                       //settiamo a tru se viene inserita un'isola valida
                     }
                 }catch (NumberFormatException e){
                     println("wrong insert: please insert show/character or the island ID where you want to move mother nature:");
-                    request = scannerCLI.next();
                 }
             }
         }
@@ -1170,8 +1188,8 @@ public class CLI {
         showClouds(modelView);
         boolean rightCloudChosen = false;
         println("Which cloud do you want to take the students from? They will be moved to your entrance: ");
-        request = scannerCLI.next();
         while(rightCloudChosen == false) {
+            request = scannerCLI.next();
             while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede show, rimaniamo qui
                 show(playerID, modelView);
                 println("Which cloud do you want to take the students from? ");
@@ -1179,12 +1197,18 @@ public class CLI {
             }
 
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(networkHandler.isCharacterUsed()){
-                    println("You already used a character in this round. Insert another request: ");
-                    request = scannerCLI.next();
-                }else {
-                    cloudChosen = -2;                                             //character nel net. handler
-                    rightCloudChosen = true;
+                if(modelView.isExpertModeGame() == true) {
+                    if (networkHandler.isCharacterUsed()) {
+                        println("You already used a character in this round. Insert another request: ");
+                        request = scannerCLI.next();
+                    } else {
+                        cloudChosen = -2;                                             //character nel net. handler
+                        rightCloudChosen = true;
+                    }
+                }else{
+                    println("You are not playing in expert mode, so you can't use a character card!");
+                    println("Which cloud do you want to take the students from? They will be moved to your entrance: ");
+                    showClouds(modelView);
                 }
             } else {
                 try {
@@ -1192,13 +1216,11 @@ public class CLI {
                     int cloudNumber = modelView.getNumberOfPlayersGame();
                     if(cloudChosen < 0 || cloudChosen >= cloudNumber ) {
                         println("This cloud ID doesn't exist, please select a valid cloud ID: ");
-                        request = scannerCLI.next();
                     }else{
                         rightCloudChosen = true;
                     }
                 }catch (NumberFormatException e){
                     println("Wrong insert: please insert show/character or the cloud ID you want to take the students from: ");
-                    request = scannerCLI.next();
                 }
             }
         }
@@ -1267,10 +1289,15 @@ public class CLI {
 
         while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen))){
             println("Please insert a right character: ");
-            for(String s : modelView.getCharacterCardsInTheGame()){
-                print(s + " ");
+            if(modelView.isExpertModeGame() == true) {
+                for (String s : modelView.getCharacterCardsInTheGame()) {
+                    print(s + " ");
+                }
+                println(" ");
+            }else{
+                println("There are no characters in this game since you are not playing in expert mode!");
+                println(" ");
             }
-            println(" ");
             characterChosen = scannerCLI.next();
         }
         println(" ");
