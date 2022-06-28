@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
@@ -28,8 +27,6 @@ public class Action_1 implements ControllerState{
      */
     @Override
     public void controlMessageAndExecute(Controller controller) {
-        Match match = controller.getMatch();
-
         String json = controller.getMsg();
         Message message = gson.fromJson(json, Message.class);
         String object = message.getObjectOfMessage();
