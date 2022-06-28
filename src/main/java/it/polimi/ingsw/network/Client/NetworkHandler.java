@@ -342,11 +342,12 @@ public class NetworkHandler {
                         break;
 
                     case "refillClouds":
+                        modelView.setStudentsOnClouds(ackMessageMapped.getStudents());
+
                         cli.showSchoolboard(playerID, modelView);
                         cli.showCharacterCardsInTheGame(modelView);
                         cli.showIslandsSituation(modelView);
-
-                        modelView.setStudentsOnClouds(ackMessageMapped.getStudents());                  //riempiamo le nuvole
+                        cli.showClouds(modelView);
 
                         if (ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag) {
                             int assistantChosen = cli.assistantChoice(modelView.getAssistantCardsValuesPlayer());
@@ -736,6 +737,8 @@ public class NetworkHandler {
                         matchEnd = true;
                         cli.lobbyChosenNotAvailable(nackMessageMapped.getExplanationMessage());
                         break;
+
+                        //TODO caso troppi studenti nell'entrance, ci manda diningroom e entrance
                 }
                 break;
 
@@ -757,6 +760,7 @@ public class NetworkHandler {
                 //callFrom:
                 if(ackCharactersMessage.getRecipient() == playerID) {                              //faccio queste cose se il mio player id corrisponde, per l'altro giocatore non esiterà ancora nessuna callfrom, mi darebbe null
                     followingChoiceToMake(lastCallFrom);
+                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
                 }else{
                     cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
                     cli.turnWaiting(ackCharactersMessage.getNextPlayer());

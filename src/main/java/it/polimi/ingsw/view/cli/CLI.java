@@ -52,7 +52,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("localhost", 4444);
+            CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -691,8 +691,10 @@ public class CLI {
             int i = 0;
             for(String s : modelView.getCharacterCardsInTheGame()){
                 print(s);
-                if(i < modelView.getCharacterCardsInTheGame().size()){
+                if(i + 1 < modelView.getCharacterCardsInTheGame().size()){
                     print(", ");
+                }else{
+                    print(". ");
                 }
             }
             println(" ");
@@ -905,7 +907,7 @@ public class CLI {
                 }
                 rightLocationChosen = true;
             } else if(request.equals("diningroom")) {
-                islandChosen = -1;                                           //significa che è stata scelta diningroom
+                islandChosen = -1;
                 rightLocationChosen = true;
             }else{
                 println("Please insert island/diningroom/show/character");
@@ -924,7 +926,7 @@ public class CLI {
         String str = scannerCLI.next();
 
         while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
-            println("Please insert one of the following: diningroom/islands/both/professortable/characters/nothing");       //todo correggere tutti gli show
+            println("Please insert one of the following: entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
             str = scannerCLI.nextLine();
         }
 
@@ -953,7 +955,7 @@ public class CLI {
                     } else if (s.equals("jester")) {
                         println("jester: " + modelView.getCharactersDataView().getJesterStudents());
                     } else {
-                        println(s);
+                        println(s);         //TODO virgole
                     }
                 }
             }else{
@@ -1091,6 +1093,7 @@ public class CLI {
             int secondIsland = islandLanding + 1;
             println("The chosen island ("+ islandLanding +") has been unified with the previous and the following islands (" + islandConnected.get(0) + ", " + islandConnected.get(1) +").");
         }
+        println(" ");
     }
 
 
@@ -1111,17 +1114,27 @@ public class CLI {
                     }
 
                 }
+
+                //Print of students on islands
                 for (Creature c : Creature.values()) {
                     if (modelView.getIslandGame().get(i).getStudentsOfType(c) != 0) {
                         print(c + ": " + modelView.getIslandGame().get(i).getStudentsOfType(c) + "; ");
                     }
                 }
                 print(" ");
+
                 //Print of masters of the islands
                 if(modelView.getIslandGame().get(i).getMasterOfArchipelago() != -1){
                     print("[Master on this island is Player " + modelView.getIslandGame().get(i).getMasterOfArchipelago() + "] ");
                 }
+                print(" ");
+
+                //Print of no entry tiles
+                if(modelView.getIslandGame().get(i).getNoEntryTiles() != 0){
+                    print("[NO ENTRY TILES: " + modelView.getIslandGame().get(i).getNoEntryTiles() + "] ");
+                }
                 println(" ");
+
             }
         }
         println(" ");
@@ -1300,14 +1313,7 @@ public class CLI {
         if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
         }else if(playerIDwinner == -1){
-            println("A player disconnected... For that reason, no one won this match :(  ");
-            /*
-            if(networkHandler.isMatchStarted()){
-                println("A player disconnected while choosing towers and wizards. For that reason, no one won this match :(  ");
-            }else {
-                println("A player disconnected while the game wasn't started yet. For that reason, no one won this match :(  ");
-            }
-             */
+            println("A player disconnected: it a TIE! No one won this match :/  ");
         }else {
             println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }
@@ -1330,7 +1336,7 @@ public class CLI {
      */
     public String characterChoice(ModelView modelView){
         println("Which character do you want to use? ");
-        for(String s : modelView.getCharacterCardsInTheGame()){
+        for(String s : modelView.getCharacterCardsInTheGame()){         //TODO VIRGOLE VARIE
             print(s + " ");
         }
         println(" ");
