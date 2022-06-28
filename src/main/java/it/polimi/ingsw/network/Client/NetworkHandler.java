@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -83,6 +84,9 @@ public class NetworkHandler {
 
     private boolean characterUsed = false;
 
+    private boolean action3valid = true;
+
+    private int nextPlayerAction3NotValid;
     /**
      * NetworkHandler constructor which creates a new instance of the NetworkHandler.
      *
@@ -103,7 +107,7 @@ public class NetworkHandler {
      */
     public void startClient() throws IOException, InterruptedException {
         clientSocket = new Socket(ip, port);
-
+        //clientSocket.setSoTimeout(10000);
         inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
 
@@ -112,10 +116,10 @@ public class NetworkHandler {
 
         while (!matchEnd) {
             //System.out.println("Still connected");
-            String msgFromServer = inputBufferClient.readLine();
-            System.out.println("messaggio dal server: " + msgFromServer);
-            System.out.println(" ");
-            analysisOfReceivedMessageServer(msgFromServer);
+               String msgFromServer = inputBufferClient.readLine();
+               System.out.println("messaggio dal server: " + msgFromServer);
+               System.out.println(" ");
+               analysisOfReceivedMessageServer(msgFromServer);
         }
 
         //TimeUnit.MILLISECONDS.sleep(5000);
@@ -487,6 +491,10 @@ public class NetworkHandler {
                         break;
 
                     case "action_2_movement":
+                        if(ackMessageMapped.isAction3Valid() == false){
+                            action3valid = false;
+                            nextPlayerAction3NotValid = ackMessageMapped.getNextPlayer();
+                        }
                         updateModelViewActionTwo(ackMessageMapped);
                         cli.newMotherNaturePosition(ackMessageMapped.getDestinationIsland_ID());
                         TimeUnit.MILLISECONDS.sleep(500);
@@ -525,17 +533,40 @@ public class NetworkHandler {
                             }
                             cli.showUnion(modelView, motherNatureIslandID, islandUnifiedFlag, ackMessageMapped.getIslands_ID());
                         }
-                        if(ackMessageMapped.getNextPlayer() == playerID) {
-                            int cloudChosenID = cli.chooseCloud(playerID, modelView);
-                            if(cloudChosenID == -2){
-                                lastCallFrom = "chooseCloud";
-                                String characterChosen = cli.characterChoice(modelView);
-                                sendRequestCharacterMessage(characterChosen);
-                                break;
+                        if(action3valid) {
+                            if (ackMessageMapped.getNextPlayer() == playerID) {
+                                int cloudChosenID = cli.chooseCloud(playerID, modelView);
+                                if (cloudChosenID == -2) {
+                                    lastCallFrom = "chooseCloud";
+                                    String characterChosen = cli.characterChoice(modelView);
+                                    sendRequestCharacterMessage(characterChosen);
+                                    break;
+                                }
+                                sendChosenCloudMessage(cloudChosenID);
+                            } else if (ackMessageMapped.getNextPlayer() != playerID) {
+                                cli.turnWaitingClouds(ackMessageMapped.getNextPlayer());
                             }
-                            sendChosenCloudMessage(cloudChosenID);
-                        }else if(ackMessageMapped.getNextPlayer() != playerID){
-                            cli.turnWaitingClouds(ackMessageMapped.getNextPlayer());
+                        }else{
+                            if(nextPlayerAction3NotValid == playerID){
+                                studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                                if(studentChosen == -2){
+                                    lastCallFrom = "choiceOfStudentsToMove";
+                                    String characterChosen = cli.characterChoice(modelView);
+                                    sendRequestCharacterMessage(characterChosen);
+                                    break;
+                                }
+                                int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+                                if(locationChosen == -2){
+                                    lastCallFrom = "choiceLocationToMove";
+                                    String characterChosen = cli.characterChoice(modelView);
+                                    sendRequestCharacterMessage(characterChosen);
+                                    break;
+                                }
+                                sendMovedStudentsFromEntrance(studentChosen, locationChosen);
+                                numberOfChosenStudent++;
+                            }else{
+                                cli.turnWaiting(nextPlayerAction3NotValid);
+                            }
                         }
                         break;
 
@@ -724,11 +755,13 @@ public class NetworkHandler {
                         break;
 
                     case "herbalist":
+                        characterUsed = false;
                         cli.invalidHerbalistChoice(nackMessageMapped.getExplanationMessage());
                         followingChoiceToMake(lastCallFrom);
                         break;
 
                     case "character_price":
+                        characterUsed = false;
                         cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
                         followingChoiceToMake(lastCallFrom);
                         break;
@@ -1381,7 +1414,8 @@ public class NetworkHandler {
 
         }else if (characterUsed.equals("ambassador_union")){
             matchEnd = ackCharactersMessage.isEndOfMatch();
-            updateModelViewActionTwo(ackCharactersMessage);
+            //updateModelViewActionTwo(ackCharactersMessage);
+
 
         }else if (characterUsed.equals("herbalist")){
             modelView.getIslandGame().get(ackCharactersMessage.getIsland_ID()).addNoEntryTile();
