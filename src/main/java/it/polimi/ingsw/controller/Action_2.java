@@ -137,22 +137,21 @@ public class Action_2 implements ControllerState{
 
                         controller.nextState();
                     }
-
-                    controller.sendMessageAsBroadcast(movementAck);
-
-                    //send message for action_2_influence so that it won't be execute
-                    AckMessage emptyInfluenceAck = new AckMessage();
-                    emptyInfluenceAck.setRecipient(request.getSender_ID());
-                    emptyInfluenceAck.setMasterChanged(false);
-                    controller.sendMessageAsBroadcast(emptyInfluenceAck);
-
-                    //send message for action_2_union so that it won't be executed
-                    AckMessage emptyUnionAck = new AckMessage();
-                    emptyUnionAck.setRecipient(request.getSender_ID());
-                    emptyUnionAck.setIslandsUnified("none");
-                    controller.sendMessageAsBroadcast(emptyUnionAck);
-
                 }
+
+                controller.sendMessageAsBroadcast(movementAck);
+
+                //send message for action_2_influence so that it won't be execute
+                AckMessage emptyInfluenceAck = new AckMessage();
+                emptyInfluenceAck.setRecipient(request.getSender_ID());
+                emptyInfluenceAck.setMasterChanged(false);
+                controller.sendMessageAsBroadcast(emptyInfluenceAck);
+
+                //send message for action_2_union so that it won't be executed
+                AckMessage emptyUnionAck = new AckMessage();
+                emptyUnionAck.setRecipient(request.getSender_ID());
+                emptyUnionAck.setIslandsUnified("none");
+                controller.sendMessageAsBroadcast(emptyUnionAck);
 
             } else {
                 movementAck.setNextPlayer(request.getSender_ID());
