@@ -70,7 +70,7 @@ public class SchoolBoard {
         boolean endOfMatch = false;
 
         // if there was not enough towers
-        if(numberOfTowers > towerArea.getCurrentNumberOfTowers()){
+        if(numberOfTowers >= towerArea.getCurrentNumberOfTowers()){
             endOfMatch = true;
             // remove all the towers left
             towerArea.takeTowers(towerArea.getCurrentNumberOfTowers());
