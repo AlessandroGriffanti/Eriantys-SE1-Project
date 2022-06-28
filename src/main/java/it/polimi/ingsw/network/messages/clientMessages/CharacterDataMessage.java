@@ -148,7 +148,7 @@ public class CharacterDataMessage extends Message {
      OK 9. "mushroomsMerchant":
             - creature: type of student chosen by the player
 
-     OK   10. "bard":
+     OK 10. "bard":
             - studentsFromPlayerDiningRoom
             - studentsFromPlayerEntrance
 

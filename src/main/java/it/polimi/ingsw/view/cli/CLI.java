@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.Client.NetworkHandler;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -52,7 +51,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.33", 4444);
+            CLI cli = new CLI("localhost", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -92,11 +91,7 @@ public class CLI {
         }
         println("ok");
 
-        if(newMatchStr.equals("y")){
-            return true;
-        }else {
-            return false;
-        }
+        return newMatchStr.equals("y");
     }
 
     /**
@@ -136,17 +131,17 @@ public class CLI {
             expertMode = scannerCLI.nextLine();
         }
 
-        if(expertMode.equals("y")) {
-            return true;
-        }else{
-            return false;
-        }
+        return expertMode.equals("y");
     }
 
     /**
      * This method is used to ask the player which lobby he wants to join among the ones already existing.
      * @param arrayLobby is the arraylist of boolean representing the existing lobby: true means the lobby is full, false means it's not full.
-     * @return the lobby chosen by the player.
+     * @param arrayExpert list of boolean values specifying if the match with ID equals to the index of the array is played in
+     *                    expert mode or note
+     * @param arrayNumPlayer list of integers specifying what is the number of players required to start the match
+     * @param arrayEnd list of boolean values specifying if the match with ID equals to the index of the array is already ended or not
+     * @return ID of the lobby chosen by the player.
      */
 
 
@@ -156,22 +151,21 @@ public class CLI {
         printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
         //SCANNER DELLE LOBBY
-        int lobbyIDchosenByPlayer = scannerCLI.nextInt();
+        int lobbyIDChosenByPlayer = scannerCLI.nextInt();
 
         boolean rightLobbyChoice = false;
 
         while(!rightLobbyChoice) {
-            if( lobbyIDchosenByPlayer < arrayLobby.size() && lobbyIDchosenByPlayer >= 0) {
-                if (arrayLobby.get(lobbyIDchosenByPlayer) == false) {
+            if( lobbyIDChosenByPlayer < arrayLobby.size() && lobbyIDChosenByPlayer >= 0) {
+                if (!arrayLobby.get(lobbyIDChosenByPlayer)) {
 
-                    if (arrayEnd.get(lobbyIDchosenByPlayer) == true) {
-                        println("Lobby " + lobbyIDchosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
+                    if (arrayEnd.get(lobbyIDChosenByPlayer)) {
+                        println("Lobby " + lobbyIDChosenByPlayer + ": the match in this lobby is ended. Not available to join, select another one from the list below. ");
                         println(" ");
 
                         printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                        rightLobbyChoice = false;
+                        lobbyIDChosenByPlayer = scannerCLI.nextInt();
 
                     } else {
                         println("You can't join this lobby, match selected already started. Select another one from the list below. ");
@@ -179,10 +173,9 @@ public class CLI {
 
                         printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
-                        lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                        rightLobbyChoice = false;
+                        lobbyIDChosenByPlayer = scannerCLI.nextInt();
                     }
-                } else if (arrayLobby.get(lobbyIDchosenByPlayer) == true) {
+                } else {
                     rightLobbyChoice = true;
                 }
 
@@ -192,12 +185,11 @@ public class CLI {
 
                 printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
-                lobbyIDchosenByPlayer = scannerCLI.nextInt();
-                rightLobbyChoice = false;
+                lobbyIDChosenByPlayer = scannerCLI.nextInt();
             }
         }
 
-        return lobbyIDchosenByPlayer;
+        return lobbyIDChosenByPlayer;
     }
 
     /**
@@ -211,26 +203,26 @@ public class CLI {
         //STAMPA DELLE LOBBIES
         println("ERIANTYS LOBBIES: ");
         for (int i = 0; i < arrayLobby.size(); i++) {
-            if(arrayEnd.get(i) == false) {
-                if (arrayLobby.get(i) == false) {
+            if(!arrayEnd.get(i)) {
+                if (!arrayLobby.get(i)) {
                     print("Lobby " + i + ": full. :(  [There are " + arrayNumPlayer.get(i) + " players in this Lobby] ");
-                    if (arrayExpert.get(i) == true) {
+                    if (arrayExpert.get(i)) {
                         print(" - This match is in Expert Mode - ");
-                    } else if (arrayExpert.get(i) == false) {
+                    } else {
                         print(" - This match is NOT in Expert Mode - ");
                     }
                     println(" ");
 
-                } else if (arrayLobby.get(i) == true) {
+                } else {
                     print("Lobby " + i + ": available! :)  [Maximum number of players for this game is " + arrayNumPlayer.get(i) + "] ");
-                    if (arrayExpert.get(i) == true) {
+                    if (arrayExpert.get(i)) {
                         print(" - This match is in Expert Mode - ");
-                    } else if (arrayExpert.get(i) == false) {
+                    } else {
                         print(" - This match is NOT in Expert Mode - ");
                     }
                     println(" ");
                 }
-            }else if(arrayEnd.get(i) == true){
+            }else {
                 print("Lobby " + i + ": the match in this lobby is ended. Not available to join.  ");
                 println(" ");
             }
@@ -245,7 +237,7 @@ public class CLI {
     }
 
     /**
-     * This method is used to notify the player he can't join a lobby and he needs to create a new one.
+     * This method is used to notify the player he can't join a lobby, and he needs to create a new one.
      */
     public void lobbyNotAvailable(){
         println("No lobby available, creating a new one...");
@@ -281,6 +273,7 @@ public class CLI {
 
     /**
      * This method is used to notify the player that it's not his turn, so he has to wait.
+     * @param nowPlayingPlayerId ID of the player that is currently playing his turn
      */
     public void turnWaiting (int nowPlayingPlayerId) {
         if(nowPlayingPlayerId == -1){
@@ -335,6 +328,8 @@ public class CLI {
 
     /**
      * This method is used when another player has used a character, so the client is notified and has to wait.
+     * @param characterUsed name of the character used by this player or another one
+     * @param playerID ID of the player that used the character
      */
     public void characterUsed (String characterUsed, int playerID) {
         println("Player " + playerID + " has used the " + characterUsed + " character card!");
@@ -349,6 +344,7 @@ public class CLI {
 
     /**
      * This method is used to ask the first player which color he wants his towers to be.
+     * @param modelView reference to the modelView
      * @return the color chosen in Tower type.
      */
     public  Tower towerChoice (ModelView modelView) {
@@ -395,6 +391,7 @@ public class CLI {
     /**
      * This method is used to ask the following players which color they want their towers to be.
      * @param notAvailableTowerColors is the list of  colors that have already been chosen.
+     * @param modelView reference to the modelView
      * @return the color chosen.
      */
     public Tower towerChoiceNext (ArrayList<Tower> notAvailableTowerColors, ModelView modelView) {
@@ -403,36 +400,43 @@ public class CLI {
 
         if(modelView.getNumberOfPlayersGame() == 3) {
             if(notAvailableTowerColors.size() == 2) {
-                if (String.valueOf(notAvailableTowerColors.get(0)).equals("BLACK")) {
-                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
-                        availableTowerColors.add("GREY");
-                    } else {
-                        availableTowerColors.add("WHITE");
-                    }
-                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("WHITE")) {
-                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("BLACK")) {
-                        availableTowerColors.add("GREY");
-                    } else {
-                        availableTowerColors.add("BLACK");
-                    }
-                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("GREY")) {
-                    if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
-                        availableTowerColors.add("BLACK");
-                    } else {
-                        availableTowerColors.add("WHITE");
-                    }
+                switch (String.valueOf(notAvailableTowerColors.get(0))) {
+                    case "BLACK":
+                        if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
+                            availableTowerColors.add("GREY");
+                        } else {
+                            availableTowerColors.add("WHITE");
+                        }
+                        break;
+                    case "WHITE":
+                        if (String.valueOf(notAvailableTowerColors.get(1)).equals("BLACK")) {
+                            availableTowerColors.add("GREY");
+                        } else {
+                            availableTowerColors.add("BLACK");
+                        }
+                        break;
+                    case "GREY":
+                        if (String.valueOf(notAvailableTowerColors.get(1)).equals("WHITE")) {
+                            availableTowerColors.add("BLACK");
+                        } else {
+                            availableTowerColors.add("WHITE");
+                        }
+                        break;
                 }
             }else {
-                if (String.valueOf(notAvailableTowerColors.get(0)).equals("BLACK")) {
-                    availableTowerColors.add("GREY");
-                    availableTowerColors.add("WHITE");
-
-                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("WHITE")) {
-                    availableTowerColors.add("GREY");
-                    availableTowerColors.add("BLACK");
-                } else if (String.valueOf(notAvailableTowerColors.get(0)).equals("GREY")) {
-                    availableTowerColors.add("BLACK");
-                    availableTowerColors.add("WHITE");
+                switch (String.valueOf(notAvailableTowerColors.get(0))) {
+                    case "BLACK":
+                        availableTowerColors.add("GREY");
+                        availableTowerColors.add("WHITE");
+                        break;
+                    case "WHITE":
+                        availableTowerColors.add("GREY");
+                        availableTowerColors.add("BLACK");
+                        break;
+                    case "GREY":
+                        availableTowerColors.add("BLACK");
+                        availableTowerColors.add("WHITE");
+                        break;
                 }
             }
         }else if(modelView.getNumberOfPlayersGame() == 2){
@@ -526,10 +530,8 @@ public class CLI {
         availableDeckWizard.add("CLOUDWITCH");
         availableDeckWizard.add("LIGHTNINGWIZARD");
 
-        for(int i = 0 ; i < notAvailableDecks.size(); i++){
-            if(availableDeckWizard.contains(String.valueOf(notAvailableDecks.get(i)))){
-                availableDeckWizard.remove(String.valueOf(notAvailableDecks.get(i)));
-            }
+        for (Wizard notAvailableDeck : notAvailableDecks) {
+            availableDeckWizard.remove(String.valueOf(notAvailableDeck));
         }
 
         println("Please choose your deck among the following: ");
@@ -558,7 +560,7 @@ public class CLI {
                 println("Please, insert a correct deck: ");
                 strDeckChosen = scannerCLI.next();
             } else if(notAvailableDecks.contains(Wizard.valueOf(strDeckChosen))) {
-                println("This deck has already been chosen, plase select another one: ");
+                println("This deck has already been chosen, please select another one: ");
                 strDeckChosen = scannerCLI.next();
             }else{
                 rightDeckChoice = true;
@@ -597,7 +599,7 @@ public class CLI {
 
         request = scannerCLI.next();
 
-        while(rightAssistantChosen == false){
+        while(!rightAssistantChosen){
             try {
                 assistantChosen = Integer.parseInt(request);
                 if(!(availableAssistantCard.containsKey(assistantChosen))){
@@ -626,7 +628,7 @@ public class CLI {
         int assistantChosen = -1;
         String request;
         int counter = 0;
-        boolean checkNoAvailability = false;
+        boolean checkNoAvailability;
 
         ArrayList<Integer> availableAssistantCardArray = new ArrayList<>();
 
@@ -686,7 +688,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showCharacterCardsInTheGame(ModelView modelView){
-        if(modelView.isExpertModeGame() == true){
+        if(modelView.isExpertModeGame()){
             println("The character cards in this game are: ");
             int i = 0;
             for(String s : modelView.getCharacterCardsInTheGame()){
@@ -707,8 +709,8 @@ public class CLI {
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
      * @param modelView is the reference to the modelView.
      */
-    public void showSchoolboard(int playerID, ModelView modelView){
-        println("Your schoolboard currently is: ");
+    public void showSchoolBoard(int playerID, ModelView modelView){
+        println("Your school board currently is: ");
         println(" ");
         showStudentsInEntrancePlayer(playerID, modelView);
         showStudentsInDiningRoomPlayer(playerID, modelView);
@@ -770,7 +772,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      */
     public void showStudentsInDiningRoomPlayer(int playerID, ModelView modelView){
-        println("This is the diningroom of the player " + playerID);
+        println("This is the dining room of the player " + playerID);
         for(Creature c : Creature.values() ) {
             println("Number of " + c + ": " + modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(c));
         }
@@ -798,7 +800,7 @@ public class CLI {
         println("Number of coins of player " + playerID + ": " + modelView.getCoinPlayer().get(playerID));
     }
     /**
-     * This method is used to show to the player the number of his remainig towers in the Tower area of his schoolboard.
+     * This method is used to show to the player the number of his remaining towers in the Tower area of his schoolBoard.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
      * @param modelView is the reference to the modelView.
      */
@@ -820,13 +822,13 @@ public class CLI {
         showStudentsInEntrancePlayer(playerID, modelView);
         while(!rightStudentChosen) {
             request = scannerCLI.next();
-            while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
+            while (request.equals("show")) {
                 show(playerID, modelView);
                 println("Which student do you want to move from the entrance?");
                 showStudentsInEntrancePlayer(playerID, modelView);
                 request = scannerCLI.next();
             }
-            if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+            if (request.equals("character")) {
                 if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
@@ -877,40 +879,44 @@ public class CLI {
                 println("Where do you want to move the student you chose?");
                 request = scannerCLI.next();
             }
-            if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if (modelView.isExpertModeGame() == true) {
-                    if (networkHandler.isCharacterUsed()) {
-                        println("You already used a character in this round. Insert another request: ");
+            switch (request) {
+                case "character":                                     //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+                    if (modelView.isExpertModeGame()) {
+                        if (networkHandler.isCharacterUsed()) {
+                            println("You already used a character in this round. Insert another request: ");
+                        } else {
+                            islandChosen = -2;
+                            rightLocationChosen = true;
+                        }
                     } else {
-                        islandChosen = -2;
-                        rightLocationChosen = true;
+                        println("You are not playing in expert mode, so you can't use a character card!");
+                        println("Where do you want to move the student you chose from the entrance?");
                     }
-                } else {
-                    println("You are not playing in expert mode, so you can't use a character card!");
-                    println("Where do you want to move the student you chose from the entrance?");
-                }
-            } else if (request.equals("island")) {                                    //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
-                println(" ");
-                println("On which island do you want to move your students? ");
+                    break;
+                case "island":                                     //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
+                    println(" ");
+                    println("On which island do you want to move your students? ");
 
-                for (int i = 0; i < 12; i++) {
-                    if (modelView.getIslandGame().get(i) != null) {
-                        print(i + " ");
+                    for (int i = 0; i < 12; i++) {
+                        if (modelView.getIslandGame().get(i) != null) {
+                            print(i + " ");
+                        }
                     }
-                }
-                println(" ");
-                islandChosen = scannerCLI.nextInt();
-
-                while (islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null) {
-                    println("Please insert a valid island ID: ");
+                    println(" ");
                     islandChosen = scannerCLI.nextInt();
-                }
-                rightLocationChosen = true;
-            } else if(request.equals("diningroom")) {
-                islandChosen = -1;
-                rightLocationChosen = true;
-            }else{
-                println("Please insert island/diningroom/show/character");
+
+                    while (islandChosen < 0 || islandChosen >= 12 || modelView.getIslandGame().get(islandChosen) == null) {
+                        println("Please insert a valid island ID: ");
+                        islandChosen = scannerCLI.nextInt();
+                    }
+                    rightLocationChosen = true;
+                    break;
+                case "diningroom":
+                    rightLocationChosen = true;
+                    break;
+                default:
+                    println("Please insert island/diningroom/show/character");
+                    break;
             }
         }
         return islandChosen;
@@ -946,7 +952,7 @@ public class CLI {
                 showProfessorTablePlayer(i, modelView);
             }
         }else if(str.equals("characters")){
-            if(modelView.isExpertModeGame() == true) {
+            if(modelView.isExpertModeGame()) {
                 for (String s : modelView.getCharacterCardsInTheGame()) {
                     if (s.equals("monk")) {
                         println("monk: " + modelView.getCharactersDataView().getMonkStudents());
@@ -967,7 +973,7 @@ public class CLI {
             showClouds(modelView);
             println(" ");
         }else if(str.equals("coins")){
-            if(modelView.isExpertModeGame() == true){
+            if(modelView.isExpertModeGame()){
                 for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
                     showCoinsPlayer(i, modelView);
                 }
@@ -992,11 +998,11 @@ public class CLI {
      * This method is used to ask the player on which island he wants to move mother nature.
      * @param motherNatureIslandID is the ID of the island where mother nature currently stands.
      * @param modelView is the reference to the modelView.
-     * @return
+     * @return ID of the island where mother nature will be moved or -2 if the player decided to use a character
      */
     public int choiceMotherNatureMovement(int playerID, int motherNatureIslandID, ModelView modelView){
         println("Now you have to move mother nature, which currently is on Island " + motherNatureIslandID);
-        if(networkHandler.isMessengerActive() == true) {
+        if(networkHandler.isMessengerActive()) {
             println("You can move mother nature up to: " + (modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + 2) + " seat(s) clockwise ");
         }else{
             println("You can move mother nature up to: " + modelView.getAssistantCardsValuesPlayer().get(modelView.getLastAssistantChosen()) + " seat(s) clockwise ");
@@ -1014,7 +1020,7 @@ public class CLI {
         boolean rightIslandChosen = false;                              //viene settato a true solo se inserisce character o un'isola valida
         int chosenIslandID = -1;
         String request;
-        while(rightIslandChosen == false) {
+        while(!rightIslandChosen) {
             request = scannerCLI.next();
             while (request.equals("show")) {
                 show(playerID, modelView);
@@ -1022,7 +1028,7 @@ public class CLI {
                 request = scannerCLI.next();
             }
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(modelView.isExpertModeGame() == true) {
+                if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
@@ -1156,7 +1162,7 @@ public class CLI {
     public void showMotherNaturePosition(ModelView modelView){
         for(int i = 0; i < 12; i++) {
             if (modelView.getIslandGame().get(i) != null) {
-                if (modelView.getIslandGame().get(i).isMotherNaturePresence() == true) {
+                if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
                     println("Mother Nature is on the island: " + i);
                 }
             }
@@ -1251,7 +1257,7 @@ public class CLI {
         showClouds(modelView);
         boolean rightCloudChosen = false;
         println("Which cloud do you want to take the students from? They will be moved to your entrance: ");
-        while(rightCloudChosen == false) {
+        while(!rightCloudChosen) {
             request = scannerCLI.next();
             while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede show, rimaniamo qui
                 show(playerID, modelView);
@@ -1260,7 +1266,7 @@ public class CLI {
             }
 
             if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
-                if(modelView.isExpertModeGame() == true) {
+                if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                         request = scannerCLI.next();
@@ -1297,8 +1303,7 @@ public class CLI {
      */
     public int invalidCloudSelection(int playerdID, ModelView modelView){
         println("Invalid Cloud ID: this cloud has already been chosen. Please select a new one: ");
-        int chosenCloud = chooseCloud(playerdID, modelView);
-        return chosenCloud;
+        return chooseCloud(playerdID, modelView);
     }
 
     /**
@@ -1345,7 +1350,7 @@ public class CLI {
 
         while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen))){
             println("Please insert a right character: ");
-            if(modelView.isExpertModeGame() == true) {
+            if(modelView.isExpertModeGame()) {
                 for (String s : modelView.getCharacterCardsInTheGame()) {
                     print(s + " ");
                 }
@@ -1549,8 +1554,7 @@ public class CLI {
             chosenStudentByClientStr = scannerCLI.next();
         }
 
-        Creature chosenStudentByClient = Creature.valueOf(chosenStudentByClientStr);
-        return chosenStudentByClient;
+        return Creature.valueOf(chosenStudentByClientStr);
     }
 
     /**
@@ -1635,7 +1639,7 @@ public class CLI {
                         frog -= 1;
                         rightStudentChoice = true;
                     }
-                }else if(studentChosen.equals("GNOME")) {
+                }else {
                     if (gnome == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1658,20 +1662,48 @@ public class CLI {
      */
     public Creature choiceTrafficker(){
         ArrayList <String> availableStudents = new ArrayList<>();
-        println("Which student do you choose? ");
+        Creature chosenTypeOfStudent = null;
+        println("CHOOSE A TYPE OF STUDENT\nPlease insert the number corresponding to the type you chose.");
+
+        int i = 1;
         for(Creature c : Creature.values()){
-            print(c.toString());
-            availableStudents.add(c.toString());
+            println(i + ": " + c.toString());
+            i++;
         }
         println(" ");
-        String chosenStudentByClientStr = scannerCLI.next();
-        while(!availableStudents.contains(chosenStudentByClientStr)){
-            println("Not a valid student, please choose a valid one: ");
-            chosenStudentByClientStr = scannerCLI.next();
+        String studentTypeInput;
+
+        while(true){
+            try{
+                studentTypeInput = scannerCLI.next();
+                while(Integer.parseInt(studentTypeInput)  < 1 || Integer.parseInt(studentTypeInput) > 5){
+                    println("Please insert a number between 1 and 5.");
+                    studentTypeInput = scannerCLI.next();
+                }
+                break;
+            }catch (NumberFormatException e){
+                println("ERROR: Please insert a valid numeric value!");
+            }
         }
 
-        Creature chosenStudentByClient = Creature.valueOf(chosenStudentByClientStr);
-        return chosenStudentByClient;
+        switch (studentTypeInput){
+            case "1":
+                chosenTypeOfStudent = Creature.DRAGON;
+                break;
+            case "2":
+                chosenTypeOfStudent = Creature.FAIRY;
+                break;
+            case "3":
+                chosenTypeOfStudent = Creature.UNICORN;
+                break;
+            case "4":
+                chosenTypeOfStudent = Creature.GNOME;
+                break;
+            case "5":
+                chosenTypeOfStudent = Creature.FROG;
+                break;
+        }
+        return chosenTypeOfStudent;
     }
 
     /**

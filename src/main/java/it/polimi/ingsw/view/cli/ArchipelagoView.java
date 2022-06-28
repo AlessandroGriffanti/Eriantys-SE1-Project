@@ -18,9 +18,9 @@ public class ArchipelagoView {
     private int numberOfIsland;
 
     /**
-     * This attribute tells if mother nature is on a certain island or not.
+     * This attribute tells if mother nature is on the island or not.
      */
-    private boolean motherNaturePresence;   //false se non c'è, true se c'è
+    private boolean motherNaturePresence;
 
     /**
      * This attribute is the color of the Towers currently on the archipelago, or 'null' if there is no

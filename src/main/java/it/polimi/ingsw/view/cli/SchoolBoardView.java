@@ -1,10 +1,5 @@
 package it.polimi.ingsw.view.cli;
 
-import it.polimi.ingsw.model.schoolboard.DiningRoom;
-import it.polimi.ingsw.model.schoolboard.Entrance;
-import it.polimi.ingsw.model.schoolboard.ProfessorTable;
-import it.polimi.ingsw.model.schoolboard.TowerArea;
-
 /**
  * This class represents a miniature of the SchoolBoard of the player.
  */
@@ -17,53 +12,38 @@ public class SchoolBoardView {
 
     /**
      * This constructor creates a new instance of the SchoolBoardView.
-     * @param modelview is the reference to the modelView created in the NetworkHandler.
+     * @param modelView is the reference to the modelView created in the NetworkHandler.
+     * @param numberOfTotalPlayers number of players playing the match
      */
-    public SchoolBoardView(ModelView modelview, int numberOfTotalPlayers){
-        this.modelview = modelview;
+    public SchoolBoardView(ModelView modelView, int numberOfTotalPlayers){
+        this.modelview = modelView;
         this.towerAreaPlayer = new TowerAreaView(numberOfTotalPlayers);
         this.diningRoomPlayer = new DiningRoomView();
         this.entrancePlayer = new EntranceView(diningRoomPlayer);
         this.professorTablePlayer = new ProfessorTableView();
     }
 
-    public synchronized ModelView getModelview() {
+    public synchronized ModelView getModelView() {
         return modelview;
-    }
-
-    public synchronized void setModelview(ModelView modelview) {
-        this.modelview = modelview;
     }
 
     public synchronized TowerAreaView getTowerAreaPlayer() {
         return towerAreaPlayer;
     }
 
-    public synchronized void setTowerAreaPlayer(TowerAreaView towerAreaPlayer) {
-        this.towerAreaPlayer = towerAreaPlayer;
-    }
-
     public synchronized DiningRoomView getDiningRoomPlayer() {
         return diningRoomPlayer;
-    }
-
-    public synchronized void setDiningRoomPlayer(DiningRoomView diningRoomPlayer) {
-        this.diningRoomPlayer = diningRoomPlayer;
     }
 
     public synchronized EntranceView getEntrancePlayer() {
         return entrancePlayer;
     }
 
-    public synchronized void setEntrancePlayer(EntranceView entrancePlayer) {
-        this.entrancePlayer = entrancePlayer;
-    }
-
     public synchronized ProfessorTableView getProfessorTablePlayer() {
         return professorTablePlayer;
     }
 
-    public synchronized void setProfessorTablePlayer(ProfessorTableView professorTablePlayer) {
-        this.professorTablePlayer = professorTablePlayer;
+    public void setDiningRoomPlayer(DiningRoomView diningRoomPlayer) {
+        this.diningRoomPlayer = diningRoomPlayer;
     }
 }

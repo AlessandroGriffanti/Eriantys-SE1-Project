@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.view.cli.CLI;
+import it.polimi.ingsw.view.cli.DiningRoomView;
 import it.polimi.ingsw.view.cli.ModelView;
 import it.polimi.ingsw.view.cli.SchoolBoardView;
 
@@ -17,10 +18,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
+import java.util.HashMap;
 /**
  * The class NetworkHandler handles the client-side connection between the server and the client
  */
@@ -348,7 +347,7 @@ public class NetworkHandler {
                     case "refillClouds":
                         modelView.setStudentsOnClouds(ackMessageMapped.getStudents());
 
-                        cli.showSchoolboard(playerID, modelView);
+                        cli.showSchoolBoard(playerID, modelView);
                         cli.showCharacterCardsInTheGame(modelView);
                         cli.showIslandsSituation(modelView);
                         cli.showClouds(modelView);
@@ -1498,14 +1497,23 @@ public class NetworkHandler {
                 //System.out.println("new coin reserve chupd: " + modelView.getCoinGame());
             }
         }else if (characterUsed.equals("trafficker")){
-            for(Integer player : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
+            // set the professorTables
+            for(int player_ID : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
                 for (Creature c : Creature.values()) {
-                    if (ackCharactersMessage.getAllPlayersProfessors().get(player).contains(c)) {
-                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, true);
+                    if (ackCharactersMessage.getAllPlayersProfessors().get(player_ID).contains(c)) {
+                        modelView.getSchoolBoardPlayers().get(player_ID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, true);
                     }else{
-                        modelView.getSchoolBoardPlayers().get(player).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
+                        modelView.getSchoolBoardPlayers().get(player_ID).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(c, false);
                     }
-                }       //TODO togliere i tre studenti usati
+                }
+            }
+
+            // set the diningRooms
+            HashMap<Integer, HashMap<Creature, Integer>> allDiningRooms = ackCharactersMessage.getAllPlayersDiningRoom();
+            DiningRoomView diningRoom;
+            for(int player_ID : allDiningRooms.keySet()){
+                diningRoom = modelView.getSchoolBoardPlayers().get(player_ID).getDiningRoomPlayer();
+                diningRoom.setOccupiedSeatsPlayer(allDiningRooms.get(player_ID));
             }
         }
 

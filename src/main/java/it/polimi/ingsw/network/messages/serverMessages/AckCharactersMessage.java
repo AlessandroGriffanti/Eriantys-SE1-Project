@@ -224,6 +224,7 @@ public class AckCharactersMessage extends AckMessage {
         allPlayersDiningRoom.put(player_ID, playerDiningRoom);
     }
 
+    // SETTER AND GETTER FOR towerColor
     public void setTowerColor(Tower towerColor) {
         this.towerColor = towerColor;
     }
@@ -232,6 +233,7 @@ public class AckCharactersMessage extends AckMessage {
         return towerColor;
     }
 
+    // SETTER AND GETTER FOR playerCoins
     public void setPlayerCoins(int playerCoins) {
         this.playerCoins = playerCoins;
     }
@@ -245,6 +247,7 @@ public class AckCharactersMessage extends AckMessage {
         For every message must be set:
         - coinReserve: the current amount of money in the reserve
         - recipient: the player who used the character
+        - playerCoins: the number of coins owned by the player
 
         1. monk:
            - student: the type of student taken from the card and put on the island
@@ -298,4 +301,5 @@ public class AckCharactersMessage extends AckMessage {
 
         12. trafficker:
            - creature: type of students chosen by the user of the character
-           - allPlayersProfessors: for each player his professors' table as array of Creature*/
+           - allPlayersProfessors: for each player his professors' table as array of Creature
+           - playerDiningRoom: the diningRooms of all the players*/
