@@ -1476,7 +1476,7 @@ public class CLI {
             }
         }
         println(" ");
-        while(maxNumberOfStudents < networkHandler.getJesterNumber()) {
+        while(maxNumberOfStudents <= networkHandler.getJesterNumber()) {
             studentChosen = scannerCLI.nextInt();
             while (studentChosen < 0 || studentChosen > modelView.getCharactersDataView().getJesterStudents().size()) {
                 println("Please insert a valid student: ");
@@ -1707,6 +1707,15 @@ public class CLI {
      */
     public void invalidHerbalistChoice(String herbalistNackExplanation){
         println(herbalistNackExplanation);
+        println(" ");
+    }
+
+    /**
+     * This method used to notify the player he can't use the princess character card.
+     * @param princessNackExplanation is the reason why he can't.
+     */
+    public void invalidPrincessChoice(String princessNackExplanation){
+        println(princessNackExplanation);
         println(" ");
     }
 

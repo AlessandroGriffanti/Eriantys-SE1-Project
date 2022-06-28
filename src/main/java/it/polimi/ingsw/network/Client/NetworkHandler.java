@@ -574,7 +574,7 @@ public class NetworkHandler {
                         updateModelViewActionThree(ackMessageMapped);
                         messengerActive = false;
                         characterUsed = false;
-                        if(ackMessageMapped.getNextPlayer() == playerID && ackMessageMapped.isNextPlanningPhase()){                 //inizia il nuovo round
+                        if(ackMessageMapped.getNextPlayer() == playerID && ackMessageMapped.isNextPlanningPhase()){
                             cli.newRoundBeginning();
                             cli.bagClick();
                             sendBagClickedByFirstClient();
@@ -583,19 +583,19 @@ public class NetworkHandler {
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
                         }else if(ackMessageMapped.getNextPlayer() != playerID && !ackMessageMapped.isNextPlanningPhase()){
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
-                        }else if(ackMessageMapped.getNextPlayer() == playerID && !ackMessageMapped.isNextPlanningPhase()){  //significa che la fase di azione non è finita, tocca al secondo, o terzo, giocatore che deve muovere gli studenti dall'entrance
+                        }else if(ackMessageMapped.getNextPlayer() == playerID && !ackMessageMapped.isNextPlanningPhase()){
                             int studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
-                            if(studentChosen == -2){                                                            //se qui torna -2 significa che ha deciso di usare un character
+                            if(studentChosen == -2){
                                 lastCallFrom = "choiceOfStudentsToMove";
-                                String characterChosen = cli.characterChoice(modelView);                        //chiamiamo l'oppurtuno metodo della cli per la scelta del character
-                                sendRequestCharacterMessage(characterChosen);                                   //mandiamo il messaggio al server
-                                break;                                                                          //qui faccio break altrimenti continuo nell'esecuzione e non voglio
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
+                                break;
                             }
                             int locationChosen = cli.choiceLocationToMove(playerID, modelView);
-                            if(locationChosen == -2){                                                           //se l'int ritornato è -2 significa che ha scelto di usare una character card
+                            if(locationChosen == -2){
                                 lastCallFrom = "choiceLocationToMove";
-                                String characterChosen = cli.characterChoice(modelView);                        //chiamo opportuno metodo della cli
-                                sendRequestCharacterMessage(characterChosen);                                   //mando messaggio al server
+                                String characterChosen = cli.characterChoice(modelView);
+                                sendRequestCharacterMessage(characterChosen);
                                 break;
                             }
                             sendMovedStudentsFromEntrance(studentChosen, locationChosen);
@@ -758,6 +758,12 @@ public class NetworkHandler {
                         followingChoiceToMake(lastCallFrom);
                         break;
 
+                    case "princess":
+                        characterUsed = false;
+                        cli.invalidPrincessChoice(nackMessageMapped.getExplanationMessage());
+                        followingChoiceToMake(lastCallFrom);
+                        break;
+
                     case "character_price":
                         characterUsed = false;
                         cli.invalidCharacter(nackMessageMapped.getExplanationMessage());
@@ -769,7 +775,26 @@ public class NetworkHandler {
                         cli.lobbyChosenNotAvailable(nackMessageMapped.getExplanationMessage());
                         break;
 
-                        //TODO caso troppi studenti nell'entrance, ci manda diningroom e entrance
+                    case "table_full":
+                        numberOfChosenStudent--;
+                        studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
+                        if(studentChosen == -2){
+                            lastCallFrom = "choiceOfStudentsToMove";
+                            String characterChosen = cli.characterChoice(modelView);
+                            sendRequestCharacterMessage(characterChosen);
+                            break;
+                        }
+                        int locationChosen = cli.choiceLocationToMove(playerID, modelView);
+                        if(locationChosen == -2){
+                            lastCallFrom = "choiceLocationToMove";
+                            String characterChosen = cli.characterChoice(modelView);
+                            sendRequestCharacterMessage(characterChosen);
+                            break;
+                        }
+                        sendMovedStudentsFromEntrance(studentChosen, locationChosen);
+                        numberOfChosenStudent++;
+
+                        break;
                 }
                 break;
 
