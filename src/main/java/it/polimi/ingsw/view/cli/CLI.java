@@ -51,7 +51,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("localhost", 4444);
+            CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
