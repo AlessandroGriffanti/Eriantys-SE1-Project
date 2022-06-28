@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,18 +51,26 @@ public class Princess extends Character {
      */
     @Override
     public void effect(CharacterDataMessage request) {
-        increasePrice();
-
-        // find who are the professors' masters before using the card
-        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<Creature, Integer>();
-        for(Creature c: Creature.values()){
-            previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
-
         // take the student from the character card
         Creature studentTaken = takeStudent(request.getStudent_ID());
         // put the student in the player's dining room
         Player player = controller.getMatch().getPlayerByID(request.getSender_ID());
+
+        int studentsAtTheTable = player.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(studentTaken);
+        if(studentsAtTheTable == 10){
+            NackMessage nack = new NackMessage("princess");
+            controller.sendMessageToPlayer(request.getSender_ID(), nack);
+            return;
+        }
+
+        increasePrice();
+
+        // find who are the professors' masters before using the card
+        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<>();
+        for(Creature c: Creature.values()){
+            previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
+        }
+
         player.getSchoolBoard().getDiningRoom().addStudent(studentTaken);
 
         // draw one student from the bag and add it to the character card
@@ -69,7 +78,7 @@ public class Princess extends Character {
 
         // CONTROL OVER PROFESSORS
         // find who are the professors' masters after the card has been used
-        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<Creature, Integer>();
+        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<>();
         for(Creature c: Creature.values()){
             currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
         }

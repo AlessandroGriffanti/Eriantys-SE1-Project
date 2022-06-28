@@ -1,9 +1,8 @@
 package it.polimi.ingsw.network.messages.serverMessages;
 
-import it.polimi.ingsw.model.Wizard;
+
 import it.polimi.ingsw.network.messages.Message;
 
-import java.util.ArrayList;
 
 public class NackMessage extends Message {
 
@@ -58,6 +57,13 @@ public class NackMessage extends Message {
             case "lobby_not_available":
                 this.explanationMessage = "The lobby you chose became not available while you tried to join it :(";
                 break;
+            case "table_full":
+                this.explanationMessage = "The seats are all occupied, there is no room for other students.\n" +
+                                          "Choose another table or put the student on an island.";
+                break;
+            case "princess":
+                this.explanationMessage = "The seats are all occupied, there is no room for other students.";
+                break;
         }
     }
 
@@ -105,4 +111,11 @@ public class NackMessage extends Message {
     9. lobby_not_available:
        it means that the chosen lobby is no more available however it was.
        It happen after choosing it, but meanwhile it became full (or on the edge it ended).
+
+    10. table_full:
+        sent during action_1 when all the seats at one of the diningRoom's tables are occupied
+
+    11. princess:
+        it means that the seats on the table corresponding to the student chosen by the player is
+        fully occupied
 */

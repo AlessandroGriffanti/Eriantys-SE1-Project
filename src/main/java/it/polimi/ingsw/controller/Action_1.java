@@ -2,11 +2,14 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
 import it.polimi.ingsw.network.messages.clientMessages.MovedStudentsFromEntranceMessage;
+import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 public class Action_1 implements ControllerState{
 
@@ -65,48 +68,55 @@ public class Action_1 implements ControllerState{
 
         // take and remove the chosen student from the entrance
         int location = request.getLocation();
-        Creature creature = match.getStudentInEntranceOfPlayerByID(request.getSender_ID(), request.getStudent_ID());
+        Creature creatureChosen = match.getStudentInEntranceOfPlayerByID(request.getSender_ID(), request.getStudent_ID());
 
         AckMessage ack = new AckMessage();
         ack.setRecipient(request.getSender_ID());
-        ack.setTypeOfStudentMoved(creature);
+        ack.setTypeOfStudentMoved(creatureChosen);
         ack.setStudentMoved_ID(request.getStudent_ID());
 
         // student moved in the dining room
         if(location == -1){
+            DiningRoom diningRoom = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom();
+            int studentsAtTheTable = diningRoom.getOccupiedSeatsAtTable(creatureChosen);
+
+            if(studentsAtTheTable == 10){
+                NackMessage nack = new NackMessage("table_full");
+                controller.sendMessageToPlayer(request.getSender_ID(), nack);
+                return;
+            }
+
             ack.setSubObject("action_1_dining_room");
 
             // find who is controlling the professor of the same type chosen by the player
-            int previousOwnerOfProfessor = SupportFunctions.whoControlsTheProfessor(match, creature);
+            int previousOwnerOfProfessor = SupportFunctions.whoControlsTheProfessor(match, creatureChosen);
 
             // move the student from entrance to dining room
             match.moveStudentFromEntranceToDiningRoom(request.getStudent_ID());
 
             // if the player controlling the professor is another player then...
             if(previousOwnerOfProfessor != request.getSender_ID() && previousOwnerOfProfessor != -1){
-                int previousNumberOfStudents = match.getPlayerByID(previousOwnerOfProfessor).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
-                int currentPlayerStudents = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
+                int previousNumberOfStudents = match.getPlayerByID(previousOwnerOfProfessor).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creatureChosen);
+                int currentPlayerStudents = match.getPlayerByID(request.getSender_ID()).getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creatureChosen);
 
                 if(controller.isExpertMode() && controller.getCharactersManager().isCookActive()){
 
                         /*the current player takes control over the professor even if he has the same number of students
                           as the previousOwnerOfProfessor*/
                     if((currentPlayerStudents >= previousNumberOfStudents)){
-                        match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
-                        match.acquireControlOnProfessor(creature);
+                        match.looseControlOnProfessor(previousOwnerOfProfessor, creatureChosen);
+                        match.acquireControlOnProfessor(creatureChosen);
 
                         ack.setProfessorTaken(true);
                         ack.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
                     }
 
-                    // reset the value of cookUsed (it lasts only for the current players' round)
-                    controller.getCharactersManager().setCookActive(false);
                 }else{
 
                     //the current player takes control over the professor only if it has more students than the old player
                     if((currentPlayerStudents > previousNumberOfStudents)){
-                        match.looseControlOnProfessor(previousOwnerOfProfessor, creature);
-                        match.acquireControlOnProfessor(creature);
+                        match.looseControlOnProfessor(previousOwnerOfProfessor, creatureChosen);
+                        match.acquireControlOnProfessor(creatureChosen);
 
                         ack.setProfessorTaken(true);
                         ack.setPreviousOwnerOfProfessor(previousOwnerOfProfessor);
@@ -117,7 +127,7 @@ public class Action_1 implements ControllerState{
                    the professor was not controlled
                  */
                 ack.setProfessorTaken(true);
-                match.acquireControlOnProfessor(creature);
+                match.acquireControlOnProfessor(creatureChosen);
             }
         }
         // student moved on an island
@@ -139,11 +149,15 @@ public class Action_1 implements ControllerState{
             // if 3 students have been moved we can change state
             if(studentsMoved == 3){
                 controller.nextState();
+                // reset the value of cookUsed (it lasts only for the current players' action_1)
+                controller.getCharactersManager().setCookActive(false);
             }
         }else if(controller.getNumberOfPlayers() == 3){
             // if 4 students have been moved we can change state
             if(studentsMoved == 4){
                 controller.nextState();
+                // reset the value of cookUsed (it lasts only for the current players' action_1)
+                controller.getCharactersManager().setCookActive(false);
             }
         }
     }
