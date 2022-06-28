@@ -85,10 +85,10 @@ public class Action_2 implements ControllerState{
         int destinationIsland = request.getDestinationIsland_ID();
         Archipelago archipelago = match.getRealmOfTheMatch().getArchipelagos().get(destinationIsland);
 
-        AckMessage ack = new AckMessage();
-        ack.setSubObject("action_2_movement");
-        ack.setDestinationIsland_ID(destinationIsland);
-        ack.setRecipient(request.getSender_ID());
+        AckMessage movementAck = new AckMessage();
+        movementAck.setSubObject("action_2_movement");
+        movementAck.setDestinationIsland_ID(destinationIsland);
+        movementAck.setRecipient(request.getSender_ID());
 
         // control if the movement is legit
         if (!isMovementValid(controller, destinationIsland, request.getSender_ID())) {
@@ -109,48 +109,60 @@ public class Action_2 implements ControllerState{
                 // put the tile on the character herbalist
                 controller.getCharactersManager().returnTileToHerbalist();
 
-                ack.setRemovedNoEntryTile(true);
-                ack.setIslandThatLostNoEntryTile(destinationIsland);
+                movementAck.setRemovedNoEntryTile(true);
+                movementAck.setIslandThatLostNoEntryTile(destinationIsland);
 
                 // control if the action_3 can be performed, if not the match should end
                 action3Allowed = controlAction3Allowed(match);
-                ack.setAction3Valid(action3Allowed);
+                movementAck.setAction3Valid(action3Allowed);
 
                 if(!action3Allowed){
                     assert SupportFunctions.noMoreStudentsToDraw(match);
 
-                    ack.setAction3Valid(false);
+                    movementAck.setAction3Valid(false);
 
                     //if the last player is doing his move and action_3 is not legit the match will end
                     int lastPlayerOfAction = controller.getActionPhaseOrder().get(controller.getActionPhaseOrder().size() - 1);
 
                     if(request.getSender_ID() == lastPlayerOfAction){
-                        ack.setEndOfMatch(true);
+                        movementAck.setEndOfMatch(true);
                     }else{
                         // reset characters' attributes in CharacterManager
                         controller.getCharactersManager().resetCharacterAttributes();
 
                         // set the next player
                         int nextPlayer = controller.nextPlayer(request.getSender_ID());
-                        ack.setNextPlayer(nextPlayer);
+                        movementAck.setNextPlayer(nextPlayer);
                         controller.setActionPhaseCurrentPlayer(nextPlayer);
 
                         controller.nextState();
                     }
+
+                    controller.sendMessageAsBroadcast(movementAck);
+
+                    //send message for action_2_influence so that it won't be execute
+                    AckMessage emptyInfluenceAck = new AckMessage();
+                    emptyInfluenceAck.setRecipient(request.getSender_ID());
+                    emptyInfluenceAck.setMasterChanged(false);
+                    controller.sendMessageAsBroadcast(emptyInfluenceAck);
+
+                    //send message for action_2_union so that it won't be executed
+                    AckMessage emptyUnionAck = new AckMessage();
+                    emptyUnionAck.setRecipient(request.getSender_ID());
+                    emptyUnionAck.setIslandsUnified("none");
+                    controller.sendMessageAsBroadcast(emptyUnionAck);
+
                 }
 
             } else {
-                ack.setNextPlayer(request.getSender_ID());
-                controller.sendMessageAsBroadcast(ack);
+                movementAck.setNextPlayer(request.getSender_ID());
+                controller.sendMessageAsBroadcast(movementAck);
                 executeAction_2_influence(controller, request);
                 return;
             }
 
-            // this message is sent if we do not go on into influence computation
-            controller.sendMessageAsBroadcast(ack);
-
             // send the endOfMatch message if needed
-            if(ack.isEndOfMatch()){
+            if(movementAck.isEndOfMatch()){
                 SupportFunctions.endMatch(controller,"empty_bag");
             }
         }
