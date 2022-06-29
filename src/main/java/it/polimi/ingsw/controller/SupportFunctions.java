@@ -305,8 +305,13 @@ public class SupportFunctions {
      */
     static public void updateProfessorControl(Controller controller, int previousOwner_ID, Creature creature){
         Match match = controller.getMatch();
-        Player previousOwner = match.getPlayerByID(previousOwner_ID);
-        int maxStudentAtTheTable = previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
+        int maxStudentAtTheTable = 0;
+        Player previousOwner = null;
+
+        if(previousOwner_ID != -1){
+            previousOwner = match.getPlayerByID(previousOwner_ID);
+            maxStudentAtTheTable = previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
+        }
 
         Player tempPlayer;
         int studentsOfTempPlayer;
@@ -336,7 +341,7 @@ public class SupportFunctions {
 
         /* if the previous owner has no more students on the table we remove the professor
         * nobody controls this professor for now*/
-        if(previousOwner_ID == currentOwner_ID && previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature) == 0){
+        if(previousOwner_ID == currentOwner_ID && previousOwner_ID != -1 && previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature) == 0){
             match.getPlayerByID(previousOwner_ID).getSchoolBoard().getProfessorTable().removeProfessor(creature);
             match.getNotControlledProfessors().add(creature);
         }
