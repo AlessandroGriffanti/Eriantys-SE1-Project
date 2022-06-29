@@ -81,6 +81,8 @@ public class NetworkHandler {
 
     private int jesterNumber = 0;
 
+    private int bardNumber = 0;
+
     private boolean characterUsed = false;
 
     private boolean action3valid = true;
@@ -685,7 +687,12 @@ public class NetworkHandler {
                     case "bard":
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             ArrayList<Integer> studentsFromEntranceBard = cli.choiceStudentEntranceBard(playerID, modelView);
-                            ArrayList<Creature> studentsFromDiningRoomBard = cli.choiceStudentDiningRoomBard(playerID, modelView);
+                            ArrayList<Creature> studentsFromDiningRoomBard;
+                            if(studentsFromEntranceBard == null){
+                                studentsFromDiningRoomBard = null;
+                            }else {
+                                studentsFromDiningRoomBard = cli.choiceStudentDiningRoomBard(playerID, modelView);
+                            }
                             sendCharacterDataBard(studentsFromEntranceBard, studentsFromDiningRoomBard);
                         }else if (ackMessageMapped.getNextPlayer() != playerID){
                             cli.turnWaiting(ackMessageMapped.getNextPlayer());
@@ -1560,6 +1567,14 @@ public class NetworkHandler {
 
     public void setCharacterUsed(boolean characterUsed) {
         this.characterUsed = characterUsed;
+    }
+
+    public int getBardNumber() {
+        return bardNumber;
+    }
+
+    public void setBardNumber(int bardNumber) {
+        this.bardNumber = bardNumber;
     }
 }
 

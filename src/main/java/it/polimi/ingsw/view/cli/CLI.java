@@ -51,7 +51,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.33", 4444);
+            CLI cli = new CLI("localhost", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -1454,8 +1454,11 @@ public class CLI {
                }
             }else{
                 networkHandler.setJesterNumber(maxNumberOfStudents);
-                maxNumberOfStudents = 3;
+                break;    //maxNumberOfStudents = 3;
             }
+        }
+        if(maxNumberOfStudents == 3){
+            networkHandler.setJesterNumber(maxNumberOfStudents);
         }
         return studentsFromEntranceJester;
     }
@@ -1481,7 +1484,7 @@ public class CLI {
             }
         }
         println(" ");
-        while(maxNumberOfStudents <= networkHandler.getJesterNumber()) {
+        while(maxNumberOfStudents < networkHandler.getJesterNumber()) { //qui non ci vuole l'uguale, ma sono <=
             studentChosen = scannerCLI.nextInt();
             while (studentChosen < 0 || studentChosen > modelView.getCharactersDataView().getJesterStudents().size()) {
                 println("Please insert a valid student: ");
@@ -1567,16 +1570,46 @@ public class CLI {
         ArrayList<Integer> studentsFromEntranceBard = new ArrayList<>();
         int studentChosen;
         int maxNumberOfStudents = 0;
-        println("Which student do you want to move from the entrance? (bard)");
-        showStudentsInEntrancePlayer(playerID, modelView);
-        while(maxNumberOfStudents < 2) {
-            studentChosen = scannerCLI.nextInt();
-            while (studentChosen < 0 || studentChosen > modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size()) {
-                println("Please insert a valid student: ");
-                studentChosen = scannerCLI.nextInt();
+        String request;
+
+        int dragon = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.DRAGON);
+        int unicorn = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.UNICORN);
+        int fairy = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.FAIRY);
+        int gnome = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.GNOME);
+        int frog = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.FROG);
+
+
+        int studentsInTheDiningRoom = dragon + unicorn + fairy + gnome + frog;
+        if(studentsInTheDiningRoom > 2){
+            studentsInTheDiningRoom = 2;
+        }
+        if(studentsInTheDiningRoom == 0) {
+            println("You have not enough students in your diningroom to use the bard character card, you wasted it! ");
+            studentsFromEntranceBard = null;
+        }else {
+            println("Which student do you want to move from the entrance? (bard)");
+            showStudentsInEntrancePlayer(playerID, modelView);
+            while (maxNumberOfStudents < studentsInTheDiningRoom) {
+                request = scannerCLI.next();
+                if (!request.equals("stop")) {
+                    studentChosen = Integer.parseInt(request);
+                    if (studentChosen < 0 || studentChosen > modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().size() || modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null) {
+                        println("Please insert a valid student or write 'stop': ");
+                    } else {
+                        studentsFromEntranceBard.add(studentChosen);
+                        maxNumberOfStudents++;
+                        println("Ok, insert another one or write 'stop':");
+                    }
+                } else {
+                    networkHandler.setBardNumber(maxNumberOfStudents);
+                    break; //maxNumberOfStudents = 2;
+                }
+
             }
-            studentsFromEntranceBard.add(studentChosen);
-            maxNumberOfStudents ++;
+
+        }
+        if(maxNumberOfStudents == 2){
+            networkHandler.setBardNumber(maxNumberOfStudents);
         }
         return studentsFromEntranceBard;
     }
@@ -1589,33 +1622,33 @@ public class CLI {
      */
     public ArrayList<Creature> choiceStudentDiningRoomBard(int playerID, ModelView modelView) {
         ArrayList<Creature> studentsFromDiningRoom = new ArrayList<>();
+        boolean rightStudentChoice = false;
+        String studentChosen;
+        int maxNumberOfStudents = 0;
+
         int dragon = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.DRAGON);
         int unicorn = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.UNICORN);
         int fairy = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.FAIRY);
         int gnome = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.GNOME);
         int frog = modelView.getSchoolBoardPlayers().get(playerID).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(Creature.FROG);
 
-        boolean rightStudentChoice = false;
-
-        String studentChosen;
-        int maxNumberOfStudents = 0;
-        println("Which student do you want to move from the dining room? ");
+        println("Which student(s) do you want to move from your dining room?  ");
         showStudentsInDiningRoomPlayer(playerID, modelView);
-        while(maxNumberOfStudents < 2) {
+        while (maxNumberOfStudents < networkHandler.getBardNumber()){
             studentChosen = scannerCLI.next();
-            while (!rightStudentChoice){
-                if(!(studentChosen.equals("DRAGON") || studentChosen.equals("UNICORN") ||studentChosen.equals("FROG") || studentChosen.equals("GNOME") || studentChosen.equals("FAIRY"))) {
+            while (!rightStudentChoice) {
+                if (!(studentChosen.equals("DRAGON") || studentChosen.equals("UNICORN") || studentChosen.equals("FROG") || studentChosen.equals("GNOME") || studentChosen.equals("FAIRY"))) {
                     println("Please insert a valid student: (DRAGON/UNICORN/FROG/GNOME/FAIRY");
                     studentChosen = scannerCLI.next();
-                }else if(studentChosen.equals("DRAGON")){
-                    if(dragon == 0){
+                } else if (studentChosen.equals("DRAGON")) {
+                    if (dragon == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
-                    }else{
+                    } else {
                         dragon -= 1;
                         rightStudentChoice = true;
                     }
-                }else if(studentChosen.equals("UNICORN")) {
+                } else if (studentChosen.equals("UNICORN")) {
                     if (unicorn == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1623,7 +1656,7 @@ public class CLI {
                         unicorn -= 1;
                         rightStudentChoice = true;
                     }
-                }else if(studentChosen.equals("FAIRY")) {
+                } else if (studentChosen.equals("FAIRY")) {
                     if (fairy == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1631,7 +1664,7 @@ public class CLI {
                         fairy -= 1;
                         rightStudentChoice = true;
                     }
-                }else if(studentChosen.equals("FROG")) {
+                } else if (studentChosen.equals("FROG")) {
                     if (frog == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1639,7 +1672,7 @@ public class CLI {
                         frog -= 1;
                         rightStudentChoice = true;
                     }
-                }else {
+                } else if (studentChosen.equals("GNOME")) {
                     if (gnome == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1649,11 +1682,12 @@ public class CLI {
                     }
                 }
             }
+
             studentsFromDiningRoom.add(Creature.valueOf(studentChosen));
-            maxNumberOfStudents ++;
+            maxNumberOfStudents++;
             rightStudentChoice = false;
         }
-        return studentsFromDiningRoom;
+            return studentsFromDiningRoom;
     }
 
     /**
