@@ -5,6 +5,9 @@ import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
 
+/**
+ * This class represent the message sent when a character card, which requires data, is used.
+ */
 public class CharacterDataMessage extends Message {
 
 

@@ -7,11 +7,17 @@ import it.polimi.ingsw.network.messages.Message;
  * @createNewMatch represents the will of the player, so if he wants to create a new match(true), otherwise false.
  */
 public class LoginMessage extends Message {
+    /**
+     * It represents the nickname of the player.
+     */
     String nicknameOfPlayer;
+
+    /**
+     * It tells if the player wants to create a new match or not.
+     */
     boolean createNewMatch;
 
 
-    /** Added this constructor otherwise the client handler can't create a new Login message without a parameter */
     public LoginMessage(){
         this.object = "login";
     }

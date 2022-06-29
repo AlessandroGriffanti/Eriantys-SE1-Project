@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
+/**
+ * This class represents the message sent by the client when the player moves mother nature during action2.
+ */
 public class MovedMotherNatureMessage extends Message {
 
     /**

@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.Tower;
 
 import java.util.HashMap;
 
+/**
+ * This class represents a miniature of the archipelago class in the model.
+ */
 public class ArchipelagoView {
     /**
      * This attribute is the identifier of the archipelago.
@@ -78,9 +81,7 @@ public class ArchipelagoView {
         studentsPopulation.put(c, previousValue + 1);
     }
 
-    public int getNoEntryTiles() {
-        return noEntryTiles;
-    }
+
 
     /**
      * Adds only one no-entry-tile to the archipelago, and increases noEntryTiles by 1
@@ -128,29 +129,29 @@ public class ArchipelagoView {
         return sum;
     }
 
-    public synchronized int getArchipelagoID() {
+    public int getArchipelagoID() {
         return archipelagoID;
     }
 
-    public synchronized  void setArchipelagoID(int archipelagoID) {
+    public void setArchipelagoID(int archipelagoID) {
         this.archipelagoID = archipelagoID;
     }
 
 
-    public synchronized int getNumberOfIsland() {
+    public int getNumberOfIsland() {
         return numberOfIsland;
     }
 
-    public synchronized void setNumberOfIsland(int numberOfIsland) {
+    public void setNumberOfIsland(int numberOfIsland) {
         this.numberOfIsland = numberOfIsland;
     }
 
 
-    public synchronized boolean isMotherNaturePresence() {
+    public boolean isMotherNaturePresence() {
         return motherNaturePresence;
     }
 
-    public synchronized void setMotherNaturePresence(boolean motherNaturePresence) {
+    public void setMotherNaturePresence(boolean motherNaturePresence) {
         this.motherNaturePresence = motherNaturePresence;
     }
 
@@ -186,5 +187,7 @@ public class ArchipelagoView {
         this.masterOfArchipelago = masterOfArchipelago;
     }
 
-
+    public int getNoEntryTiles() {
+        return noEntryTiles;
+    }
 }

@@ -23,7 +23,6 @@ public class CLI {
      */
     public CLI(String ip, int port) throws IOException, InterruptedException {
         this.networkHandler = new NetworkHandler(ip, port, this);
-
         this.networkHandler.startClient();
     }
 
@@ -268,7 +267,7 @@ public class CLI {
      * This method is used to notify the player that the game has started.
      */
     public void startAlert () {
-        println("\n - - - GAME IS STARTED !!! - - - \n");
+        println("\n - - - GAME IS STARTED ! - - - \n");
     }
 
     /**
@@ -339,7 +338,7 @@ public class CLI {
      * This method is used to notify the player that it's his turn, so he has to act.
      */
     public void isYourTurn() {
-        println("Is your Turn! Make your choice: ");
+        println("It is your Turn! Make your choice: ");
     }
 
     /**
@@ -834,7 +833,7 @@ public class CLI {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
                         studentChosen = -2;
-                        //
+                        // set rightIslandChosen to true so that we exit the while loop
                         rightStudentChosen = true;
                     }
                 }else{
@@ -981,6 +980,10 @@ public class CLI {
             for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
                 showTowersPlayer(i, modelView);
             }
+        }else if(str.equals("helpguide")){
+            helpGuide();
+        }else if(str.equals("helpCharacter")){
+            helpCharacter();
         }
 
     }
@@ -1240,6 +1243,7 @@ public class CLI {
 
     /**
      * This method is used to ask the player which cloud he wants to take the student from.
+     * @param playerID is the player ID.
      * @param modelView is the reference to the modelView.
      * @return the cloud ID chosen.
      */
@@ -1289,6 +1293,7 @@ public class CLI {
 
     /**
      * This method is used to show to the player that he chose an invalid Cloud ID to take the students from.
+     * @param player_ID is the player ID.
      * @param modelView is the reference to the modelView.
      * @return the new chosen cloud ID.
      */
@@ -1301,17 +1306,17 @@ public class CLI {
      * This method is used to show the winner of the match.
      * @param winnerNickname is the nickname of the winner.
      * @param winnerReason is the reason why a player wins.
-     * @param playerIDWinner is the id of the winner.
+     * @param playerIDwinner is the id of the winner.
      */
-    public void matchEnd(String winnerNickname, String winnerReason, int playerIDWinner, int playerID){
+    public void matchEnd(String winnerNickname, String winnerReason, int playerIDwinner, int playerID){
         println(" ");
         println("THE MATCH IS ENDED, reason: " + winnerReason);
-        if(playerIDWinner == playerID){
+        if(playerIDwinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
-        }else if(playerIDWinner == -1){
+        }else if(playerIDwinner == -1){
             println("A player disconnected: it a TIE! No one won this match :/  ");
         }else {
-            println("You lost this game, the winner is " + playerIDWinner +": " + winnerNickname);
+            println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
         }
         println(" ");
         println(" ");
@@ -1819,6 +1824,43 @@ public class CLI {
      */
     public void characterConfirm(String characterUsed){
         println(characterUsed + " used correctly!");
+    }
+
+    /**
+     * This method prints a help guide which could be useful for the player during the game.
+     */
+    public void helpGuide(){
+        println("PLANNING PHASE: You have to choose the assistant card you want to play: the player whose assistant card's order value is the lowest ");
+        println("will be the first one to play in the action phase");
+        print("ACTION1: After planning phase, the player has to move 3 students (or 4 if 3 players are playing) to the diningroom or on an island of his choice.");
+        println(" Whenever a player has more students in the diningroom than the others, he gets the professor of the creature moved.");
+        print("ACTION2: After that, the player has to move mother nature on an island. He can move her clockwise depending on ");
+        print("the assistant card he had played in the planning phase (e.g. he used the assistant card whose order value is 7,");
+        println("  he can move mother nature up to 4 steps.");
+        println("After moving mother nature, it will be computed the influence over the island where she lands, meaning that the player who has ");
+        println("the highest influence (highest number of students with the controlled professor + towers), will conquer the island and build a tower over it.");
+        println("If a player conquers 2, or more, adjacent islands, they get unified.");
+        println("ACTION3: after that, the players has to choose a cloud among the 2 (or 3). The students on the cloud will be added to his entrance and a new round will begin.");
+    }
+
+    /**
+     * This method prints a help guide on what each character card does.
+     */
+    public void helpCharacter(){
+        println("MONK: You can take a student from this card and place it on an island of your choice.");
+        println("COOK: During this turn, you take control of any number of professors even if you have the same number of students as the player");
+        print(" who currently controls them");
+        println("AMBASSADOR: Choose an island and resolve it as if mother nature had ended her movement there.");
+        println("MESSENGER: you may move mother nature up to 2 additional islands that is indicated by the assistant card you've played.");
+        println("HERBALIST: place a no entry tile on an island of your choice: the first time mother nature ends her movement there, do not calculate the influence on the island. ");
+        println("CENTAUR: When resolving a conquering on an island, towers do not count towards influence");
+        println("JESTER: You may take up to 3 students from this card and exchange them with the same number of students from your entrance.");
+        println("KNIGHT: During the influence calculation this turn, you count as having 2 more influence.");
+        println("MUSHROOM MERCHANT: Choose a color of  student: during the influence calculation this turn, that color adds no influence." );
+        println("BARD: You may exchange up to 2 students between your entrance and your diningroom.");
+        println("PRINCESS: Take 1 student from this card and place it in your diningroom.");
+        println("TRAFFICKER: Choose a type of student. Every player (including yourself) must return 3 students of that type from their diningroom to the bag. ");
+        println("If any player has fewer than 3 students of that type, return as many students as they have.");
     }
 
 

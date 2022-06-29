@@ -5,9 +5,11 @@ import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Set;
 
+
+/**
+ * This class represents a miniature of the model.
+ */
 public class ModelView {
     /**
      * This attribute tracks the number of total coin the game, the reserve.
@@ -27,9 +29,6 @@ public class ModelView {
      * This attributes tells if the game is played in expert mode or not.
      */
     private boolean expertModeGame;
-
-    //private HashMap<Integer, Assistant> deckPlayer; //integer rappresenta l'order-value, Assistant contiene lo stesso order value e mothernature value, magari possiamo toglierla visto cjhe ha già scelto il mago
-
     /**
      * This arraylist gathers all the archipelagos in the game.
      */
@@ -60,7 +59,7 @@ public class ModelView {
      */
     private ArrayList<Boolean> charactersPriceIncreased;
     /**
-     * This integer is the order value (1-10) of the last assistant card chosen by the player.
+     * This integer is the ordervalue (1-10) of the last assistant card chosen by the player.
      */
     private int lastAssistantChosen;
 
@@ -70,7 +69,7 @@ public class ModelView {
     private ArrayList <Creature> studentsOnClouds;
 
     /**
-     * This attribute keep saved some useful data of some characters for the match.
+     * This attribute keeps saved some useful data of some characters for the match.
      */
     private CharactersDataView charactersDataView;
 
@@ -122,70 +121,63 @@ public class ModelView {
 
     }
 
-    public synchronized HashMap<Integer, Integer> getAssistantCardsValuesPlayer() {
+    public HashMap<Integer, Integer> getAssistantCardsValuesPlayer() {
         return assistantCardsValuesPlayer;
     }
 
 
-    public synchronized ArrayList<String> getCharacterCardsInTheGame() {
+    public ArrayList<String> getCharacterCardsInTheGame() {
         return characterCardsInTheGame;
     }
 
-    public synchronized void setCharacterCardsInTheGame(ArrayList<String> characterCardsInTheGame) {
+    public void setCharacterCardsInTheGame(ArrayList<String> characterCardsInTheGame) {
         this.characterCardsInTheGame = characterCardsInTheGame;
     }
-    public synchronized  int getCoinGame() {
+    public int getCoinGame() {
         return coinGame;
     }
 
-    public synchronized void setCoinGame(int coinGame) {
+    public void setCoinGame(int coinGame) {
         this.coinGame = coinGame;
     }
 
 
-    public synchronized int getNumberOfPlayersGame() {
+    public int getNumberOfPlayersGame() {
         return numberOfPlayersGame;
     }
 
-    public synchronized void setNumberOfPlayersGame(int numberOfPlayersGame) {
+    public void setNumberOfPlayersGame(int numberOfPlayersGame) {
         this.numberOfPlayersGame = numberOfPlayersGame;
     }
 
 
-    public synchronized HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
+    public HashMap<Integer, SchoolBoardView> getSchoolBoardPlayers() {
         return schoolBoardPlayers;
     }
-    public synchronized void setExpertModeGame(boolean expertModeGame) {
+    public  void setExpertModeGame(boolean expertModeGame) {
         this.expertModeGame = expertModeGame;
     }
 
-    public synchronized boolean isExpertModeGame() {
+    public boolean isExpertModeGame() {
         return expertModeGame;
     }
 
-    public synchronized ArrayList<ArchipelagoView> getIslandGame() {
+    public  ArrayList<ArchipelagoView> getIslandGame() {
         return islandGame;
     }
 
-    public synchronized void setIslandGame(ArrayList<ArchipelagoView> islandGame) {
+    public void setIslandGame(ArrayList<ArchipelagoView> islandGame) {
         this.islandGame = islandGame;
     }
 
-    public synchronized HashMap<Integer, Integer> getCoinPlayer() {
+    public  HashMap<Integer, Integer> getCoinPlayer() {
         return coinPlayer;
     }
 
-    public synchronized void setCoinPlayer(HashMap<Integer, Integer> coinPlayer) {
+    public void setCoinPlayer(HashMap<Integer, Integer> coinPlayer) {
         this.coinPlayer = coinPlayer;
     }
 
-   /* public ArrayList<Creature> getStudentsOnTheClouds() {
-        return StudentsOnTheClouds;
-    }
-
-    public void setStudentsOnTheClouds(ArrayList<Creature> studentsOnTheClouds) {
-        StudentsOnTheClouds = studentsOnTheClouds;
-    }*/
 
     public int getLastAssistantChosen() {
         return lastAssistantChosen;

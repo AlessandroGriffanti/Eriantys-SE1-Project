@@ -9,6 +9,9 @@ import java.util.HashMap;
  */
 public class DiningRoomView {
 
+    /**
+     * This attribute represents the number of each creature in the diningroom.
+     */
     private HashMap<Creature, Integer> occupiedSeatsPlayer;
 
     /**
@@ -23,11 +26,11 @@ public class DiningRoomView {
         occupiedSeatsPlayer.put(Creature.UNICORN, 0);
     }
 
-    public synchronized HashMap<Creature, Integer> getOccupiedSeatsPlayer() {
+    public HashMap<Creature, Integer> getOccupiedSeatsPlayer() {
         return occupiedSeatsPlayer;
     }
 
-    public synchronized  void setOccupiedSeatsPlayer(HashMap<Creature, Integer> occupiedSeatsPlayer) {
+    public void setOccupiedSeatsPlayer(HashMap<Creature, Integer> occupiedSeatsPlayer) {
         this.occupiedSeatsPlayer = occupiedSeatsPlayer;
     }
 }
