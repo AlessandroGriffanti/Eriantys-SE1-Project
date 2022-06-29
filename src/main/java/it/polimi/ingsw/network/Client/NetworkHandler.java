@@ -552,7 +552,7 @@ public class NetworkHandler {
                             }else if(ackMessageMapped.getIslandsUnified().equals("both")){
                                 islandUnifiedFlag = 0;
                             }
-                            cli.showUnion(modelView, motherNatureIslandID, islandUnifiedFlag, ackMessageMapped.getIslands_ID());
+                            cli.showUnion(motherNatureIslandID, islandUnifiedFlag, ackMessageMapped.getIslands_ID());
                         }
                         if(action3valid) {
                             if (ackMessageMapped.getNextPlayer() == playerID) {
@@ -624,7 +624,7 @@ public class NetworkHandler {
                             assistantChoiceFlag = false;
                         }
                         break;
-                    case "monk":        //TODO ? help stampiamo cosa fanno i char?
+                    case "monk":
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             int studentChosen = cli.choiceStudentMonk(modelView);
                             int islandChosen = cli.choiceIslandMonk(modelView);
@@ -695,7 +695,7 @@ public class NetworkHandler {
                         }
                         break;
 
-                    case "mushroomsMerchant" :
+                    case "mushroomMerchant" :
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             Creature chosenStudentMushroomsMerchant = cli.choiceMushroomsMerchant();
 
@@ -1141,19 +1141,56 @@ public class NetworkHandler {
                 modelView.setCoinGame(17);
             }
 
-            modelView.getCharacterCardsInTheGame().addAll(matchStartMessage.getCharacters());
-            for (String s : modelView.getCharacterCardsInTheGame()) {
-                if(s.equals("monk")){
-                    modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
-                    //System.out.print("numero monk: " + modelView.getCharactersDataView().getMonkStudents().size());
-                }else if(s.equals("jester")){
-                    modelView.getCharactersDataView().setJesterStudents(matchStartMessage.getJesterStudents());
-                    //System.out.print("numero jester: " + modelView.getCharactersDataView().getJesterStudents().size());
-                }else if(s.equals("princess")){
-                    modelView.getCharactersDataView().setPrincessStudents(matchStartMessage.getPrincessStudents());
-                    //System.out.print("numero princess: " + modelView.getCharactersDataView().getPrincessStudents().size());
-                }else if(s.equals("herbalist")){
-                    modelView.getCharactersDataView().setHerbalistNumberOfNoEntryTile(4);
+            for (String s : matchStartMessage.getCharacters()) {
+                switch (s) {
+                    case "monk":
+                        modelView.getCharacterCardsInTheGame().add("monk");
+                        modelView.getCharactersPrice().add(1);
+                        modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
+                        break;
+                    case "cook":
+                        modelView.getCharacterCardsInTheGame().add("cook");
+                        modelView.getCharactersPrice().add(2);
+                        break;
+                    case "messenger":
+                        modelView.getCharacterCardsInTheGame().add("messenger");
+                        modelView.getCharactersPrice().add(1);
+                        break;
+                    case "herbalist":
+                        modelView.getCharacterCardsInTheGame().add("herbalist");
+                        modelView.getCharactersPrice().add(2);
+                        modelView.getCharactersDataView().setHerbalistNumberOfNoEntryTile(4);
+                        break;
+                    case "centaur":
+                        modelView.getCharacterCardsInTheGame().add("centaur");
+                        modelView.getCharactersPrice().add(3);
+                        break;
+                    case "jester":
+                        modelView.getCharacterCardsInTheGame().add("jester");
+                        modelView.getCharactersPrice().add(1);
+                        modelView.getCharactersDataView().setJesterStudents(matchStartMessage.getJesterStudents());
+                        break;
+                    case "knight":
+                        modelView.getCharacterCardsInTheGame().add("knight");
+                        modelView.getCharactersPrice().add(2);
+                        break;
+                    case "mushroomMerchant":
+                        modelView.getCharacterCardsInTheGame().add("mushroomMerchant");
+                        modelView.getCharactersPrice().add(3);
+                        break;
+                    case "bard":
+                        modelView.getCharacterCardsInTheGame().add("bard");
+                        modelView.getCharactersPrice().add(1);
+                        break;
+                    case "princess":
+                        modelView.getCharacterCardsInTheGame().add("princess");
+                        modelView.getCharactersPrice().add(2);
+                        modelView.getCharactersDataView().setPrincessStudents(matchStartMessage.getPrincessStudents());
+                        break;
+                    case "trafficker":
+                        modelView.getCharacterCardsInTheGame().add("trafficker");
+                        modelView.getCharactersPrice().add(3);
+                        break;
                 }
             }
         }
@@ -1532,8 +1569,11 @@ public class NetworkHandler {
             }
         }
 
+        // update coins in the general reserve and the player's coins
         modelView.getCoinPlayer().put(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
+
+        // update character's price
     }
 
     public void matchIsEnded(String receivedMessageInJson){

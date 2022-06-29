@@ -23,8 +23,6 @@ public class CharactersDataView {
      * expert mode
      */
     private ArrayList<Creature> princessStudents = null;
-
-
     /**
      * This attributes indicates the number of no entry tile on the Herbalist character card.
      */

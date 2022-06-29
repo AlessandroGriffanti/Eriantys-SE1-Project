@@ -65,6 +65,7 @@ public class CharactersManager {
         int randomNumber;
 
         ArrayList<Integer> alreadyDrawnNumbers = new ArrayList<>();
+        alreadyDrawnNumbers.add(2);
 
         int i = 0;
         while(i < 3){

@@ -692,7 +692,7 @@ public class CLI {
             println("The character cards in this game are: ");
             int i = 0;
             for(String s : modelView.getCharacterCardsInTheGame()){
-                print(s);
+                print(s.toUpperCase());
                 if(i + 1 < modelView.getCharacterCardsInTheGame().size()){
                     print(", ");
                 }else{
@@ -833,8 +833,9 @@ public class CLI {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
-                        studentChosen = -2;                                               //character nel net. handler
-                        rightStudentChosen = true;                                        //settiamo a true perchè vogliamo uscire dal while principale e, di fatto, dall'intero metodo
+                        studentChosen = -2;
+                        //
+                        rightStudentChosen = true;
                     }
                 }else{
                     println("You are not playing in expert mode, so you can't use a character card!");
@@ -874,13 +875,13 @@ public class CLI {
 
         while(!rightLocationChosen) {
             request = scannerCLI.next();
-            while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede "show", invochiamo il metodo show e rimaniamo qui
+            while (request.equals("show")) {
                 show(playerID, modelView);
                 println("Where do you want to move the student you chose?");
                 request = scannerCLI.next();
             }
             switch (request) {
-                case "character":                                     //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+                case "character":
                     if (modelView.isExpertModeGame()) {
                         if (networkHandler.isCharacterUsed()) {
                             println("You already used a character in this round. Insert another request: ");
@@ -923,16 +924,16 @@ public class CLI {
     }
 
     /**
-     * This methods is used by the client to view what he desires.
+     * This method is used by the client to view what he desires.
      * @param modelView is the reference to the modelView.
      */
     public void show(int playerID, ModelView modelView){
 
-        println("What do you want to view? Insert entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
+        println("What do you want to view? Insert entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
         String str = scannerCLI.next();
 
-        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professortable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
-            println("Please insert one of the following: entrance/professortable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
+        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professorTable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
+            println("Please insert one of the following: entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
             str = scannerCLI.nextLine();
         }
 
@@ -947,23 +948,13 @@ public class CLI {
             for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++) {
                 showStudentsInDiningRoomPlayer(i, modelView);
             }
-        }else if(str.equals("professortable")){
+        }else if(str.equals("professorTable")){
             for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++) {
                 showProfessorTablePlayer(i, modelView);
             }
         }else if(str.equals("characters")){
             if(modelView.isExpertModeGame()) {
-                for (String s : modelView.getCharacterCardsInTheGame()) {
-                    if (s.equals("monk")) {
-                        println("monk: " + modelView.getCharactersDataView().getMonkStudents());
-                    } else if (s.equals("princess")) {
-                        println("princess: " + modelView.getCharactersDataView().getPrincessStudents());
-                    } else if (s.equals("jester")) {
-                        println("jester: " + modelView.getCharactersDataView().getJesterStudents());
-                    } else {
-                        println(s);         //TODO virgole
-                    }
-                }
+                printCharacters(modelView);
             }else{
                 println("There are no characters in this game since you are not playing in expert mode!");
                 println(" ");
@@ -1017,7 +1008,7 @@ public class CLI {
         }
         println(" ");
 
-        boolean rightIslandChosen = false;                              //viene settato a true solo se inserisce character o un'isola valida
+        boolean rightIslandChosen = false;
         int chosenIslandID = -1;
         String request;
         while(!rightIslandChosen) {
@@ -1027,13 +1018,14 @@ public class CLI {
                 println("Insert the island ID where you want to move mother nature: ");
                 request = scannerCLI.next();
             }
-            if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+            if (request.equals("character")) {
                 if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
-                        chosenIslandID = -2;                                             //character nel net. handler
-                        rightIslandChosen = true;                                       //settiamo a true perchè vogliamo uscire dal while e quindi dal metodo
+                        chosenIslandID = -2;
+                        // set rightIslandChosen to true so that we exit the while loop
+                        rightIslandChosen = true;
                     }
                 }else{
                     println("You are not playing in expert mode, so you can't use a character card!");
@@ -1045,7 +1037,8 @@ public class CLI {
                     if(chosenIslandID < 0 || chosenIslandID >= 12 || modelView.getIslandGame().get(chosenIslandID) == null){
                         println("This island ID doesn't exist, please insert a valid one: ");
                     }else{
-                        rightIslandChosen = true;                       //settiamo a tru se viene inserita un'isola valida
+                        //if the island ID is valid
+                        rightIslandChosen = true;
                     }
                 }catch (NumberFormatException e){
                     println("wrong insert: please insert show/character or the island ID where you want to move mother nature:");
@@ -1086,11 +1079,10 @@ public class CLI {
 
     /**
      * This method is used to notify the player that 2, or more, islands have been unified.
-     * @param modelView is the reference to the modelView.
      * @param islandLanding is the island ID where mother nature lands after action_2, so it is the island to which the other one(s) unify.
      * @param islandToUnifyFlag is the flag to understand which island have been unified (the previous (-1), the following (+1) or both (0).
      */
-    public void showUnion(ModelView modelView, int islandLanding, int islandToUnifyFlag, ArrayList<Integer> islandConnected){
+    public void showUnion(int islandLanding, int islandToUnifyFlag, ArrayList<Integer> islandConnected){
         if(islandToUnifyFlag == -1) {
             println("The chosen island ("+ islandLanding +") has been unified with the previous island (" + islandConnected.get(0) +").");
         }else if(islandToUnifyFlag == 1){
@@ -1147,7 +1139,7 @@ public class CLI {
     }
 
     /**
-     * This method is used to invoke the real methods showing the islands situation, which means the number of student on each one.
+     * This method is used to invoke the real methods showing the islands' situation, which means the number of student on each one.
      * @param modelView is the reference to the modelView.
      */
     public void showIslandsSituation(ModelView modelView) {
@@ -1180,7 +1172,7 @@ public class CLI {
     }
 
     /**
-     * This method is used to show to the player the clouds situation.
+     * This method is used to show to the player the clouds' situation.
      * @param modelView is the reference to the modelView.
      */
     public void showClouds(ModelView modelView){
@@ -1259,17 +1251,16 @@ public class CLI {
         println("Which cloud do you want to take the students from? They will be moved to your entrance: ");
         while(!rightCloudChosen) {
             request = scannerCLI.next();
-            while (request.equals("show")) {                                      //gestiamo lo show direttamente nella cli, finchè chiede show, rimaniamo qui
+            while (request.equals("show")) {
                 show(playerID, modelView);
                 println("Which cloud do you want to take the students from? ");
                 request = scannerCLI.next();
             }
 
-            if (request.equals("character")) {                                    //se inserisce character, ritorniamo convenzionalmente -2 e gestiamo la scelta del
+            if (request.equals("character")) {
                 if(modelView.isExpertModeGame()) {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
-                        request = scannerCLI.next();
                     } else {
                         cloudChosen = -2;                                             //character nel net. handler
                         rightCloudChosen = true;
@@ -1301,26 +1292,26 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      * @return the new chosen cloud ID.
      */
-    public int invalidCloudSelection(int playerdID, ModelView modelView){
+    public int invalidCloudSelection(int player_ID, ModelView modelView){
         println("Invalid Cloud ID: this cloud has already been chosen. Please select a new one: ");
-        return chooseCloud(playerdID, modelView);
+        return chooseCloud(player_ID, modelView);
     }
 
     /**
      * This method is used to show the winner of the match.
      * @param winnerNickname is the nickname of the winner.
      * @param winnerReason is the reason why a player wins.
-     * @param playerIDwinner is the id of the winner.
+     * @param playerIDWinner is the id of the winner.
      */
-    public void matchEnd(String winnerNickname, String winnerReason, int playerIDwinner, int playerID){
+    public void matchEnd(String winnerNickname, String winnerReason, int playerIDWinner, int playerID){
         println(" ");
         println("THE MATCH IS ENDED, reason: " + winnerReason);
-        if(playerIDwinner == playerID){
+        if(playerIDWinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
-        }else if(playerIDwinner == -1){
+        }else if(playerIDWinner == -1){
             println("A player disconnected: it a TIE! No one won this match :/  ");
         }else {
-            println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
+            println("You lost this game, the winner is " + playerIDWinner +": " + winnerNickname);
         }
         println(" ");
         println(" ");
@@ -1341,20 +1332,15 @@ public class CLI {
      */
     public String characterChoice(ModelView modelView){
         println("Which character do you want to use? ");
-        for(String s : modelView.getCharacterCardsInTheGame()){         //TODO VIRGOLE VARIE
-            print(s + " ");
-        }
-        println(" ");
+        printCharacters(modelView);
+
         println("Insert one of the character: ");
         String characterChosen = scannerCLI.next();
 
-        while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen))){
+        while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen.toLowerCase()))){
             println("Please insert a right character: ");
             if(modelView.isExpertModeGame()) {
-                for (String s : modelView.getCharacterCardsInTheGame()) {
-                    print(s + " ");
-                }
-                println(" ");
+                printCharacters(modelView);
             }else{
                 println("There are no characters in this game since you are not playing in expert mode!");
                 println(" ");
@@ -1363,7 +1349,7 @@ public class CLI {
         }
         println(" ");
         println("You choose to use: " + characterChosen);
-        return  characterChosen;
+        return  characterChosen.toLowerCase();
 
     }
 
@@ -1397,17 +1383,17 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Monk character.
-     * @param modelview is the reference to the modelView.
+     * @param modelView is the reference to the modelView.
      * @return the id of the chosen island.
      */
-    public int choiceIslandMonk(ModelView modelview){
+    public int choiceIslandMonk(ModelView modelView){
         int islandChosen;
         println("On which island do you want to move the student you chose?");
-        showStudentsOnIslands(modelview);
+        showStudentsOnIslands(modelView);
         islandChosen = scannerCLI.nextInt();
-        while(islandChosen < 0 || islandChosen > 11 || modelview.getIslandGame().get(islandChosen)==null){
+        while(islandChosen < 0 || islandChosen > 11 || modelView.getIslandGame().get(islandChosen)==null){
             println("Please insert a valid island: ");
-            showStudentsOnIslands(modelview);
+            showStudentsOnIslands(modelView);
             islandChosen = scannerCLI.nextInt();
         }
         return  islandChosen;
@@ -1672,7 +1658,7 @@ public class CLI {
                         frog -= 1;
                         rightStudentChoice = true;
                     }
-                } else if (studentChosen.equals("GNOME")) {
+                } else {
                     if (gnome == 0) {
                         println("There are not enough of that type, choose another one.");
                         studentChosen = scannerCLI.next();
@@ -1695,7 +1681,6 @@ public class CLI {
      * @return the Creature chosen.
      */
     public Creature choiceTrafficker(){
-        ArrayList <String> availableStudents = new ArrayList<>();
         Creature chosenTypeOfStudent = null;
         println("CHOOSE A TYPE OF STUDENT\nPlease insert the number corresponding to the type you chose.");
 
@@ -1765,6 +1750,40 @@ public class CLI {
         }
 
         return chosenStudentIDByClient;
+    }
+
+    /**
+     * This method show all the characters with their students if necessary and their price
+     * @param modelView reference to the model view
+     */
+    public void printCharacters(ModelView modelView){
+        int characterIndex;
+        boolean characterAlreadyUsed;
+        int characterPrice;
+
+        for (String s : modelView.getCharacterCardsInTheGame()) {
+            characterIndex = modelView.getCharacterCardsInTheGame().indexOf(s);
+            characterPrice = modelView.getCharactersPrice().get(characterIndex);
+            characterAlreadyUsed = modelView.getCharactersPriceIncreased().get(characterIndex);
+
+            switch (s) {
+                case "monk":
+                    println("MONK: " + modelView.getCharactersDataView().getMonkStudents() +
+                            "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
+                    break;
+                case "princess":
+                    println("PRINCESS: " + modelView.getCharactersDataView().getPrincessStudents() +
+                            "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
+                    break;
+                case "jester":
+                    println("JESTER: " + modelView.getCharactersDataView().getJesterStudents() +
+                            "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
+                    break;
+                default:
+                    println(s.toUpperCase() + "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
+                    break;
+            }
+        }
     }
 
     /**

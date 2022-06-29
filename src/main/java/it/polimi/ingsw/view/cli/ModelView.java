@@ -50,13 +50,17 @@ public class ModelView {
      * This attribute gathers all the 3 character cards available in the game, if played in expert mode.
      */
     private ArrayList<String> characterCardsInTheGame;
-    //private Set<String> characterCardsInTheGame;
-
-    //da 0 a 2, da 3 a 5 oppure da 0 a 3, da 4 a 7, da 8 a 11.
-   // private ArrayList<Creature> StudentsOnTheClouds;
-
     /**
-     * This integer is the ordervalue (1-10) of the last assistant card chosen by the player.
+     * This attribute is the list of prices of the characters used in the match;
+     * the price refers to the character with index equals to the index of the price.
+     */
+    private ArrayList<Integer> charactersPrice;
+    /**
+     * This attribute specifies if a character has already been used and so the price has increased by one coin
+     */
+    private ArrayList<Boolean> charactersPriceIncreased;
+    /**
+     * This integer is the order value (1-10) of the last assistant card chosen by the player.
      */
     private int lastAssistantChosen;
 
@@ -66,16 +70,25 @@ public class ModelView {
     private ArrayList <Creature> studentsOnClouds;
 
     /**
-     * This attributes keep saved some useful data of some characters for the match.
+     * This attribute keep saved some useful data of some characters for the match.
      */
     private CharactersDataView charactersDataView;
 
     /**
      * This constructor creates a new instance of the modelView.
+     * @param playerID ID of the player
      */
     public ModelView(int playerID){
         assistantCardsValuesPlayer = new HashMap<>();
         characterCardsInTheGame = new ArrayList<>();
+        charactersPrice = new ArrayList<>();
+
+        charactersPriceIncreased = new ArrayList<>();
+        // set all cards as not already used
+        for(int i = 0; i < 3; i++){
+            charactersPriceIncreased.add(false);
+        }
+
         studentsOnClouds = new ArrayList<>();
         charactersDataView = new CharactersDataView();
 
@@ -231,5 +244,13 @@ public class ModelView {
 
     public void setCharactersDataView(CharactersDataView charactersDataView) {
         this.charactersDataView = charactersDataView;
+    }
+
+    public ArrayList<Integer> getCharactersPrice() {
+        return charactersPrice;
+    }
+
+    public ArrayList<Boolean> getCharactersPriceIncreased() {
+        return charactersPriceIncreased;
     }
 }
