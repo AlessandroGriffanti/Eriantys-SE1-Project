@@ -8,6 +8,9 @@ import java.util.HashMap;
  * This class represents a miniature of the ProfessorTable of the player.
  */
 public class ProfessorTableView {
+    /**
+     * This attribute tracks the ownership of a certain professor.
+     */
     private HashMap<Creature, Boolean> occupiedSeatsPlayer;
 
     /**
@@ -24,11 +27,11 @@ public class ProfessorTableView {
 
 
 
-    public synchronized HashMap<Creature, Boolean> getOccupiedSeatsPlayer() {
+    public HashMap<Creature, Boolean> getOccupiedSeatsPlayer() {
         return occupiedSeatsPlayer;
     }
 
-    public synchronized void setOccupiedSeatsPlayer(HashMap<Creature, Boolean> occupiedSeatsPlayer) {
+    public void setOccupiedSeatsPlayer(HashMap<Creature, Boolean> occupiedSeatsPlayer) {
         this.occupiedSeatsPlayer = occupiedSeatsPlayer;
     }
 

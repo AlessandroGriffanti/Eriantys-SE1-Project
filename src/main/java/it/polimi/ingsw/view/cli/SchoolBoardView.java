@@ -5,9 +5,22 @@ package it.polimi.ingsw.view.cli;
  */
 public class SchoolBoardView {
     private ModelView modelview;
+    /**
+     * This attribute is a reference to the tower area of the player.
+     */
     private TowerAreaView towerAreaPlayer;
+    /**
+     * This attribute is a reference to the diningroom of the player.
+     */
     private DiningRoomView diningRoomPlayer;
+    /**
+     * This attribute is a reference to the entrnace of the player.
+     */
     private EntranceView entrancePlayer;
+
+    /**
+     * This attribute is a reference to the professor table of the player.
+     */
     private ProfessorTableView professorTablePlayer;
 
     /**
@@ -23,23 +36,23 @@ public class SchoolBoardView {
         this.professorTablePlayer = new ProfessorTableView();
     }
 
-    public synchronized ModelView getModelView() {
+    public  ModelView getModelView() {
         return modelview;
     }
 
-    public synchronized TowerAreaView getTowerAreaPlayer() {
+    public TowerAreaView getTowerAreaPlayer() {
         return towerAreaPlayer;
     }
 
-    public synchronized DiningRoomView getDiningRoomPlayer() {
+    public DiningRoomView getDiningRoomPlayer() {
         return diningRoomPlayer;
     }
 
-    public synchronized EntranceView getEntrancePlayer() {
+    public EntranceView getEntrancePlayer() {
         return entrancePlayer;
     }
 
-    public synchronized ProfessorTableView getProfessorTablePlayer() {
+    public ProfessorTableView getProfessorTablePlayer() {
         return professorTablePlayer;
     }
 

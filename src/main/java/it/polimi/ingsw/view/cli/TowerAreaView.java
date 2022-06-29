@@ -4,6 +4,9 @@ package it.polimi.ingsw.view.cli;
  * This class represents a miniature of the TowerArea of the player.
  */
 public class TowerAreaView {
+    /**
+     * This attribute indicates the current number of towers in the tower area.
+     */
     private int currentNumberOfTowersPlayer;
 
     public TowerAreaView(int numberOfTotalPlayers){

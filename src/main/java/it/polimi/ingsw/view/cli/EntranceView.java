@@ -9,9 +9,12 @@ import java.util.ArrayList;
  * This class represents a miniature of the Entrance of the player.
  */
 public class EntranceView {
-
+    /**
+     * This attributes represents the list of students in the entrance.
+     */
     private ArrayList<Creature> studentsInTheEntrancePlayer;
-    private DiningRoomView doorToTheDiningRoomPlayer; //forse non server
+
+    private DiningRoomView doorToTheDiningRoomPlayer;
 
     /**
      * This constructor creates a new instance of the EntranceView.
@@ -22,19 +25,19 @@ public class EntranceView {
         studentsInTheEntrancePlayer = new ArrayList<Creature>();
     }
 
-    public synchronized ArrayList<Creature> getStudentsInTheEntrancePlayer() {
+    public ArrayList<Creature> getStudentsInTheEntrancePlayer() {
         return studentsInTheEntrancePlayer;
     }
 
-    public synchronized void setStudentsInTheEntrancePlayer(ArrayList<Creature> studentsInTheEntrancePlayer) {
+    public void setStudentsInTheEntrancePlayer(ArrayList<Creature> studentsInTheEntrancePlayer) {
         this.studentsInTheEntrancePlayer = studentsInTheEntrancePlayer;
     }
 
-    public synchronized DiningRoomView getDoorToTheDiningRoomPlayer() {
+    public DiningRoomView getDoorToTheDiningRoomPlayer() {
         return doorToTheDiningRoomPlayer;
     }
 
-    public synchronized void setDoorToTheDiningRoomPlayer(DiningRoomView doorToTheDiningRoomPlayer) {
+    public void setDoorToTheDiningRoomPlayer(DiningRoomView doorToTheDiningRoomPlayer) {
         this.doorToTheDiningRoomPlayer = doorToTheDiningRoomPlayer;
     }
 }

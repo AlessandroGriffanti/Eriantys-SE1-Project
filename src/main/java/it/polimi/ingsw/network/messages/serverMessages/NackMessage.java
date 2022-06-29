@@ -3,7 +3,9 @@ package it.polimi.ingsw.network.messages.serverMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
-
+/**
+ * This class represents the message sent by the server when a certain action can't be performed.
+ */
 public class NackMessage extends Message {
 
     /**

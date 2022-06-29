@@ -34,26 +34,45 @@ public class NetworkHandler {
     private String ip;
     private int port;
 
-
-
-    private String lastCallFrom = null;
-
     /**
      * This attribute represents the personal modelView of a player, and it is created in the first
      * update method, after receiving the match start message.
      */
     private ModelView modelView;
 
+
+    /**
+     * This attribute tracks the moment, during a round, when a character card is used, so that
+     * the player can continue his turn after resolving a character card.
+     */
+    private String lastCallFrom = null;
+
+    /**
+     * This attribute tells if the match is over, which means an EndOfMatchMessage has been received from the server.
+     */
     private boolean matchEnd = false;
+
+    /**
+     * This attribute tells if the match has started.
+     */
     private boolean matchStarted = false;
 
-    //questi potrebbero essere spostati in mv
+    /**
+     * This attribute is used to understand if the player has already chosen his tower or not. If so,
+     * we can move on to the deck choice.
+     */
     private Tower towerColor;
+
+    /**
+     * This attribute is used to understand if the player has already chosen his tower or not. If so,
+     * we can move on to the assistant choice.
+     */
     private Wizard wizard;
 
 
     /**
-     * We use this flag to understand if the player has already used the assistant card.
+     * We use this flag to understand if the player has already used the assistant card. If so,
+     * the action phase can begin.
      */
     private boolean assistantChoiceFlag = false;
     /**
@@ -132,19 +151,15 @@ public class NetworkHandler {
         inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
 
-        // 1- per prima cosa il client avviato fa un login sul server
         loginFromClient();
 
         while (!matchEnd) {
             //System.out.println("Still connected");
-               String msgFromServer = inputBufferClient.readLine();
-               System.out.println("messaggio dal server: " + msgFromServer);
-               System.out.println(" ");
-               analysisOfReceivedMessageServer(msgFromServer);
+            String msgFromServer = inputBufferClient.readLine();
+            System.out.println("messaggio dal server: " + msgFromServer);
+            System.out.println(" ");
+            analysisOfReceivedMessageServer(msgFromServer);
         }
-
-        //TimeUnit.MILLISECONDS.sleep(5000);
-
 
         inputBufferClient.close();
         outputPrintClient.close();
@@ -182,15 +197,11 @@ public class NetworkHandler {
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
      */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson) throws InterruptedException {
-        //System.out.println("Message analysis in progress...");
-        //System.out.println("messaggio ricevuto in json: " + receivedMessageInJson);
 
         Message receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, Message.class);
 
-        //System.out.println("Message translated");
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
-        //System.out.println(messageObject);
-        //System.out.println("Object Found.");
+
 
         ////switch per l'analisi dell'oggetto del messaggio
         switch (messageObject) {
@@ -208,17 +219,15 @@ public class NetworkHandler {
                 AckMatchCreationMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, AckMatchCreationMessage.class);
                 boolean newMatchNeeded = msgLoginSuccess.getNewMatchNeeded();
                 playerID = msgLoginSuccess.getPlayerID();
-                //System.out.println("player id " + playerID);
                 if (newMatchNeeded) {
                     creatingNewSpecsFromClient();
-                } else {            //TODO questo else non serve forse, DA VERIFICARE
+                } else {
                     sendAckFromClient();
                 }
                 break;
 
             case "join match":
                 AskMatchToJoinMessage askMatchToJoinMessage = gsonObj.fromJson(receivedMessageInJson, AskMatchToJoinMessage.class);
-                //System.out.println("player id" + playerID);
 
                 int lobbyIDChosenByPlayer = cli.lobbyToChoose(askMatchToJoinMessage.getLobbiesTmp(), askMatchToJoinMessage.getLobbiesExpertMode(), askMatchToJoinMessage.getLobbiesNumberOfPlayers(), askMatchToJoinMessage.getLobbiesEnd());
 
@@ -245,11 +254,7 @@ public class NetworkHandler {
                 MatchStartMessage matchStartMessage;
                 matchStartMessage = gsonObj.fromJson(receivedMessageInJson, MatchStartMessage.class);
 
-                System.out.println("NUMERO DI GIOCATORI TOTALI: " + matchStartMessage.getNumPlayer());
-                System.out.println("PARTITA IN EXPERT MODE: " + matchStartMessage.isExpertMode());
-
                 System.out.println("player id: " + playerID);
-                System.out.println("first id: " + matchStartMessage.getFirstPlayer());
 
                 updateStartModelView(matchStartMessage);                                            //primo update della cli, gli passo il messaggio ricevuto dal server così posso inizializzare
 
@@ -263,7 +268,6 @@ public class NetworkHandler {
                     chosenTowerColorMessage.setColor(towerColor);
                     chosenTowerColorMessage.setSender_ID(playerID);
                     sendMessage(chosenTowerColorMessage);
-                    System.out.println("sent ok");
 
 
                 } else if (matchStartMessage.getFirstPlayer() != playerID){
@@ -273,7 +277,6 @@ public class NetworkHandler {
                 break;
             case "end":
                 matchIsEnded(receivedMessageInJson);
-
                 break;
 
             case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
@@ -292,7 +295,6 @@ public class NetworkHandler {
                             chosenTowerColorMessage.setColor(towerColor);
                             chosenTowerColorMessage.setSender_ID(playerID);
                             sendMessage(chosenTowerColorMessage);
-                            System.out.println("sent ok");
 
                             break;
 
@@ -518,7 +520,6 @@ public class NetworkHandler {
                         }
                         updateModelViewActionTwo(ackMessageMapped);
                         cli.newMotherNaturePosition(ackMessageMapped.getDestinationIsland_ID());
-                        //TimeUnit.MILLISECONDS.sleep(500);
                         break;
 
                     case "action_2_influence":
@@ -538,7 +539,6 @@ public class NetworkHandler {
                                 cli.oldMaster(modelView, motherNatureIslandID, playerID);
                             }
                         }
-                        //TimeUnit.MILLISECONDS.sleep(500);
                         break;
 
                     case "action_2_union":
@@ -939,7 +939,6 @@ public class NetworkHandler {
         BagClickMessage bagClickMessage = new BagClickMessage();
         bagClickMessage.setSender_ID(playerID);
         sendMessage(bagClickMessage);
-        System.out.println("SENT BAG CLICKED OK");
     }
 
     /**
@@ -992,8 +991,7 @@ public class NetworkHandler {
     /**
      * This method is used to create and send the Chosen Character Message to the server.
      */
-    public void sendRequestCharacterMessage(String characterChosen){ //, String callFrom
-        //this.lastCallFrom = callFrom;
+    public void sendRequestCharacterMessage(String characterChosen){
         CharacterRequestMessage characterRequestMessage = new CharacterRequestMessage(playerID, characterChosen);
         sendMessage(characterRequestMessage);
     }
@@ -1145,21 +1143,17 @@ public class NetworkHandler {
             for (String s : modelView.getCharacterCardsInTheGame()) {
                 if(s.equals("monk")){
                     modelView.getCharactersDataView().setMonkStudents(matchStartMessage.getMonkStudents());
-                    //System.out.print("numero monk: " + modelView.getCharactersDataView().getMonkStudents().size());
                 }else if(s.equals("jester")){
                     modelView.getCharactersDataView().setJesterStudents(matchStartMessage.getJesterStudents());
-                    //System.out.print("numero jester: " + modelView.getCharactersDataView().getJesterStudents().size());
                 }else if(s.equals("princess")){
                     modelView.getCharactersDataView().setPrincessStudents(matchStartMessage.getPrincessStudents());
-                    //System.out.print("numero princess: " + modelView.getCharactersDataView().getPrincessStudents().size());
                 }else if(s.equals("herbalist")){
                     modelView.getCharactersDataView().setHerbalistNumberOfNoEntryTile(4);
                 }
             }
         }
 
-        System.out.println( "NUMERO DI COIN NELLA PARTITA: " + modelView.getCoinGame());                          //stampe di controllo
-        //System.out.println("partita in expert mode??? " + modelView.isExpertModeGame());
+        System.out.println( "Numero di coin della partita: " + modelView.getCoinGame());                          //stampe di controllo
         modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
 
         int motherNaturePosition = matchStartMessage.getMotherNaturePosition();                 //metto gli studenti iniziali (uno per isola tranne dove c'è MN e isola opposta) sulle giuste isole
@@ -1205,17 +1199,11 @@ public class NetworkHandler {
                 }
 
                 //UPDATE COINS:
-                //System.out.println("get type student moved: " + modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()));
                 int module = (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) % 3;
-                //System.out.println("occupied seats: " + module);
                 if (module == 0) {
-                    //System.out.println("old coin reserve act1: " + modelView.getCoinGame());
-                    //System.out.println("old coin player act1: " + ackMessageMapped.getRecipient() + modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()));
                     int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
-                    //System.out.println("new coin player act1: " + newPlayerCoin);
                     modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
                     modelView.setCoinGame(modelView.getCoinGame() - 1);
-                    //System.out.println("new coin reserve act1: " + modelView.getCoinGame());
                 }
 
             } else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
@@ -1233,17 +1221,11 @@ public class NetworkHandler {
                 }
 
                 //UPDATE COINS:
-                //System.out.println("get type student moved: " + modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved()));
                 int module = (modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) % 3;
-                //System.out.println("occupied seats: " + module);
                 if (module == 0) {
-                    //System.out.println("old coin reserve act1: " + modelView.getCoinGame());
-                    //System.out.println("old coin player act1: " + ackMessageMapped.getRecipient() + modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()));
                     int newPlayerCoin = modelView.getCoinPlayer().get(ackMessageMapped.getRecipient()) + 1;
-                    //System.out.println("new coin player act1: " + newPlayerCoin);
                     modelView.getCoinPlayer().replace(ackMessageMapped.getRecipient(), newPlayerCoin);
                     modelView.setCoinGame(modelView.getCoinGame() - 1);
-                    //System.out.println("new coin reserve act1: " + modelView.getCoinGame());
                 }
 
             }else if (ackMessageMapped.getSubObject().equals("action_1_island")) {
@@ -1483,6 +1465,7 @@ public class NetworkHandler {
                     }
                 }
             }
+            modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
         }else if(characterUsed.equals("jester")){
             modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
             modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
@@ -1511,6 +1494,12 @@ public class NetworkHandler {
                     }
                 }
             }
+            int module = (modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackCharactersMessage.getCreature())) % 3;
+            if (module == 0) {
+                int newPlayerCoin = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) + 1;
+                modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newPlayerCoin);
+                modelView.setCoinGame(modelView.getCoinGame() - 1);
+            }
         }else if (characterUsed.equals("trafficker")){
             // set the professorTables
             for(int player_ID : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
@@ -1532,10 +1521,16 @@ public class NetworkHandler {
             }
         }
 
-        modelView.getCoinPlayer().put(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
+        int newCoinPlayer = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) - (ackCharactersMessage.getCoinReserve() - modelView.getCoinGame());
+        modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newCoinPlayer);
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
     }
 
+    /**
+     * This method is used to resolve the end of the match and it calls the matchEnd cli method which notifies
+     * the players that the match is over and the winner.
+     * @param receivedMessageInJson is the message received in json.
+     */
     public void matchIsEnded(String receivedMessageInJson){
         EndOfMatchMessage endOfMatchMessage = gsonObj.fromJson(receivedMessageInJson, EndOfMatchMessage.class);
         cli.matchEnd(endOfMatchMessage.getWinnerNickname(), endOfMatchMessage.getReason(), endOfMatchMessage.getWinner(), playerID);

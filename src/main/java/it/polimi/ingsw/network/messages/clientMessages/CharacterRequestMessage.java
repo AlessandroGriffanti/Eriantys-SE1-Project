@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
+/**
+ * This class represents the message sent when the player wants to use a character card.
+ */
 public class CharacterRequestMessage extends Message {
 
     /**

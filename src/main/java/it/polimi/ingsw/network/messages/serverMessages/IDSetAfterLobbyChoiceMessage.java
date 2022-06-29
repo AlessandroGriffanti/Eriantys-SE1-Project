@@ -4,7 +4,7 @@ import it.polimi.ingsw.network.messages.Message;
 
 /**
  * This class represents the message sent by the server to let the client know its
- * player's ID after he chose the lobby to join
+ * player ID after choosing the lobby to join.
  */
 public class IDSetAfterLobbyChoiceMessage extends Message {
     /**

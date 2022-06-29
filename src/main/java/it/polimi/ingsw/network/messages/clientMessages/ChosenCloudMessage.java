@@ -2,7 +2,10 @@ package it.polimi.ingsw.network.messages.clientMessages;
 
 import it.polimi.ingsw.network.messages.Message;
 
-
+/**
+ * This class represents the message sent when a player chooses the cloud he wants to take
+ * The students from.
+ */
 public class ChosenCloudMessage extends Message {
     private int cloud_ID;
 

@@ -23,7 +23,6 @@ public class CLI {
      */
     public CLI(String ip, int port) throws IOException, InterruptedException {
         this.networkHandler = new NetworkHandler(ip, port, this);
-
         this.networkHandler.startClient();
     }
 
@@ -268,7 +267,7 @@ public class CLI {
      * This method is used to notify the player that the game has started.
      */
     public void startAlert () {
-        println("\n - - - GAME IS STARTED !!! - - - \n");
+        println("\n - - - GAME IS STARTED ! - - - \n");
     }
 
     /**
@@ -339,7 +338,7 @@ public class CLI {
      * This method is used to notify the player that it's his turn, so he has to act.
      */
     public void isYourTurn() {
-        println("Is your Turn! Make your choice: ");
+        println("It is your Turn! Make your choice: ");
     }
 
     /**
@@ -348,21 +347,6 @@ public class CLI {
      * @return the color chosen in Tower type.
      */
     public  Tower towerChoice (ModelView modelView) {
-        /*
-        println("                                                |>>>\n" +
-                "                                                |\n" +
-                "                                            _  _|_  _\n" +
-                "                                           |;|_|;|_|;|\n" +
-                " MAKE YOUR CHOICE!                       \\\\.    .  /\n" +
-                "                                          \\\\:  .  /\n" +
-                "                                             ||:   |\n" +
-                "                                             ||:.  |\n" +
-                "                                             ||:  .|\n" +
-                "                                             ||:   |\n" +
-                "                                             ||: , |\n" +
-                "     ____--`~    '--~~__            __ ----~    ~`---,              ___\n" +
-                "-~--~                   ~---__ ,--~'                  ~~----_____-~'   `~----~~\n");
-         */
 
         String strTowerColorChosen = null;
         println("Choose the COLOR of your tower: ");
@@ -1089,6 +1073,7 @@ public class CLI {
      * @param modelView is the reference to the modelView.
      * @param islandLanding is the island ID where mother nature lands after action_2, so it is the island to which the other one(s) unify.
      * @param islandToUnifyFlag is the flag to understand which island have been unified (the previous (-1), the following (+1) or both (0).
+     * @param islandConnected  is they arraylist containing the ID of the island which has been unified with the islandLanding.
      */
     public void showUnion(ModelView modelView, int islandLanding, int islandToUnifyFlag, ArrayList<Integer> islandConnected){
         if(islandToUnifyFlag == -1) {
@@ -1248,6 +1233,7 @@ public class CLI {
 
     /**
      * This method is used to ask the player which cloud he wants to take the student from.
+     * @param playerID is the player ID.
      * @param modelView is the reference to the modelView.
      * @return the cloud ID chosen.
      */
@@ -1298,6 +1284,7 @@ public class CLI {
 
     /**
      * This method is used to show to the player that he chose an invalid Cloud ID to take the students from.
+     * @param playerdID is the player ID.
      * @param modelView is the reference to the modelView.
      * @return the new chosen cloud ID.
      */
