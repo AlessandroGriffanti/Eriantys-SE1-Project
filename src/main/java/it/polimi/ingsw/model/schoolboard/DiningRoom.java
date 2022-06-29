@@ -56,8 +56,8 @@ public class DiningRoom {
     public int removeStudents(int qt, Creature s){
         int numberStudentsRemoved;
 
-        if(occupiedSeats.get(s) >= 3){
-            numberStudentsRemoved = 3;
+        if(occupiedSeats.get(s) >= qt){
+            numberStudentsRemoved = qt;
         }else {
             numberStudentsRemoved = occupiedSeats.get(s);
         }

@@ -56,7 +56,7 @@ public class Bard extends Character {
         DiningRoom diningRoom = player.getSchoolBoard().getDiningRoom();
 
         // get the students chosen by the player
-        ArrayList<Integer> studentsFromEntrance = request.getStudentsFromPlayerEntrance();
+        ArrayList<Integer> studentsFromEntrance_ID = request.getStudentsFromPlayerEntrance();
         ArrayList<Creature> studentsFromDiningRoom = request.getStudentsFromPlayerDiningRoom();
 
         if(studentsFromDiningRoom == null){
@@ -71,8 +71,8 @@ public class Bard extends Character {
 
         int entrance_ID;
         // SWITCH STUDENTS
-        for(int i = 0; i < studentsFromEntrance.size(); i++){
-            entrance_ID = studentsFromEntrance.get(i);
+        for(int i = 0; i < studentsFromEntrance_ID.size(); i++){
+            entrance_ID = studentsFromEntrance_ID.get(i);
             entranceCreature = entrance.getStudentsInTheEntrance().get(entrance_ID);
             diningRoomCreature = studentsFromDiningRoom.get(i);
 
@@ -87,7 +87,7 @@ public class Bard extends Character {
             diningRoom.addStudent(entranceCreature);
 
             entrance.removeStudent(entrance_ID);
-            entrance.addStudent(diningRoomCreature);
+            entrance.addStudentWithIndex(entrance_ID, diningRoomCreature);
 
             // UPDATE PROFESSORS' CONTROL
             SupportFunctions.updateProfessorControl(controller, previousOwnerEntranceProfessor_ID, entranceCreature);

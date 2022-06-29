@@ -1483,7 +1483,6 @@ public class NetworkHandler {
                     }
                 }
             }
-            modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
         }else if(characterUsed.equals("jester")){
             modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
             modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
@@ -1512,17 +1511,6 @@ public class NetworkHandler {
                     }
                 }
             }
-            int module = (modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackCharactersMessage.getCreature())) % 3;
-            //System.out.println("occupied seats: " + module);
-            if (module == 0) {
-                //System.out.println("old coin reserve chupd: " + modelView.getCoinGame());
-                //System.out.println("old coin player chupd: " + ackCharactersMessage.getRecipient() + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
-                int newPlayerCoin = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) + 1;
-                //System.out.println("new coin player chupd: " + newPlayerCoin);
-                modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newPlayerCoin);
-                modelView.setCoinGame(modelView.getCoinGame() - 1);
-                //System.out.println("new coin reserve chupd: " + modelView.getCoinGame());
-            }
         }else if (characterUsed.equals("trafficker")){
             // set the professorTables
             for(int player_ID : ackCharactersMessage.getAllPlayersProfessors().keySet()) {
@@ -1544,14 +1532,8 @@ public class NetworkHandler {
             }
         }
 
-        //System.out.println("old coin reserve chupd: " + modelView.getCoinGame());
-        //System.out.println("old coin player chupd: " + ackCharactersMessage.getRecipient() + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
-        int newCoinPlayer = modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()) - (ackCharactersMessage.getCoinReserve() - modelView.getCoinGame());
-        //System.out.println("new coin player chupd: " + newCoinPlayer);
-        modelView.getCoinPlayer().replace(ackCharactersMessage.getRecipient(), newCoinPlayer);
-        //System.out.println("new coin player after replacing chupd: " + modelView.getCoinPlayer().get(ackCharactersMessage.getRecipient()));
+        modelView.getCoinPlayer().put(ackCharactersMessage.getRecipient(), ackCharactersMessage.getPlayerCoins());
         modelView.setCoinGame(ackCharactersMessage.getCoinReserve());
-        //System.out.println("new coin reserve chupd: " + modelView.getCoinGame());
     }
 
     public void matchIsEnded(String receivedMessageInJson){
