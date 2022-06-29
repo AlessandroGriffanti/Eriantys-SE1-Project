@@ -695,7 +695,7 @@ public class NetworkHandler {
                         }
                         break;
 
-                    case "mushroomsMerchant" :
+                    case "mushroomMerchant" :
                         if (ackMessageMapped.getNextPlayer() == playerID) {
                             Creature chosenStudentMushroomsMerchant = cli.choiceMushroomsMerchant();
 
