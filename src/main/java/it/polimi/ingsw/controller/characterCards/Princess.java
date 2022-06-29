@@ -10,7 +10,6 @@ import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class represents the character card called "princess".
@@ -65,26 +64,15 @@ public class Princess extends Character {
 
         increasePrice();
 
-        // find who are the professors' masters before using the card
-        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<>();
-        for(Creature c: Creature.values()){
-            previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
+        int previousProfessorMaster = SupportFunctions.whoControlsTheProfessor(controller.getMatch(), studentTaken);
 
         player.getSchoolBoard().getDiningRoom().addStudent(studentTaken);
 
         // draw one student from the bag and add it to the character card
         addStudent();
 
-        // CONTROL OVER PROFESSORS
-        // find who are the professors' masters after the card has been used
-        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<>();
-        for(Creature c: Creature.values()){
-            currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
-
-        // CHECK PROFESSORS' CONTROL
-        SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
+        // UPDATE PROFESSORS' CONTROL
+        SupportFunctions.updateProfessorControl(controller, previousProfessorMaster, studentTaken);
 
         // create and send the ack message
         int coinReserve = controller.getMatch().getCoinsReserve();

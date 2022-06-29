@@ -12,7 +12,6 @@ import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
 import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class represents the character called "bard" (the third to last on the rules file).
@@ -60,39 +59,51 @@ public class Bard extends Character {
         ArrayList<Creature> studentsFromDiningRoom = request.getStudentsFromPlayerDiningRoom();
 
         if(studentsFromDiningRoom == null){
+            sendAckMessage(player);
             return;
         }
 
-        // find who are the professors' masters before using the card
-        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<>();
-        for(Creature c: Creature.values()){
-            previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
+        int previousOwnerEntranceProfessor_ID;
+        int previousOwnerDiningRoomProfessor_ID;
+        Creature entranceCreature;
+        Creature diningRoomCreature;
 
         int entrance_ID;
         // SWITCH STUDENTS
         for(int i = 0; i < studentsFromEntrance.size(); i++){
             entrance_ID = studentsFromEntrance.get(i);
+            entranceCreature = entrance.getStudentsInTheEntrance().get(entrance_ID);
+            diningRoomCreature = studentsFromDiningRoom.get(i);
 
-            diningRoom.removeStudents(1, studentsFromDiningRoom.get(i));
-            diningRoom.addStudent(entrance.getStudentsInTheEntrance().get(entrance_ID));
+            /* find who is controlling the professor corresponding to the student moved
+            from the entrance to the dining room*/
+            previousOwnerEntranceProfessor_ID = SupportFunctions.whoControlsTheProfessor(controller.getMatch(), entranceCreature);
+            /* find who is controlling the professor corresponding to the student moved
+            from the dining room to the entrance*/
+            previousOwnerDiningRoomProfessor_ID = SupportFunctions.whoControlsTheProfessor(controller.getMatch(), diningRoomCreature);
+
+            diningRoom.removeStudents(1, diningRoomCreature);
+            diningRoom.addStudent(entranceCreature);
 
             entrance.removeStudent(entrance_ID);
-            entrance.addStudent(studentsFromDiningRoom.get(i));
+            entrance.addStudent(diningRoomCreature);
+
+            // UPDATE PROFESSORS' CONTROL
+            SupportFunctions.updateProfessorControl(controller, previousOwnerEntranceProfessor_ID, entranceCreature);
+            SupportFunctions.updateProfessorControl(controller, previousOwnerDiningRoomProfessor_ID, diningRoomCreature);
+
+            sendAckMessage(player);
         }
+    }
 
-        // find who are the professors' masters after the card has been used
-        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<>();
-        for(Creature c: Creature.values()){
-            currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
-
-        // CHECK PROFESSORS' CONTROL
-        SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
-
+    /**
+     * This method sends the AckCharacterMessage with character set to "bard"
+     * @param player reference to the player that used the character card
+     */
+    private void sendAckMessage(Player player){
         // create and send the ack message
         int coinsReserve = controller.getMatch().getCoinsReserve();
-        AckCharactersMessage ack = new AckCharactersMessage(request.getSender_ID(), "bard", coinsReserve);
+        AckCharactersMessage ack = new AckCharactersMessage(player.getID(), "bard", coinsReserve);
 
         ack.setEntranceOfPlayer(player.getSchoolBoard().getEntrance().getStudentsInTheEntrance());
         ack.setPlayerDiningRoom(player.getSchoolBoard().getDiningRoom().getOccupiedSeats());
@@ -102,7 +113,7 @@ public class Bard extends Character {
             ack.setPlayerProfessors(k, player.getMyProfessors());
         }
 
-        int coinsOfPlayer = controller.getMatch().getPlayerByID(request.getSender_ID()).getCoinsOwned();
+        int coinsOfPlayer = controller.getMatch().getPlayerByID(player.getID()).getCoinsOwned();
         ack.setPlayerCoins(coinsOfPlayer);
         controller.sendMessageAsBroadcast(ack);
     }

@@ -296,31 +296,49 @@ public class SupportFunctions {
     }
 
     /**
-     * This method change the status of the professors' table of each player if necessary,
+     * This method change the status of one professor in the players' tables,
      * checking the previous situation and the current one after some action occurred,
      * for example when a character card is used (bard, princess or trafficker)
      * @param controller reference to the controller of th match
-     * @param previousProfessorsMaster for each type of professor (creature) the ID of
-     *                                 the previous master of the professor
-     * @param currentProfessorsMaster for each type of professor (creature) the ID of
-     *      *                         the current master of the professor
+     * @param previousOwner_ID the ID of the previous owner of the professor
+     * @param creature type of professor considered
      */
-    static public void checkProfessorsControl(Controller controller, HashMap<Creature, Integer> previousProfessorsMaster , HashMap<Creature, Integer> currentProfessorsMaster){
-        int previousMaster_ID;
-        int currenMaster_ID;
-        for(Creature c: Creature.values()){
-            previousMaster_ID = previousProfessorsMaster.get(c);
-            currenMaster_ID = currentProfessorsMaster.get(c);
+    static public void updateProfessorControl(Controller controller, int previousOwner_ID, Creature creature){
+        Match match = controller.getMatch();
+        Player previousOwner = match.getPlayerByID(previousOwner_ID);
+        int maxStudentAtTheTable = previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
 
-            if(previousMaster_ID == -1 && previousMaster_ID != currenMaster_ID){
-                // give professor to the current controller
-                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
-            }else if(previousMaster_ID != -1 && previousMaster_ID != currenMaster_ID){
-                // remove professor from the previous controller
-                controller.getMatch().getPlayerByID(previousMaster_ID).getSchoolBoard().getProfessorTable().removeProfessor(c);
-                // give professor to the current controller
-                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
+        Player tempPlayer;
+        int studentsOfTempPlayer;
+
+        int currentOwner_ID = previousOwner_ID;
+
+        // find who is currently controlling the professor
+        for(int i = 0; i < match.getNumberOfPlayers(); i++){
+            tempPlayer = match.getPlayerByID(i);
+            studentsOfTempPlayer = tempPlayer.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature);
+
+            if(studentsOfTempPlayer > maxStudentAtTheTable){
+                currentOwner_ID = i;
+                maxStudentAtTheTable = studentsOfTempPlayer;
             }
+        }
+
+        // no one controlled the professor but now one player does
+        if(previousOwner_ID == -1 && currentOwner_ID != previousOwner_ID){
+            match.getPlayerByID(currentOwner_ID).getSchoolBoard().getProfessorTable().addProfessor(creature);
+        }
+        // the player owning the professor has changed
+        else if(previousOwner_ID != -1 && currentOwner_ID != previousOwner_ID){
+            match.getPlayerByID(previousOwner_ID).getSchoolBoard().getProfessorTable().removeProfessor(creature);
+            match.getPlayerByID(currentOwner_ID).getSchoolBoard().getProfessorTable().addProfessor(creature);
+        }
+
+        /* if the previous owner has no more students on the table we remove the professor
+        * nobody controls this professor for now*/
+        if(previousOwner_ID == currentOwner_ID && previousOwner.getSchoolBoard().getDiningRoom().getOccupiedSeatsAtTable(creature) == 0){
+            match.getPlayerByID(previousOwner_ID).getSchoolBoard().getProfessorTable().removeProfessor(creature);
+            match.getNotControlledProfessors().add(creature);
         }
     }
 

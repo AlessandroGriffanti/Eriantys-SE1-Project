@@ -58,10 +58,7 @@ public class Trafficker extends Character {
         int numberStudentsRemoved;
 
         // find who are the professors' masters before using the card
-        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<Creature, Integer>();
-        for(Creature c: Creature.values()){
-            previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
+        int previousProfessorOwner_ID = SupportFunctions.whoControlsTheProfessor(controller.getMatch(), creatureChosen);
 
         // EFFECT
         /* remove from all players' dining room three students or fewer
@@ -77,14 +74,8 @@ public class Trafficker extends Character {
             bag.addStudentsOfType(numberStudentsRemoved, creatureChosen);
         }
 
-        // find who are the professors' masters after the card has been used
-        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<Creature, Integer>();
-        for(Creature c: Creature.values()){
-            currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
-        }
-
-        // CHECK PROFESSORS' CONTROL
-        SupportFunctions.checkProfessorsControl(controller, previousProfessorsMaster, currentProfessorsMaster);
+        // UPDATE PROFESSORS' CONTROL
+        SupportFunctions.updateProfessorControl(controller, previousProfessorOwner_ID, creatureChosen);
 
         // create and send ack message
         int coinsReserve = controller.getMatch().getCoinsReserve();
