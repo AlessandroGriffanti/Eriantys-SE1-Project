@@ -1454,7 +1454,7 @@ public class CLI {
                }
             }else{
                 networkHandler.setJesterNumber(maxNumberOfStudents);
-                break;    //maxNumberOfStudents = 3;
+                break;
             }
         }
         if(maxNumberOfStudents == 3){
@@ -1602,7 +1602,7 @@ public class CLI {
                     }
                 } else {
                     networkHandler.setBardNumber(maxNumberOfStudents);
-                    break; //maxNumberOfStudents = 2;
+                    break;
                 }
 
             }

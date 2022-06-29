@@ -77,16 +77,36 @@ public class NetworkHandler {
      */
     private int numberOfStudentToMoveAction1;
 
+    /**
+     * This attribute tracks the rounds while the messenger character card is active.
+     */
     private boolean messengerActive = false;
 
+    /**
+     * This attribute indicates the number of students that have been moved from the entrance after using
+     * the Jester character caerd.
+     */
     private int jesterNumber = 0;
 
+    /**
+     * This attribute indicates the number of students that have been moved from the entrance after using
+     * the Bard character caerd.
+     */
     private int bardNumber = 0;
 
+    /**
+     * This attribute tells if a character has been used during a certain round.
+     */
     private boolean characterUsed = false;
 
+    /**
+     * This attribute tells if the students in the bag are ended, which means there won't be an action3.
+     */
     private boolean action3valid = true;
 
+    /**
+     * This attributes tracks the following player when the action3valid attribute is true.
+     */
     private int nextPlayerAction3NotValid;
     /**
      * NetworkHandler constructor which creates a new instance of the NetworkHandler.
