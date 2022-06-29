@@ -33,7 +33,7 @@ public class Bard extends Character {
      */
     @Override
     public boolean checkCharacterAvailability() {
-        String json = controller.getMsg();
+        /*String json = controller.getMsg();
         Gson gson = new Gson();
         Message request = gson.fromJson(json, Message.class);
         int player_ID = request.getSender_ID();
@@ -43,7 +43,8 @@ public class Bard extends Character {
         DiningRoom diningRoom = entrance.getDoorToTheDiningRoom();
 
         // check if there is at least one student in the dining room
-        return diningRoom.getTotalNumberOfStudents() > 0;
+        return diningRoom.getTotalNumberOfStudents() > 0;*/
+        return true;
     }
 
     @Override
