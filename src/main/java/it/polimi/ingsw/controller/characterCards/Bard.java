@@ -59,8 +59,12 @@ public class Bard extends Character {
         ArrayList<Integer> studentsFromEntrance = request.getStudentsFromPlayerEntrance();
         ArrayList<Creature> studentsFromDiningRoom = request.getStudentsFromPlayerDiningRoom();
 
+        if(studentsFromDiningRoom == null){
+            return;
+        }
+
         // find who are the professors' masters before using the card
-        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<Creature, Integer>();
+        HashMap<Creature, Integer> previousProfessorsMaster = new HashMap<>();
         for(Creature c: Creature.values()){
             previousProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
         }
@@ -68,7 +72,7 @@ public class Bard extends Character {
         int entrance_ID;
         // SWITCH STUDENTS
         for(int i = 0; i < studentsFromEntrance.size(); i++){
-             entrance_ID = studentsFromEntrance.get(i);
+            entrance_ID = studentsFromEntrance.get(i);
 
             diningRoom.removeStudents(1, studentsFromDiningRoom.get(i));
             diningRoom.addStudent(entrance.getStudentsInTheEntrance().get(entrance_ID));
@@ -78,7 +82,7 @@ public class Bard extends Character {
         }
 
         // find who are the professors' masters after the card has been used
-        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<Creature, Integer>();
+        HashMap<Creature, Integer> currentProfessorsMaster = new HashMap<>();
         for(Creature c: Creature.values()){
             currentProfessorsMaster.put(c, SupportFunctions.whoControlsTheProfessor(controller.getMatch(), c));
         }

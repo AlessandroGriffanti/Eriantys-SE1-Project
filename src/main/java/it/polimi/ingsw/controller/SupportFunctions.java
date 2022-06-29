@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.characterCards.MushroomsMerchant;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.server.ClientHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,9 +44,7 @@ public class SupportFunctions {
             }
         }
 
-        if(islandsLeftCounter <= 3){
-            assert islandsLeftCounter == 3 : "ERROR: there are less than 3 islands left";
-        }
+        assert islandsLeftCounter > 3 || islandsLeftCounter == 3 : "ERROR: there are less than 3 islands left";
         return islandsLeftCounter == 3;
     }
 
@@ -77,8 +74,9 @@ public class SupportFunctions {
         ArrayList<Player> players = controller.getMatch().getPlayers();
 
         for(Player p: players){
-            if(p.getAssistantsDeck().getNumberOfRemainingCards() == 0){
+            if (p.getAssistantsDeck().getNumberOfRemainingCards() == 0) {
                 matchMustEnd = true;
+                break;
             }
         }
 
@@ -202,17 +200,15 @@ public class SupportFunctions {
 
             if(match.getPlayers().get(i).getSchoolBoard().getProfessorTable().isOccupied(creature)){
                 assert player_ID == -1 : "ACTION_1 controller state:\ntwo players simultaneously " +
-                        "controlling the" + creature + "creature";
+                        "controlling the" + creature + "professor";
                 player_ID = i;
             }
         }
 
         // if nobody controls the creature it should be in the notControlledProfessors list
-        if(player_ID == -1){
-            assert match.getNotControlledProfessors().contains(creature) :
-                    "The creature is not yet controlled but it is not inside the notoControlledProfessors attribute" +
-                            "inside the class match";
-        }
+        assert player_ID != -1 || match.getNotControlledProfessors().contains(creature) :
+                "The creature is not yet controlled but it is not inside the notControlledProfessors attribute" +
+                        "defined in class Match";
 
         return player_ID;
     }
@@ -230,7 +226,7 @@ public class SupportFunctions {
         Match match = controller.getMatch();
 
         // in this variable we store for each player the influence on the island : HashMap<player_ID, influence>
-        HashMap<Integer, Integer> allPlayersInfluence = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> allPlayersInfluence = new HashMap<>();
 
         Archipelago island = match.getRealmOfTheMatch().getArchipelagos().get(island_ID);
         ArrayList<Creature> playerProfessors;
@@ -316,7 +312,10 @@ public class SupportFunctions {
             previousMaster_ID = previousProfessorsMaster.get(c);
             currenMaster_ID = currentProfessorsMaster.get(c);
 
-            if(previousMaster_ID != currenMaster_ID){
+            if(previousMaster_ID == -1 && previousMaster_ID != currenMaster_ID){
+                // give professor to the current controller
+                controller.getMatch().getPlayerByID(currenMaster_ID).getSchoolBoard().getProfessorTable().addProfessor(c);
+            }else if(previousMaster_ID != -1 && previousMaster_ID != currenMaster_ID){
                 // remove professor from the previous controller
                 controller.getMatch().getPlayerByID(previousMaster_ID).getSchoolBoard().getProfessorTable().removeProfessor(c);
                 // give professor to the current controller
