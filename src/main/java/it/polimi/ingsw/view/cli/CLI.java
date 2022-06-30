@@ -1773,19 +1773,19 @@ public class CLI {
 
             switch (s) {
                 case "monk":
-                    println("MONK: " + modelView.getCharactersDataView().getMonkStudents() +
+                    println("monk: " + modelView.getCharactersDataView().getMonkStudents() +
                             "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
                     break;
                 case "princess":
-                    println("PRINCESS: " + modelView.getCharactersDataView().getPrincessStudents() +
+                    println("princess: " + modelView.getCharactersDataView().getPrincessStudents() +
                             "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
                     break;
                 case "jester":
-                    println("JESTER: " + modelView.getCharactersDataView().getJesterStudents() +
+                    println("jester: " + modelView.getCharactersDataView().getJesterStudents() +
                             "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
                     break;
                 default:
-                    println(s.toUpperCase() + "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
+                    println(s + "   Price: " + (characterAlreadyUsed ? characterPrice+1 : characterPrice));
                     break;
             }
         }
