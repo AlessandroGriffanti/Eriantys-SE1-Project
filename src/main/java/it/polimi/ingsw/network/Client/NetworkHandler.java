@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.messages.clientMessages.PingMessage;
 import it.polimi.ingsw.network.messages.serverMessages.*;
 import it.polimi.ingsw.network.messages.clientMessages.*;
 import it.polimi.ingsw.view.cli.CLI;
@@ -20,6 +21,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
 /**
  * The class NetworkHandler handles the client-side connection between the server and the client
  */
@@ -150,7 +154,7 @@ public class NetworkHandler {
         //clientSocket.setSoTimeout(10000);
         inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
-
+        keepAlive();
         loginFromClient();
 
         while (!matchEnd) {
@@ -168,6 +172,19 @@ public class NetworkHandler {
 
     }
 
+    private void keepAlive(){
+        new Thread(() -> {
+            while(true){
+                try {
+                    TimeUnit.MILLISECONDS.sleep(10000);
+                    sendMessage(new PingMessage());
+                } catch (InterruptedException e) {
+                    Logger.getLogger("NetworkHandler error");
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }).start();
+    }
     /**
      * This method serializes the client message in json and sends it to the server.
      *
@@ -213,7 +230,6 @@ public class NetworkHandler {
                 loginInServer(msgLogin.getNicknameOfPlayer());
                 break;
                 */
-
             case "MatchCreation":
                 cli.loginSuccess();
                 AckMatchCreationMessage msgLoginSuccess = gsonObj.fromJson(receivedMessageInJson, AckMatchCreationMessage.class);
