@@ -8,6 +8,8 @@ import it.polimi.ingsw.network.messages.serverMessages.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -50,6 +52,7 @@ public class ClientHandler extends Thread {
     private PrintWriter outputHandler = null;
     private BufferedReader inputHandler = null;
 
+    private static int TIMEOUT = 10000;
     /**
      * Constructor of the ClientHandler
      * @param socket is the client socket returned from the serverSocket.accept() method.
@@ -58,6 +61,11 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket socket, Server server) {
         this.clientSocket = socket;
         this.server = server;
+        try{
+            clientSocket.setSoTimeout(TIMEOUT);
+        }catch (SocketException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,19 +81,38 @@ public class ClientHandler extends Thread {
 
             loginInServer(inputHandler.readLine());
 
-            /*while(clientSocket.isConnected()){
-                server.getLobbies().get(server.getLobbyIDByPlayerName(nicknamePlayer)).manageMsg(inputHandler.readLine());          //messaggio passato in json al controller
-                System.out.println("pippo while");
-            }*/
             System.out.println("pippo while");
-            while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ){
+            while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ) {
                 //System.out.println("is match ended: " + server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded());
-                String msg = inputHandler.readLine();                                                                                   //leggiamo il mex in input dal client
-                System.out.println("messaggio ricevuto dal client: " + msg);
-                if(server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded()){
-                    server.getLobbiesEnd().set(lobbyID, true);
-                }else {
-                    server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);                                //mandiamo al controller il messaggio ricevuto dal client
+                try {
+                    String msg = inputHandler.readLine();                                                                                   //leggiamo il mex in input dal client
+                    System.out.println("messaggio ricevuto dal client: " + msg);
+                    if(msg != null) {
+                        if (!msg.equals("{\"object\":\"ping\",\"sender_ID\":0}")) {
+                            System.out.println("messaggio ricevuto dal client: " + msg);
+                            if (server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded()) {
+                                server.getLobbiesEnd().set(lobbyID, true);
+                            } else {
+                                server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(msg);                                //mandiamo al controller il messaggio ricevuto dal client
+                            }
+                        }
+                    }
+                }catch (SocketTimeoutException e){
+                    clientSocket.close();
+                    System.out.println("Chiusura socket");
+                    if(matchStarted) {
+                        System.out.println("OUT1");
+                        server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
+                        server.getLobbiesEnd().set(lobbyID, true);
+                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
+                    }else if(lobbyAccessed){
+                        System.out.println("OUT2");
+                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);     //TODO forse playerConnection non serve più
+                        server.getLobbiesEnd().set(lobbyID, true);
+                        server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
+                    }else{
+                        System.out.println("OUT3");
+                    }
                 }
             }
 
@@ -126,8 +153,9 @@ public class ClientHandler extends Thread {
         LoginMessage receivedMessageFromJson;
         receivedMessageFromJson = gsonObj.fromJson(receivedMessageInJson, LoginMessage.class);
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
-
-        if (messageObject.equals("login")) {
+        if(receivedMessageFromJson.getObjectOfMessage().equals("ping")){
+            loginInServer(inputHandler.readLine());
+        }else if (messageObject.equals("login")) {
             if (checkNickname(receivedMessageFromJson.getNicknameOfPlayer())){  //if checkNickname returns true, which means the nickname of the player isn't already used
                 server.getPlayersNicknames().add(receivedMessageFromJson.getNicknameOfPlayer());    //aggiungiamo il nickname del giocatore all'arraylist nel server
                 nicknamePlayer = receivedMessageFromJson.getNicknameOfPlayer();                     //settiamo la variabile nicknamePlayer del clientHandler con il valore del nickname proveniente dal client
@@ -136,45 +164,14 @@ public class ClientHandler extends Thread {
 
                 //nuova rilettura
                 String messageReceivedInJson = inputHandler.readLine();                             //qui riceve il nuovo mex dal client
-                Message messageReceivedFromJson = gsonObj.fromJson(messageReceivedInJson, Message.class);
-
-                if(messageReceivedFromJson.getObjectOfMessage().equals("creation")){                //se riceve il messaggio di MatchSpecs
-                    MatchSpecsMessage matchSpecsMessage = gsonObj.fromJson(messageReceivedInJson, MatchSpecsMessage.class);
-                    numberPlayerLobby = matchSpecsMessage.getNumOfPlayers();
-                    lobbyCreation(nicknamePlayer, numberPlayerLobby);                                                  // --> allora crea la lobby
-                    server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
-
-
-                }else if(messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {          //se il server riceve questo significa che il player ha scelto a che lobby unirsi
-                    ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
-
-                    int templobbyID = replyChosenLobbyToJoinMessage.getLobbyIDChosen();
-                    //CHECK IF FULL WHILE TRYING TO JOIN
-                    int maxNumOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getNumberOfPlayers();
-                    int numOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getPlayersAddedCounter();
-
-                    if(maxNumOfPlayerInTheLobbyChosen != numOfPlayerInTheLobbyChosen){                                  //se non è ancora stato raggiunto il numero massimo di giocatori, va bene
-                        lobbyID = templobbyID;
-                        playerID = server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter();
-                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, true);
-                        numberPlayerLobby = server.getLobbies().get(String.valueOf(lobbyID)).getNumberOfPlayers();
-                        lobbyAccessed = true;
-
-                        IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
-                        sendMessageFromServer(idSetAfterLobbyChoice);
-
-                        server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknamePlayer);
-
-                    }else {                                                                                             //altrimenti nack
-                        NackMessage nackMessageForLobby = new NackMessage("lobby_not_available");
-                        sendMessageFromServer(nackMessageForLobby);
-                        server.getPlayersNicknames().remove(this.nicknamePlayer);
-
-                        socketClosing();
+                boolean pluto = false;
+                while(!pluto) {
+                    if(messageReceivedInJson.equals("{\"object\":\"ping\",\"sender_ID\":0}")){
+                        messageReceivedInJson = inputHandler.readLine();
+                    }else{
+                        receivingSpecsInfo(messageReceivedInJson);
+                        pluto = true;
                     }
-
-                }else {
-                    System.out.println("Error: not right specs message");
                 }
 
             }else{                                                //se il check del nome dà false, finiamo qui dove viene inviato un nicknamenotvalid e nel client verrà rifatto il login
@@ -187,6 +184,51 @@ public class ClientHandler extends Thread {
         }
     }
 
+    public void receivingSpecsInfo(String messageReceivedInJson){
+        Message messageReceivedFromJson = gsonObj.fromJson(messageReceivedInJson, Message.class);
+
+
+        if (messageReceivedFromJson.getObjectOfMessage().equals("creation")) {                //se riceve il messaggio di MatchSpecs
+            MatchSpecsMessage matchSpecsMessage = gsonObj.fromJson(messageReceivedInJson, MatchSpecsMessage.class);
+            numberPlayerLobby = matchSpecsMessage.getNumOfPlayers();
+            lobbyCreation(nicknamePlayer, numberPlayerLobby);                                                  // --> allora crea la lobby
+            server.getLobbies().get(String.valueOf(lobbyID)).manageMsg(messageReceivedInJson);            //passa numero di giocatori massimo
+
+
+        } else if (messageReceivedFromJson.getObjectOfMessage().equals("chosen lobby")) {          //se il server riceve questo significa che il player ha scelto a che lobby unirsi
+            ReplyChosenLobbyToJoinMessage replyChosenLobbyToJoinMessage = gsonObj.fromJson(messageReceivedInJson, ReplyChosenLobbyToJoinMessage.class);
+
+            int templobbyID = replyChosenLobbyToJoinMessage.getLobbyIDChosen();
+            //CHECK IF FULL WHILE TRYING TO JOIN
+            int maxNumOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getNumberOfPlayers();
+            int numOfPlayerInTheLobbyChosen = server.getLobbies().get(String.valueOf(templobbyID)).getPlayersAddedCounter();
+
+            if (maxNumOfPlayerInTheLobbyChosen != numOfPlayerInTheLobbyChosen) {                                  //se non è ancora stato raggiunto il numero massimo di giocatori, va bene
+                lobbyID = templobbyID;
+                playerID = server.getLobbies().get(String.valueOf(lobbyID)).getPlayersAddedCounter();
+                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, true);
+                numberPlayerLobby = server.getLobbies().get(String.valueOf(lobbyID)).getNumberOfPlayers();
+                lobbyAccessed = true;
+
+                IDSetAfterLobbyChoiceMessage idSetAfterLobbyChoice = new IDSetAfterLobbyChoiceMessage(playerID);
+                sendMessageFromServer(idSetAfterLobbyChoice);
+
+                server.getLobbies().get(String.valueOf(lobbyID)).addPlayerHandler(this, nicknamePlayer);
+
+            } else {                                                                                             //altrimenti nack
+                NackMessage nackMessageForLobby = new NackMessage("lobby_not_available");
+                sendMessageFromServer(nackMessageForLobby);
+                server.getPlayersNicknames().remove(this.nicknamePlayer);
+
+                try{
+                    socketClosing();
+                }catch (IOException e){
+                    e.printStackTrace();
+                    System.out.println("SIAMO QUI ERRORE");
+                }
+            }
+        }
+    }
     /** this method checks if the nickname of the player who wants to login is already
      * used or not in the server, where we store in an arraylist (playersNicknames) all the nicknames
      * @param nicknameChosenPlayer is the nickname to check
