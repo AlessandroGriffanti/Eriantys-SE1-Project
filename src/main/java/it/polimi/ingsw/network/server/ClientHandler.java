@@ -196,12 +196,12 @@ public class ClientHandler extends Thread {
      * his nickname can't be already used, so we return true.
      * */
     public boolean checkNickname(String nicknameChosenPlayer){
-        int totalNumberOfPlayers = this.server.getPlayersNicknames().size(); //IN QUESTO CASO FORSE BISOGNA CREARE SUBITO LA LOBBY
+        int totalNumberOfPlayers = this.server.getPlayersNicknames().size();
         if (totalNumberOfPlayers != 0) {
             int equal = 0;
             for(int k = 0; k < totalNumberOfPlayers; k++){
                 if (server.getPlayersNicknames().get(k).equals(nicknameChosenPlayer)){
-                    equal = 1;                                              //se ne trovo uno uguale setto equal a 1
+                    equal = 1;
                     break;
                 }
             }
