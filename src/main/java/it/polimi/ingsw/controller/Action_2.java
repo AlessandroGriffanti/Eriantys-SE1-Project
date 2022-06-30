@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
 import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class Action_2 implements ControllerState{
 
@@ -141,15 +140,17 @@ public class Action_2 implements ControllerState{
 
                 controller.sendMessageAsBroadcast(movementAck);
 
-                //send message for action_2_influence so that it won't be execute
+                //send message for action_2_influence so that it won't be executed
                 AckMessage emptyInfluenceAck = new AckMessage();
                 emptyInfluenceAck.setRecipient(request.getSender_ID());
+                emptyInfluenceAck.setSubObject("action_2_influence");
                 emptyInfluenceAck.setMasterChanged(false);
                 controller.sendMessageAsBroadcast(emptyInfluenceAck);
 
                 //send message for action_2_union so that it won't be executed
                 AckMessage emptyUnionAck = new AckMessage();
                 emptyUnionAck.setRecipient(request.getSender_ID());
+                emptyUnionAck.setSubObject("action_2_union");
                 emptyUnionAck.setIslandsUnified("none");
                 controller.sendMessageAsBroadcast(emptyUnionAck);
 
@@ -417,25 +418,24 @@ public class Action_2 implements ControllerState{
      * This method checks if the action_3 can be performed or not controlling the number of students on each cloud,
      * if it's smaller than the cloud's capacity, action_3 must not be performed
      * @param match reference to the match in question
-     * @return true if action_3 can be performed
+     * @return true if there is at least one cloud that contains all the students -> action3 valid
      *         false otherwise
      */
     private boolean controlAction3Allowed(Match match){
         ArrayList<CloudTile> clouds = match.getRealmOfTheMatch().getCloudRegion();
-        boolean action3Possible = true;
+        int cloudsNotFullCnt = 0;
 
         for(CloudTile c: clouds){
             if(c.getStudents().size() < c.getCapacity()){
-                action3Possible = false;
+                cloudsNotFullCnt++;
             }
         }
 
         /* N.B. There could be no more students in the bag even if the action_3 results to be possible
                 in this case there were just the right number of students in the bag*/
-        if(!action3Possible){
-            assert match.getBagOfTheMatch().getNumberOfRemainingStudents() == 0;
-        }
+        int numberOfClouds = match.getNumberOfPlayers();
+        assert cloudsNotFullCnt < numberOfClouds || match.getBagOfTheMatch().getNumberOfRemainingStudents() == 0;
 
-        return action3Possible;
+        return cloudsNotFullCnt < numberOfClouds;
     }
 }
