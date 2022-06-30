@@ -152,7 +152,7 @@ public class NetworkHandler {
     public void startClient() {
         try {
             clientSocket = new Socket(ip, port);
-            clientSocket.setSoTimeout(60000);
+            //clientSocket.setSoTimeout(60000);
             inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
         } catch (IOException e) {
@@ -412,7 +412,7 @@ public class NetworkHandler {
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {                 //se non tocca a te e non l'hai ancora scelta
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {                 //se non tocca a te e non l'hai ancora scelta
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
                         }
 
@@ -428,10 +428,10 @@ public class NetworkHandler {
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == false) {
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag == true) {
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag) {
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) {   //tocca a te e hai già scelto, mandi il messaggio movedStudentsFromEntrance
@@ -870,11 +870,11 @@ public class NetworkHandler {
                 //update:
                 updateCharacterCard(ackCharactersMessage);
                 //callFrom:
-                if(ackCharactersMessage.getRecipient() == playerID) {                              //faccio queste cose se il mio player id corrisponde, per l'altro giocatore non esiterà ancora nessuna callfrom, mi darebbe null
+                if(ackCharactersMessage.getRecipient() == playerID) {
+                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient(), playerID);
                     followingChoiceToMake(lastCallFrom);
-                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
                 }else{
-                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient());
+                    cli.characterUsed(ackCharactersMessage.getCharacter(), ackCharactersMessage.getRecipient(), playerID);
                     cli.turnWaiting(ackCharactersMessage.getNextPlayer());
                 }
                 break;

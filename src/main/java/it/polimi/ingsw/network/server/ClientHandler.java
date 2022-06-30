@@ -85,11 +85,10 @@ public class ClientHandler extends Thread {
             while( !( server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded() ) ) {
                 //System.out.println("is match ended: " + server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded());
                 try {
-                    String msg = inputHandler.readLine();                                                                                   //leggiamo il mex in input dal client
+                    String msg = inputHandler.readLine();
                     System.out.println("messaggio ricevuto dal client: " + msg);
                     if(msg != null) {
                         if (!msg.equals("{\"object\":\"ping\",\"sender_ID\":0}")) {
-                            System.out.println("messaggio ricevuto dal client: " + msg);
                             if (server.getLobbies().get(String.valueOf(lobbyID)).isMatchEnded()) {
                                 server.getLobbiesEnd().set(lobbyID, true);
                             } else {
@@ -107,7 +106,7 @@ public class ClientHandler extends Thread {
                         server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
                     }else if(lobbyAccessed){
                         System.out.println("OUT2");
-                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);     //TODO forse playerConnection non serve più
+                        server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
                         server.getLobbiesEnd().set(lobbyID, true);
                         server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
                     }else{
@@ -129,7 +128,7 @@ public class ClientHandler extends Thread {
                 server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
             }else if(lobbyAccessed){
                 System.out.println("OUT2");
-                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);     //TODO forse playerConnection non serve più
+                server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
                 server.getLobbiesEnd().set(lobbyID, true);
                 server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
             }else{

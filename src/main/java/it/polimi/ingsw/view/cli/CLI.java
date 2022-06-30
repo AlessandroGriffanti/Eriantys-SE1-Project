@@ -50,7 +50,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.33", 4444);
+            CLI cli = new CLI("192.168.1.35", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -322,10 +322,15 @@ public class CLI {
     /**
      * This method is used when another player has used a character, so the client is notified and has to wait.
      * @param characterUsed name of the character used by this player or another one
-     * @param playerID ID of the player that used the character
+     * @param player ID of the player that used the character
+     * @param myPlayerID is the id of the current player.
      */
-    public void characterUsed (String characterUsed, int playerID) {
-        println("Player " + playerID + " has used the " + characterUsed + " character card!");
+    public void characterUsed (String characterUsed, int player, int myPlayerID) {
+        if(myPlayerID != player) {
+            println("Player " + player + " has used the " + characterUsed.toUpperCase() + " character card! ");
+        }else{
+            println("You correctly used the " + characterUsed.toUpperCase() + " character card! ");
+        }
     }
 
     /**
@@ -925,8 +930,8 @@ public class CLI {
         println("What do you want to view? Insert entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
         String str = scannerCLI.next();
 
-        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professorTable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers"))){   //possono essere viste queste cose
-            println("Please insert one of the following: entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
+        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professorTable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers") || str.equals("helpguide") || str.equals("helpCharacter"))){   //possono essere viste queste cose
+            println("Please insert one of the following: entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing/helpguide/helpCharacter");
             str = scannerCLI.nextLine();
         }
 
@@ -1232,7 +1237,7 @@ public class CLI {
             }
             println(" ");
         }
-
+        println(" ");
     }
 
     /**
@@ -1310,7 +1315,7 @@ public class CLI {
         }else if(playerIDwinner == -1){
             println("A player disconnected: it a TIE! No one won this match :/  ");
         }else {
-            println("You lost this game, the winner is " + playerIDwinner +": " + winnerNickname);
+            println("You lost this game, the winner is Player" + playerIDwinner +": " + winnerNickname + "!!");
         }
         println(" ");
         println(" ");
@@ -1336,7 +1341,7 @@ public class CLI {
         println("Insert one of the character: ");
         String characterChosen = scannerCLI.next();
 
-        while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen.toLowerCase()))){
+        while(!(modelView.getCharacterCardsInTheGame().contains(characterChosen))){
             println("Please insert a right character: ");
             if(modelView.isExpertModeGame()) {
                 printCharacters(modelView);
@@ -1348,7 +1353,7 @@ public class CLI {
         }
         println(" ");
         println("You choose to use: " + characterChosen);
-        return  characterChosen.toLowerCase();
+        return  characterChosen;
 
     }
 
