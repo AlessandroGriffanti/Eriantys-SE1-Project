@@ -21,7 +21,7 @@ public class CLI {
      * @param ip is the server ip
      * @param port is the server port
      */
-    public CLI(String ip, int port) throws IOException, InterruptedException {
+    public CLI(String ip, int port){
         this.networkHandler = new NetworkHandler(ip, port, this);
         this.networkHandler.startClient();
     }
@@ -55,13 +55,7 @@ public class CLI {
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
             System.exit(0);
-        } catch (IOException e) {           //TODO no longer available, disconnected, you're offline
-            System.out.println("Server no longer available :(  " + e.getMessage());
-        } catch (InterruptedException e) {
-            e.printStackTrace();            //TODO is alive socket
         }
-
-
     }
 
     /**

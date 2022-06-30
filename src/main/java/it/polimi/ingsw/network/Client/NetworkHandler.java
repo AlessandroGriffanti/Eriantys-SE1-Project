@@ -149,34 +149,43 @@ public class NetworkHandler {
      * This method starts the communication between the client (NetworkHandler) and the server.
      * It initializes the socket, the input and output buffer and launches the login part through the loginFromClient method.
      */
-    public void startClient() throws IOException, InterruptedException {
-        clientSocket = new Socket(ip, port);
-        //clientSocket.setSoTimeout(10000);
-        inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
+    public void startClient() {
+        try {
+            clientSocket = new Socket(ip, port);
+            clientSocket.setSoTimeout(60000);
+            inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            closingNH();
+            System.exit(0);
+        }
         keepAlive();
         loginFromClient();
 
-        while (!matchEnd) {
-            //System.out.println("Still connected");
-            String msgFromServer = inputBufferClient.readLine();
-            System.out.println("messaggio dal server: " + msgFromServer);
-            System.out.println(" ");
-            analysisOfReceivedMessageServer(msgFromServer);
+        try {
+            while (!matchEnd) {
+                //System.out.println("Still connected");
+                String msgFromServer = inputBufferClient.readLine();
+                System.out.println("messaggio dal server: " + msgFromServer);
+                System.out.println(" ");
+                analysisOfReceivedMessageServer(msgFromServer);
+            }
+        } catch (IOException e) {           //TODO no longer available, disconnected, you're offline
+            System.out.println("Server no longer available :(  " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        inputBufferClient.close();
-        outputPrintClient.close();
-        clientSocket.close();
-
-
+        closingNH();
+        System.exit(0);
     }
 
     private void keepAlive(){
         new Thread(() -> {
             while(true){
                 try {
-                    TimeUnit.MILLISECONDS.sleep(10000);
+                    TimeUnit.MILLISECONDS.sleep(5000);
                     sendMessage(new PingMessage());
                 } catch (InterruptedException e) {
                     Logger.getLogger("NetworkHandler error");
@@ -1631,6 +1640,16 @@ public class NetworkHandler {
 
     public void setBardNumber(int bardNumber) {
         this.bardNumber = bardNumber;
+    }
+
+    public void closingNH() {
+        try {
+            this.inputBufferClient.close();
+            this.outputPrintClient.close();
+            this.clientSocket.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
