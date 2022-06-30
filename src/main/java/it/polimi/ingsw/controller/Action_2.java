@@ -138,6 +138,9 @@ public class Action_2 implements ControllerState{
                     }
                 }
 
+                if(action3Allowed){
+                    movementAck.setNextPlayer(request.getSender_ID());
+                }
                 controller.sendMessageAsBroadcast(movementAck);
 
                 //send message for action_2_influence so that it won't be executed
@@ -145,6 +148,9 @@ public class Action_2 implements ControllerState{
                 emptyInfluenceAck.setRecipient(request.getSender_ID());
                 emptyInfluenceAck.setSubObject("action_2_influence");
                 emptyInfluenceAck.setMasterChanged(false);
+                if(action3Allowed){
+                    emptyInfluenceAck.setNextPlayer(request.getSender_ID());
+                }
                 controller.sendMessageAsBroadcast(emptyInfluenceAck);
 
                 //send message for action_2_union so that it won't be executed
@@ -152,7 +158,12 @@ public class Action_2 implements ControllerState{
                 emptyUnionAck.setRecipient(request.getSender_ID());
                 emptyUnionAck.setSubObject("action_2_union");
                 emptyUnionAck.setIslandsUnified("none");
+                if(action3Allowed){
+                    emptyUnionAck.setNextPlayer(request.getSender_ID());
+                }
                 controller.sendMessageAsBroadcast(emptyUnionAck);
+
+                controller.nextState();
 
             } else {
                 movementAck.setNextPlayer(request.getSender_ID());

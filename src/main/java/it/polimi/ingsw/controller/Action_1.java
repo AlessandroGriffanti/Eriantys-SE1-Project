@@ -146,15 +146,21 @@ public class Action_1 implements ControllerState{
             // if 3 students have been moved we can change state
             if(studentsMoved == 3){
                 controller.nextState();
-                // reset the value of cookUsed (it lasts only for the current players' action_1)
-                controller.getCharactersManager().setCookActive(false);
+
+                if(controller.getMatch().isExpertMode()){
+                    // reset the value of cookUsed (it lasts only for the current players' action_1)
+                    controller.getCharactersManager().setCookActive(false);
+                }
             }
         }else if(controller.getNumberOfPlayers() == 3){
             // if 4 students have been moved we can change state
             if(studentsMoved == 4){
                 controller.nextState();
-                // reset the value of cookUsed (it lasts only for the current players' action_1)
-                controller.getCharactersManager().setCookActive(false);
+
+                if(controller.getMatch().isExpertMode()){
+                    // reset the value of cookUsed (it lasts only for the current players' action_1)
+                    controller.getCharactersManager().setCookActive(false);
+                }
             }
         }
     }

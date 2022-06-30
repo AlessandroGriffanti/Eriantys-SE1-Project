@@ -14,6 +14,7 @@ import java.util.*;
 public class CLI {
     private NetworkHandler networkHandler;
     Scanner scannerCLI = new Scanner(System.in);
+    private final ArrayList<String> showKeyWords;
 
 
     /**
@@ -22,6 +23,20 @@ public class CLI {
      * @param port is the server port
      */
     public CLI(String ip, int port){
+        // set all the possible requests for show command
+        showKeyWords = new ArrayList<>();
+        showKeyWords.add("diningroom");
+        showKeyWords.add("islands");
+        showKeyWords.add("professorTable");
+        showKeyWords.add("characters");
+        showKeyWords.add("clouds");
+        showKeyWords.add("coins");
+        showKeyWords.add("entrance");
+        showKeyWords.add("towers");
+        showKeyWords.add("helpGuide");
+        showKeyWords.add("helpCharacter");
+        showKeyWords.add("nothing");
+
         this.networkHandler = new NetworkHandler(ip, port, this);
         this.networkHandler.startClient();
     }
@@ -50,7 +65,7 @@ public class CLI {
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
              */
-            CLI cli = new CLI("192.168.1.35", 4444);
+            CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
@@ -927,23 +942,19 @@ public class CLI {
      */
     public void show(int playerID, ModelView modelView){
 
-        println("What do you want to view? Insert entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing");
+        println("What do you want to view? Insert entrance/professorTable/diningroom/islands/characters/clouds/coins/towers/helpGuide/helpCharacter/nothing");
         String str = scannerCLI.next();
 
-        while(!(str.equals("diningroom") || str.equals("islands") ||  str.equals("both") || str.equals("professorTable") ||str.equals("characters") || str.equals("nothing") ||str.equals("clouds") || str.equals("coins")|| str.equals("entrance")||str.equals("towers") || str.equals("helpguide") || str.equals("helpCharacter"))){   //possono essere viste queste cose
-            println("Please insert one of the following: entrance/professorTable/diningroom/islands/both/characters/clouds/coins/towers/nothing/helpguide/helpCharacter");
+        while(!(showKeyWords.contains(str))){
+            println("Please insert one of the following: entrance/professorTable/diningroom/islands/characters/clouds/coins/towers/helpGuide/helpCharacter/nothing");
             str = scannerCLI.nextLine();
+            scannerCLI.nextLine();
         }
 
-        if(str.equals("islands")){                                          //mostro le isole se sceglie di vedere isole
+        if(str.equals("islands")){
             showIslandsSituation(modelView);
-        }else if(str.equals("diningroom")){                                 //mostro diningroom se sceglie di vedere diningroom di tutti i giocatori
+        }else if(str.equals("diningroom")){
             for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
-                showStudentsInDiningRoomPlayer(i, modelView);
-            }
-        }else if(str.equals("both")){                                       //mostro entrambi se sceglie both
-            showIslandsSituation(modelView);
-            for( int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++) {
                 showStudentsInDiningRoomPlayer(i, modelView);
             }
         }else if(str.equals("professorTable")){
@@ -979,7 +990,7 @@ public class CLI {
             for(int i = 0; i<= modelView.getNumberOfPlayersGame()-1; i++){
                 showTowersPlayer(i, modelView);
             }
-        }else if(str.equals("helpguide")){
+        }else if(str.equals("helpGuide")){
             helpGuide();
         }else if(str.equals("helpCharacter")){
             helpCharacter();
@@ -1305,17 +1316,17 @@ public class CLI {
      * This method is used to show the winner of the match.
      * @param winnerNickname is the nickname of the winner.
      * @param winnerReason is the reason why a player wins.
-     * @param playerIDwinner is the id of the winner.
+     * @param playerIDWinner is the id of the winner.
      */
-    public void matchEnd(String winnerNickname, String winnerReason, int playerIDwinner, int playerID){
+    public void matchEnd(String winnerNickname, String winnerReason, int playerIDWinner, int playerID){
         println(" ");
         println("THE MATCH IS ENDED, reason: " + winnerReason);
-        if(playerIDwinner == playerID){
+        if(playerIDWinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
-        }else if(playerIDwinner == -1){
-            println("A player disconnected: it a TIE! No one won this match :/  ");
+        }else if(playerIDWinner == -1){
+            println("A player disconnected: it's a TIE! No one won this match :/  ");
         }else {
-            println("You lost this game, the winner is Player" + playerIDwinner +": " + winnerNickname + "!!");
+            println("You lost this game, the winner is Player" + playerIDWinner +": " + winnerNickname + "!!");
         }
         println(" ");
         println(" ");

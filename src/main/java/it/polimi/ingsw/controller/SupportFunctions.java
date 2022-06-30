@@ -241,7 +241,7 @@ public class SupportFunctions {
 
                 // control if mushroom-merchant has been used
                 if(controller.isExpertMode() && controller.getCharactersManager().isMushroomsMerchantActive()){
-                    MushroomsMerchant mushroomsMerchant = (MushroomsMerchant) controller.getCharactersManager().getCards().get("mushroomsMerchant");
+                    MushroomsMerchant mushroomsMerchant = (MushroomsMerchant) controller.getCharactersManager().getCards().get("mushroomMerchant");
                     /* we count the number of students only if they are not of the type
                     to which the effect of the mushrooms-merchant card is applied*/
                     if(!(mushroomsMerchant.getCreatureChosen().equals(creature))){
