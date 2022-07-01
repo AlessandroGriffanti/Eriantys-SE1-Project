@@ -3,7 +3,6 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.model.Bag;
 
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.exceptions.NotEnoughStudentsException;
 import org.junit.Test;
 
 import java.util.ArrayList;
