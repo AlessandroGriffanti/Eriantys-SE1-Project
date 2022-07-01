@@ -44,6 +44,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>it.polimi.ingsw.Client.CLI</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
       <!-- Compiler plugin, sets the Java version -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
