@@ -22,10 +22,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
- * The class NetworkHandler handles the client-side connection between the server and the client
+ * The class handles the client-side connection between the server and the client
  */
 public class NetworkHandler {
     private CLI cli;
@@ -107,13 +106,13 @@ public class NetworkHandler {
 
     /**
      * This attribute indicates the number of students that have been moved from the entrance after using
-     * the Jester character caerd.
+     * the Jester character card.
      */
     private int jesterNumber = 0;
 
     /**
      * This attribute indicates the number of students that have been moved from the entrance after using
-     * the Bard character caerd.
+     * the Bard character card.
      */
     private int bardNumber = 0;
 
@@ -128,7 +127,7 @@ public class NetworkHandler {
     private boolean action3valid = true;
 
     /**
-     * This attributes tracks the following player when the action3valid attribute is true.
+     * This attributes tracks the following player when the action3Valid attribute is true.
      */
     private int nextPlayerAction3NotValid;
     /**
@@ -152,7 +151,6 @@ public class NetworkHandler {
     public void startClient() {
         try {
             clientSocket = new Socket(ip, port);
-            //clientSocket.setSoTimeout(60000);
             inputBufferClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outputPrintClient = new PrintWriter(clientSocket.getOutputStream());
         } catch (IOException e) {
@@ -171,7 +169,7 @@ public class NetworkHandler {
                 System.out.println(" ");
                 analysisOfReceivedMessageServer(msgFromServer);
             }
-        } catch (IOException e) {           //TODO no longer available, disconnected, you're offline
+        } catch (IOException e) {
             System.out.println("Server no longer available :(  " + e.getMessage());
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -181,6 +179,9 @@ public class NetworkHandler {
         System.exit(0);
     }
 
+    /**
+     * This method starts a thread which sends a Ping message to the server every 5 seconds
+     */
     private void keepAlive(){
         new Thread(() -> {
             while(true){
@@ -188,7 +189,6 @@ public class NetworkHandler {
                     TimeUnit.MILLISECONDS.sleep(5000);
                     sendMessage(new PingMessage());
                 } catch (InterruptedException e) {
-                    Logger.getLogger("NetworkHandler error");
                     Thread.currentThread().interrupt();
                 }
             }
@@ -196,7 +196,6 @@ public class NetworkHandler {
     }
     /**
      * This method serializes the client message in json and sends it to the server.
-     *
      * @param msgToSend is the message to be sent.
      */
     public void sendMessage(Message msgToSend) {
@@ -219,7 +218,6 @@ public class NetworkHandler {
 
     /**
      * This method is used by the NetworkHandler class to analyse the received message from the server.
-     *
      * @param receivedMessageInJson is the string received in json format, which will be deserialized.
      */
     public void analysisOfReceivedMessageServer(String receivedMessageInJson) throws InterruptedException {
@@ -229,7 +227,7 @@ public class NetworkHandler {
         String messageObject = receivedMessageFromJson.getObjectOfMessage();
 
 
-        ////switch per l'analisi dell'oggetto del messaggio
+        // analyze the message
         switch (messageObject) {
 
             /* DEFAULT TO USE:
@@ -308,8 +306,9 @@ public class NetworkHandler {
                 matchIsEnded(receivedMessageInJson);
                 break;
 
-            case "ack":                                                                                     //abbiamo raggruppato alcuni messaggi del server in ack e/o nack, dunque il server generico ci manda un ack e nel subObject specifica di cosa si tratta
-                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);    //se vediamo che l'oggetto del messaggio è un ack, rimappiamo il messaggio in uno della classe AckMessage
+            // in case the message was an AckMessage
+            case "ack":
+                AckMessage ackMessageMapped = gsonObj.fromJson(receivedMessageInJson, AckMessage.class);
                 switch (ackMessageMapped.getSubObject()) {
                     case "waiting":
                         cli.ackWaiting();
@@ -412,13 +411,13 @@ public class NetworkHandler {
                             assistantChoiceFlag = true;
                             sendChosenAssistantCardMessage(assistantChosen);
 
-                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {                 //se non tocca a te e non l'hai ancora scelta
+                        } else if (ackMessageMapped.getNextPlayer() != playerID && !assistantChoiceFlag) {
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
                         }
 
                         break;
 
-                    case "assistant":                                                                          //significa che il giocatore in questione non è il primo giocatore a scegliere l'assistente
+                    case "assistant":
                         if (ackMessageMapped.getNextPlayer() == playerID && !assistantChoiceFlag) {
                             ArrayList<Integer> assistantAlreadyUsedInThisRound = ackMessageMapped.getAssistantAlreadyUsedInThisRound();
                             int assistantChosen = cli.assistantChoiceNext(modelView.getAssistantCardsValuesPlayer(), assistantAlreadyUsedInThisRound);
@@ -434,23 +433,26 @@ public class NetworkHandler {
                         } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag) {
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
-                        } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) {   //tocca a te e hai già scelto, mandi il messaggio movedStudentsFromEntrance
+                        } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) {
                             assistantChoiceFlag = false;
-                            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);                    //facciamo scegliere quale studente muovere, gli passo la model view così nella cli posso avere accesso agli studenti e l'id del player.
+                            // choose the student to move
+                            studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                             if(studentChosen == -2){
                                 lastCallFrom = "choiceOfStudentsToMove";
                                 String characterChosen = cli.characterChoice(modelView);
                                 sendRequestCharacterMessage(characterChosen);
                                 break;
                             }
-                            int locationChosen = cli.choiceLocationToMove(playerID, modelView); //facciamo scegliere dove voglia muovere lo studente, isola o diningRoom;
+                            // choose where to move the student
+                            int locationChosen = cli.choiceLocationToMove(playerID, modelView);
                             if(locationChosen == -2){
+                                // if the player chose to use a character
                                 lastCallFrom = "choiceLocationToMove";
                                 String characterChosen = cli.characterChoice(modelView);
                                 sendRequestCharacterMessage(characterChosen);
                                 break;
                             }
-                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);                       // qui ci arrivo solo se non ha scelto di usare un character (infatti negli if precedenti ho un break)
+                            sendMovedStudentsFromEntrance(studentChosen, locationChosen);
                             numberOfChosenStudent ++;
 
                         }
@@ -502,7 +504,7 @@ public class NetworkHandler {
 
                     case "action_1_island":
                         updateModelViewActionOne(ackMessageMapped);
-                        if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {          //tocca ancora  a lui e ha scelto meno di 3 studenti e il precedente l'ha mosso su isola
+                        if (ackMessageMapped.getNextPlayer() == playerID && numberOfChosenStudent < numberOfStudentToMoveAction1) {
                             studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                             if(studentChosen == -2){
                                 lastCallFrom = "choiceOfStudentsToMove";
@@ -568,7 +570,6 @@ public class NetworkHandler {
                                 cli.oldMaster(modelView, motherNatureIslandID, playerID);
                             }
                         }
-                        //TimeUnit.MILLISECONDS.sleep(500);
                         break;
 
                     case "action_2_union":
@@ -772,6 +773,7 @@ public class NetworkHandler {
 
                 break;
 
+            // in case the message was a Nack
             case "nack":
                 NackMessage nackMessageMapped = gsonObj.fromJson(receivedMessageInJson, NackMessage.class);
                 switch (nackMessageMapped.getSubObject()) {
@@ -973,7 +975,6 @@ public class NetworkHandler {
 
     /**
      * This method creates a new ChosenAssistantCard message and sends it to the server.
-     *
      * @param assistantChosen is the assistant chosen.
      */
     public void sendChosenAssistantCardMessage(int assistantChosen) {
@@ -984,7 +985,6 @@ public class NetworkHandler {
 
     /**
      * This method creates a new MovedStudentsFromEntrance message and sends it to the server.
-     *
      * @param studentChosen  is the student chosen.
      * @param locationChosen is the location, island or dining room, chosen.
      */
@@ -999,7 +999,6 @@ public class NetworkHandler {
 
     /**
      * This method creates a new MovedMotherNatureMessage and sends it to the server.
-     *
      * @param destinationIsland_ID is the destination Island where to move Mother Nature.
      */
     public void sendMovedMotherNature(int destinationIsland_ID) {
@@ -1011,6 +1010,7 @@ public class NetworkHandler {
 
     /**
      * This method is used to create and send the Chosen Cloud Message to the server.
+     * @param  cloudChosen ID of the cloud chosen by the player
      */
     public void sendChosenCloudMessage(int cloudChosen){
         ChosenCloudMessage chosenCloudMessage = new ChosenCloudMessage(cloudChosen);
@@ -1020,6 +1020,7 @@ public class NetworkHandler {
 
     /**
      * This method is used to create and send the Chosen Character Message to the server.
+     * @param characterChosen  name of the character that the player chose to use
      */
     public void sendRequestCharacterMessage(String characterChosen){
         CharacterRequestMessage characterRequestMessage = new CharacterRequestMessage(playerID, characterChosen);
@@ -1114,8 +1115,8 @@ public class NetworkHandler {
 
     /**
      * This method is used to send character data for Bard character card.
-     * @param studentsFromEntranceBard is the arraylist of students to move the entrance.
-     * @param studentsFromDiningRoomBard is the arraylist of students to move the Jester card.
+     * @param studentsFromEntranceBard list of students to move from the Entrance to the DiningRoom
+     * @param studentsFromDiningRoomBard list of students to move from the DiningRoom to the Entrance
      */
     public void sendCharacterDataBard(ArrayList<Integer> studentsFromEntranceBard, ArrayList <Creature> studentsFromDiningRoomBard ){
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "bard");
@@ -1126,7 +1127,7 @@ public class NetworkHandler {
 
     /**
      * This method is used to send character data for Trafficker character card.
-     * @param chosenStudentTrafficker is the Creature type of the chosen student by the client.
+     * @param chosenStudentTrafficker is the type of student chosen by the client.
      */
     public void sendCharacterDataTrafficker(Creature chosenStudentTrafficker){
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "trafficker");
@@ -1137,7 +1138,7 @@ public class NetworkHandler {
 
     /**
      * This method is used to send character data for Princess character card.
-     * @param chosenStudentIDPrincess is the id of the chosen student on the card by the client.
+     * @param chosenStudentIDPrincess is the ID of the student taken form the character card by the client.
      */
     public void sendCharacterDataPrincess(int chosenStudentIDPrincess){
         CharacterDataMessage characterDataMessage = new CharacterDataMessage(playerID, "princess");
@@ -1152,16 +1153,16 @@ public class NetworkHandler {
 
     /**
      * This method is used to update the modelView after receiving the matchStartMessage.
-     *
      * @param matchStartMessage is the matchStartMatchMessage received.
      */
     public void updateStartModelView(MatchStartMessage matchStartMessage) {
-        numberOfStudentToMoveAction1 = matchStartMessage.getNumPlayer() + 1;                                 //settiamo il numero di studenti massimi che possono essere mossi nell'action 1 in base al numero di giocatori totali
+        // set the maximum number of students that can be moved during action_1 for each player
+        numberOfStudentToMoveAction1 = matchStartMessage.getNumPlayer() + 1;
 
         assistantChoiceFlag = false;
 
-        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());                                      //setto il numero di giocatori totali della partita
-        modelView.setExpertModeGame(matchStartMessage.isExpertMode());                                           //setto exepert mode  a true se la partita è in expertmode
+        modelView.setNumberOfPlayersGame(matchStartMessage.getNumPlayer());
+        modelView.setExpertModeGame(matchStartMessage.isExpertMode());
         if (modelView.isExpertModeGame()) {
             if(matchStartMessage.getNumPlayer() == 2){
                 modelView.setCoinGame(18);
@@ -1223,10 +1224,11 @@ public class NetworkHandler {
             }
         }
 
-        System.out.println( "Numero di coin della partita: " + modelView.getCoinGame());                          //stampe di controllo
-        modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);   //setto madre natura sull'isola corretta passata nel messaggio di match start
+        // set initial position of Mother Nature
+        modelView.getIslandGame().get(matchStartMessage.getMotherNaturePosition()).setMotherNaturePresence(true);
 
-        int motherNaturePosition = matchStartMessage.getMotherNaturePosition();                 //metto gli studenti iniziali (uno per isola tranne dove c'è MN e isola opposta) sulle giuste isole
+        // set initial configuration of islands
+        int motherNaturePosition = matchStartMessage.getMotherNaturePosition();
         motherNatureIslandID = matchStartMessage.getMotherNaturePosition();
         int j = 1;
         for (Creature c : matchStartMessage.getStudentsOnIslands()) {
@@ -1240,9 +1242,10 @@ public class NetworkHandler {
             }
         }
 
-        for (Integer i : matchStartMessage.getStudentsInEntrance().keySet()) {                                                        //integer è la key dell'hashmap del match start message, è l'id del player
-            ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);                       //Questo dovrebbe essere l'update degli studenti nell'entrance
-            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));             //passo anche il numero di giocatori totali della partita così posso settare il numero di torri in towerAreaView
+        // set all players' Entrance
+        for (Integer i : matchStartMessage.getStudentsInEntrance().keySet()) {
+            ArrayList<Creature> creatureInEntranceAtStart = matchStartMessage.getStudentsInEntrance().get(i);
+            modelView.getSchoolBoardPlayers().put(i, new SchoolBoardView(modelView, matchStartMessage.getNumPlayer()));
             modelView.getSchoolBoardPlayers().get(i).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAtStart);
         }
 
@@ -1251,13 +1254,13 @@ public class NetworkHandler {
 
     /**
      * This method is used to update the modelView after receiving the action_1 ack message.
-     *
      * @param ackMessageMapped is the ack message received.
      */
     public void updateModelViewActionOne(AckMessage ackMessageMapped) {
         assistantChoiceFlag = false;
         if(ackMessageMapped.getPreviousOwnerOfProfessor() != -1 && ackMessageMapped.isProfessorTaken()){
-            modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);     //se c'era un precedente possessore del professore del tipo mosso, setto a false il corrispondente valore nella professortable
+            // set the professor as taken and controlled by a player
+            modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousOwnerOfProfessor()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(),false);
         }
         if (ackMessageMapped.getRecipient() == playerID) {
             if (ackMessageMapped.getSubObject().equals("action_1_dining_room")) {
@@ -1280,14 +1283,17 @@ public class NetworkHandler {
                 modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).addStudent(ackMessageMapped.getTypeOfStudentMoved());
             }
-        }else if(ackMessageMapped.getRecipient()!= playerID){                                                                               //aggiorno la modelview anche se non sono io il giocatore interessato dalle mosse
+        }else if(ackMessageMapped.getRecipient()!= playerID){
             if(ackMessageMapped.getSubObject().equals("action_1_dining_room")){
-                modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);                              //setto a null il corrispondente valore nell'entrance
+                // update Entrance
+                modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().getStudentsInTheEntrancePlayer().set(ackMessageMapped.getStudentMoved_ID(), null);
+                // update DiningRoom
                 int numberOfStudentOfType = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved());
-                modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);            //updato la diningroom del giocatore
+                modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getDiningRoomPlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), numberOfStudentOfType + 1);
 
-                if(ackMessageMapped.isProfessorTaken() && !modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) {  //controllo se acquisisco il controllo del professore e se precedentemente era falso il controllo sul prof, perchè altrimenti lo sovrascrivo
-                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());  //updato la professortable del giocatore
+                // update ProfessorTable
+                if(ackMessageMapped.isProfessorTaken() && !modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().get(ackMessageMapped.getTypeOfStudentMoved())) {
+                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getProfessorTablePlayer().getOccupiedSeatsPlayer().replace(ackMessageMapped.getTypeOfStudentMoved(), ackMessageMapped.isProfessorTaken());
                 }
 
                 //UPDATE COINS:
@@ -1307,33 +1313,36 @@ public class NetworkHandler {
 
     /**
      * This method is used to update the modelView after receiving the action_2 ack message.
-     *
      * @param ackMessageMapped is the ack message received.
      */
     public void updateModelViewActionTwo(AckMessage ackMessageMapped) {
         if (ackMessageMapped.getSubObject().equals("action_2_movement")) {
             if (ackMessageMapped.getRecipient() == playerID) {
-                modelView.getAssistantCardsValuesPlayer().remove(modelView.getLastAssistantChosen());   //rimuovo assistente
+                // remove assistant from the deck
+                modelView.getAssistantCardsValuesPlayer().remove(modelView.getLastAssistantChosen());
                 numberOfChosenStudent = 0;
             }
+            // update islands
             for (int i = 0; i < 12; i++) {
                 if(modelView.getIslandGame().get(i) != null) {
-                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {                    //la posizione di MN è cambiata, setto a false il booleano corrispondente nell'isola dove c'era
+                    if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
                         modelView.getIslandGame().get(i).setMotherNaturePresence(false);
-                    } else if (i == ackMessageMapped.getDestinationIsland_ID()) {                       //setto a true l'attributo nella nuova isola dove si trova MN dopo lo spostamento
+                    } else if (i == ackMessageMapped.getDestinationIsland_ID()) {
                         modelView.getIslandGame().get(i).setMotherNaturePresence(true);
                         motherNatureIslandID = i;
                     }
                 }
             }
-            if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+            // remove NoEntryTile
+            if (modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).getNoEntryTiles() > 0) {
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).removeNoEntryTile();
             }
 
 
-        } else if (ackMessageMapped.getSubObject().equals("action_2_influence")) { //cambiamenti relativi al calcolo dell'influenza
+        } else if (ackMessageMapped.getSubObject().equals("action_2_influence")) {
             if (ackMessageMapped.isMasterChanged()) {
-                int motherNatureIsland = 0;                                                                  //id dell'isola dove c'è madre natura.
+                int motherNatureIsland = 0;
+                // set MotherNature position
                 for (int i = 0; i < 12; i++) {
                     if(modelView.getIslandGame().get(i) != null) {
                         if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
@@ -1341,26 +1350,27 @@ public class NetworkHandler {
                         }
                     }
                 }
-                if (ackMessageMapped.getNewMaster_ID() != -1) { // && ackMessageMapped.getPreviousMaster_ID() != playerID) {
-                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(towerColor);    //o stampiamo questo nuovo colore o gli altri non lo sanno
-                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();    //1     //prendiamo quante torri sono sull'isola dove arriva MN
+                if (ackMessageMapped.getNewMaster_ID() != -1) {
+                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(towerColor);
+                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();
                     if (numberTowerMotherIsland == 0) {
-                        numberTowerMotherIsland++;                                                                             //diventa almeno una che viene tolta dalla schoolboard
+                        numberTowerMotherIsland++;
                     }
-                    modelView.getIslandGame().get(motherNatureIsland).setNumberOfTower(numberTowerMotherIsland);        //rimpiazzo con 1
+                    //update TowerArea
+                    modelView.getIslandGame().get(motherNatureIsland).setNumberOfTower(numberTowerMotherIsland);
                     int numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
-                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard - numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
+                    modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard - numberTowerMotherIsland);
 
                     if(ackMessageMapped.getPreviousMaster_ID() != -1 ) {
                         numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousMaster_ID()).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
-                        modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard + numberTowerMotherIsland);       //viene aggiornata la plancia con il nuovo numero corretto di torri
+                        modelView.getSchoolBoardPlayers().get(ackMessageMapped.getPreviousMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard + numberTowerMotherIsland);
 
                     }
                 }
 
             }
         } else if (ackMessageMapped.getSubObject().equals("action_2_union")) {
-            if (ackMessageMapped.getIslandsUnified().equals("previous")) {               //copio le creature dall'isola previous a quella nuova dove arriva madre natura
+            if (ackMessageMapped.getIslandsUnified().equals("previous")) {
 
                 //setting current and previous
                 int currentIslandID = motherNatureIslandID;
@@ -1369,14 +1379,14 @@ public class NetworkHandler {
                 //students
                 for (Creature c : Creature.values()) {
                     int numberPreviousStudents = modelView.getIslandGame().get(previousIslandID).getStudentsPopulation().get(c);
-                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);            //cambiamo il numero di studenti sull'isola rimasta
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);
                     modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberPreviousStudents + numberCurrentStudents);
                 }
 
                 //towers
                 int numberTowerPrevious = modelView.getIslandGame().get(previousIslandID).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
-                if (numberTowerPrevious == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();
+                if (numberTowerPrevious == 0) {
                     numberTowerPrevious++;
                 }
                 if (numberTowerCurrent == 0) {
@@ -1385,7 +1395,7 @@ public class NetworkHandler {
                 modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerPrevious);
 
                 //no entry tile
-                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
                     modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
 
@@ -1401,15 +1411,16 @@ public class NetworkHandler {
 
                 //students
                 for (Creature c : Creature.values()) {
+                    // update number of students on the remained island
                     int numberNextStudents = modelView.getIslandGame().get(nextIslandID).getStudentsPopulation().get(c);
-                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);            //cambiamo il numero di studenti sull'isola rimasta
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);
                     modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberNextStudents + numberCurrentStudents);
                 }
 
-                //towers
+                //update towers
                 int numberTowerNext = modelView.getIslandGame().get(nextIslandID).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
-                if (numberTowerNext == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();
+                if (numberTowerNext == 0) {
                     numberTowerNext++;
                 }
                 if (numberTowerCurrent == 0) {
@@ -1417,13 +1428,13 @@ public class NetworkHandler {
                 }
                 modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerNext);
 
-                //no entry tile
-                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                //update no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
                     modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
                 }
 
-                //removing island
+                // remove the island unified
                 modelView.getIslandGame().set(nextIslandID, null);
 
             } else if (ackMessageMapped.getIslandsUnified().equals("both")) {
@@ -1436,18 +1447,18 @@ public class NetworkHandler {
                 for (Creature c : Creature.values()) {
                     int numberPreviousStudents = modelView.getIslandGame().get(previousIslandID).getStudentsPopulation().get(c);
                     int numberNextStudents = modelView.getIslandGame().get(nextIslandID).getStudentsPopulation().get(c);
-                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);            //cambiamo il numero di studenti sull'isola rimasta
+                    int numberCurrentStudents = modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().get(c);
                     modelView.getIslandGame().get(currentIslandID).getStudentsPopulation().replace(c, numberPreviousStudents + numberNextStudents + numberCurrentStudents);
                 }
 
                 //towers
                 int numberTowerPrevious = modelView.getIslandGame().get(previousIslandID).getNumberOfTower();
                 int numberTowerNext = modelView.getIslandGame().get(nextIslandID).getNumberOfTower();
-                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();                  //cambiamo il numero di torri sull'isola
-                if (numberTowerPrevious == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
+                int numberTowerCurrent = modelView.getIslandGame().get(currentIslandID).getNumberOfTower();
+                if (numberTowerPrevious == 0) {
                     numberTowerPrevious++;
                 }
-                if (numberTowerNext == 0) {                                                                                                          //caso in cui siano 0 perchè la logica stiamo facendo noi e arrivano tutti insieme i 3 messsaggi di action 2
+                if (numberTowerNext == 0) {
                     numberTowerNext++;
                 }
                 if (numberTowerCurrent == 0) {
@@ -1455,14 +1466,14 @@ public class NetworkHandler {
                 }
                 modelView.getIslandGame().get(currentIslandID).setNumberOfTower(numberTowerCurrent + numberTowerNext + numberTowerPrevious);
 
-                //no entry tile
-                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {           //rimozione di no entry tile
+                //remove no entry tile
+                if (modelView.getIslandGame().get(currentIslandID).getNoEntryTiles() > 0) {
                     modelView.getIslandGame().get(currentIslandID).removeNoEntryTile();
                     modelView.getCharactersDataView().incrementHerbalistNoEntryTile();
 
                 }
 
-                //removing island
+                //remove island
                 modelView.getIslandGame().set(previousIslandID, null);
                 modelView.getIslandGame().set(nextIslandID, null);
 
@@ -1506,7 +1517,8 @@ public class NetworkHandler {
                 }
             }
         }
-        ArrayList<Creature> creatureInEntranceAfterClouds = ackMessageMapped.getStudents();                                                 //update dell'entrance dopo scelta nuvola, lo facciamo per tutte le modelview visto che tutti possono vedere l'entrance di tutti
+        // update Entrance after cloud choice
+        ArrayList<Creature> creatureInEntranceAfterClouds = ackMessageMapped.getStudents();
         modelView.getSchoolBoardPlayers().get(ackMessageMapped.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(creatureInEntranceAfterClouds);
 
 
@@ -1538,9 +1550,9 @@ public class NetworkHandler {
         }else if(characterUsed.equals("jester")){
             modelView.getCharactersDataView().setJesterStudents(ackCharactersMessage.getStudentsOnCard());
             modelView.getSchoolBoardPlayers().get(ackCharactersMessage.getRecipient()).getEntrancePlayer().setStudentsInTheEntrancePlayer(ackCharactersMessage.getEntranceOfPlayer());
-        }else if(characterUsed.equals("ambassador_influence")){       //TODO towercolor da ackCharactersMessage
-            matchEnd = ackCharactersMessage.isEndOfMatch();           //TODO controllo se ackCharactersMessage è accettato
-            updateModelViewActionTwo(ackCharactersMessage);            //TODO controllare se update model view venga chiamato correttamente
+        }else if(characterUsed.equals("ambassador_influence")){
+            matchEnd = ackCharactersMessage.isEndOfMatch();
+            updateModelViewActionTwo(ackCharactersMessage);
 
         }else if (characterUsed.equals("ambassador_union")){
             matchEnd = ackCharactersMessage.isEndOfMatch();
@@ -1595,7 +1607,7 @@ public class NetworkHandler {
     }
 
     /**
-     * This method is used to resolve the end of the match and it calls the matchEnd cli method which notifies
+     * This method is used to resolve the end of the match, and it calls the matchEnd cli method which notifies
      * the players that the match is over and the winner.
      * @param receivedMessageInJson is the message received in json.
      */
@@ -1642,6 +1654,9 @@ public class NetworkHandler {
         this.bardNumber = bardNumber;
     }
 
+    /**
+     * This method closes the client socket
+     */
     public void closingNH() {
         try {
             this.inputBufferClient.close();
