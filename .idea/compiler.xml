@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="PSP25" />
+        <module name="ing-sw-2022-ferrario-griffanti-masiero" />
       </profile>
     </annotationProcessing>
   </component>
