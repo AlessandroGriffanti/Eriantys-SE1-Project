@@ -48,7 +48,9 @@ If you use the default configuration on the server, the port is 4444.
 
 
 ## Tools Used
-* Astah UML - UML Diagrams
-* Maven - Dependency Management
-* Intellij - IDE
-* JavaFX - GUI
+* Astah UML - UML Diagrams;
+* Maven - Dependency Management;
+* Intellij - IDE;
+* JavaFX - GUI;
+* Word Microsoft 365 - deliveries and peer reviews.
+* 
