@@ -35,7 +35,7 @@ at Politecnico di Milano. (2021/2022)
 To launch the server of the game, use the following command in the directory of the jar.
 
 ```
-java -jar PSP25_server.jar 
+java -jar PSP25_Server.jar 
 ```
 To launch the CLI for playing the game, use the following command in the directory of the jar.
 
