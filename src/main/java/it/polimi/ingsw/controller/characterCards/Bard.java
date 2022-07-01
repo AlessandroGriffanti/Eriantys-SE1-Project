@@ -90,9 +90,9 @@ public class Bard extends Character {
             // UPDATE PROFESSORS' CONTROL
             SupportFunctions.updateProfessorControl(controller, previousOwnerEntranceProfessor_ID, entranceCreature);
             SupportFunctions.updateProfessorControl(controller, previousOwnerDiningRoomProfessor_ID, diningRoomCreature);
-
-            sendAckMessage(player);
         }
+
+        sendAckMessage(player);
     }
 
     /**
