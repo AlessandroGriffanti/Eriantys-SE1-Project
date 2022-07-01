@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="454.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.NewMatchController">
+   <children>
+      <ImageView fx:id="backgroundImage" opacity="0.9" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/cover.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="84.0" fitWidth="87.0" layoutX="8.0" layoutY="357.0" opacity="0.9" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/cranio-creation-logo.png" />
+         </image>
+      </ImageView>
+      <CheckBox fx:id="expertMode_cb" layoutX="365.0" layoutY="237.0" mnemonicParsing="false" />
+      <Label layoutX="313.0" layoutY="203.0" text="Expert Mode" textFill="#f7f4ea">
+         <font>
+            <Font name="Mogra Regular" size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="283.0" layoutY="281.0" text="Number of Players" textFill="#f7f4ea">
+         <font>
+            <Font name="Mogra Regular" size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="createMatchButton" layoutX="313.0" layoutY="399.0" mnemonicParsing="false" onMouseClicked="#createMatchClicked" text="Create Match">
+         <font>
+            <Font name="Mogra Regular" size="15.0" />
+         </font>
+      </Button>
+      <ChoiceBox fx:id="numPlayers_cb" layoutX="298.0" layoutY="323.0" prefWidth="150.0" />
+   </children>
+</AnchorPane>

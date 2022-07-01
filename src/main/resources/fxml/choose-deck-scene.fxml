@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="399.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.ChooseDeckController">
+   <children>
+      <Pane layoutX="21.0" layoutY="90.0" prefHeight="230.0" prefWidth="716.0" style="-fx-background-color: black; -fx-background-radius: 15;" />
+      <Pane opacity="0.87" prefHeight="399.0" prefWidth="758.0" style="-fx-background-color: #2ec4b6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Line fx:id="prohibitionBar" endX="-27.20001220703125" endY="-15.99999713897705" layoutX="117.0" layoutY="36.0" startX="-99.0" startY="5.999988555908203" stroke="#f40e0e" strokeWidth="5.0" visible="false" />
+            <Label layoutX="17.0" layoutY="20.0" text="Your turn" textFill="#fff8f8">
+               <font>
+                  <Font name="Mogra Regular" size="15.0" />
+               </font>
+            </Label>
+            <Rectangle arcHeight="15.0" arcWidth="15.0" fill="#1f93ff00" height="32.0" layoutX="14.0" layoutY="14.0" stroke="#fff8f8" strokeType="INSIDE" width="79.0" />
+         </children>
+      </Pane>
+      <Button fx:id="forestWizard_bt" layoutX="27.0" layoutY="98.0" mnemonicParsing="false" onMouseClicked="#forestWizardClicked" prefHeight="213.0" prefWidth="159.0" style="-fx-background-color: #495057; -fx-background-radius: 8;">
+         <graphic>
+            <ImageView fitHeight="212.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/assistants/forest-wizard.jpg" />
+               </image>
+            </ImageView>
+         </graphic>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button fx:id="desertWizard_bt" layoutX="211.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#desertWizardClicked" prefHeight="214.0" prefWidth="159.0" style="-fx-background-color: #495057; -fx-background-radius: 8;">
+         <graphic>
+            <ImageView fitHeight="212.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/assistants/desert-wizard.jpg" />
+               </image>
+            </ImageView>
+         </graphic>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </Button>
+      <Button fx:id="cloudsWitch_bt" layoutX="394.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#cloudsWitchClicked" prefHeight="214.0" prefWidth="159.0" style="-fx-background-color: #495057; -fx-background-radius: 8;">
+         <graphic>
+            <ImageView fitHeight="212.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/assistants/cloud-witch.jpg" />
+               </image>
+            </ImageView>
+         </graphic>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </Button>
+      <Button fx:id="lightningWizard_bt" layoutX="574.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#LightningWizardClicked" prefHeight="214.0" prefWidth="159.0" style="-fx-background-color: #495057; -fx-background-radius: 8;">
+         <graphic>
+            <ImageView fitHeight="212.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/assistants/lightning-wizard.jpg" />
+               </image>
+            </ImageView>
+         </graphic>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </Button>
+      <Label layoutX="281.0" layoutY="40.0" text="Choose your wizard" textFill="#fff8f8">
+         <font>
+            <Font name="Mogra Regular" size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

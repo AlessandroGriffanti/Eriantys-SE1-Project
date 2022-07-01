@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.glowingCircle.GlowingControl">
+   <children>
+      <Circle fx:id="circle" fill="#396e9900" layoutX="300.0" layoutY="200.0" radius="126.0" stroke="#333dcc" strokeType="INSIDE" strokeWidth="8.0" />
+      <Circle fx:id="greenButton" fill="#3cda6e" layoutX="300.0" layoutY="200.0" onMouseClicked="#glow" radius="36.0" stroke="#3cda6e" strokeType="INSIDE" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.EnterLobbyController">
+   <children>
+      <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/cover.png" />
+         </image>
+      </ImageView>
+      <ListView fx:id="lobbyListView" fixedCellSize="30.0" layoutX="205.0" layoutY="145.0" prefHeight="200.0" prefWidth="340.0" />
+      <ImageView fitHeight="100.0" fitWidth="65.0" layoutX="14.0" layoutY="354.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/cranio-creation-logo.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="enterLobby_bt" layoutX="324.0" layoutY="382.0" mnemonicParsing="false" onMouseClicked="#enterLobbyClicked" text="Enter lobby">
+         <font>
+            <Font name="Mogra Regular" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
