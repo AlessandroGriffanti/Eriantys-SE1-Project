@@ -6,7 +6,7 @@ at Politecnico di Milano. (2021/2022)
 **Teacher:** Pierluigi San Pietro
 
 
-![Image of the game](src/main/resources/graphics/Eriantys_Cover.jpg)
+![Image of the game](src/main/resources/graphics/ERIANTYS-BOX-3D.png)
 
 
 ## Authors
