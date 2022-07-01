@@ -12,7 +12,7 @@ at Politecnico di Milano. (2021/2022)
 
 
 
-![Image of the game](src/main/resources/graphics/Eriantys_Cover.jpg)
+![Image of the game](src/main/resources/graphics/Eriantys_CoverHD.jpg)
 
 ## Implemented Functionalities
 | Functionality       |          Status          |
