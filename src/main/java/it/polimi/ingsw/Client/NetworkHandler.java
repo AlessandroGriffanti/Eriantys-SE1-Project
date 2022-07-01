@@ -8,10 +8,7 @@ import it.polimi.ingsw.messages.serverMessages.*;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.Wizard;
-import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.messages.clientMessages.PingMessage;
-import it.polimi.ingsw.network.messages.serverMessages.*;
-import it.polimi.ingsw.network.messages.clientMessages.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
