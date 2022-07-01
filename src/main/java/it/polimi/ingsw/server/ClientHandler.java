@@ -126,22 +126,6 @@ public class ClientHandler extends Thread {
                     }
                 }
             }
-            System.out.println("End of match");
-            if(matchStarted || lobbyAccessed){
-                //server.getLobbiesPlayersConnection().get(lobbyID).set(playerID, false);
-                server.getLobbiesEnd().set(lobbyID, true);
-                server.getLobbies().get(String.valueOf(lobbyID)).onePlayerDisconnected(playerID);
-                if(matchStarted) {
-                    System.out.println("OUT1");
-                }else if(lobbyAccessed) {
-                    System.out.println("OUT2");
-                }else {
-                    System.out.println("OUT3");
-                }
-            }
-            socketClosing();
-
-
         } catch (IOException e) {
             System.out.println("IO exception out " + e.getMessage());
             if(matchStarted || lobbyAccessed){
