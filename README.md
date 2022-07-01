@@ -5,14 +5,15 @@ at Politecnico di Milano. (2021/2022)
 
 **Teacher:** Pierluigi San Pietro
 
+
+![Image of the game](src/main/resources/graphics/ERIANTYS-BOX-3D.png)
+
+
 ## Authors
 * [Tommaso Ferrario](https://github.com/tommi00)
 * [Alessandro Griffanti](https://github.com/AlessandroGriffanti)
 * [Luca Masiero](https://github.com/LucaMasiero)
 
-
-
-![Image of the game](src/main/resources/graphics/Eriantys_Cover.jpg)
 
 ## Implemented Functionalities
 | Functionality       |          Status          |
@@ -53,4 +54,5 @@ If you use the default configuration on the server, the port is 4444.
 * Intellij - IDE;
 * JavaFX - GUI;
 * Word Microsoft 365 - deliveries and peer reviews.
-* 
+
+
