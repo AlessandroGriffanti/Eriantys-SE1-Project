@@ -19,10 +19,11 @@ public class CLI {
 
     /**
      * Cli constructor creates a new instance of the cli and sets the connection between the client and the server through the startClient method.
-     * @param ip is the server ip
-     * @param port is the server port
+     * @param ip is the server ip;
+     * @param port is the server port.
      */
     public CLI(String ip, int port){
+
         // set all the possible requests for show command
         showKeyWords = new ArrayList<>();
         showKeyWords.add("diningroom");
@@ -42,10 +43,12 @@ public class CLI {
     }
 
     /**
-     * Main method
+     * Main method for the cli
      * @param args are the main args.
      */
     public static void main(String[] args) {
+
+        //Game Title:
         System.out.println(" _______   ________  ___  ________  ________   _________    ___    ___ ________      \n" +
                 "|\\  ___ \\ |\\   __  \\|\\  \\|\\   __  \\|\\   ___  \\|\\___   ___\\ |\\  \\  /  /|\\   ____\\     \n" +
                 "\\ \\   __/|\\ \\  \\|\\  \\ \\  \\ \\  \\|\\  \\ \\  \\\\ \\  \\|___ \\  \\_| \\ \\  \\/  / | \\  \\___|_    \n" +
@@ -58,19 +61,21 @@ public class CLI {
                 "                                                                                     ");
 
         try {
-            /*
+            //scan for ip and port:
             System.out.println("Insert server ip address: ");
             String ip = new Scanner(System.in).next();
             System.out.println("Insert server port: ");
             int port = new Scanner(System.in).nextInt();
             CLI cli = new CLI(ip, port);
-             */
-            CLI cli = new CLI("192.168.1.33", 4444);
+
+            //fixed ip and port for tests:
+            //CLI cli = new CLI("192.168.1.33", 4444);
 
         } catch (InputMismatchException e){
             System.out.println("Integer requested for the server port, restart the application. ");
             System.exit(0);
         }
+
     }
 
     /**
@@ -144,21 +149,17 @@ public class CLI {
 
     /**
      * This method is used to ask the player which lobby he wants to join among the ones already existing.
-     * @param arrayLobby is the arraylist of boolean representing the existing lobby: true means the lobby is full, false means it's not full.
-     * @param arrayExpert list of boolean values specifying if the match with ID equals to the index of the array is played in
-     *                    expert mode or note
-     * @param arrayNumPlayer list of integers specifying what is the number of players required to start the match
-     * @param arrayEnd list of boolean values specifying if the match with ID equals to the index of the array is already ended or not
+     * @param arrayLobby is the arraylist of boolean representing the existing lobby: true means the lobby is full, false means it's not full;
+     * @param arrayExpert list of boolean values specifying if the match with ID equals to the index of the array is played in expert mode or not;
+     * @param arrayNumPlayer list of integers specifying what is the number of players required to start the match;
+     * @param arrayEnd list of boolean values specifying if the match with ID equals to the index of the array is already ended or not;
      * @return ID of the lobby chosen by the player.
      */
-
-
     public int lobbyToChoose(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
-        println("Choose a Lobby: \n");
-
+        println("Choose a Lobby: ");
         printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
-        //SCANNER DELLE LOBBY
+        //SCAN OF LOBBIES:
         int lobbyIDChosenByPlayer = scannerCLI.nextInt();
 
         boolean rightLobbyChoice = false;
@@ -190,7 +191,6 @@ public class CLI {
             }else {
                 println("Lobby not existing, insert a right number from the list of Lobbies: ");
                 println(" ");
-
                 printLobbies(arrayLobby, arrayExpert, arrayNumPlayer, arrayEnd);
 
                 lobbyIDChosenByPlayer = scannerCLI.nextInt();
@@ -208,7 +208,7 @@ public class CLI {
      * @param arrayEnd contains a booleans which represent if the game is ended (index is the id of the lobby).
      */
     public void printLobbies(ArrayList<Boolean> arrayLobby, ArrayList<Boolean> arrayExpert, ArrayList<Integer> arrayNumPlayer, ArrayList<Boolean> arrayEnd){
-        //STAMPA DELLE LOBBIES
+        //PRINT OF LOBBIES:
         println("ERIANTYS LOBBIES: ");
         for (int i = 0; i < arrayLobby.size(); i++) {
             if(!arrayEnd.get(i)) {
@@ -258,6 +258,7 @@ public class CLI {
     public void lobbyChosenNotAvailable(String explanation){
         println(explanation);
         println("Try to reconnect to the server!");
+        println(" ");
     }
 
     /**
@@ -265,18 +266,37 @@ public class CLI {
      */
     public void errorObject () {
         println("Error with the object of the message. ");
+        println(" ");
     }
 
     /**
      * This method is used to notify the player that the match is waiting for other players to start.
      */
-    public void ackWaiting () { println("Waiting for match to start...  "); }
+    public void ackWaiting () {
+        println("Waiting for match to start...  ");
+        println(" ");
+    }
 
     /**
      * This method is used to notify the player that the game has started.
      */
     public void startAlert () {
-        println("\n - - - GAME IS STARTED ! - - - \n");
+        //println("\n - - - GAME IS STARTED ! - - - \n");
+
+        println("                                                |>>>\n" +
+                "                                                |\n" +
+                "                                            _  _|_  _\n" +
+                "                                           |;|_|;|_|;|\n" +
+                "   GAME IS STARTED!                        \\\\.     . /\n" +
+                "                                            \\\\:   . /\n" +
+                "                                             ||:   |\n" +
+                "                                             ||: . |\n" +
+                "                                             ||:  .|\n" +
+                "                                             ||:   |\n" +
+                "                                             ||: , |\n" +
+                "     ____--`~    '--~~__            __ ----~    ~`---,              ___\n" +
+                "-~--~                   ~---__ ,--~'                  ~~----_____-~'   `~----~~\n");
+
     }
 
     /**
@@ -345,6 +365,7 @@ public class CLI {
             println("Player " + player + " has used the " + characterUsed.toUpperCase() + " character card! ");
         }else{
             println("You correctly used the " + characterUsed.toUpperCase() + " character card! ");
+            println(" ");
         }
     }
 
@@ -352,7 +373,10 @@ public class CLI {
      * This method is used to notify the player that it's his turn, so he has to act.
      */
     public void isYourTurn() {
+        println(" ");
+        println(" ");
         println("It is your Turn! Make your choice: ");
+        println(" ");
     }
 
     /**
@@ -366,8 +390,8 @@ public class CLI {
                 "                                                |\n" +
                 "                                            _  _|_  _\n" +
                 "                                           |;|_|;|_|;|\n" +
-                " MAKE YOUR CHOICE!                       \\\\.    .  /\n" +
-                "                                          \\\\:  .  /\n" +
+                "  MAKE YOUR CHOICE!                       \\\\.    .  /\n" +
+                "                                           \\\\:  .  /\n" +
                 "                                             ||:   |\n" +
                 "                                             ||:.  |\n" +
                 "                                             ||:  .|\n" +
@@ -403,8 +427,8 @@ public class CLI {
 
     /**
      * This method is used to ask the following players which color they want their towers to be.
-     * @param notAvailableTowerColors is the list of  colors that have already been chosen.
-     * @param modelView reference to the modelView
+     * @param notAvailableTowerColors is the list of  colors that have already been chosen;
+     * @param modelView reference to the modelView;
      * @return the color chosen.
      */
     public Tower towerChoiceNext (ArrayList<Tower> notAvailableTowerColors, ModelView modelView) {
@@ -511,7 +535,6 @@ public class CLI {
         return Tower.valueOf(strTowerColorChosen);
     }
 
-
     /**
      * This method is used to ask the player which deck he wants to play with.
      * @return the deck chosen in Wizard type.
@@ -588,6 +611,7 @@ public class CLI {
      */
     public void bagClick(){
         println("You drew the students from the bag");
+        println(" ");
     }
 
     /**
@@ -750,6 +774,7 @@ public class CLI {
         }
         println(" ");
     }
+
     /**
      * This method is used to show to the player the students in the Entrance of all players.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
@@ -779,6 +804,7 @@ public class CLI {
         print("This is the number of towers of player " + playerID +": " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());
         println(" ");
     }
+
     /**
      * This method is used to show to the player his students in the Dining Room of his board.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
@@ -805,13 +831,23 @@ public class CLI {
         println(" ");
     }
 
+    /**
+     * This method is used to show the number of coin remaining in the coin reserve of the match.
+     * @param modelView is the reference to the modelView.
+     */
     public void showCoinsReserve(ModelView modelView){
         println("Number of coins in reserve: " + modelView.getCoinGame() );
     }
 
+    /**
+     * This method is used to show the number of coins of a player.
+     * @param playerID is the ID of the player who own the shown coins;
+     * @param modelView is the reference to the modelView.
+     */
     public void showCoinsPlayer(int playerID, ModelView modelView){
         println("Number of coins of player " + playerID + ": " + modelView.getCoinPlayer().get(playerID));
     }
+
     /**
      * This method is used to show to the player the number of his remaining towers in the Tower area of his schoolBoard.
      * @param playerID is the player id, used to get the corresponding SchoolBoardView.
@@ -822,17 +858,19 @@ public class CLI {
         println(" ");
     }
 
-
     /**
      * This method is used to ask the player which students he wants to move from the entrance.
+     * @param playerID is the id of the player who is now doing this action;
      * @param modelView is the reference to the modelView.
      */
     public int choiceOfStudentsToMove(int playerID, ModelView modelView ) {
         String request;
-        int studentChosen = - 1;                                                  //settato a -1 a causa del try catch, ma non verrà mai restituito -1
-        boolean rightStudentChosen = false;                                       //viene settata a true solo se inserisco "character" oppure se inserisco uno studente valido
+        int studentChosen = - 1;
+        boolean rightStudentChosen = false;
+
         println("Which student do you want to move from the entrance?");
         showStudentsInEntrancePlayer(playerID, modelView);
+
         while(!rightStudentChosen) {
             request = scannerCLI.next();
             while (request.equals("show")) {
@@ -863,21 +901,23 @@ public class CLI {
                     } else if (modelView.getSchoolBoardPlayers().get(playerID).getEntrancePlayer().getStudentsInTheEntrancePlayer().get(studentChosen) == null) {
                         println("You already chose this student, please insert a valid one: ");
                     } else {
-                        rightStudentChosen = true;                                  //settiamo a true solo se viene inserito uno studente valido
+                        rightStudentChosen = true;
                     }
-                } catch (NumberFormatException e) {                                 //se l'utente inserisce qualcosa che non va bene tipo "pluto", entriamo qui e di nuovo nel while principale
+                } catch (NumberFormatException e) {
                     println("Wrong insert: please insert show/character or the student you want to move: ");
                     showStudentsInEntrancePlayer(playerID, modelView);
                 }
             }
 
         }
+
         return studentChosen;
     }
 
-
     /**
      * This method is used to ask the player where he wants to move the student he chose.
+     * @param playerID is the id of the player who is now doing this action;
+     * @param modelView is the reference to the modelView;
      * @return the island ID chosen or -1 if the location chosen is 'diningRoom'.
      */
     public int choiceLocationToMove(int playerID, ModelView modelView) {
@@ -907,7 +947,7 @@ public class CLI {
                         println("Where do you want to move the student you chose from the entrance?");
                     }
                     break;
-                case "island":                                     //se sceglie isola, chiedo su quale isola voglia muoverlo, se sceglie diningroom, ritorno -1 come specificato
+                case "island":
                     println(" ");
                     println("On which island do you want to move your students? ");
 
@@ -938,6 +978,7 @@ public class CLI {
 
     /**
      * This method is used by the client to view what he desires.
+     * @param playerID is the id of the player who is now doing this action;
      * @param modelView is the reference to the modelView.
      */
     public void show(int playerID, ModelView modelView){
@@ -981,6 +1022,7 @@ public class CLI {
                 showCoinsReserve(modelView);
             }else{
                 println("There are no coins in the game since you are not playing in expert mode!");
+                println(" ");
             }
         }else if(str.equals("entrance")){
             for(int i = 0; i <= modelView.getNumberOfPlayersGame()-1; i++) {
@@ -1074,8 +1116,9 @@ public class CLI {
      * @param playerID is the player ID.
      */
     public void newMaster(ModelView modelView, int playerID){
-        println("You are the new Master on the Island selected! ");
+        println("You are the new Master on the Island where Mother Nature stands! ");
         println("New number of Tower in your Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer() );
+        println(" ");
     }
 
     /**
@@ -1088,7 +1131,6 @@ public class CLI {
         println("You are no more the master on island " + motherNatureIslandID +"!");
         println("New number of Tower in your Tower Area: " + modelView.getSchoolBoardPlayers().get(playerID).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer());
     }
-
 
     /**
      * This method is used to notify the player that 2, or more, islands have been unified.
@@ -1107,7 +1149,6 @@ public class CLI {
         println(" ");
     }
 
-
     /**
      * This method is used to show the initial situation on the islands, including mother nature position.
      * @param modelView is the reference to the modelView.
@@ -1117,7 +1158,7 @@ public class CLI {
         for(int i = 0; i < 12; i++){
             if(modelView.getIslandGame().get(i) != null) {
                 print("Island " + i + ": ");
-                if (modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {           //se il numero di studenti su quell'isola è zero (all'inizio solo se è l'isola di madre natura oppure è l'isola opposta)
+                if (modelView.getIslandGame().get(i).getTotalNumberOfStudents() == 0) {
                     if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
                         print("nobody, here stands mother nature.");
                     } else {
@@ -1258,10 +1299,11 @@ public class CLI {
      * @return the cloud ID chosen.
      */
     public int chooseCloud(int playerID, ModelView modelView){
-        int cloudChosen = -1;                               //setto a -1 per il try catch ma non restituirà mai -1
+        int cloudChosen = -1;
         String request;
         showClouds(modelView);
         boolean rightCloudChosen = false;
+
         println("Which cloud do you want to take the students from? They will be moved to your entrance: ");
         while(!rightCloudChosen) {
             request = scannerCLI.next();
@@ -1276,7 +1318,7 @@ public class CLI {
                     if (networkHandler.isCharacterUsed()) {
                         println("You already used a character in this round. Insert another request: ");
                     } else {
-                        cloudChosen = -2;                                             //character nel net. handler
+                        cloudChosen = -2;
                         rightCloudChosen = true;
                     }
                 }else{
@@ -1298,13 +1340,14 @@ public class CLI {
                 }
             }
         }
+
         return  cloudChosen;
     }
 
     /**
      * This method is used to show to the player that he chose an invalid Cloud ID to take the students from.
-     * @param player_ID is the player ID.
-     * @param modelView is the reference to the modelView.
+     * @param player_ID is the player ID;
+     * @param modelView is the reference to the modelView;
      * @return the new chosen cloud ID.
      */
     public int invalidCloudSelection(int player_ID, ModelView modelView){
@@ -1314,13 +1357,15 @@ public class CLI {
 
     /**
      * This method is used to show the winner of the match.
-     * @param winnerNickname is the nickname of the winner.
-     * @param winnerReason is the reason why a player wins.
-     * @param playerIDWinner is the id of the winner.
+     * @param winnerNickname is the nickname of the winner;
+     * @param winnerReason is the reason why a player wins;
+     * @param playerIDWinner is the id of the winner;
+     * @param playerID is the ID of the player.
      */
     public void matchEnd(String winnerNickname, String winnerReason, int playerIDWinner, int playerID){
         println(" ");
         println("THE MATCH IS ENDED, reason: " + winnerReason);
+
         if(playerIDWinner == playerID){
             println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
         }else if(playerIDWinner == -1){
@@ -1328,6 +1373,7 @@ public class CLI {
         }else {
             println("You lost this game, the winner is Player" + playerIDWinner +": " + winnerNickname + "!!");
         }
+
         println(" ");
         println(" ");
     }
@@ -1339,11 +1385,13 @@ public class CLI {
         println(" ");
         println(" ");
         println("The round is over, a new one is beginning! ");
+        println(" ");
     }
 
     /**
      * This method is used by the client when he wants to use one of the character of his match.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
+     * @return the chosen character in a string.
      */
     public String characterChoice(ModelView modelView){
         println("Which character do you want to use? ");
@@ -1370,7 +1418,7 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Monk character.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
      * @return the id of the chosen student.
      */
     public int choiceStudentMonk(ModelView modelView) {
@@ -1398,7 +1446,7 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Monk character.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
      * @return the id of the chosen island.
      */
     public int choiceIslandMonk(ModelView modelView){
@@ -1416,8 +1464,8 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Jester character.
-     * @param playerID is the player ID.
-     * @param modelView is the reference to the modelView.
+     * @param playerID is the player ID;
+     * @param modelView is the reference to the modelView;
      * @return the arraylist of students the player wants to move from the entrance.
      */
     public ArrayList<Integer> choiceStudentEntranceJester(int playerID, ModelView modelView) {
@@ -1466,7 +1514,7 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Jester character.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
      * @return  the arraylist of students the player wants to move from the card.
      */
     public ArrayList<Integer> choiceStudentCardJester(ModelView modelView){
@@ -1476,11 +1524,12 @@ public class CLI {
         int i = 0;
         println("Which student do you want to take from the card? Please insert their id: ");
         for(Creature c : modelView.getCharactersDataView().getJesterStudents()){
-            print( i + ": " + c + " ");
+            print( i + ": " + c);
             i++;
             if(i < modelView.getCharactersDataView().getJesterStudents().size()){
                 println("; ");
             }else{
+                println(". ");
                 println(" ");
             }
         }
@@ -1504,7 +1553,7 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Herbalist character.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
      * @return the id of the chosen island.
      */
     public int choiceHerbalist(ModelView modelView){
@@ -1523,7 +1572,7 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Ambassador character.
-     * @param modelView is the reference to the modelView.
+     * @param modelView is the reference to the modelView;
      * @return the id of the chosen island.
      */
     public int choiceAmbassador(ModelView modelView){
@@ -1563,8 +1612,8 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Bard character.
-     * @param playerID is the player ID.
-     * @param modelView is the reference to the modelView.
+     * @param playerID is the player ID;
+     * @param modelView is the reference to the modelView;
      * @return the arraylist of students the player wants to move from the entrance.
      */
     public ArrayList<Integer> choiceStudentEntranceBard(int playerID, ModelView modelView) {
@@ -1617,8 +1666,8 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Bard character.
-     * @param playerID is the player ID.
-     * @param modelView is the reference to the modelView.
+     * @param playerID is the player ID;
+     * @param modelView is the reference to the modelView;
      * @return the arraylist of students the player wants to move from the diningroom.
      */
     public ArrayList<Creature> choiceStudentDiningRoomBard(int playerID, ModelView modelView) {
@@ -1742,7 +1791,8 @@ public class CLI {
 
     /**
      * This method is used by the client when he uses the Princess character card.
-     * @return  the student ID chosen;
+     * @param modelView is the reference to the modelView;
+     * @return the ID of the chosen student.
      */
     public int choicePrincess(ModelView modelView){
         println("Which student do you choose? You will move it from the card to your Dining Room");
@@ -1769,7 +1819,7 @@ public class CLI {
 
     /**
      * This method show all the characters with their students if necessary and their price
-     * @param modelView reference to the model view
+     * @param modelView is the reference to the modelView.
      */
     public void printCharacters(ModelView modelView){
         int characterIndex;
@@ -1802,6 +1852,15 @@ public class CLI {
     }
 
     /**
+     * This method used to notify the player he can't move a student from the entrance to the diningroom because the table is full.
+     * @param tableFullNackExplanation is the reason why he can't.
+     */
+    public void invalidStudentMovementTableFull(String tableFullNackExplanation){
+        println(tableFullNackExplanation);
+        println(" ");
+    }
+
+    /**
      * This method used to notify the player he can't use the herbalist character card.
      * @param herbalistNackExplanation is the reason why he can't.
      */
@@ -1830,7 +1889,7 @@ public class CLI {
 
     /**
      * This method is used to notify the players that a certain character card has been successfully used.
-     * @param characterUsed is the character used.
+     * @param characterUsed is the character card used.
      */
     public void characterConfirm(String characterUsed){
         println(characterUsed + " used correctly!");
@@ -1840,57 +1899,87 @@ public class CLI {
      * This method prints a help guide which could be useful for the player during the game.
      */
     public void helpGuide(){
-        println("PLANNING PHASE: You have to choose the assistant card you want to play: the player whose assistant card's order value is the lowest ");
-        println("will be the first one to play in the action phase");
-        print("ACTION1: After planning phase, the player has to move 3 students (or 4 if 3 players are playing) to the diningroom or on an island of his choice.");
-        println(" Whenever a player has more students in the diningroom than the others, he gets the professor of the creature moved.");
-        print("ACTION2: After that, the player has to move mother nature on an island. He can move her clockwise depending on ");
-        print("the assistant card he had played in the planning phase (e.g. he used the assistant card whose order value is 7,");
-        println("  he can move mother nature up to 4 steps.");
-        println("After moving mother nature, it will be computed the influence over the island where she lands, meaning that the player who has ");
-        println("the highest influence (highest number of students with the controlled professor + towers), will conquer the island and build a tower over it.");
-        println("If a player conquers 2, or more, adjacent islands, they get unified.");
-        println("ACTION3: after that, the players has to choose a cloud among the 2 (or 3). The students on the cloud will be added to his entrance and a new round will begin.");
+        println(" ");
+        println("HELP GUIDE FOR THE GAME: ");
+        println(" ");
+
+        println(" - PLANNING PHASE: You have to choose the assistant card you want to play: the player whose assistant card's order value is the lowest will be the first one to play in the action phase");
+        println(" --- ");
+
+        println(" - ACTION1: After planning phase, the player has to move 3 students (or 4 if 3 players are playing) to the diningroom or on an island of his choice.");
+        println("   Whenever a player has more students in the diningroom than the others, he gets the professor of the creature moved.");
+        println(" --- ");
+
+        println(" - ACTION2: After that, the player has to move mother nature on an island. He can move her clockwise depending on ");
+        println("   the assistant card he had played in the planning phase (e.g. he used the assistant card whose order value is 7, he can move mother nature up to 4 steps.");
+        println("   After moving mother nature, it will be computed the influence over the island where she lands, meaning that the player who has ");
+        println("   the highest influence (highest number of students with the controlled professor + towers), will conquer the island and build a tower over it.");
+        println("   If a player conquers 2, or more, adjacent islands, they get unified.");
+        println(" --- ");
+
+        println(" - ACTION3: after that, the players has to choose a cloud among the 2 (or 3). The students on the cloud will be added to his entrance and a new round will begin.");
+        println(" --- ");
+
+        println(" ");
+        println(" -- End of the Game Guide, good luck! -- ");
+        println(" ");
+
     }
 
     /**
      * This method prints a help guide on what each character card does.
      */
     public void helpCharacter(){
-        println("MONK: You can take a student from this card and place it on an island of your choice.");
-        println("COOK: During this turn, you take control of any number of professors even if you have the same number of students as the player");
-        print(" who currently controls them");
-        println("AMBASSADOR: Choose an island and resolve it as if mother nature had ended her movement there.");
-        println("MESSENGER: you may move mother nature up to 2 additional islands that is indicated by the assistant card you've played.");
-        println("HERBALIST: place a no entry tile on an island of your choice: the first time mother nature ends her movement there, do not calculate the influence on the island. ");
-        println("CENTAUR: When resolving a conquering on an island, towers do not count towards influence");
-        println("JESTER: You may take up to 3 students from this card and exchange them with the same number of students from your entrance.");
-        println("KNIGHT: During the influence calculation this turn, you count as having 2 more influence.");
-        println("MUSHROOM MERCHANT: Choose a color of  student: during the influence calculation this turn, that color adds no influence." );
-        println("BARD: You may exchange up to 2 students between your entrance and your diningroom.");
-        println("PRINCESS: Take 1 student from this card and place it in your diningroom.");
-        println("TRAFFICKER: Choose a type of student. Every player (including yourself) must return 3 students of that type from their diningroom to the bag. ");
-        println("If any player has fewer than 3 students of that type, return as many students as they have.");
+        println(" ");
+        println("HELP GUIDE FOR ALL THE CHARACTERS IN THE GAME: ");
+        println(" - MONK: You can take a student from this card and place it on an island of your choice.");
+        println(" - COOK: During this turn, you take control of any number of professors even if you have the same number of students as the player who currently controls them");
+        println(" - AMBASSADOR: Choose an island and resolve it as if mother nature had ended her movement there.");
+        println(" - MESSENGER: you may move mother nature up to 2 additional islands that is indicated by the assistant card you've played.");
+        println(" - HERBALIST: place a no entry tile on an island of your choice: the first time mother nature ends her movement there, do not calculate the influence on the island. ");
+        println(" - CENTAUR: When resolving a conquering on an island, towers do not count towards influence");
+        println(" - JESTER: You may take up to 3 students from this card and exchange them with the same number of students from your entrance.");
+        println(" - KNIGHT: During the influence calculation this turn, you count as having 2 more influence.");
+        println(" - MUSHROOM MERCHANT: Choose a color of  student: during the influence calculation this turn, that color adds no influence." );
+        println(" - BARD: You may exchange up to 2 students between your entrance and your diningroom.");
+        println(" - PRINCESS: Take 1 student from this card and place it in your diningroom.");
+        println(" - TRAFFICKER: Choose a type of student. Every player (including yourself) must return 3 students of that type from their diningroom to the bag. " +
+                "If any player has fewer than 3 students of that type, return as many students as they have.");
+        println(" --- ");
+        println(" -- End of the Characters Guide, good luck! -- ");
+        println(" ");
     }
 
-
-
-
+    /**
+     * This method is used to print a string without starting a new paragraph.
+     * @param strToPrint is the string that needs to be printed.
+     */
     public void print(String strToPrint){
         System.out.print(strToPrint);
     }
 
+    /**
+     * This method is used to print a string, starting a new paragraph.
+     * @param strToPrint is the string that needs to be printed.
+     */
     public void println(String strToPrint){
         System.out.println(strToPrint);
     }
 
+    /**
+     * This method is used to print an int without starting a new paragraph.
+     * @param intToPrint is the int that needs to be printed.
+     */
     public void printlnInt(int intToPrint){
         System.out.println(intToPrint);
     }
 
+    /**
+     * This method is used to print an int, starting a new paragraph.
+     * @param intToPrint is the int that needs to be printed.
+     */
     public void printInt(int intToPrint){
         System.out.print(intToPrint);
     }
-
 
 }

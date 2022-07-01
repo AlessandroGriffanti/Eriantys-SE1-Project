@@ -165,8 +165,7 @@ public class NetworkHandler {
             while (!matchEnd) {
                 //System.out.println("Still connected");
                 String msgFromServer = inputBufferClient.readLine();
-                System.out.println("messaggio dal server: " + msgFromServer);
-                System.out.println(" ");
+                //System.out.println("messaggio dal server: " + msgFromServer);
                 analysisOfReceivedMessageServer(msgFromServer);
             }
         } catch (IOException e) {
@@ -431,7 +430,7 @@ public class NetworkHandler {
                             cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() != playerID && assistantChoiceFlag) {
-                            cli.turnWaitingAssistant(ackMessageMapped.getNextPlayer());
+                            cli.turnWaiting(ackMessageMapped.getNextPlayer());
 
                         } else if (ackMessageMapped.getNextPlayer() == playerID && assistantChoiceFlag) {
                             assistantChoiceFlag = false;
@@ -818,6 +817,16 @@ public class NetworkHandler {
 
                     case "princess":
                         characterUsed = false;
+                        int princessIndex = modelView.getCharacterCardsInTheGame().indexOf("princess");
+                        if(modelView.getCharactersPriceIncreased().get(princessIndex)){
+                            modelView.getCoinPlayer().replace(playerID, (modelView.getCoinPlayer().get(playerID) - 3) );
+                            modelView.setCoinGame(modelView.getCoinGame() + 3);
+                        }else{
+                            modelView.getCoinPlayer().replace(playerID, (modelView.getCoinPlayer().get(playerID) - 2) );
+                            modelView.setCoinGame(modelView.getCoinGame() + 2);
+                            modelView.getCharactersPriceIncreased().set(princessIndex, true);
+                        }
+
                         cli.invalidPrincessChoice(nackMessageMapped.getExplanationMessage());
                         followingChoiceToMake(lastCallFrom);
                         break;
@@ -835,6 +844,7 @@ public class NetworkHandler {
 
                     case "table_full":
                         numberOfChosenStudent--;
+                        cli.invalidStudentMovementTableFull(nackMessageMapped.getExplanationMessage());
                         studentChosen = cli.choiceOfStudentsToMove(playerID, modelView);
                         if(studentChosen == -2){
                             lastCallFrom = "choiceOfStudentsToMove";
@@ -1338,26 +1348,16 @@ public class NetworkHandler {
                 modelView.getIslandGame().get(ackMessageMapped.getDestinationIsland_ID()).removeNoEntryTile();
             }
 
-
         } else if (ackMessageMapped.getSubObject().equals("action_2_influence")) {
             if (ackMessageMapped.isMasterChanged()) {
-                int motherNatureIsland = 0;
-                // set MotherNature position
-                for (int i = 0; i < 12; i++) {
-                    if(modelView.getIslandGame().get(i) != null) {
-                        if (modelView.getIslandGame().get(i).isMotherNaturePresence()) {
-                            motherNatureIsland = i;
-                        }
-                    }
-                }
                 if (ackMessageMapped.getNewMaster_ID() != -1) {
-                    modelView.getIslandGame().get(motherNatureIsland).setTowerColor(towerColor);
-                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIsland).getNumberOfTower();
+                    modelView.getIslandGame().get(motherNatureIslandID).setTowerColor(towerColor);
+                    int numberTowerMotherIsland = modelView.getIslandGame().get(motherNatureIslandID).getNumberOfTower();
                     if (numberTowerMotherIsland == 0) {
                         numberTowerMotherIsland++;
                     }
                     //update TowerArea
-                    modelView.getIslandGame().get(motherNatureIsland).setNumberOfTower(numberTowerMotherIsland);
+                    modelView.getIslandGame().get(motherNatureIslandID).setNumberOfTower(numberTowerMotherIsland);
                     int numberCurrentTowerSchoolBoard = modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().getCurrentNumberOfTowersPlayer();
                     modelView.getSchoolBoardPlayers().get(ackMessageMapped.getNewMaster_ID()).getTowerAreaPlayer().setCurrentNumberOfTowersPlayer(numberCurrentTowerSchoolBoard - numberTowerMotherIsland);
 
