@@ -33,22 +33,8 @@ public class AssistantsDeck {
         this.wizard = wizard;
         this.deck = new HashMap<Integer, Assistant>();
         this.numberOfRemainingCards = 10;
-        int i, x;
 
-
-        try{
-            FileReader fileText = new FileReader("resources/assistantList.txt");
-            Scanner scanner = new Scanner(fileText);
-
-            for(i = 0; i < 10; i++) {
-
-                x = scanner.nextInt();
-                this.deck.put( x, new Assistant(x, scanner.nextInt() ) );
-
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        initializeDeck();
     }
 
     /**
@@ -88,5 +74,22 @@ public class AssistantsDeck {
 
     public Wizard getWizard() {
         return wizard;
+    }
+
+    public void initializeDeck(){
+        for(int i = 1; i<= 10; i++){
+            if(i == 1 || i == 2) {
+                this.deck.put(i, new Assistant(i,1));
+            }else if( i == 3 || i == 4){
+                this.deck.put(i, new Assistant(i,2));
+            }else if(i == 5 || i == 6){
+                this.deck.put(i, new Assistant(i,3));
+            }else if(i == 7 || i == 8) {
+                this.deck.put(i, new Assistant(i,4));
+            }else if(i == 9 || i == 10) {
+                this.deck.put(i, new Assistant(i,5));
+            }
+
+        }
     }
 }

@@ -91,7 +91,7 @@ public class ModelView {
         studentsOnClouds = new ArrayList<>();
         charactersDataView = new CharactersDataView();
 
-        for(int i = 1; i<= 10; i++){                        //creo le carte assistente con il relativo valore di madre natura
+        for(int i = 1; i<= 10; i++){
             if(i == 1 || i == 2) {
                 assistantCardsValuesPlayer.put(i, 1);
             }else if( i == 3 || i == 4){
@@ -106,7 +106,7 @@ public class ModelView {
 
         }
 
-        for(int i = 0; i<12; i++){                         //creo le isole e le aggiungo all'arraylist
+        for(int i = 0; i<12; i++){
             islandGame.add(new ArchipelagoView(i));
         }
 
