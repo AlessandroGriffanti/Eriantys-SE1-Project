@@ -12,6 +12,12 @@ public class ChosenTowerColorMessage extends Message {
      */
     Tower color;
 
+    public ChosenTowerColorMessage(int sender_ID, Tower color){
+        this.object = "tower_color";
+        this.color = color;
+        this.sender_ID = sender_ID;
+    }
+
     public ChosenTowerColorMessage(){
         this.object = "tower_color";
     }
