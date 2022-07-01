@@ -3,8 +3,8 @@ package it.polimi.ingsw.controller.characterCards;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
 

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterRequestMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.clientMessages.MovedMotherNatureMessage;
-import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterRequestMessage;
+import it.polimi.ingsw.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.clientMessages.MovedMotherNatureMessage;
+import it.polimi.ingsw.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 

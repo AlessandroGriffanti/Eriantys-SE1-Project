@@ -5,9 +5,9 @@ import it.polimi.ingsw.controller.SupportFunctions;
 import it.polimi.ingsw.model.Bag;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
-import it.polimi.ingsw.network.messages.serverMessages.NackMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.messages.serverMessages.NackMessage;
 
 import java.util.ArrayList;
 

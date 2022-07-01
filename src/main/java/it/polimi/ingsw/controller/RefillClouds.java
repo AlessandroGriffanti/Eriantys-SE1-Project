@@ -1,9 +1,9 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Creature;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
-import it.polimi.ingsw.network.messages.clientMessages.BagClickMessage;
+import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.messages.clientMessages.BagClickMessage;
 
 import java.util.ArrayList;
 

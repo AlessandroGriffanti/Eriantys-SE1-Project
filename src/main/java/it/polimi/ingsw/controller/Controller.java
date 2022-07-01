@@ -2,13 +2,12 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.characterCards.*;
 import it.polimi.ingsw.controller.characterCards.Character;
-import it.polimi.ingsw.model.Archipelago;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Match;
-import it.polimi.ingsw.network.messages.serverMessages.AckMessage;
-import it.polimi.ingsw.network.messages.serverMessages.MatchStartMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.server.ClientHandler;
+import it.polimi.ingsw.messages.serverMessages.AckMessage;
+import it.polimi.ingsw.messages.serverMessages.MatchStartMessage;
+import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.server.ClientHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

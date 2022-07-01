@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
 
 /**
  * This class represent one character card

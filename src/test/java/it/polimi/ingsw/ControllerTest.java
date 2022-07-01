@@ -6,10 +6,10 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.model.schoolboard.Entrance;
 import it.polimi.ingsw.model.schoolboard.ProfessorTable;
-import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.server.ClientHandler;
-import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.messages.clientMessages.MatchSpecsMessage;
+import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.server.ClientHandler;
+import it.polimi.ingsw.server.Server;
 import org.junit.Test;
 
 import java.net.Socket;

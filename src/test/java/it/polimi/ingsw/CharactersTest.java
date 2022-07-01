@@ -8,11 +8,11 @@ import it.polimi.ingsw.controller.characterCards.Herbalist;
 import it.polimi.ingsw.controller.characterCards.Jester;
 import it.polimi.ingsw.controller.characterCards.Messenger;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.clientMessages.MatchSpecsMessage;
-import it.polimi.ingsw.network.server.ClientHandler;
-import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.messages.Message;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.clientMessages.MatchSpecsMessage;
+import it.polimi.ingsw.server.ClientHandler;
+import it.polimi.ingsw.server.Server;
 import org.junit.Test;
 
 import java.net.Socket;

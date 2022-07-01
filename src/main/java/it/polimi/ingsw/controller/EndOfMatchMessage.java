@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.messages.Message;
 
 /**
  * This class represents the different controls over the end of the match

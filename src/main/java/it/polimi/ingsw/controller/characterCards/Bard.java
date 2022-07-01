@@ -1,15 +1,13 @@
 package it.polimi.ingsw.controller.characterCards;
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.SupportFunctions;
 import it.polimi.ingsw.model.Creature;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.schoolboard.DiningRoom;
 import it.polimi.ingsw.model.schoolboard.Entrance;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.serverMessages.AckCharactersMessage;
 
 import java.util.ArrayList;
 

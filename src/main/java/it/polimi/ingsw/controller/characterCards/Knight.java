@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.characterCards;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.messages.clientMessages.CharacterDataMessage;
-import it.polimi.ingsw.network.messages.serverMessages.AckCharactersMessage;
+import it.polimi.ingsw.messages.clientMessages.CharacterDataMessage;
+import it.polimi.ingsw.messages.serverMessages.AckCharactersMessage;
 
 public class Knight extends Character {
 
