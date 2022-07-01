@@ -22,7 +22,7 @@ at Politecnico di Milano. (2021/2022)
 | Complete rules      |            ✅             |
 | Socket              |            ✅             |
 | CLI                 |            ✅             |
-| GUI                 |            ⚠️            |
+| GUI                 |            ⛔            |
 | Multiple games      |            ✅             |
 | 12 Characters Cards | ⚠️(11 of 12 implemented) |
 | Resilience          |            ⛔             |
