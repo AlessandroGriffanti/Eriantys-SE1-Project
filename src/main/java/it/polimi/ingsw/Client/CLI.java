@@ -731,6 +731,7 @@ public class CLI {
                 print(s);
                 if(i + 1 < modelView.getCharacterCardsInTheGame().size()){
                     print(", ");
+                    i++;
                 }else{
                     print(". ");
                 }
@@ -1366,11 +1367,56 @@ public class CLI {
         println("THE MATCH IS ENDED, reason: " + winnerReason);
 
         if(playerIDWinner == playerID){
-            println("YOU ARE THE WINNER! CONGRATULATIONS!! ");
+            println(" ");
+            println("☆ 。 ★。 ☆ 。 ★\n" +
+                    "  。☆ 。 ☆。 ☆\n" +
+                    "  ★。＼｜／。★\n" +
+                    "YOU ARE THE WINNER!\n" +
+                    " CONGRATULATIONS!!\n" +
+                    "  ★。／｜＼。★\n" +
+                    "  ☆ 。 ☆。。☆   \n" +
+                    " ☆ 。★。 ☆  ★");
+            println(" ");
         }else if(playerIDWinner == -1){
             println("A player disconnected: it's a TIE! No one won this match :/  ");
+            println("    ______\n" +
+                    "   /(    )\\\n" +
+                    "   \\ \\  / /\n" +
+                    "    \\/[]\\/\n" +
+                    "      /\\\n" +
+                    "     |  |\n" +
+                    "     |  |\n" +
+                    "     |  |\n" +
+                    "     |  |\n" +
+                    "     |  |\n" +
+                    "     \\  /\n" +
+                    "      \\/\n" +
+                    " ");
+            println(" ");
         }else {
-            println("You lost this game, the winner is Player" + playerIDWinner +": " + winnerNickname + "!!");
+            println("You lost this game, the winner is Player" + playerIDWinner +": " + winnerNickname +  ":( ");
+            println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠖⠚⠉⠁⠀⠀⠉⠙⠒⢄⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⠀⠀⢀⠔⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⢢⡀⠀⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⠀⡰⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣆⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⢠⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢇⠀\n" +
+                    "⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡄\n" +
+                    "⠀⠀⠀⠀⢸⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇\n" +
+                    "⠀⠀⠀⠀⠸⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡘\n" +
+                    "⠀⠀⠀⠀⠀⢻⠀⠀⠀⠀⠀⠀⠀⢀⣴⣶⡄⠀⠀⠀⠀⠀⢀⣶⡆⠀⢠⠇\n" +
+                    "⠀⠀⠀⠀⠀⠀⣣⠀⠀⠀⠀⠀⠀⠀⠙⠛⠁⠀⠀⠀⠀⠀⠈⠛⠁⡰⠃⠀\n" +
+                    "⠀⠀⠀⠀⢠⠞⠋⢳⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠜⠁⠀⠀\n" +
+                    "⠀⠀⠀⣰⠋⠀⠀⠀⢷⠙⠲⢤⣀⡀⠀⠀⠀⠀⠴⠴⣆⠴⠚⠁⠀⠀⠀⠀\n" +
+                    "⠀⠀⣰⠃⠀⠀⠀⠀⠘⡇⠀⣀⣀⡉⠙⠒⠒⠒⡎⠉⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⢠⠃⠀⠀⢶⠀⠀⠀⢳⠋⠁⠀⠙⢳⡠⠖⠚⠑⠲⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⡎⠀⠀⠀⠘⣆⠀⠀⠈⢧⣀⣠⠔⡺⣧⠀⡴⡖⠦⠟⢣⠀⠀⠀⠀⠀⠀\n" +
+                    "⢸⠀⠀⠀⠀⠀⢈⡷⣄⡀⠀⠀⠀⠀⠉⢹⣾⠁⠁⠀⣠⠎⠀⠀⠀⠀⠀⠀\n" +
+                    "⠈⠀⠀⠀⠀⠀⡼⠆⠀⠉⢉⡝⠓⠦⠤⢾⠈⠓⠖⠚⢹⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⢰⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⠀⠀⠀⢸⠀⠀⠀⠀⡏⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠳⡀⠀⠀⠀⠀⠀⠀⣀⢾⠀⠀⠀⠀⣾⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠀⠈⠐⠢⠤⠤⠔⠚⠁⠘⣆⠀⠀⢠⠋⢧⣀⣀⡼⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠈⠁⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀");
         }
 
         println(" ");
@@ -1899,28 +1945,28 @@ public class CLI {
      */
     public void helpGuide(){
         println(" ");
-        println("HELP GUIDE FOR THE GAME: ");
+        println(" HELP GUIDE FOR THE GAME: ");
         println(" ");
 
         println(" - PLANNING PHASE: You have to choose the assistant card you want to play: the player whose assistant card's order value is the lowest will be the first one to play in the action phase");
-        println(" --- ");
+        println("     --- ");
 
         println(" - ACTION1: After planning phase, the player has to move 3 students (or 4 if 3 players are playing) to the diningroom or on an island of his choice.");
         println("   Whenever a player has more students in the diningroom than the others, he gets the professor of the creature moved.");
-        println(" --- ");
+        println("     --- ");
 
         println(" - ACTION2: After that, the player has to move mother nature on an island. He can move her clockwise depending on ");
         println("   the assistant card he had played in the planning phase (e.g. he used the assistant card whose order value is 7, he can move mother nature up to 4 steps.");
         println("   After moving mother nature, it will be computed the influence over the island where she lands, meaning that the player who has ");
         println("   the highest influence (highest number of students with the controlled professor + towers), will conquer the island and build a tower over it.");
         println("   If a player conquers 2, or more, adjacent islands, they get unified.");
-        println(" --- ");
+        println("     --- ");
 
         println(" - ACTION3: after that, the players has to choose a cloud among the 2 (or 3). The students on the cloud will be added to his entrance and a new round will begin.");
-        println(" --- ");
+        println("     --- ");
 
         println(" ");
-        println(" -- End of the Game Guide, good luck! -- ");
+        println("   -- End of the Game Guide, good luck! -- ");
         println(" ");
 
     }
@@ -1942,10 +1988,10 @@ public class CLI {
         println(" - MUSHROOM MERCHANT: Choose a color of  student: during the influence calculation this turn, that color adds no influence." );
         println(" - BARD: You may exchange up to 2 students between your entrance and your diningroom.");
         println(" - PRINCESS: Take 1 student from this card and place it in your diningroom.");
-        println(" - TRAFFICKER: Choose a type of student. Every player (including yourself) must return 3 students of that type from their diningroom to the bag. " +
-                "If any player has fewer than 3 students of that type, return as many students as they have.");
-        println(" --- ");
-        println(" -- End of the Characters Guide, good luck! -- ");
+        println(" - TRAFFICKER: Choose a type of student. Every player (including yourself) must return 3 students of that type from their diningroom to the bag. ");
+        println("       If any player has fewer than 3 students of that type, return as many students as they have.");
+        println(" ");
+        println("  -- End of the Characters Guide, good luck! -- ");
         println(" ");
     }
 
