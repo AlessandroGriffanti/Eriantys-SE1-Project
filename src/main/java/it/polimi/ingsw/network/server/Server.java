@@ -13,12 +13,20 @@ import java.util.HashMap;
 
 public class Server {
 
-    /** the main server will deliver to a ClientHandler the handling of the client connected */
+    /**
+     * the main server will deliver to a ClientHandler the handling of the client connected
+     */
     private ClientHandler clientHandler;
 
-    private int numberOfPort;           //passed in the main
+    /**
+     * This attributes represents the number of port of the server.
+     */
+    private int numberOfPort;
 
-    private ServerSocket serverSocket;  //initialized in the start method
+    /**
+     * This attribute represents the server socket.
+     */
+    private ServerSocket serverSocket;
 
 
     /**
@@ -27,14 +35,17 @@ public class Server {
     private ArrayList<String> playersNicknames;
 
 
-
-    /** this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game */
+    /**
+     * this HashMap links the lobby ID with the corresponding Controller that handles the corresponding game
+     */
     private HashMap <String, Controller> lobbies;
 
     /**
      * This arraylist is used to track the matches that have ended.
+     * The index of the array corresponds to the id of the lobby.
+     * True if the match is ended, false otherwise.
      */
-    private ArrayList<Boolean> lobbiesEnd;      //index of array list corresponds to the string id of lobbies, false if match not ended
+    private ArrayList<Boolean> lobbiesEnd;
 
     /**
      * This double arraylist is used to check the players connections.
@@ -42,7 +53,7 @@ public class Server {
      * indexes of secondary arraylist are the players ID;
      * boolean values are the connection status: true if connected, false if not.
      */
-    private ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection;
+    //private ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection;
 
 
     /**
@@ -54,10 +65,8 @@ public class Server {
         this.playersNicknames = new ArrayList<String>();
         this.lobbies = new HashMap<>();
         this.lobbiesEnd = new ArrayList<>();
-        this.lobbiesPlayersConnection = new ArrayList<ArrayList<Boolean>>();
+        //this.lobbiesPlayersConnection = new ArrayList<ArrayList<Boolean>>();
     }
-
-
 
 
 
@@ -74,10 +83,6 @@ public class Server {
             System.out.println("Error in the server launch");
         }
     }
-
-
-
-
     */
 
     /**
@@ -86,7 +91,7 @@ public class Server {
      */
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
-        Server server = new Server(4444);   //ripetitivo
+        Server server = new Server(4444);
 
         try{
             System.out.println("Server ready");
@@ -120,32 +125,38 @@ public class Server {
         }
     }
 
-    public ArrayList<String> getPlayersNicknames() {
+    public synchronized ArrayList<String> getPlayersNicknames() {
         return this.playersNicknames;
     }
 
-    public HashMap<String, Controller> getLobbies() {
+    public synchronized HashMap<String, Controller> getLobbies() {
         return lobbies;
     }
 
-    public ArrayList<Boolean> getLobbiesEnd() {
+    public synchronized ArrayList<Boolean> getLobbiesEnd() {
         return lobbiesEnd;
     }
 
 
-    public void setPlayersNicknames(ArrayList<String> playersNicknames) {
+    public synchronized void setPlayersNicknames(ArrayList<String> playersNicknames) {
         this.playersNicknames = playersNicknames;
     }
 
-    public ArrayList<ArrayList<Boolean>> getLobbiesPlayersConnection() {
+    /*public synchronized ArrayList<ArrayList<Boolean>> getLobbiesPlayersConnection() {
         return lobbiesPlayersConnection;
     }
 
-    public void setLobbiesPlayersConnection(ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection) {
+    public synchronized void setLobbiesPlayersConnection(ArrayList<ArrayList<Boolean>> lobbiesPlayersConnection) {
         this.lobbiesPlayersConnection = lobbiesPlayersConnection;
-    }
+    }*/
 
-    public void checkPlayersConnectionOnStart(int lobbyIDpassed, int playerIDpassed, int numberOfPlayerInTheLobby) {
+    /**
+     * This method is used to check that all players are connected at the beginning of the game.
+     * @param lobbyIDpassed
+     * @param playerIDpassed
+     * @param numberOfPlayerInTheLobby
+     */
+    /*public synchronized void checkPlayersConnectionOnStart(int lobbyIDpassed, int playerIDpassed, int numberOfPlayerInTheLobby) {
         System.out.println("num player" + numberOfPlayerInTheLobby);
         if (playerIDpassed == 0) {
             if (lobbiesPlayersConnection.get(lobbyIDpassed).get(0)) {
@@ -179,6 +190,6 @@ public class Server {
             }
 
         }
-    }
+    }*/
 
 }
